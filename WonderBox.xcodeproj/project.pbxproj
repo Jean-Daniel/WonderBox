@@ -1,0 +1,1745 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1B1B3FFA0E0DC691002C3269 /* WBEnumeratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */; };
+		1B1B3FFB0E0DC693002C3269 /* WBLSFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */; };
+		1B1B3FFC0E0DC695002C3269 /* WBPointerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */; };
+		1B3032950E47495000D7D5AC /* WBAppKitExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031470E47495000D7D5AC /* WBAppKitExtensions.h */; };
+		1B3032960E47495000D7D5AC /* WBAppKitExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031480E47495000D7D5AC /* WBAppKitExtensions.m */; };
+		1B3032970E47495000D7D5AC /* WBColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031490E47495000D7D5AC /* WBColor.h */; };
+		1B3032980E47495000D7D5AC /* WBColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30314A0E47495000D7D5AC /* WBColor.m */; };
+		1B3032990E47495000D7D5AC /* WBImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30314B0E47495000D7D5AC /* WBImageView.h */; };
+		1B30329A0E47495000D7D5AC /* WBImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30314C0E47495000D7D5AC /* WBImageView.m */; };
+		1B30329B0E47495000D7D5AC /* WBOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30314D0E47495000D7D5AC /* WBOutlineView.h */; };
+		1B30329C0E47495000D7D5AC /* WBOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30314E0E47495000D7D5AC /* WBOutlineView.m */; };
+		1B30329D0E47495000D7D5AC /* WBOutlineViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30314F0E47495000D7D5AC /* WBOutlineViewController.h */; };
+		1B30329E0E47495000D7D5AC /* WBOutlineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031500E47495000D7D5AC /* WBOutlineViewController.m */; };
+		1B30329F0E47495000D7D5AC /* WBTableDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031510E47495000D7D5AC /* WBTableDataSource.h */; };
+		1B3032A00E47495000D7D5AC /* WBTableDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031520E47495000D7D5AC /* WBTableDataSource.m */; };
+		1B3032A10E47495000D7D5AC /* WBTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031530E47495000D7D5AC /* WBTableView.h */; };
+		1B3032A20E47495000D7D5AC /* WBTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031540E47495000D7D5AC /* WBTableView.m */; };
+		1B3032A30E47495000D7D5AC /* WBUITreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031550E47495000D7D5AC /* WBUITreeNode.h */; };
+		1B3032A40E47495000D7D5AC /* WBUITreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031560E47495000D7D5AC /* WBUITreeNode.m */; };
+		1B3032A50E47495000D7D5AC /* WBViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031570E47495000D7D5AC /* WBViewController.h */; };
+		1B3032A60E47495000D7D5AC /* WBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031580E47495000D7D5AC /* WBViewController.m */; };
+		1B3032A70E47495000D7D5AC /* WBWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031590E47495000D7D5AC /* WBWindowController.h */; };
+		1B3032A80E47495000D7D5AC /* WBWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30315A0E47495000D7D5AC /* WBWindowController.m */; };
+		1B3032A90E47495000D7D5AC /* WBBezelItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30315C0E47495000D7D5AC /* WBBezelItem.h */; };
+		1B3032AA0E47495000D7D5AC /* WBBezelItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30315D0E47495000D7D5AC /* WBBezelItem.m */; };
+		1B3032AB0E47495000D7D5AC /* WBBezelItemContent.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30315E0E47495000D7D5AC /* WBBezelItemContent.h */; };
+		1B3032AC0E47495000D7D5AC /* WBBezelItemContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30315F0E47495000D7D5AC /* WBBezelItemContent.m */; };
+		1B3032AD0E47495000D7D5AC /* WBNotificationWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031600E47495000D7D5AC /* WBNotificationWindow.h */; };
+		1B3032AE0E47495000D7D5AC /* WBNotificationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031610E47495000D7D5AC /* WBNotificationWindow.m */; };
+		1B3032BB0E47495000D7D5AC /* WBCFContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031710E47495000D7D5AC /* WBCFContext.h */; };
+		1B3032BC0E47495000D7D5AC /* WBCFContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031720E47495000D7D5AC /* WBCFContext.m */; };
+		1B3032BD0E47495000D7D5AC /* WBExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031730E47495000D7D5AC /* WBExtensions.h */; };
+		1B3032BE0E47495000D7D5AC /* WBExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031740E47495000D7D5AC /* WBExtensions.m */; };
+		1B3032BF0E47495000D7D5AC /* WBFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031750E47495000D7D5AC /* WBFunctions.h */; };
+		1B3032C00E47495000D7D5AC /* WBFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031760E47495000D7D5AC /* WBFunctions.m */; };
+		1B3032CE0E47495000D7D5AC /* WBAlias.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031860E47495000D7D5AC /* WBAlias.h */; };
+		1B3032CF0E47495000D7D5AC /* WBAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031870E47495000D7D5AC /* WBAlias.m */; };
+		1B3032D00E47495000D7D5AC /* WBAliasedApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031880E47495000D7D5AC /* WBAliasedApplication.h */; };
+		1B3032D10E47495000D7D5AC /* WBAliasedApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031890E47495000D7D5AC /* WBAliasedApplication.m */; };
+		1B3032D20E47495000D7D5AC /* WBAppleRemote.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30318A0E47495000D7D5AC /* WBAppleRemote.h */; };
+		1B3032D30E47495000D7D5AC /* WBAppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30318B0E47495000D7D5AC /* WBAppleRemote.m */; };
+		1B3032D40E47495000D7D5AC /* WBApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30318C0E47495000D7D5AC /* WBApplication.h */; };
+		1B3032D50E47495000D7D5AC /* WBApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30318D0E47495000D7D5AC /* WBApplication.m */; };
+		1B3032D60E47495000D7D5AC /* WBEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30318E0E47495000D7D5AC /* WBEnumerator.h */; };
+		1B3032D70E47495000D7D5AC /* WBEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30318F0E47495000D7D5AC /* WBEnumerator.m */; };
+		1B3032D80E47495000D7D5AC /* WBExtendedTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031900E47495000D7D5AC /* WBExtendedTreeNode.h */; };
+		1B3032D90E47495000D7D5AC /* WBExtendedTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031910E47495000D7D5AC /* WBExtendedTreeNode.m */; };
+		1B3032DA0E47495000D7D5AC /* WBMemoryObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031920E47495000D7D5AC /* WBMemoryObject.h */; };
+		1B3032DB0E47495000D7D5AC /* WBMemoryObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031930E47495000D7D5AC /* WBMemoryObject.m */; };
+		1B3032DC0E47495000D7D5AC /* WBPluginLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031940E47495000D7D5AC /* WBPluginLoader.h */; };
+		1B3032DD0E47495000D7D5AC /* WBPluginLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031950E47495000D7D5AC /* WBPluginLoader.m */; };
+		1B3032DE0E47495000D7D5AC /* WBSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031960E47495000D7D5AC /* WBSerialization.h */; };
+		1B3032DF0E47495000D7D5AC /* WBSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031970E47495000D7D5AC /* WBSerialization.m */; };
+		1B3032E00E47495000D7D5AC /* WBThreadPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031980E47495000D7D5AC /* WBThreadPort.h */; };
+		1B3032E10E47495000D7D5AC /* WBThreadPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031990E47495000D7D5AC /* WBThreadPort.m */; };
+		1B3032E20E47495000D7D5AC /* WBTreeNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30319A0E47495000D7D5AC /* WBTreeNode.h */; };
+		1B3032E30E47495000D7D5AC /* WBTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30319B0E47495000D7D5AC /* WBTreeNode.m */; };
+		1B3032E40E47495000D7D5AC /* WBXMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30319C0E47495000D7D5AC /* WBXMLWriter.h */; };
+		1B3032E50E47495000D7D5AC /* WBXMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30319D0E47495000D7D5AC /* WBXMLWriter.m */; };
+		1B3032E60E47495000D7D5AC /* AESendThreadSafe.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30319F0E47495000D7D5AC /* AESendThreadSafe.c */; };
+		1B3032E70E47495000D7D5AC /* AESendThreadSafe.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031A00E47495000D7D5AC /* AESendThreadSafe.h */; };
+		1B3032E80E47495000D7D5AC /* WBAEFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031A10E47495000D7D5AC /* WBAEFunctions.c */; };
+		1B3032E90E47495000D7D5AC /* WBAEFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031A20E47495000D7D5AC /* WBAEFunctions.h */; };
+		1B3032EA0E47495000D7D5AC /* WBCFFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031A30E47495000D7D5AC /* WBCFFunctions.c */; };
+		1B3032EB0E47495000D7D5AC /* WBCFFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031A40E47495000D7D5AC /* WBCFFunctions.h */; };
+		1B3032EC0E47495000D7D5AC /* WBCGFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031A50E47495000D7D5AC /* WBCGFunctions.h */; };
+		1B3032ED0E47495000D7D5AC /* WBCGFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031A60E47495000D7D5AC /* WBCGFunctions.m */; };
+		1B3032EE0E47495000D7D5AC /* WBDSFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031A70E47495000D7D5AC /* WBDSFunctions.c */; };
+		1B3032EF0E47495000D7D5AC /* WBDSFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031A80E47495000D7D5AC /* WBDSFunctions.h */; };
+		1B3032F00E47495000D7D5AC /* WBDynamicFunction.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031A90E47495000D7D5AC /* WBDynamicFunction.c */; };
+		1B3032F10E47495000D7D5AC /* WBDynamicFunction.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031AA0E47495000D7D5AC /* WBDynamicFunction.h */; };
+		1B3032F20E47495000D7D5AC /* WBFSFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031AB0E47495000D7D5AC /* WBFSFunctions.h */; };
+		1B3032F30E47495000D7D5AC /* WBFSFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031AC0E47495000D7D5AC /* WBFSFunctions.m */; };
+		1B3032F40E47495000D7D5AC /* WBIOFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031AD0E47495000D7D5AC /* WBIOFunctions.c */; };
+		1B3032F50E47495000D7D5AC /* WBIOFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031AE0E47495000D7D5AC /* WBIOFunctions.h */; };
+		1B3032F60E47495000D7D5AC /* WBIOKitFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031AF0E47495000D7D5AC /* WBIOKitFunctions.c */; };
+		1B3032F70E47495000D7D5AC /* WBIOKitFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031B00E47495000D7D5AC /* WBIOKitFunctions.h */; };
+		1B3032F80E47495000D7D5AC /* WBLoginItems.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031B10E47495000D7D5AC /* WBLoginItems.c */; };
+		1B3032F90E47495000D7D5AC /* WBLoginItems.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031B20E47495000D7D5AC /* WBLoginItems.h */; };
+		1B3032FA0E47495000D7D5AC /* WBLSFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031B30E47495000D7D5AC /* WBLSFunctions.h */; };
+		1B3032FB0E47495000D7D5AC /* WBLSFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031B40E47495000D7D5AC /* WBLSFunctions.m */; };
+		1B3032FC0E47495000D7D5AC /* WBProcessFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031B50E47495000D7D5AC /* WBProcessFunctions.c */; };
+		1B3032FD0E47495000D7D5AC /* WBProcessFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031B60E47495000D7D5AC /* WBProcessFunctions.h */; };
+		1B3032FE0E47495000D7D5AC /* WBTextFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031B70E47495000D7D5AC /* WBTextFunctions.c */; };
+		1B3032FF0E47495000D7D5AC /* WBTextFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031B80E47495000D7D5AC /* WBTextFunctions.h */; };
+		1B3033000E47495000D7D5AC /* WBIcnsCodec.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031BA0E47495000D7D5AC /* WBIcnsCodec.h */; };
+		1B3033010E47495000D7D5AC /* WBIcnsCodec.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031BB0E47495000D7D5AC /* WBIcnsCodec.m */; };
+		1B3033020E47495000D7D5AC /* WBIconFamily.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031BC0E47495000D7D5AC /* WBIconFamily.h */; };
+		1B3033030E47495000D7D5AC /* WBIconFamily.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031BD0E47495000D7D5AC /* WBIconFamily.m */; };
+		1B3033040E47495000D7D5AC /* WBIconFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031BE0E47495000D7D5AC /* WBIconFunctions.c */; };
+		1B3033050E47495000D7D5AC /* WBIconFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031BF0E47495000D7D5AC /* WBIconFunctions.h */; };
+		1B3033060E47495000D7D5AC /* WBIconView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031C00E47495000D7D5AC /* WBIconView.h */; };
+		1B3033070E47495000D7D5AC /* WBIconView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031C10E47495000D7D5AC /* WBIconView.m */; };
+		1B3033080E47495000D7D5AC /* WBImageUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031C30E47495000D7D5AC /* WBImageUtils.h */; };
+		1B3033090E47495000D7D5AC /* WBImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031C40E47495000D7D5AC /* WBImageUtils.m */; };
+		1B3033150E47495000D7D5AC /* WBProgress.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031D90E47495000D7D5AC /* WBProgress.strings */; };
+		1B3033160E47495000D7D5AC /* WBAboutDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031DC0E47495000D7D5AC /* WBAboutDialog.xib */; };
+		1B3033170E47495000D7D5AC /* WBHeader-down.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031DD0E47495000D7D5AC /* WBHeader-down.tiff */; };
+		1B3033180E47495000D7D5AC /* WBHeader.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031DE0E47495000D7D5AC /* WBHeader.tiff */; };
+		1B3033190E47495000D7D5AC /* WBHeaderMenu.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031DF0E47495000D7D5AC /* WBHeaderMenu.tiff */; };
+		1B30331A0E47495000D7D5AC /* WBHSplitBar.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031E00E47495000D7D5AC /* WBHSplitBar.tiff */; };
+		1B30331B0E47495000D7D5AC /* WBProgressPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031E10E47495000D7D5AC /* WBProgressPanel.xib */; };
+		1B30331C0E47495000D7D5AC /* WBSplitDot.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031E20E47495000D7D5AC /* WBSplitDot.tiff */; };
+		1B30331D0E47495000D7D5AC /* WBVSplitBar.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3031E30E47495000D7D5AC /* WBVSplitBar.tiff */; };
+		1B30331E0E47495000D7D5AC /* WBAboutController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031E40E47495000D7D5AC /* WBAboutController.h */; };
+		1B30331F0E47495000D7D5AC /* WBAboutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031E50E47495000D7D5AC /* WBAboutController.m */; };
+		1B3033200E47495000D7D5AC /* WBApplicationView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031E60E47495000D7D5AC /* WBApplicationView.h */; };
+		1B3033210E47495000D7D5AC /* WBApplicationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031E70E47495000D7D5AC /* WBApplicationView.m */; };
+		1B3033220E47495000D7D5AC /* WBBackgroundView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031E80E47495000D7D5AC /* WBBackgroundView.h */; };
+		1B3033230E47495000D7D5AC /* WBBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031E90E47495000D7D5AC /* WBBackgroundView.m */; };
+		1B3033240E47495000D7D5AC /* WBBoxLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031EA0E47495000D7D5AC /* WBBoxLayer.h */; };
+		1B3033250E47495000D7D5AC /* WBBoxLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031EB0E47495000D7D5AC /* WBBoxLayer.m */; };
+		1B3033260E47495000D7D5AC /* WBConsoleManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031EC0E47495000D7D5AC /* WBConsoleManager.h */; };
+		1B3033270E47495000D7D5AC /* WBConsoleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031ED0E47495000D7D5AC /* WBConsoleManager.m */; };
+		1B3033280E47495000D7D5AC /* WBCustomViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031EE0E47495000D7D5AC /* WBCustomViewCell.h */; };
+		1B3033290E47495000D7D5AC /* WBCustomViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031EF0E47495000D7D5AC /* WBCustomViewCell.m */; };
+		1B30332A0E47495000D7D5AC /* WBDisclosurePanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031F00E47495000D7D5AC /* WBDisclosurePanel.h */; };
+		1B30332B0E47495000D7D5AC /* WBDisclosurePanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031F10E47495000D7D5AC /* WBDisclosurePanel.m */; };
+		1B30332C0E47495000D7D5AC /* WBDisclosureView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031F20E47495000D7D5AC /* WBDisclosureView.m */; };
+		1B30332D0E47495000D7D5AC /* WBHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031F30E47495000D7D5AC /* WBHeaderView.h */; };
+		1B30332E0E47495000D7D5AC /* WBHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031F40E47495000D7D5AC /* WBHeaderView.m */; };
+		1B30332F0E47495000D7D5AC /* WBImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031F50E47495000D7D5AC /* WBImageAndTextCell.h */; };
+		1B3033300E47495000D7D5AC /* WBImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031F60E47495000D7D5AC /* WBImageAndTextCell.m */; };
+		1B3033310E47495000D7D5AC /* WBImageAndTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031F70E47495000D7D5AC /* WBImageAndTextView.h */; };
+		1B3033320E47495000D7D5AC /* WBImageAndTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031F80E47495000D7D5AC /* WBImageAndTextView.m */; };
+		1B3033330E47495000D7D5AC /* WBProgressPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031F90E47495000D7D5AC /* WBProgressPanel.h */; };
+		1B3033340E47495000D7D5AC /* WBProgressPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031FA0E47495000D7D5AC /* WBProgressPanel.m */; };
+		1B3033350E47495000D7D5AC /* WBShadowLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031FB0E47495000D7D5AC /* WBShadowLabel.h */; };
+		1B3033360E47495000D7D5AC /* WBShadowLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031FC0E47495000D7D5AC /* WBShadowLabel.m */; };
+		1B3033370E47495000D7D5AC /* WBSplitview.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031FD0E47495000D7D5AC /* WBSplitview.h */; };
+		1B3033380E47495000D7D5AC /* WBSplitview.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3031FE0E47495000D7D5AC /* WBSplitview.m */; };
+		1B3033390E47495000D7D5AC /* WBStringLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3031FF0E47495000D7D5AC /* WBStringLayer.h */; };
+		1B30333A0E47495000D7D5AC /* WBStringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032000E47495000D7D5AC /* WBStringLayer.m */; };
+		1B30333B0E47495000D7D5AC /* WBViewProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032010E47495000D7D5AC /* WBViewProxy.h */; };
+		1B30333C0E47495000D7D5AC /* WBViewProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032020E47495000D7D5AC /* WBViewProxy.m */; };
+		1B30333D0E47495000D7D5AC /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032040E47495000D7D5AC /* sha1.c */; };
+		1B30333E0E47495000D7D5AC /* sha1.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032050E47495000D7D5AC /* sha1.h */; };
+		1B30333F0E47495000D7D5AC /* WBLicenseCrypto.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032060E47495000D7D5AC /* WBLicenseCrypto.c */; };
+		1B3033400E47495000D7D5AC /* WBLicenseCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032070E47495000D7D5AC /* WBLicenseCrypto.h */; };
+		1B3033410E47495000D7D5AC /* WBLicenseFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032080E47495000D7D5AC /* WBLicenseFunctions.c */; };
+		1B3033420E47495000D7D5AC /* WBLicenseFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032090E47495000D7D5AC /* WBLicenseFunctions.h */; };
+		1B3033430E47495000D7D5AC /* exc.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30320B0E47495000D7D5AC /* exc.h */; };
+		1B3033440E47495000D7D5AC /* WBMachExceptions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30320C0E47495000D7D5AC /* WBMachExceptions.c */; };
+		1B3033450E47495000D7D5AC /* WBMachExceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30320D0E47495000D7D5AC /* WBMachExceptions.h */; };
+		1B3033460E47495000D7D5AC /* WBMachFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30320E0E47495000D7D5AC /* WBMachFunctions.c */; };
+		1B3033470E47495000D7D5AC /* WBMachFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30320F0E47495000D7D5AC /* WBMachFunctions.h */; };
+		1B3033480E47495000D7D5AC /* WBMachPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032100E47495000D7D5AC /* WBMachPort.h */; };
+		1B3033490E47495000D7D5AC /* WBMachPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032110E47495000D7D5AC /* WBMachPort.m */; };
+		1B30334A0E47495000D7D5AC /* WBMachServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032120E47495000D7D5AC /* WBMachServer.h */; };
+		1B30334B0E47495000D7D5AC /* WBMachServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032130E47495000D7D5AC /* WBMachServer.m */; };
+		1B30334C0E47495000D7D5AC /* WBMachSpawn.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032140E47495000D7D5AC /* WBMachSpawn.h */; };
+		1B30334D0E47495000D7D5AC /* WBMachSpawn.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032150E47495000D7D5AC /* WBMachSpawn.m */; };
+		1B30334E0E47495000D7D5AC /* WBMachSpawnChild.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032160E47495000D7D5AC /* WBMachSpawnChild.c */; };
+		1B30334F0E47495000D7D5AC /* WBMachSpawnChild.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032170E47495000D7D5AC /* WBMachSpawnChild.h */; };
+		1B3033500E47495000D7D5AC /* wbnotify.defs in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032180E47495000D7D5AC /* wbnotify.defs */; settings = {ATTRIBUTES = (Client, Server, ); }; };
+		1B3033510E47495000D7D5AC /* wbspawn.defs in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032190E47495000D7D5AC /* wbspawn.defs */; settings = {ATTRIBUTES = (Server, Client, ); }; };
+		1B3033520E47495000D7D5AC /* WBClassCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30321B0E47495000D7D5AC /* WBClassCluster.h */; };
+		1B3033530E47495000D7D5AC /* WBForwarding.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30321C0E47495000D7D5AC /* WBForwarding.h */; };
+		1B3033540E47495000D7D5AC /* WBKeyValueCoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30321D0E47495000D7D5AC /* WBKeyValueCoding.h */; };
+		1B3033550E47495000D7D5AC /* WBSingleton.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30321E0E47495000D7D5AC /* WBSingleton.h */; };
+		1B3033560E47495000D7D5AC /* WBTaggedPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30321F0E47495000D7D5AC /* WBTaggedPointer.h */; };
+		1B3033570E47495000D7D5AC /* WBConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032210E47495000D7D5AC /* WBConnection.h */; };
+		1B3033580E47495000D7D5AC /* WBConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032220E47495000D7D5AC /* WBConnection.m */; };
+		1B3033590E47495000D7D5AC /* WBHTTPMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032230E47495000D7D5AC /* WBHTTPMessage.h */; };
+		1B30335A0E47495000D7D5AC /* WBHTTPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032240E47495000D7D5AC /* WBHTTPMessage.m */; };
+		1B30335B0E47495000D7D5AC /* WBReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032250E47495000D7D5AC /* WBReachability.h */; };
+		1B30335C0E47495000D7D5AC /* WBReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032260E47495000D7D5AC /* WBReachability.m */; };
+		1B30335D0E47495000D7D5AC /* WBServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032270E47495000D7D5AC /* WBServer.h */; };
+		1B30335E0E47495000D7D5AC /* WBServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032280E47495000D7D5AC /* WBServer.m */; };
+		1B30335F0E47495000D7D5AC /* WBSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032290E47495000D7D5AC /* WBSocket.h */; };
+		1B3033600E47495000D7D5AC /* WBSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30322A0E47495000D7D5AC /* WBSocket.m */; };
+		1B3033620E47495000D7D5AC /* GLSLBuiltIn-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1B30322F0E47495000D7D5AC /* GLSLBuiltIn-Info.plist */; };
+		1B3033630E47495000D7D5AC /* GLSLShader.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032330E47495000D7D5AC /* GLSLShader.h */; };
+		1B3033640E47495000D7D5AC /* GLSLShader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032340E47495000D7D5AC /* GLSLShader.m */; };
+		1B3033650E47495000D7D5AC /* GLSLUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032350E47495000D7D5AC /* GLSLUnit.h */; };
+		1B3033660E47495000D7D5AC /* GLSLUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032360E47495000D7D5AC /* GLSLUnit.m */; };
+		1B3033670E47495000D7D5AC /* GLSLUnitRegistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032370E47495000D7D5AC /* GLSLUnitRegistry.h */; };
+		1B3033680E47495000D7D5AC /* GLSLUnitRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032380E47495000D7D5AC /* GLSLUnitRegistry.m */; };
+		1B30336A0E47495000D7D5AC /* blur.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30323B0E47495000D7D5AC /* blur.fs */; };
+		1B30336B0E47495000D7D5AC /* brighten.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30323C0E47495000D7D5AC /* brighten.fs */; };
+		1B30336C0E47495000D7D5AC /* colorinvert.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30323D0E47495000D7D5AC /* colorinvert.fs */; };
+		1B30336D0E47495000D7D5AC /* dilation.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30323E0E47495000D7D5AC /* dilation.fs */; };
+		1B30336E0E47495000D7D5AC /* edgedetection.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30323F0E47495000D7D5AC /* edgedetection.fs */; };
+		1B30336F0E47495000D7D5AC /* GLSLPlugIn.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032400E47495000D7D5AC /* GLSLPlugIn.strings */; };
+		1B3033700E47495000D7D5AC /* erosion.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032420E47495000D7D5AC /* erosion.fs */; };
+		1B3033710E47495000D7D5AC /* extractcolor.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032430E47495000D7D5AC /* extractcolor.fs */; };
+		1B3033720E47495000D7D5AC /* fog.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032440E47495000D7D5AC /* fog.fs */; };
+		1B3033730E47495000D7D5AC /* GLSLPlugIn.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032450E47495000D7D5AC /* GLSLPlugIn.plist */; };
+		1B3033740E47495000D7D5AC /* grayinvert.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032460E47495000D7D5AC /* grayinvert.fs */; };
+		1B3033750E47495000D7D5AC /* grayscale.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032470E47495000D7D5AC /* grayscale.fs */; };
+		1B3033760E47495000D7D5AC /* heatsig.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032480E47495000D7D5AC /* heatsig.fs */; };
+		1B3033770E47495000D7D5AC /* null.vs in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032490E47495000D7D5AC /* null.vs */; };
+		1B3033780E47495000D7D5AC /* saturation.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324A0E47495000D7D5AC /* saturation.fs */; };
+		1B3033790E47495000D7D5AC /* sepia.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324B0E47495000D7D5AC /* sepia.fs */; };
+		1B30337A0E47495000D7D5AC /* sharpen.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324C0E47495000D7D5AC /* sharpen.fs */; };
+		1B30337B0E47495000D7D5AC /* sky.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324D0E47495000D7D5AC /* sky.fs */; };
+		1B30337C0E47495000D7D5AC /* toon.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324E0E47495000D7D5AC /* toon.fs */; };
+		1B30337D0E47495000D7D5AC /* twirl.fs in Resources */ = {isa = PBXBuildFile; fileRef = 1B30324F0E47495000D7D5AC /* twirl.fs */; };
+		1B30337E0E47495000D7D5AC /* WBGLFrameBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032500E47495000D7D5AC /* WBGLFrameBuffer.h */; };
+		1B30337F0E47495000D7D5AC /* WBGLFrameBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032510E47495000D7D5AC /* WBGLFrameBuffer.m */; };
+		1B3033800E47495000D7D5AC /* WBGLStringBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032520E47495000D7D5AC /* WBGLStringBox.h */; };
+		1B3033810E47495000D7D5AC /* WBGLStringBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032530E47495000D7D5AC /* WBGLStringBox.m */; };
+		1B3033820E47495000D7D5AC /* WBOpenGLQuad.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032540E47495000D7D5AC /* WBOpenGLQuad.h */; };
+		1B3033830E47495000D7D5AC /* WBOpenGLQuad.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032550E47495000D7D5AC /* WBOpenGLQuad.m */; };
+		1B3033840E47495000D7D5AC /* WBOpenGLTeapot.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032560E47495000D7D5AC /* WBOpenGLTeapot.h */; };
+		1B3033850E47495000D7D5AC /* WBOpenGLTeapot.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032570E47495000D7D5AC /* WBOpenGLTeapot.m */; };
+		1B3033860E47495000D7D5AC /* WBOpenGLTeapotList.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032580E47495000D7D5AC /* WBOpenGLTeapotList.c */; };
+		1B3033870E47495000D7D5AC /* WBOpenGLTeapotList.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032590E47495000D7D5AC /* WBOpenGLTeapotList.h */; };
+		1B3033880E47495000D7D5AC /* WBCDSAFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30325B0E47495000D7D5AC /* WBCDSAFunctions.c */; };
+		1B3033890E47495000D7D5AC /* WBCDSAFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30325C0E47495000D7D5AC /* WBCDSAFunctions.h */; };
+		1B30338A0E47495000D7D5AC /* WBCryptoFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30325D0E47495000D7D5AC /* WBCryptoFunctions.c */; };
+		1B30338B0E47495000D7D5AC /* WBCryptoFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30325E0E47495000D7D5AC /* WBCryptoFunctions.h */; };
+		1B30338C0E47495000D7D5AC /* WBDigestFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B30325F0E47495000D7D5AC /* WBDigestFunctions.c */; };
+		1B30338D0E47495000D7D5AC /* WBDigestFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032600E47495000D7D5AC /* WBDigestFunctions.h */; };
+		1B30338E0E47495000D7D5AC /* WBKeychainFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032610E47495000D7D5AC /* WBKeychainFunctions.c */; };
+		1B30338F0E47495000D7D5AC /* WBKeychainFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032620E47495000D7D5AC /* WBKeychainFunctions.h */; };
+		1B3033900E47495000D7D5AC /* WBSecurityFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032630E47495000D7D5AC /* WBSecurityFunctions.c */; };
+		1B3033910E47495000D7D5AC /* WBSecurityFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032640E47495000D7D5AC /* WBSecurityFunctions.h */; };
+		1B3033920E47495000D7D5AC /* WBTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032660E47495000D7D5AC /* WBTemplate.h */; };
+		1B3033930E47495000D7D5AC /* WBTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032670E47495000D7D5AC /* WBTemplate.m */; };
+		1B3033940E47495000D7D5AC /* WBTemplateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032680E47495000D7D5AC /* WBTemplateParser.h */; };
+		1B3033950E47495000D7D5AC /* WBTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032690E47495000D7D5AC /* WBTemplateParser.m */; };
+		1B3033960E47495000D7D5AC /* WBXMLTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30326A0E47495000D7D5AC /* WBXMLTemplate.h */; };
+		1B3033970E47495000D7D5AC /* WBXMLTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30326B0E47495000D7D5AC /* WBXMLTemplate.m */; };
+		1B3033980E47495000D7D5AC /* Assistant.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1B30326E0E47495000D7D5AC /* Assistant.icns */; };
+		1B3033990E47495000D7D5AC /* WBWizard.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1B30326F0E47495000D7D5AC /* WBWizard.strings */; };
+		1B30339A0E47495000D7D5AC /* WBWizard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032710E47495000D7D5AC /* WBWizard.xib */; };
+		1B30339B0E47495000D7D5AC /* WBWizard.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 1B3032750E47495000D7D5AC /* WBWizard.tiff */; };
+		1B30339C0E47495000D7D5AC /* WBWizard.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032760E47495000D7D5AC /* WBWizard.h */; };
+		1B30339D0E47495000D7D5AC /* WBWizard.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032770E47495000D7D5AC /* WBWizard.m */; };
+		1B30339E0E47495000D7D5AC /* WBWizardPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032780E47495000D7D5AC /* WBWizardPage.h */; };
+		1B30339F0E47495000D7D5AC /* WBWizardPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032790E47495000D7D5AC /* WBWizardPage.m */; };
+		1B3033A00E47495000D7D5AC /* WBAUFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30327B0E47495000D7D5AC /* WBAUFunctions.h */; };
+		1B3033A10E47495000D7D5AC /* WBAUFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30327C0E47495000D7D5AC /* WBAUFunctions.m */; };
+		1B3033A20E47495000D7D5AC /* WBAUGraph.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30327D0E47495000D7D5AC /* WBAUGraph.h */; };
+		1B3033A30E47495000D7D5AC /* WBAUGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30327E0E47495000D7D5AC /* WBAUGraph.m */; };
+		1B3033A40E47495000D7D5AC /* WBCAMovieLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30327F0E47495000D7D5AC /* WBCAMovieLayer.h */; };
+		1B3033A50E47495000D7D5AC /* WBCAMovieLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032800E47495000D7D5AC /* WBCAMovieLayer.m */; };
+		1B3033A60E47495000D7D5AC /* WBCIMovieView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032810E47495000D7D5AC /* WBCIMovieView.h */; };
+		1B3033A70E47495000D7D5AC /* WBCIMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032820E47495000D7D5AC /* WBCIMovieView.m */; };
+		1B3033A80E47495000D7D5AC /* WBComponent.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032830E47495000D7D5AC /* WBComponent.h */; };
+		1B3033A90E47495000D7D5AC /* WBComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032840E47495000D7D5AC /* WBComponent.m */; };
+		1B3033AA0E47495000D7D5AC /* WBMovieAudioInsert.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032850E47495000D7D5AC /* WBMovieAudioInsert.h */; };
+		1B3033AB0E47495000D7D5AC /* WBMovieAudioInsert.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032860E47495000D7D5AC /* WBMovieAudioInsert.m */; };
+		1B3033AC0E47495000D7D5AC /* WBMovieLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032870E47495000D7D5AC /* WBMovieLayer.h */; };
+		1B3033AD0E47495000D7D5AC /* WBMovieLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032880E47495000D7D5AC /* WBMovieLayer.m */; };
+		1B3033AE0E47495000D7D5AC /* WBMoviePlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032890E47495000D7D5AC /* WBMoviePlayer.h */; };
+		1B3033AF0E47495000D7D5AC /* WBMoviePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30328A0E47495000D7D5AC /* WBMoviePlayer.m */; };
+		1B3033B00E47495000D7D5AC /* WBMovieTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30328B0E47495000D7D5AC /* WBMovieTexture.h */; };
+		1B3033B10E47495000D7D5AC /* WBMovieTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30328C0E47495000D7D5AC /* WBMovieTexture.m */; };
+		1B3033B20E47495000D7D5AC /* WBMovieTextureInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30328D0E47495000D7D5AC /* WBMovieTextureInternal.h */; };
+		1B3033B30E47495000D7D5AC /* WBMovieTextureStreaming.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B30328E0E47495000D7D5AC /* WBMovieTextureStreaming.m */; };
+		1B3033B40E47495000D7D5AC /* WBMovieView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B30328F0E47495000D7D5AC /* WBMovieView.h */; };
+		1B3033B50E47495000D7D5AC /* WBMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032900E47495000D7D5AC /* WBMovieView.m */; };
+		1B3033B60E47495000D7D5AC /* WBQTMovieTimecode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032910E47495000D7D5AC /* WBQTMovieTimecode.h */; };
+		1B3033B70E47495000D7D5AC /* WBQTMovieTimecode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032920E47495000D7D5AC /* WBQTMovieTimecode.m */; };
+		1B3033B80E47495000D7D5AC /* WBQTVisualContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3032930E47495000D7D5AC /* WBQTVisualContext.h */; };
+		1B3033B90E47495000D7D5AC /* WBQTVisualContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3032940E47495000D7D5AC /* WBQTVisualContext.m */; };
+		1B36CA2C0D390B85002AB5FD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */; };
+		1B6342C30E0A9362002E195E /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342C20E0A9362002E195E /* QTKit.framework */; };
+		1B6342C50E0A9362002E195E /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342C40E0A9362002E195E /* QuickTime.framework */; };
+		1B6342CC0E0A9380002E195E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342CB0E0A9380002E195E /* OpenGL.framework */; };
+		1B6342CE0E0A9380002E195E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342CD0E0A9380002E195E /* QuartzCore.framework */; };
+		1B6342D50E0A9394002E195E /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342D40E0A9394002E195E /* CoreAudioKit.framework */; };
+		1B6342DA0E0A93A0002E195E /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342D90E0A93A0002E195E /* AudioUnit.framework */; };
+		1B877D160D37E4B5007A59B5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B877D150D37E4B5007A59B5 /* WebKit.framework */; };
+		1B967C510D38E09C000F481B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B967C500D38E09C000F481B /* Security.framework */; };
+		1BE35ADC0D36E1120007ED9A /* WBFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */; };
+		1BE35AE60D36E1450007ED9A /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE35AE50D36E1450007ED9A /* SenTestingKit.framework */; };
+		1BE35AFC0D36E1520007ED9A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		1BF23A8B0D376DF6007EF8EB /* DirectoryService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF23A8A0D376DF6007EF8EB /* DirectoryService.framework */; };
+		1BF23A8F0D376E01007EF8EB /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF23A8E0D376E01007EF8EB /* IOKit.framework */; };
+		1BF23A930D376E1E007EF8EB /* libffi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF23A920D376E1E007EF8EB /* libffi.dylib */; };
+		1BF23B5F0D377544007EF8EB /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF23B5E0D377544007EF8EB /* libxml2.dylib */; };
+		1BF76C900D367E0C00A8758E /* WonderBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* WonderBox.framework */; };
+		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		1B9CA7530DC8CA7400BAF149 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.ccc.1_0;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		1BF76C8C0D367E0900A8758E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = OmniTools;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1B1B3F2F0E0DC5F3002C3269 /* WBPointerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBPointerTest.h; sourceTree = "<group>"; };
+		1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBPointerTest.m; sourceTree = "<group>"; };
+		1B2D5BDF0D36790F00B28046 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		1B2D5BE00D36790F00B28046 /* Profile.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Profile.xcconfig; sourceTree = "<group>"; };
+		1B2D5BE10D36790F00B28046 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		1B3031470E47495000D7D5AC /* WBAppKitExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAppKitExtensions.h; sourceTree = "<group>"; };
+		1B3031480E47495000D7D5AC /* WBAppKitExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAppKitExtensions.m; sourceTree = "<group>"; };
+		1B3031490E47495000D7D5AC /* WBColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBColor.h; sourceTree = "<group>"; };
+		1B30314A0E47495000D7D5AC /* WBColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBColor.m; sourceTree = "<group>"; };
+		1B30314B0E47495000D7D5AC /* WBImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBImageView.h; sourceTree = "<group>"; };
+		1B30314C0E47495000D7D5AC /* WBImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBImageView.m; sourceTree = "<group>"; };
+		1B30314D0E47495000D7D5AC /* WBOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBOutlineView.h; sourceTree = "<group>"; };
+		1B30314E0E47495000D7D5AC /* WBOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBOutlineView.m; sourceTree = "<group>"; };
+		1B30314F0E47495000D7D5AC /* WBOutlineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBOutlineViewController.h; sourceTree = "<group>"; };
+		1B3031500E47495000D7D5AC /* WBOutlineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBOutlineViewController.m; sourceTree = "<group>"; };
+		1B3031510E47495000D7D5AC /* WBTableDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTableDataSource.h; sourceTree = "<group>"; };
+		1B3031520E47495000D7D5AC /* WBTableDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTableDataSource.m; sourceTree = "<group>"; };
+		1B3031530E47495000D7D5AC /* WBTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTableView.h; sourceTree = "<group>"; };
+		1B3031540E47495000D7D5AC /* WBTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTableView.m; sourceTree = "<group>"; };
+		1B3031550E47495000D7D5AC /* WBUITreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBUITreeNode.h; sourceTree = "<group>"; };
+		1B3031560E47495000D7D5AC /* WBUITreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBUITreeNode.m; sourceTree = "<group>"; };
+		1B3031570E47495000D7D5AC /* WBViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBViewController.h; sourceTree = "<group>"; };
+		1B3031580E47495000D7D5AC /* WBViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBViewController.m; sourceTree = "<group>"; };
+		1B3031590E47495000D7D5AC /* WBWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWindowController.h; sourceTree = "<group>"; };
+		1B30315A0E47495000D7D5AC /* WBWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWindowController.m; sourceTree = "<group>"; };
+		1B30315C0E47495000D7D5AC /* WBBezelItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBezelItem.h; sourceTree = "<group>"; };
+		1B30315D0E47495000D7D5AC /* WBBezelItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBBezelItem.m; sourceTree = "<group>"; };
+		1B30315E0E47495000D7D5AC /* WBBezelItemContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBezelItemContent.h; sourceTree = "<group>"; };
+		1B30315F0E47495000D7D5AC /* WBBezelItemContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBBezelItemContent.m; sourceTree = "<group>"; };
+		1B3031600E47495000D7D5AC /* WBNotificationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBNotificationWindow.h; sourceTree = "<group>"; };
+		1B3031610E47495000D7D5AC /* WBNotificationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBNotificationWindow.m; sourceTree = "<group>"; };
+		1B3031710E47495000D7D5AC /* WBCFContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCFContext.h; sourceTree = "<group>"; };
+		1B3031720E47495000D7D5AC /* WBCFContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBCFContext.m; sourceTree = "<group>"; };
+		1B3031730E47495000D7D5AC /* WBExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBExtensions.h; sourceTree = "<group>"; };
+		1B3031740E47495000D7D5AC /* WBExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBExtensions.m; sourceTree = "<group>"; };
+		1B3031750E47495000D7D5AC /* WBFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBFunctions.h; sourceTree = "<group>"; };
+		1B3031760E47495000D7D5AC /* WBFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctions.m; sourceTree = "<group>"; };
+		1B3031860E47495000D7D5AC /* WBAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAlias.h; sourceTree = "<group>"; };
+		1B3031870E47495000D7D5AC /* WBAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAlias.m; sourceTree = "<group>"; };
+		1B3031880E47495000D7D5AC /* WBAliasedApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAliasedApplication.h; sourceTree = "<group>"; };
+		1B3031890E47495000D7D5AC /* WBAliasedApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAliasedApplication.m; sourceTree = "<group>"; };
+		1B30318A0E47495000D7D5AC /* WBAppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAppleRemote.h; sourceTree = "<group>"; };
+		1B30318B0E47495000D7D5AC /* WBAppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAppleRemote.m; sourceTree = "<group>"; };
+		1B30318C0E47495000D7D5AC /* WBApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBApplication.h; sourceTree = "<group>"; };
+		1B30318D0E47495000D7D5AC /* WBApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBApplication.m; sourceTree = "<group>"; };
+		1B30318E0E47495000D7D5AC /* WBEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBEnumerator.h; sourceTree = "<group>"; };
+		1B30318F0E47495000D7D5AC /* WBEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBEnumerator.m; sourceTree = "<group>"; };
+		1B3031900E47495000D7D5AC /* WBExtendedTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBExtendedTreeNode.h; sourceTree = "<group>"; };
+		1B3031910E47495000D7D5AC /* WBExtendedTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBExtendedTreeNode.m; sourceTree = "<group>"; };
+		1B3031920E47495000D7D5AC /* WBMemoryObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMemoryObject.h; sourceTree = "<group>"; };
+		1B3031930E47495000D7D5AC /* WBMemoryObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMemoryObject.m; sourceTree = "<group>"; };
+		1B3031940E47495000D7D5AC /* WBPluginLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBPluginLoader.h; sourceTree = "<group>"; };
+		1B3031950E47495000D7D5AC /* WBPluginLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBPluginLoader.m; sourceTree = "<group>"; };
+		1B3031960E47495000D7D5AC /* WBSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSerialization.h; sourceTree = "<group>"; };
+		1B3031970E47495000D7D5AC /* WBSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSerialization.m; sourceTree = "<group>"; };
+		1B3031980E47495000D7D5AC /* WBThreadPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBThreadPort.h; sourceTree = "<group>"; };
+		1B3031990E47495000D7D5AC /* WBThreadPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBThreadPort.m; sourceTree = "<group>"; };
+		1B30319A0E47495000D7D5AC /* WBTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTreeNode.h; sourceTree = "<group>"; };
+		1B30319B0E47495000D7D5AC /* WBTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTreeNode.m; sourceTree = "<group>"; };
+		1B30319C0E47495000D7D5AC /* WBXMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBXMLWriter.h; sourceTree = "<group>"; };
+		1B30319D0E47495000D7D5AC /* WBXMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBXMLWriter.m; sourceTree = "<group>"; };
+		1B30319F0E47495000D7D5AC /* AESendThreadSafe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = AESendThreadSafe.c; sourceTree = "<group>"; };
+		1B3031A00E47495000D7D5AC /* AESendThreadSafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESendThreadSafe.h; sourceTree = "<group>"; };
+		1B3031A10E47495000D7D5AC /* WBAEFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBAEFunctions.c; sourceTree = "<group>"; };
+		1B3031A20E47495000D7D5AC /* WBAEFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAEFunctions.h; sourceTree = "<group>"; };
+		1B3031A30E47495000D7D5AC /* WBCFFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBCFFunctions.c; sourceTree = "<group>"; };
+		1B3031A40E47495000D7D5AC /* WBCFFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCFFunctions.h; sourceTree = "<group>"; };
+		1B3031A50E47495000D7D5AC /* WBCGFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCGFunctions.h; sourceTree = "<group>"; };
+		1B3031A60E47495000D7D5AC /* WBCGFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBCGFunctions.m; sourceTree = "<group>"; };
+		1B3031A70E47495000D7D5AC /* WBDSFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBDSFunctions.c; sourceTree = "<group>"; };
+		1B3031A80E47495000D7D5AC /* WBDSFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDSFunctions.h; sourceTree = "<group>"; };
+		1B3031A90E47495000D7D5AC /* WBDynamicFunction.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBDynamicFunction.c; sourceTree = "<group>"; };
+		1B3031AA0E47495000D7D5AC /* WBDynamicFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDynamicFunction.h; sourceTree = "<group>"; };
+		1B3031AB0E47495000D7D5AC /* WBFSFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBFSFunctions.h; sourceTree = "<group>"; };
+		1B3031AC0E47495000D7D5AC /* WBFSFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFSFunctions.m; sourceTree = "<group>"; };
+		1B3031AD0E47495000D7D5AC /* WBIOFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBIOFunctions.c; sourceTree = "<group>"; };
+		1B3031AE0E47495000D7D5AC /* WBIOFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIOFunctions.h; sourceTree = "<group>"; };
+		1B3031AF0E47495000D7D5AC /* WBIOKitFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBIOKitFunctions.c; sourceTree = "<group>"; };
+		1B3031B00E47495000D7D5AC /* WBIOKitFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIOKitFunctions.h; sourceTree = "<group>"; };
+		1B3031B10E47495000D7D5AC /* WBLoginItems.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBLoginItems.c; sourceTree = "<group>"; };
+		1B3031B20E47495000D7D5AC /* WBLoginItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLoginItems.h; sourceTree = "<group>"; };
+		1B3031B30E47495000D7D5AC /* WBLSFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLSFunctions.h; sourceTree = "<group>"; };
+		1B3031B40E47495000D7D5AC /* WBLSFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctions.m; sourceTree = "<group>"; };
+		1B3031B50E47495000D7D5AC /* WBProcessFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBProcessFunctions.c; sourceTree = "<group>"; };
+		1B3031B60E47495000D7D5AC /* WBProcessFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBProcessFunctions.h; sourceTree = "<group>"; };
+		1B3031B70E47495000D7D5AC /* WBTextFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBTextFunctions.c; sourceTree = "<group>"; };
+		1B3031B80E47495000D7D5AC /* WBTextFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTextFunctions.h; sourceTree = "<group>"; };
+		1B3031BA0E47495000D7D5AC /* WBIcnsCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIcnsCodec.h; sourceTree = "<group>"; };
+		1B3031BB0E47495000D7D5AC /* WBIcnsCodec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIcnsCodec.m; sourceTree = "<group>"; };
+		1B3031BC0E47495000D7D5AC /* WBIconFamily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIconFamily.h; sourceTree = "<group>"; };
+		1B3031BD0E47495000D7D5AC /* WBIconFamily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIconFamily.m; sourceTree = "<group>"; };
+		1B3031BE0E47495000D7D5AC /* WBIconFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBIconFunctions.c; sourceTree = "<group>"; };
+		1B3031BF0E47495000D7D5AC /* WBIconFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIconFunctions.h; sourceTree = "<group>"; };
+		1B3031C00E47495000D7D5AC /* WBIconView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIconView.h; sourceTree = "<group>"; };
+		1B3031C10E47495000D7D5AC /* WBIconView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIconView.m; sourceTree = "<group>"; };
+		1B3031C30E47495000D7D5AC /* WBImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBImageUtils.h; sourceTree = "<group>"; };
+		1B3031C40E47495000D7D5AC /* WBImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBImageUtils.m; sourceTree = "<group>"; };
+		1B3031DA0E47495000D7D5AC /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/WBProgress.strings; sourceTree = "<group>"; };
+		1B3031DB0E47495000D7D5AC /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/WBProgress.strings; sourceTree = "<group>"; };
+		1B3031DC0E47495000D7D5AC /* WBAboutDialog.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WBAboutDialog.xib; sourceTree = "<group>"; };
+		1B3031DD0E47495000D7D5AC /* WBHeader-down.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "WBHeader-down.tiff"; sourceTree = "<group>"; };
+		1B3031DE0E47495000D7D5AC /* WBHeader.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBHeader.tiff; sourceTree = "<group>"; };
+		1B3031DF0E47495000D7D5AC /* WBHeaderMenu.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBHeaderMenu.tiff; sourceTree = "<group>"; };
+		1B3031E00E47495000D7D5AC /* WBHSplitBar.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBHSplitBar.tiff; sourceTree = "<group>"; };
+		1B3031E10E47495000D7D5AC /* WBProgressPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WBProgressPanel.xib; sourceTree = "<group>"; };
+		1B3031E20E47495000D7D5AC /* WBSplitDot.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBSplitDot.tiff; sourceTree = "<group>"; };
+		1B3031E30E47495000D7D5AC /* WBVSplitBar.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBVSplitBar.tiff; sourceTree = "<group>"; };
+		1B3031E40E47495000D7D5AC /* WBAboutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAboutController.h; sourceTree = "<group>"; };
+		1B3031E50E47495000D7D5AC /* WBAboutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAboutController.m; sourceTree = "<group>"; };
+		1B3031E60E47495000D7D5AC /* WBApplicationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBApplicationView.h; sourceTree = "<group>"; };
+		1B3031E70E47495000D7D5AC /* WBApplicationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBApplicationView.m; sourceTree = "<group>"; };
+		1B3031E80E47495000D7D5AC /* WBBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBackgroundView.h; sourceTree = "<group>"; };
+		1B3031E90E47495000D7D5AC /* WBBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBBackgroundView.m; sourceTree = "<group>"; };
+		1B3031EA0E47495000D7D5AC /* WBBoxLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBoxLayer.h; sourceTree = "<group>"; };
+		1B3031EB0E47495000D7D5AC /* WBBoxLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBBoxLayer.m; sourceTree = "<group>"; };
+		1B3031EC0E47495000D7D5AC /* WBConsoleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBConsoleManager.h; sourceTree = "<group>"; };
+		1B3031ED0E47495000D7D5AC /* WBConsoleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBConsoleManager.m; sourceTree = "<group>"; };
+		1B3031EE0E47495000D7D5AC /* WBCustomViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCustomViewCell.h; sourceTree = "<group>"; };
+		1B3031EF0E47495000D7D5AC /* WBCustomViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBCustomViewCell.m; sourceTree = "<group>"; };
+		1B3031F00E47495000D7D5AC /* WBDisclosurePanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDisclosurePanel.h; sourceTree = "<group>"; };
+		1B3031F10E47495000D7D5AC /* WBDisclosurePanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBDisclosurePanel.m; sourceTree = "<group>"; };
+		1B3031F20E47495000D7D5AC /* WBDisclosureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBDisclosureView.m; sourceTree = "<group>"; };
+		1B3031F30E47495000D7D5AC /* WBHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBHeaderView.h; sourceTree = "<group>"; };
+		1B3031F40E47495000D7D5AC /* WBHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBHeaderView.m; sourceTree = "<group>"; };
+		1B3031F50E47495000D7D5AC /* WBImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBImageAndTextCell.h; sourceTree = "<group>"; };
+		1B3031F60E47495000D7D5AC /* WBImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBImageAndTextCell.m; sourceTree = "<group>"; };
+		1B3031F70E47495000D7D5AC /* WBImageAndTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBImageAndTextView.h; sourceTree = "<group>"; };
+		1B3031F80E47495000D7D5AC /* WBImageAndTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBImageAndTextView.m; sourceTree = "<group>"; };
+		1B3031F90E47495000D7D5AC /* WBProgressPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBProgressPanel.h; sourceTree = "<group>"; };
+		1B3031FA0E47495000D7D5AC /* WBProgressPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBProgressPanel.m; sourceTree = "<group>"; };
+		1B3031FB0E47495000D7D5AC /* WBShadowLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBShadowLabel.h; sourceTree = "<group>"; };
+		1B3031FC0E47495000D7D5AC /* WBShadowLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBShadowLabel.m; sourceTree = "<group>"; };
+		1B3031FD0E47495000D7D5AC /* WBSplitview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSplitview.h; sourceTree = "<group>"; };
+		1B3031FE0E47495000D7D5AC /* WBSplitview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSplitview.m; sourceTree = "<group>"; };
+		1B3031FF0E47495000D7D5AC /* WBStringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBStringLayer.h; sourceTree = "<group>"; };
+		1B3032000E47495000D7D5AC /* WBStringLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBStringLayer.m; sourceTree = "<group>"; };
+		1B3032010E47495000D7D5AC /* WBViewProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBViewProxy.h; sourceTree = "<group>"; };
+		1B3032020E47495000D7D5AC /* WBViewProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBViewProxy.m; sourceTree = "<group>"; };
+		1B3032040E47495000D7D5AC /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+		1B3032050E47495000D7D5AC /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
+		1B3032060E47495000D7D5AC /* WBLicenseCrypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBLicenseCrypto.c; sourceTree = "<group>"; };
+		1B3032070E47495000D7D5AC /* WBLicenseCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLicenseCrypto.h; sourceTree = "<group>"; };
+		1B3032080E47495000D7D5AC /* WBLicenseFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBLicenseFunctions.c; sourceTree = "<group>"; };
+		1B3032090E47495000D7D5AC /* WBLicenseFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLicenseFunctions.h; sourceTree = "<group>"; };
+		1B30320B0E47495000D7D5AC /* exc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = exc.h; sourceTree = "<group>"; };
+		1B30320C0E47495000D7D5AC /* WBMachExceptions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBMachExceptions.c; sourceTree = "<group>"; };
+		1B30320D0E47495000D7D5AC /* WBMachExceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachExceptions.h; sourceTree = "<group>"; };
+		1B30320E0E47495000D7D5AC /* WBMachFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBMachFunctions.c; sourceTree = "<group>"; };
+		1B30320F0E47495000D7D5AC /* WBMachFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachFunctions.h; sourceTree = "<group>"; };
+		1B3032100E47495000D7D5AC /* WBMachPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachPort.h; sourceTree = "<group>"; };
+		1B3032110E47495000D7D5AC /* WBMachPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMachPort.m; sourceTree = "<group>"; };
+		1B3032120E47495000D7D5AC /* WBMachServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachServer.h; sourceTree = "<group>"; };
+		1B3032130E47495000D7D5AC /* WBMachServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMachServer.m; sourceTree = "<group>"; };
+		1B3032140E47495000D7D5AC /* WBMachSpawn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachSpawn.h; sourceTree = "<group>"; };
+		1B3032150E47495000D7D5AC /* WBMachSpawn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMachSpawn.m; sourceTree = "<group>"; };
+		1B3032160E47495000D7D5AC /* WBMachSpawnChild.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBMachSpawnChild.c; sourceTree = "<group>"; };
+		1B3032170E47495000D7D5AC /* WBMachSpawnChild.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMachSpawnChild.h; sourceTree = "<group>"; };
+		1B3032180E47495000D7D5AC /* wbnotify.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; path = wbnotify.defs; sourceTree = "<group>"; };
+		1B3032190E47495000D7D5AC /* wbspawn.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; path = wbspawn.defs; sourceTree = "<group>"; };
+		1B30321B0E47495000D7D5AC /* WBClassCluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBClassCluster.h; sourceTree = "<group>"; };
+		1B30321C0E47495000D7D5AC /* WBForwarding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBForwarding.h; sourceTree = "<group>"; };
+		1B30321D0E47495000D7D5AC /* WBKeyValueCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBKeyValueCoding.h; sourceTree = "<group>"; };
+		1B30321E0E47495000D7D5AC /* WBSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSingleton.h; sourceTree = "<group>"; };
+		1B30321F0E47495000D7D5AC /* WBTaggedPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTaggedPointer.h; sourceTree = "<group>"; };
+		1B3032210E47495000D7D5AC /* WBConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBConnection.h; sourceTree = "<group>"; };
+		1B3032220E47495000D7D5AC /* WBConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBConnection.m; sourceTree = "<group>"; };
+		1B3032230E47495000D7D5AC /* WBHTTPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBHTTPMessage.h; sourceTree = "<group>"; };
+		1B3032240E47495000D7D5AC /* WBHTTPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBHTTPMessage.m; sourceTree = "<group>"; };
+		1B3032250E47495000D7D5AC /* WBReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBReachability.h; sourceTree = "<group>"; };
+		1B3032260E47495000D7D5AC /* WBReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBReachability.m; sourceTree = "<group>"; };
+		1B3032270E47495000D7D5AC /* WBServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBServer.h; sourceTree = "<group>"; };
+		1B3032280E47495000D7D5AC /* WBServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBServer.m; sourceTree = "<group>"; };
+		1B3032290E47495000D7D5AC /* WBSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSocket.h; sourceTree = "<group>"; };
+		1B30322A0E47495000D7D5AC /* WBSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSocket.m; sourceTree = "<group>"; };
+		1B30322F0E47495000D7D5AC /* GLSLBuiltIn-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GLSLBuiltIn-Info.plist"; sourceTree = "<group>"; };
+		1B3032330E47495000D7D5AC /* GLSLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLShader.h; sourceTree = "<group>"; };
+		1B3032340E47495000D7D5AC /* GLSLShader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLSLShader.m; sourceTree = "<group>"; };
+		1B3032350E47495000D7D5AC /* GLSLUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLUnit.h; sourceTree = "<group>"; };
+		1B3032360E47495000D7D5AC /* GLSLUnit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLSLUnit.m; sourceTree = "<group>"; };
+		1B3032370E47495000D7D5AC /* GLSLUnitRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLUnitRegistry.h; sourceTree = "<group>"; };
+		1B3032380E47495000D7D5AC /* GLSLUnitRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLSLUnitRegistry.m; sourceTree = "<group>"; };
+		1B30323B0E47495000D7D5AC /* blur.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blur.fs; sourceTree = "<group>"; };
+		1B30323C0E47495000D7D5AC /* brighten.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = brighten.fs; sourceTree = "<group>"; };
+		1B30323D0E47495000D7D5AC /* colorinvert.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = colorinvert.fs; sourceTree = "<group>"; };
+		1B30323E0E47495000D7D5AC /* dilation.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dilation.fs; sourceTree = "<group>"; };
+		1B30323F0E47495000D7D5AC /* edgedetection.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = edgedetection.fs; sourceTree = "<group>"; };
+		1B3032410E47495000D7D5AC /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/GLSLPlugIn.strings; sourceTree = "<group>"; };
+		1B3032420E47495000D7D5AC /* erosion.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = erosion.fs; sourceTree = "<group>"; };
+		1B3032430E47495000D7D5AC /* extractcolor.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = extractcolor.fs; sourceTree = "<group>"; };
+		1B3032440E47495000D7D5AC /* fog.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog.fs; sourceTree = "<group>"; };
+		1B3032450E47495000D7D5AC /* GLSLPlugIn.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = GLSLPlugIn.plist; sourceTree = "<group>"; };
+		1B3032460E47495000D7D5AC /* grayinvert.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = grayinvert.fs; sourceTree = "<group>"; };
+		1B3032470E47495000D7D5AC /* grayscale.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = grayscale.fs; sourceTree = "<group>"; };
+		1B3032480E47495000D7D5AC /* heatsig.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = heatsig.fs; sourceTree = "<group>"; };
+		1B3032490E47495000D7D5AC /* null.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = null.vs; sourceTree = "<group>"; };
+		1B30324A0E47495000D7D5AC /* saturation.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = saturation.fs; sourceTree = "<group>"; };
+		1B30324B0E47495000D7D5AC /* sepia.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sepia.fs; sourceTree = "<group>"; };
+		1B30324C0E47495000D7D5AC /* sharpen.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sharpen.fs; sourceTree = "<group>"; };
+		1B30324D0E47495000D7D5AC /* sky.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sky.fs; sourceTree = "<group>"; };
+		1B30324E0E47495000D7D5AC /* toon.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = toon.fs; sourceTree = "<group>"; };
+		1B30324F0E47495000D7D5AC /* twirl.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twirl.fs; sourceTree = "<group>"; };
+		1B3032500E47495000D7D5AC /* WBGLFrameBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBGLFrameBuffer.h; sourceTree = "<group>"; };
+		1B3032510E47495000D7D5AC /* WBGLFrameBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBGLFrameBuffer.m; sourceTree = "<group>"; };
+		1B3032520E47495000D7D5AC /* WBGLStringBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBGLStringBox.h; sourceTree = "<group>"; };
+		1B3032530E47495000D7D5AC /* WBGLStringBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBGLStringBox.m; sourceTree = "<group>"; };
+		1B3032540E47495000D7D5AC /* WBOpenGLQuad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBOpenGLQuad.h; sourceTree = "<group>"; };
+		1B3032550E47495000D7D5AC /* WBOpenGLQuad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBOpenGLQuad.m; sourceTree = "<group>"; };
+		1B3032560E47495000D7D5AC /* WBOpenGLTeapot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBOpenGLTeapot.h; sourceTree = "<group>"; };
+		1B3032570E47495000D7D5AC /* WBOpenGLTeapot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBOpenGLTeapot.m; sourceTree = "<group>"; };
+		1B3032580E47495000D7D5AC /* WBOpenGLTeapotList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBOpenGLTeapotList.c; sourceTree = "<group>"; };
+		1B3032590E47495000D7D5AC /* WBOpenGLTeapotList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBOpenGLTeapotList.h; sourceTree = "<group>"; };
+		1B30325B0E47495000D7D5AC /* WBCDSAFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBCDSAFunctions.c; sourceTree = "<group>"; };
+		1B30325C0E47495000D7D5AC /* WBCDSAFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCDSAFunctions.h; sourceTree = "<group>"; };
+		1B30325D0E47495000D7D5AC /* WBCryptoFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBCryptoFunctions.c; sourceTree = "<group>"; };
+		1B30325E0E47495000D7D5AC /* WBCryptoFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCryptoFunctions.h; sourceTree = "<group>"; };
+		1B30325F0E47495000D7D5AC /* WBDigestFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBDigestFunctions.c; sourceTree = "<group>"; };
+		1B3032600E47495000D7D5AC /* WBDigestFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDigestFunctions.h; sourceTree = "<group>"; };
+		1B3032610E47495000D7D5AC /* WBKeychainFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBKeychainFunctions.c; sourceTree = "<group>"; };
+		1B3032620E47495000D7D5AC /* WBKeychainFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBKeychainFunctions.h; sourceTree = "<group>"; };
+		1B3032630E47495000D7D5AC /* WBSecurityFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBSecurityFunctions.c; sourceTree = "<group>"; };
+		1B3032640E47495000D7D5AC /* WBSecurityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSecurityFunctions.h; sourceTree = "<group>"; };
+		1B3032660E47495000D7D5AC /* WBTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTemplate.h; sourceTree = "<group>"; };
+		1B3032670E47495000D7D5AC /* WBTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTemplate.m; sourceTree = "<group>"; };
+		1B3032680E47495000D7D5AC /* WBTemplateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTemplateParser.h; sourceTree = "<group>"; };
+		1B3032690E47495000D7D5AC /* WBTemplateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTemplateParser.m; sourceTree = "<group>"; };
+		1B30326A0E47495000D7D5AC /* WBXMLTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBXMLTemplate.h; sourceTree = "<group>"; };
+		1B30326B0E47495000D7D5AC /* WBXMLTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBXMLTemplate.m; sourceTree = "<group>"; };
+		1B30326E0E47495000D7D5AC /* Assistant.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Assistant.icns; sourceTree = "<group>"; };
+		1B3032700E47495000D7D5AC /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/WBWizard.strings; sourceTree = "<group>"; };
+		1B3032720E47495000D7D5AC /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/WBWizard.xib; sourceTree = "<group>"; };
+		1B3032730E47495000D7D5AC /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/WBWizard.strings; sourceTree = "<group>"; };
+		1B3032740E47495000D7D5AC /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/WBWizard.xib; sourceTree = "<group>"; };
+		1B3032750E47495000D7D5AC /* WBWizard.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBWizard.tiff; sourceTree = "<group>"; };
+		1B3032760E47495000D7D5AC /* WBWizard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWizard.h; sourceTree = "<group>"; };
+		1B3032770E47495000D7D5AC /* WBWizard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWizard.m; sourceTree = "<group>"; };
+		1B3032780E47495000D7D5AC /* WBWizardPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWizardPage.h; sourceTree = "<group>"; };
+		1B3032790E47495000D7D5AC /* WBWizardPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWizardPage.m; sourceTree = "<group>"; };
+		1B30327B0E47495000D7D5AC /* WBAUFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAUFunctions.h; sourceTree = "<group>"; };
+		1B30327C0E47495000D7D5AC /* WBAUFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAUFunctions.m; sourceTree = "<group>"; };
+		1B30327D0E47495000D7D5AC /* WBAUGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAUGraph.h; sourceTree = "<group>"; };
+		1B30327E0E47495000D7D5AC /* WBAUGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBAUGraph.m; sourceTree = "<group>"; };
+		1B30327F0E47495000D7D5AC /* WBCAMovieLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCAMovieLayer.h; sourceTree = "<group>"; };
+		1B3032800E47495000D7D5AC /* WBCAMovieLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBCAMovieLayer.m; sourceTree = "<group>"; };
+		1B3032810E47495000D7D5AC /* WBCIMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCIMovieView.h; sourceTree = "<group>"; };
+		1B3032820E47495000D7D5AC /* WBCIMovieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBCIMovieView.m; sourceTree = "<group>"; };
+		1B3032830E47495000D7D5AC /* WBComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBComponent.h; sourceTree = "<group>"; };
+		1B3032840E47495000D7D5AC /* WBComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBComponent.m; sourceTree = "<group>"; };
+		1B3032850E47495000D7D5AC /* WBMovieAudioInsert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMovieAudioInsert.h; sourceTree = "<group>"; };
+		1B3032860E47495000D7D5AC /* WBMovieAudioInsert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMovieAudioInsert.m; sourceTree = "<group>"; };
+		1B3032870E47495000D7D5AC /* WBMovieLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMovieLayer.h; sourceTree = "<group>"; };
+		1B3032880E47495000D7D5AC /* WBMovieLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMovieLayer.m; sourceTree = "<group>"; };
+		1B3032890E47495000D7D5AC /* WBMoviePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMoviePlayer.h; sourceTree = "<group>"; };
+		1B30328A0E47495000D7D5AC /* WBMoviePlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMoviePlayer.m; sourceTree = "<group>"; };
+		1B30328B0E47495000D7D5AC /* WBMovieTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMovieTexture.h; sourceTree = "<group>"; };
+		1B30328C0E47495000D7D5AC /* WBMovieTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMovieTexture.m; sourceTree = "<group>"; };
+		1B30328D0E47495000D7D5AC /* WBMovieTextureInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMovieTextureInternal.h; sourceTree = "<group>"; };
+		1B30328E0E47495000D7D5AC /* WBMovieTextureStreaming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMovieTextureStreaming.m; sourceTree = "<group>"; };
+		1B30328F0E47495000D7D5AC /* WBMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBMovieView.h; sourceTree = "<group>"; };
+		1B3032900E47495000D7D5AC /* WBMovieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMovieView.m; sourceTree = "<group>"; };
+		1B3032910E47495000D7D5AC /* WBQTMovieTimecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBQTMovieTimecode.h; sourceTree = "<group>"; };
+		1B3032920E47495000D7D5AC /* WBQTMovieTimecode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBQTMovieTimecode.m; sourceTree = "<group>"; };
+		1B3032930E47495000D7D5AC /* WBQTVisualContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBQTVisualContext.h; sourceTree = "<group>"; };
+		1B3032940E47495000D7D5AC /* WBQTVisualContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBQTVisualContext.m; sourceTree = "<group>"; };
+		1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
+		1B6342C20E0A9362002E195E /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
+		1B6342C40E0A9362002E195E /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
+		1B6342CB0E0A9380002E195E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		1B6342CD0E0A9380002E195E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		1B6342D40E0A9394002E195E /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		1B6342D90E0A93A0002E195E /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		1B6FB1670D36D01000D5124C /* 64Bits.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = 64Bits.xcconfig; sourceTree = "<group>"; };
+		1B877D150D37E4B5007A59B5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
+		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		1BB0E2610D62F7580041C166 /* WBLicenseTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLicenseTest.h; sourceTree = "<group>"; };
+		1BB0E2620D62F7580041C166 /* WBLicenseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLicenseTest.m; sourceTree = "<group>"; };
+		1BE35AD50D36E1120007ED9A /* WBEnumeratorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBEnumeratorTest.h; sourceTree = "<group>"; };
+		1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBEnumeratorTest.m; sourceTree = "<group>"; };
+		1BE35AD70D36E1120007ED9A /* WBFunctionsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBFunctionsTest.h; sourceTree = "<group>"; };
+		1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctionsTest.m; sourceTree = "<group>"; };
+		1BE35AD90D36E1120007ED9A /* WBLSFunctionsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLSFunctionsTest.h; sourceTree = "<group>"; };
+		1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctionsTest.m; sourceTree = "<group>"; };
+		1BE35AE50D36E1450007ED9A /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		1BF23A8A0D376DF6007EF8EB /* DirectoryService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DirectoryService.framework; path = /System/Library/Frameworks/DirectoryService.framework; sourceTree = "<absolute>"; };
+		1BF23A8E0D376E01007EF8EB /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		1BF23A920D376E1E007EF8EB /* libffi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libffi.dylib; path = /usr/lib/libffi.dylib; sourceTree = "<absolute>"; };
+		1BF23B5E0D377544007EF8EB /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
+		1BF76C860D367E0000A8758E /* WonderTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WonderTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BF76C870D367E0000A8758E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8DC2EF5B0486A6940098B216 /* WonderBox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WonderBox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1BF76C830D367E0000A8758E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1BE35AFC0D36E1520007ED9A /* Cocoa.framework in Frameworks */,
+				1BF76C900D367E0C00A8758E /* WonderBox.framework in Frameworks */,
+				1BE35AE60D36E1450007ED9A /* SenTestingKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF560486A6940098B216 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
+				1BF23A8B0D376DF6007EF8EB /* DirectoryService.framework in Frameworks */,
+				1BF23A8F0D376E01007EF8EB /* IOKit.framework in Frameworks */,
+				1BF23A930D376E1E007EF8EB /* libffi.dylib in Frameworks */,
+				1BF23B5F0D377544007EF8EB /* libxml2.dylib in Frameworks */,
+				1B877D160D37E4B5007A59B5 /* WebKit.framework in Frameworks */,
+				1B967C510D38E09C000F481B /* Security.framework in Frameworks */,
+				1B36CA2C0D390B85002AB5FD /* SystemConfiguration.framework in Frameworks */,
+				1B6342C30E0A9362002E195E /* QTKit.framework in Frameworks */,
+				1B6342C50E0A9362002E195E /* QuickTime.framework in Frameworks */,
+				1B6342CC0E0A9380002E195E /* OpenGL.framework in Frameworks */,
+				1B6342CE0E0A9380002E195E /* QuartzCore.framework in Frameworks */,
+				1B6342D50E0A9394002E195E /* CoreAudioKit.framework in Frameworks */,
+				1B6342DA0E0A93A0002E195E /* AudioUnit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5B0486A6940098B216 /* WonderBox.framework */,
+				1BF76C860D367E0000A8758E /* WonderTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* OmniTools */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AEFE84172EC02AAC07 /* Sources */,
+				1BF76C800D367DF100A8758E /* Tests */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DFFF38A50411DB9C8B /* Products */,
+				1B2D5BDD0D36790F00B28046 /* xcconfigs */,
+			);
+			name = OmniTools;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				1BF23A920D376E1E007EF8EB /* libffi.dylib */,
+				1BF23B5E0D377544007EF8EB /* libxml2.dylib */,
+				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
+				1058C7B2FEA5585E11CA2CBB /* Other Frameworks */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8DC2EF5A0486A6940098B216 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AEFE84172EC02AAC07 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031460E47495000D7D5AC /* AppKit */,
+				1B30315B0E47495000D7D5AC /* BezelItem */,
+				1B3031700E47495000D7D5AC /* Core */,
+				1B3031850E47495000D7D5AC /* Foundation */,
+				1B30319E0E47495000D7D5AC /* Functions */,
+				1B3031B90E47495000D7D5AC /* Icons */,
+				1B3031C20E47495000D7D5AC /* Images */,
+				1B3031D70E47495000D7D5AC /* Interface */,
+				1B3032030E47495000D7D5AC /* License */,
+				1B30320A0E47495000D7D5AC /* Mach */,
+				1B30321A0E47495000D7D5AC /* Macros */,
+				1B3032200E47495000D7D5AC /* Network */,
+				1B30322B0E47495000D7D5AC /* OpenGL */,
+				1B30325A0E47495000D7D5AC /* Security */,
+				1B3032650E47495000D7D5AC /* Templates */,
+				1B30326C0E47495000D7D5AC /* Wizard */,
+				1B30327A0E47495000D7D5AC /* Multimedia */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1BF23A8E0D376E01007EF8EB /* IOKit.framework */,
+				1B6342C20E0A9362002E195E /* QTKit.framework */,
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+				1B877D150D37E4B5007A59B5 /* WebKit.framework */,
+				1B6342CB0E0A9380002E195E /* OpenGL.framework */,
+				1B967C500D38E09C000F481B /* Security.framework */,
+				1B6342D90E0A93A0002E195E /* AudioUnit.framework */,
+				1B6342C40E0A9362002E195E /* QuickTime.framework */,
+				1B6342CD0E0A9380002E195E /* QuartzCore.framework */,
+				1B6342D40E0A9394002E195E /* CoreAudioKit.framework */,
+				1BF23A8A0D376DF6007EF8EB /* DirectoryService.framework */,
+				1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */,
+				1BE35AE50D36E1450007ED9A /* SenTestingKit.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7B2FEA5585E11CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+				D2F7E79907B2D74100F64583 /* CoreData.framework */,
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		1B2D5BDD0D36790F00B28046 /* xcconfigs */ = {
+			isa = PBXGroup;
+			children = (
+				1B6FB1670D36D01000D5124C /* 64Bits.xcconfig */,
+				1B2D5BDF0D36790F00B28046 /* Debug.xcconfig */,
+				1B2D5BE00D36790F00B28046 /* Profile.xcconfig */,
+				1B2D5BE10D36790F00B28046 /* Release.xcconfig */,
+			);
+			path = xcconfigs;
+			sourceTree = SHARED_SOURCES_DIR;
+		};
+		1B3031460E47495000D7D5AC /* AppKit */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031470E47495000D7D5AC /* WBAppKitExtensions.h */,
+				1B3031480E47495000D7D5AC /* WBAppKitExtensions.m */,
+				1B3031490E47495000D7D5AC /* WBColor.h */,
+				1B30314A0E47495000D7D5AC /* WBColor.m */,
+				1B30314B0E47495000D7D5AC /* WBImageView.h */,
+				1B30314C0E47495000D7D5AC /* WBImageView.m */,
+				1B30314D0E47495000D7D5AC /* WBOutlineView.h */,
+				1B30314E0E47495000D7D5AC /* WBOutlineView.m */,
+				1B30314F0E47495000D7D5AC /* WBOutlineViewController.h */,
+				1B3031500E47495000D7D5AC /* WBOutlineViewController.m */,
+				1B3031510E47495000D7D5AC /* WBTableDataSource.h */,
+				1B3031520E47495000D7D5AC /* WBTableDataSource.m */,
+				1B3031530E47495000D7D5AC /* WBTableView.h */,
+				1B3031540E47495000D7D5AC /* WBTableView.m */,
+				1B3031550E47495000D7D5AC /* WBUITreeNode.h */,
+				1B3031560E47495000D7D5AC /* WBUITreeNode.m */,
+				1B3031570E47495000D7D5AC /* WBViewController.h */,
+				1B3031580E47495000D7D5AC /* WBViewController.m */,
+				1B3031590E47495000D7D5AC /* WBWindowController.h */,
+				1B30315A0E47495000D7D5AC /* WBWindowController.m */,
+			);
+			path = AppKit;
+			sourceTree = "<group>";
+		};
+		1B30315B0E47495000D7D5AC /* BezelItem */ = {
+			isa = PBXGroup;
+			children = (
+				1B30315C0E47495000D7D5AC /* WBBezelItem.h */,
+				1B30315D0E47495000D7D5AC /* WBBezelItem.m */,
+				1B30315E0E47495000D7D5AC /* WBBezelItemContent.h */,
+				1B30315F0E47495000D7D5AC /* WBBezelItemContent.m */,
+				1B3031600E47495000D7D5AC /* WBNotificationWindow.h */,
+				1B3031610E47495000D7D5AC /* WBNotificationWindow.m */,
+			);
+			path = BezelItem;
+			sourceTree = "<group>";
+		};
+		1B3031700E47495000D7D5AC /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031710E47495000D7D5AC /* WBCFContext.h */,
+				1B3031720E47495000D7D5AC /* WBCFContext.m */,
+				1B3031730E47495000D7D5AC /* WBExtensions.h */,
+				1B3031740E47495000D7D5AC /* WBExtensions.m */,
+				1B3031750E47495000D7D5AC /* WBFunctions.h */,
+				1B3031760E47495000D7D5AC /* WBFunctions.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		1B3031850E47495000D7D5AC /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031860E47495000D7D5AC /* WBAlias.h */,
+				1B3031870E47495000D7D5AC /* WBAlias.m */,
+				1B3031880E47495000D7D5AC /* WBAliasedApplication.h */,
+				1B3031890E47495000D7D5AC /* WBAliasedApplication.m */,
+				1B30318A0E47495000D7D5AC /* WBAppleRemote.h */,
+				1B30318B0E47495000D7D5AC /* WBAppleRemote.m */,
+				1B30318C0E47495000D7D5AC /* WBApplication.h */,
+				1B30318D0E47495000D7D5AC /* WBApplication.m */,
+				1B30318E0E47495000D7D5AC /* WBEnumerator.h */,
+				1B30318F0E47495000D7D5AC /* WBEnumerator.m */,
+				1B3031900E47495000D7D5AC /* WBExtendedTreeNode.h */,
+				1B3031910E47495000D7D5AC /* WBExtendedTreeNode.m */,
+				1B3031920E47495000D7D5AC /* WBMemoryObject.h */,
+				1B3031930E47495000D7D5AC /* WBMemoryObject.m */,
+				1B3031940E47495000D7D5AC /* WBPluginLoader.h */,
+				1B3031950E47495000D7D5AC /* WBPluginLoader.m */,
+				1B3031960E47495000D7D5AC /* WBSerialization.h */,
+				1B3031970E47495000D7D5AC /* WBSerialization.m */,
+				1B3031980E47495000D7D5AC /* WBThreadPort.h */,
+				1B3031990E47495000D7D5AC /* WBThreadPort.m */,
+				1B30319A0E47495000D7D5AC /* WBTreeNode.h */,
+				1B30319B0E47495000D7D5AC /* WBTreeNode.m */,
+				1B30319C0E47495000D7D5AC /* WBXMLWriter.h */,
+				1B30319D0E47495000D7D5AC /* WBXMLWriter.m */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		1B30319E0E47495000D7D5AC /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				1B30319F0E47495000D7D5AC /* AESendThreadSafe.c */,
+				1B3031A00E47495000D7D5AC /* AESendThreadSafe.h */,
+				1B3031A10E47495000D7D5AC /* WBAEFunctions.c */,
+				1B3031A20E47495000D7D5AC /* WBAEFunctions.h */,
+				1B3031A30E47495000D7D5AC /* WBCFFunctions.c */,
+				1B3031A40E47495000D7D5AC /* WBCFFunctions.h */,
+				1B3031A50E47495000D7D5AC /* WBCGFunctions.h */,
+				1B3031A60E47495000D7D5AC /* WBCGFunctions.m */,
+				1B3031A70E47495000D7D5AC /* WBDSFunctions.c */,
+				1B3031A80E47495000D7D5AC /* WBDSFunctions.h */,
+				1B3031A90E47495000D7D5AC /* WBDynamicFunction.c */,
+				1B3031AA0E47495000D7D5AC /* WBDynamicFunction.h */,
+				1B3031AB0E47495000D7D5AC /* WBFSFunctions.h */,
+				1B3031AC0E47495000D7D5AC /* WBFSFunctions.m */,
+				1B3031AD0E47495000D7D5AC /* WBIOFunctions.c */,
+				1B3031AE0E47495000D7D5AC /* WBIOFunctions.h */,
+				1B3031AF0E47495000D7D5AC /* WBIOKitFunctions.c */,
+				1B3031B00E47495000D7D5AC /* WBIOKitFunctions.h */,
+				1B3031B10E47495000D7D5AC /* WBLoginItems.c */,
+				1B3031B20E47495000D7D5AC /* WBLoginItems.h */,
+				1B3031B30E47495000D7D5AC /* WBLSFunctions.h */,
+				1B3031B40E47495000D7D5AC /* WBLSFunctions.m */,
+				1B3031B50E47495000D7D5AC /* WBProcessFunctions.c */,
+				1B3031B60E47495000D7D5AC /* WBProcessFunctions.h */,
+				1B3031B70E47495000D7D5AC /* WBTextFunctions.c */,
+				1B3031B80E47495000D7D5AC /* WBTextFunctions.h */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
+		1B3031B90E47495000D7D5AC /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031BA0E47495000D7D5AC /* WBIcnsCodec.h */,
+				1B3031BB0E47495000D7D5AC /* WBIcnsCodec.m */,
+				1B3031BC0E47495000D7D5AC /* WBIconFamily.h */,
+				1B3031BD0E47495000D7D5AC /* WBIconFamily.m */,
+				1B3031BE0E47495000D7D5AC /* WBIconFunctions.c */,
+				1B3031BF0E47495000D7D5AC /* WBIconFunctions.h */,
+				1B3031C00E47495000D7D5AC /* WBIconView.h */,
+				1B3031C10E47495000D7D5AC /* WBIconView.m */,
+			);
+			path = Icons;
+			sourceTree = "<group>";
+		};
+		1B3031C20E47495000D7D5AC /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031C30E47495000D7D5AC /* WBImageUtils.h */,
+				1B3031C40E47495000D7D5AC /* WBImageUtils.m */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		1B3031D70E47495000D7D5AC /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031D80E47495000D7D5AC /* Resources */,
+				1B3031E40E47495000D7D5AC /* WBAboutController.h */,
+				1B3031E50E47495000D7D5AC /* WBAboutController.m */,
+				1B3031E60E47495000D7D5AC /* WBApplicationView.h */,
+				1B3031E70E47495000D7D5AC /* WBApplicationView.m */,
+				1B3031E80E47495000D7D5AC /* WBBackgroundView.h */,
+				1B3031E90E47495000D7D5AC /* WBBackgroundView.m */,
+				1B3031EA0E47495000D7D5AC /* WBBoxLayer.h */,
+				1B3031EB0E47495000D7D5AC /* WBBoxLayer.m */,
+				1B3031EC0E47495000D7D5AC /* WBConsoleManager.h */,
+				1B3031ED0E47495000D7D5AC /* WBConsoleManager.m */,
+				1B3031EE0E47495000D7D5AC /* WBCustomViewCell.h */,
+				1B3031EF0E47495000D7D5AC /* WBCustomViewCell.m */,
+				1B3031F00E47495000D7D5AC /* WBDisclosurePanel.h */,
+				1B3031F10E47495000D7D5AC /* WBDisclosurePanel.m */,
+				1B3031F20E47495000D7D5AC /* WBDisclosureView.m */,
+				1B3031F30E47495000D7D5AC /* WBHeaderView.h */,
+				1B3031F40E47495000D7D5AC /* WBHeaderView.m */,
+				1B3031F50E47495000D7D5AC /* WBImageAndTextCell.h */,
+				1B3031F60E47495000D7D5AC /* WBImageAndTextCell.m */,
+				1B3031F70E47495000D7D5AC /* WBImageAndTextView.h */,
+				1B3031F80E47495000D7D5AC /* WBImageAndTextView.m */,
+				1B3031F90E47495000D7D5AC /* WBProgressPanel.h */,
+				1B3031FA0E47495000D7D5AC /* WBProgressPanel.m */,
+				1B3031FB0E47495000D7D5AC /* WBShadowLabel.h */,
+				1B3031FC0E47495000D7D5AC /* WBShadowLabel.m */,
+				1B3031FD0E47495000D7D5AC /* WBSplitview.h */,
+				1B3031FE0E47495000D7D5AC /* WBSplitview.m */,
+				1B3031FF0E47495000D7D5AC /* WBStringLayer.h */,
+				1B3032000E47495000D7D5AC /* WBStringLayer.m */,
+				1B3032010E47495000D7D5AC /* WBViewProxy.h */,
+				1B3032020E47495000D7D5AC /* WBViewProxy.m */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		1B3031D80E47495000D7D5AC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1B3031D90E47495000D7D5AC /* WBProgress.strings */,
+				1B3031DC0E47495000D7D5AC /* WBAboutDialog.xib */,
+				1B3031DD0E47495000D7D5AC /* WBHeader-down.tiff */,
+				1B3031DE0E47495000D7D5AC /* WBHeader.tiff */,
+				1B3031DF0E47495000D7D5AC /* WBHeaderMenu.tiff */,
+				1B3031E00E47495000D7D5AC /* WBHSplitBar.tiff */,
+				1B3031E10E47495000D7D5AC /* WBProgressPanel.xib */,
+				1B3031E20E47495000D7D5AC /* WBSplitDot.tiff */,
+				1B3031E30E47495000D7D5AC /* WBVSplitBar.tiff */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1B3032030E47495000D7D5AC /* License */ = {
+			isa = PBXGroup;
+			children = (
+				1B3032040E47495000D7D5AC /* sha1.c */,
+				1B3032050E47495000D7D5AC /* sha1.h */,
+				1B3032060E47495000D7D5AC /* WBLicenseCrypto.c */,
+				1B3032070E47495000D7D5AC /* WBLicenseCrypto.h */,
+				1B3032080E47495000D7D5AC /* WBLicenseFunctions.c */,
+				1B3032090E47495000D7D5AC /* WBLicenseFunctions.h */,
+			);
+			path = License;
+			sourceTree = "<group>";
+		};
+		1B30320A0E47495000D7D5AC /* Mach */ = {
+			isa = PBXGroup;
+			children = (
+				1B30320B0E47495000D7D5AC /* exc.h */,
+				1B30320C0E47495000D7D5AC /* WBMachExceptions.c */,
+				1B30320D0E47495000D7D5AC /* WBMachExceptions.h */,
+				1B30320E0E47495000D7D5AC /* WBMachFunctions.c */,
+				1B30320F0E47495000D7D5AC /* WBMachFunctions.h */,
+				1B3032100E47495000D7D5AC /* WBMachPort.h */,
+				1B3032110E47495000D7D5AC /* WBMachPort.m */,
+				1B3032120E47495000D7D5AC /* WBMachServer.h */,
+				1B3032130E47495000D7D5AC /* WBMachServer.m */,
+				1B3032140E47495000D7D5AC /* WBMachSpawn.h */,
+				1B3032150E47495000D7D5AC /* WBMachSpawn.m */,
+				1B3032160E47495000D7D5AC /* WBMachSpawnChild.c */,
+				1B3032170E47495000D7D5AC /* WBMachSpawnChild.h */,
+				1B3032180E47495000D7D5AC /* wbnotify.defs */,
+				1B3032190E47495000D7D5AC /* wbspawn.defs */,
+			);
+			path = Mach;
+			sourceTree = "<group>";
+		};
+		1B30321A0E47495000D7D5AC /* Macros */ = {
+			isa = PBXGroup;
+			children = (
+				1B30321B0E47495000D7D5AC /* WBClassCluster.h */,
+				1B30321C0E47495000D7D5AC /* WBForwarding.h */,
+				1B30321D0E47495000D7D5AC /* WBKeyValueCoding.h */,
+				1B30321E0E47495000D7D5AC /* WBSingleton.h */,
+				1B30321F0E47495000D7D5AC /* WBTaggedPointer.h */,
+			);
+			path = Macros;
+			sourceTree = "<group>";
+		};
+		1B3032200E47495000D7D5AC /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				1B3032210E47495000D7D5AC /* WBConnection.h */,
+				1B3032220E47495000D7D5AC /* WBConnection.m */,
+				1B3032230E47495000D7D5AC /* WBHTTPMessage.h */,
+				1B3032240E47495000D7D5AC /* WBHTTPMessage.m */,
+				1B3032250E47495000D7D5AC /* WBReachability.h */,
+				1B3032260E47495000D7D5AC /* WBReachability.m */,
+				1B3032270E47495000D7D5AC /* WBServer.h */,
+				1B3032280E47495000D7D5AC /* WBServer.m */,
+				1B3032290E47495000D7D5AC /* WBSocket.h */,
+				1B30322A0E47495000D7D5AC /* WBSocket.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		1B30322B0E47495000D7D5AC /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				1B30322C0E47495000D7D5AC /* Shaders */,
+				1B3032500E47495000D7D5AC /* WBGLFrameBuffer.h */,
+				1B3032510E47495000D7D5AC /* WBGLFrameBuffer.m */,
+				1B3032520E47495000D7D5AC /* WBGLStringBox.h */,
+				1B3032530E47495000D7D5AC /* WBGLStringBox.m */,
+				1B3032540E47495000D7D5AC /* WBOpenGLQuad.h */,
+				1B3032550E47495000D7D5AC /* WBOpenGLQuad.m */,
+				1B3032560E47495000D7D5AC /* WBOpenGLTeapot.h */,
+				1B3032570E47495000D7D5AC /* WBOpenGLTeapot.m */,
+				1B3032580E47495000D7D5AC /* WBOpenGLTeapotList.c */,
+				1B3032590E47495000D7D5AC /* WBOpenGLTeapotList.h */,
+			);
+			path = OpenGL;
+			sourceTree = "<group>";
+		};
+		1B30322C0E47495000D7D5AC /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				1B30322F0E47495000D7D5AC /* GLSLBuiltIn-Info.plist */,
+				1B3032330E47495000D7D5AC /* GLSLShader.h */,
+				1B3032340E47495000D7D5AC /* GLSLShader.m */,
+				1B3032350E47495000D7D5AC /* GLSLUnit.h */,
+				1B3032360E47495000D7D5AC /* GLSLUnit.m */,
+				1B3032370E47495000D7D5AC /* GLSLUnitRegistry.h */,
+				1B3032380E47495000D7D5AC /* GLSLUnitRegistry.m */,
+				1B30323A0E47495000D7D5AC /* Units */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		1B30323A0E47495000D7D5AC /* Units */ = {
+			isa = PBXGroup;
+			children = (
+				1B30323B0E47495000D7D5AC /* blur.fs */,
+				1B30323C0E47495000D7D5AC /* brighten.fs */,
+				1B30323D0E47495000D7D5AC /* colorinvert.fs */,
+				1B30323E0E47495000D7D5AC /* dilation.fs */,
+				1B30323F0E47495000D7D5AC /* edgedetection.fs */,
+				1B3032400E47495000D7D5AC /* GLSLPlugIn.strings */,
+				1B3032420E47495000D7D5AC /* erosion.fs */,
+				1B3032430E47495000D7D5AC /* extractcolor.fs */,
+				1B3032440E47495000D7D5AC /* fog.fs */,
+				1B3032450E47495000D7D5AC /* GLSLPlugIn.plist */,
+				1B3032460E47495000D7D5AC /* grayinvert.fs */,
+				1B3032470E47495000D7D5AC /* grayscale.fs */,
+				1B3032480E47495000D7D5AC /* heatsig.fs */,
+				1B3032490E47495000D7D5AC /* null.vs */,
+				1B30324A0E47495000D7D5AC /* saturation.fs */,
+				1B30324B0E47495000D7D5AC /* sepia.fs */,
+				1B30324C0E47495000D7D5AC /* sharpen.fs */,
+				1B30324D0E47495000D7D5AC /* sky.fs */,
+				1B30324E0E47495000D7D5AC /* toon.fs */,
+				1B30324F0E47495000D7D5AC /* twirl.fs */,
+			);
+			path = Units;
+			sourceTree = "<group>";
+		};
+		1B30325A0E47495000D7D5AC /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				1B30325B0E47495000D7D5AC /* WBCDSAFunctions.c */,
+				1B30325C0E47495000D7D5AC /* WBCDSAFunctions.h */,
+				1B30325D0E47495000D7D5AC /* WBCryptoFunctions.c */,
+				1B30325E0E47495000D7D5AC /* WBCryptoFunctions.h */,
+				1B30325F0E47495000D7D5AC /* WBDigestFunctions.c */,
+				1B3032600E47495000D7D5AC /* WBDigestFunctions.h */,
+				1B3032610E47495000D7D5AC /* WBKeychainFunctions.c */,
+				1B3032620E47495000D7D5AC /* WBKeychainFunctions.h */,
+				1B3032630E47495000D7D5AC /* WBSecurityFunctions.c */,
+				1B3032640E47495000D7D5AC /* WBSecurityFunctions.h */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		1B3032650E47495000D7D5AC /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				1B3032660E47495000D7D5AC /* WBTemplate.h */,
+				1B3032670E47495000D7D5AC /* WBTemplate.m */,
+				1B3032680E47495000D7D5AC /* WBTemplateParser.h */,
+				1B3032690E47495000D7D5AC /* WBTemplateParser.m */,
+				1B30326A0E47495000D7D5AC /* WBXMLTemplate.h */,
+				1B30326B0E47495000D7D5AC /* WBXMLTemplate.m */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		1B30326C0E47495000D7D5AC /* Wizard */ = {
+			isa = PBXGroup;
+			children = (
+				1B30326D0E47495000D7D5AC /* Resources */,
+				1B3032760E47495000D7D5AC /* WBWizard.h */,
+				1B3032770E47495000D7D5AC /* WBWizard.m */,
+				1B3032780E47495000D7D5AC /* WBWizardPage.h */,
+				1B3032790E47495000D7D5AC /* WBWizardPage.m */,
+			);
+			path = Wizard;
+			sourceTree = "<group>";
+		};
+		1B30326D0E47495000D7D5AC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1B30326E0E47495000D7D5AC /* Assistant.icns */,
+				1B30326F0E47495000D7D5AC /* WBWizard.strings */,
+				1B3032710E47495000D7D5AC /* WBWizard.xib */,
+				1B3032750E47495000D7D5AC /* WBWizard.tiff */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		1B30327A0E47495000D7D5AC /* Multimedia */ = {
+			isa = PBXGroup;
+			children = (
+				1B30327B0E47495000D7D5AC /* WBAUFunctions.h */,
+				1B30327C0E47495000D7D5AC /* WBAUFunctions.m */,
+				1B30327D0E47495000D7D5AC /* WBAUGraph.h */,
+				1B30327E0E47495000D7D5AC /* WBAUGraph.m */,
+				1B30327F0E47495000D7D5AC /* WBCAMovieLayer.h */,
+				1B3032800E47495000D7D5AC /* WBCAMovieLayer.m */,
+				1B3032810E47495000D7D5AC /* WBCIMovieView.h */,
+				1B3032820E47495000D7D5AC /* WBCIMovieView.m */,
+				1B3032830E47495000D7D5AC /* WBComponent.h */,
+				1B3032840E47495000D7D5AC /* WBComponent.m */,
+				1B3032850E47495000D7D5AC /* WBMovieAudioInsert.h */,
+				1B3032860E47495000D7D5AC /* WBMovieAudioInsert.m */,
+				1B3032870E47495000D7D5AC /* WBMovieLayer.h */,
+				1B3032880E47495000D7D5AC /* WBMovieLayer.m */,
+				1B3032890E47495000D7D5AC /* WBMoviePlayer.h */,
+				1B30328A0E47495000D7D5AC /* WBMoviePlayer.m */,
+				1B30328B0E47495000D7D5AC /* WBMovieTexture.h */,
+				1B30328C0E47495000D7D5AC /* WBMovieTexture.m */,
+				1B30328D0E47495000D7D5AC /* WBMovieTextureInternal.h */,
+				1B30328E0E47495000D7D5AC /* WBMovieTextureStreaming.m */,
+				1B30328F0E47495000D7D5AC /* WBMovieView.h */,
+				1B3032900E47495000D7D5AC /* WBMovieView.m */,
+				1B3032910E47495000D7D5AC /* WBQTMovieTimecode.h */,
+				1B3032920E47495000D7D5AC /* WBQTMovieTimecode.m */,
+				1B3032930E47495000D7D5AC /* WBQTVisualContext.h */,
+				1B3032940E47495000D7D5AC /* WBQTVisualContext.m */,
+			);
+			path = Multimedia;
+			sourceTree = "<group>";
+		};
+		1BF76C800D367DF100A8758E /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				1BF76C870D367E0000A8758E /* Info.plist */,
+				1B1B3F2F0E0DC5F3002C3269 /* WBPointerTest.h */,
+				1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */,
+				1BE35AD70D36E1120007ED9A /* WBFunctionsTest.h */,
+				1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */,
+				1BE35AD50D36E1120007ED9A /* WBEnumeratorTest.h */,
+				1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */,
+				1BE35AD90D36E1120007ED9A /* WBLSFunctionsTest.h */,
+				1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */,
+				1BB0E2610D62F7580041C166 /* WBLicenseTest.h */,
+				1BB0E2620D62F7580041C166 /* WBLicenseTest.m */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8DC2EF500486A6940098B216 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B3032950E47495000D7D5AC /* WBAppKitExtensions.h in Headers */,
+				1B3032970E47495000D7D5AC /* WBColor.h in Headers */,
+				1B3032990E47495000D7D5AC /* WBImageView.h in Headers */,
+				1B30329B0E47495000D7D5AC /* WBOutlineView.h in Headers */,
+				1B30329D0E47495000D7D5AC /* WBOutlineViewController.h in Headers */,
+				1B30329F0E47495000D7D5AC /* WBTableDataSource.h in Headers */,
+				1B3032A10E47495000D7D5AC /* WBTableView.h in Headers */,
+				1B3032A30E47495000D7D5AC /* WBUITreeNode.h in Headers */,
+				1B3032A50E47495000D7D5AC /* WBViewController.h in Headers */,
+				1B3032A70E47495000D7D5AC /* WBWindowController.h in Headers */,
+				1B3032A90E47495000D7D5AC /* WBBezelItem.h in Headers */,
+				1B3032AB0E47495000D7D5AC /* WBBezelItemContent.h in Headers */,
+				1B3032AD0E47495000D7D5AC /* WBNotificationWindow.h in Headers */,
+				1B3032BB0E47495000D7D5AC /* WBCFContext.h in Headers */,
+				1B3032BD0E47495000D7D5AC /* WBExtensions.h in Headers */,
+				1B3032BF0E47495000D7D5AC /* WBFunctions.h in Headers */,
+				1B3032CE0E47495000D7D5AC /* WBAlias.h in Headers */,
+				1B3032D00E47495000D7D5AC /* WBAliasedApplication.h in Headers */,
+				1B3032D20E47495000D7D5AC /* WBAppleRemote.h in Headers */,
+				1B3032D40E47495000D7D5AC /* WBApplication.h in Headers */,
+				1B3032D60E47495000D7D5AC /* WBEnumerator.h in Headers */,
+				1B3032D80E47495000D7D5AC /* WBExtendedTreeNode.h in Headers */,
+				1B3032DA0E47495000D7D5AC /* WBMemoryObject.h in Headers */,
+				1B3032DC0E47495000D7D5AC /* WBPluginLoader.h in Headers */,
+				1B3032DE0E47495000D7D5AC /* WBSerialization.h in Headers */,
+				1B3032E00E47495000D7D5AC /* WBThreadPort.h in Headers */,
+				1B3032E20E47495000D7D5AC /* WBTreeNode.h in Headers */,
+				1B3032E40E47495000D7D5AC /* WBXMLWriter.h in Headers */,
+				1B3032E70E47495000D7D5AC /* AESendThreadSafe.h in Headers */,
+				1B3032E90E47495000D7D5AC /* WBAEFunctions.h in Headers */,
+				1B3032EB0E47495000D7D5AC /* WBCFFunctions.h in Headers */,
+				1B3032EC0E47495000D7D5AC /* WBCGFunctions.h in Headers */,
+				1B3032EF0E47495000D7D5AC /* WBDSFunctions.h in Headers */,
+				1B3032F10E47495000D7D5AC /* WBDynamicFunction.h in Headers */,
+				1B3032F20E47495000D7D5AC /* WBFSFunctions.h in Headers */,
+				1B3032F50E47495000D7D5AC /* WBIOFunctions.h in Headers */,
+				1B3032F70E47495000D7D5AC /* WBIOKitFunctions.h in Headers */,
+				1B3032F90E47495000D7D5AC /* WBLoginItems.h in Headers */,
+				1B3032FA0E47495000D7D5AC /* WBLSFunctions.h in Headers */,
+				1B3032FD0E47495000D7D5AC /* WBProcessFunctions.h in Headers */,
+				1B3032FF0E47495000D7D5AC /* WBTextFunctions.h in Headers */,
+				1B3033000E47495000D7D5AC /* WBIcnsCodec.h in Headers */,
+				1B3033020E47495000D7D5AC /* WBIconFamily.h in Headers */,
+				1B3033050E47495000D7D5AC /* WBIconFunctions.h in Headers */,
+				1B3033060E47495000D7D5AC /* WBIconView.h in Headers */,
+				1B3033080E47495000D7D5AC /* WBImageUtils.h in Headers */,
+				1B30331E0E47495000D7D5AC /* WBAboutController.h in Headers */,
+				1B3033200E47495000D7D5AC /* WBApplicationView.h in Headers */,
+				1B3033220E47495000D7D5AC /* WBBackgroundView.h in Headers */,
+				1B3033240E47495000D7D5AC /* WBBoxLayer.h in Headers */,
+				1B3033260E47495000D7D5AC /* WBConsoleManager.h in Headers */,
+				1B3033280E47495000D7D5AC /* WBCustomViewCell.h in Headers */,
+				1B30332A0E47495000D7D5AC /* WBDisclosurePanel.h in Headers */,
+				1B30332D0E47495000D7D5AC /* WBHeaderView.h in Headers */,
+				1B30332F0E47495000D7D5AC /* WBImageAndTextCell.h in Headers */,
+				1B3033310E47495000D7D5AC /* WBImageAndTextView.h in Headers */,
+				1B3033330E47495000D7D5AC /* WBProgressPanel.h in Headers */,
+				1B3033350E47495000D7D5AC /* WBShadowLabel.h in Headers */,
+				1B3033370E47495000D7D5AC /* WBSplitview.h in Headers */,
+				1B3033390E47495000D7D5AC /* WBStringLayer.h in Headers */,
+				1B30333B0E47495000D7D5AC /* WBViewProxy.h in Headers */,
+				1B30333E0E47495000D7D5AC /* sha1.h in Headers */,
+				1B3033400E47495000D7D5AC /* WBLicenseCrypto.h in Headers */,
+				1B3033420E47495000D7D5AC /* WBLicenseFunctions.h in Headers */,
+				1B3033430E47495000D7D5AC /* exc.h in Headers */,
+				1B3033450E47495000D7D5AC /* WBMachExceptions.h in Headers */,
+				1B3033470E47495000D7D5AC /* WBMachFunctions.h in Headers */,
+				1B3033480E47495000D7D5AC /* WBMachPort.h in Headers */,
+				1B30334A0E47495000D7D5AC /* WBMachServer.h in Headers */,
+				1B30334C0E47495000D7D5AC /* WBMachSpawn.h in Headers */,
+				1B30334F0E47495000D7D5AC /* WBMachSpawnChild.h in Headers */,
+				1B3033520E47495000D7D5AC /* WBClassCluster.h in Headers */,
+				1B3033530E47495000D7D5AC /* WBForwarding.h in Headers */,
+				1B3033540E47495000D7D5AC /* WBKeyValueCoding.h in Headers */,
+				1B3033550E47495000D7D5AC /* WBSingleton.h in Headers */,
+				1B3033560E47495000D7D5AC /* WBTaggedPointer.h in Headers */,
+				1B3033570E47495000D7D5AC /* WBConnection.h in Headers */,
+				1B3033590E47495000D7D5AC /* WBHTTPMessage.h in Headers */,
+				1B30335B0E47495000D7D5AC /* WBReachability.h in Headers */,
+				1B30335D0E47495000D7D5AC /* WBServer.h in Headers */,
+				1B30335F0E47495000D7D5AC /* WBSocket.h in Headers */,
+				1B3033630E47495000D7D5AC /* GLSLShader.h in Headers */,
+				1B3033650E47495000D7D5AC /* GLSLUnit.h in Headers */,
+				1B3033670E47495000D7D5AC /* GLSLUnitRegistry.h in Headers */,
+				1B30337E0E47495000D7D5AC /* WBGLFrameBuffer.h in Headers */,
+				1B3033800E47495000D7D5AC /* WBGLStringBox.h in Headers */,
+				1B3033820E47495000D7D5AC /* WBOpenGLQuad.h in Headers */,
+				1B3033840E47495000D7D5AC /* WBOpenGLTeapot.h in Headers */,
+				1B3033870E47495000D7D5AC /* WBOpenGLTeapotList.h in Headers */,
+				1B3033890E47495000D7D5AC /* WBCDSAFunctions.h in Headers */,
+				1B30338B0E47495000D7D5AC /* WBCryptoFunctions.h in Headers */,
+				1B30338D0E47495000D7D5AC /* WBDigestFunctions.h in Headers */,
+				1B30338F0E47495000D7D5AC /* WBKeychainFunctions.h in Headers */,
+				1B3033910E47495000D7D5AC /* WBSecurityFunctions.h in Headers */,
+				1B3033920E47495000D7D5AC /* WBTemplate.h in Headers */,
+				1B3033940E47495000D7D5AC /* WBTemplateParser.h in Headers */,
+				1B3033960E47495000D7D5AC /* WBXMLTemplate.h in Headers */,
+				1B30339C0E47495000D7D5AC /* WBWizard.h in Headers */,
+				1B30339E0E47495000D7D5AC /* WBWizardPage.h in Headers */,
+				1B3033A00E47495000D7D5AC /* WBAUFunctions.h in Headers */,
+				1B3033A20E47495000D7D5AC /* WBAUGraph.h in Headers */,
+				1B3033A40E47495000D7D5AC /* WBCAMovieLayer.h in Headers */,
+				1B3033A60E47495000D7D5AC /* WBCIMovieView.h in Headers */,
+				1B3033A80E47495000D7D5AC /* WBComponent.h in Headers */,
+				1B3033AA0E47495000D7D5AC /* WBMovieAudioInsert.h in Headers */,
+				1B3033AC0E47495000D7D5AC /* WBMovieLayer.h in Headers */,
+				1B3033AE0E47495000D7D5AC /* WBMoviePlayer.h in Headers */,
+				1B3033B00E47495000D7D5AC /* WBMovieTexture.h in Headers */,
+				1B3033B20E47495000D7D5AC /* WBMovieTextureInternal.h in Headers */,
+				1B3033B40E47495000D7D5AC /* WBMovieView.h in Headers */,
+				1B3033B60E47495000D7D5AC /* WBQTMovieTimecode.h in Headers */,
+				1B3033B80E47495000D7D5AC /* WBQTVisualContext.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1BF76C850D367E0000A8758E /* WonderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1BF76C8B0D367E0000A8758E /* Build configuration list for PBXNativeTarget "WonderTests" */;
+			buildPhases = (
+				1BF76C810D367E0000A8758E /* Resources */,
+				1BF76C820D367E0000A8758E /* Sources */,
+				1BF76C830D367E0000A8758E /* Frameworks */,
+				1BF76C840D367E0000A8758E /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1BF76C8D0D367E0900A8758E /* PBXTargetDependency */,
+			);
+			name = WonderTests;
+			productName = OmniTests;
+			productReference = 1BF76C860D367E0000A8758E /* WonderTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+		8DC2EF4F0486A6940098B216 /* WonderBox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "WonderBox" */;
+			buildPhases = (
+				8DC2EF500486A6940098B216 /* Headers */,
+				8DC2EF520486A6940098B216 /* Resources */,
+				8DC2EF540486A6940098B216 /* Sources */,
+				8DC2EF560486A6940098B216 /* Frameworks */,
+			);
+			buildRules = (
+				1B9CA7530DC8CA7400BAF149 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = WonderBox;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = OmniTools;
+			productReference = 8DC2EF5B0486A6940098B216 /* WonderBox.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "WonderBox" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* OmniTools */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DC2EF4F0486A6940098B216 /* WonderBox */,
+				1BF76C850D367E0000A8758E /* WonderTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1BF76C810D367E0000A8758E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF520486A6940098B216 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */,
+				1B3033150E47495000D7D5AC /* WBProgress.strings in Resources */,
+				1B3033160E47495000D7D5AC /* WBAboutDialog.xib in Resources */,
+				1B3033170E47495000D7D5AC /* WBHeader-down.tiff in Resources */,
+				1B3033180E47495000D7D5AC /* WBHeader.tiff in Resources */,
+				1B3033190E47495000D7D5AC /* WBHeaderMenu.tiff in Resources */,
+				1B30331A0E47495000D7D5AC /* WBHSplitBar.tiff in Resources */,
+				1B30331B0E47495000D7D5AC /* WBProgressPanel.xib in Resources */,
+				1B30331C0E47495000D7D5AC /* WBSplitDot.tiff in Resources */,
+				1B30331D0E47495000D7D5AC /* WBVSplitBar.tiff in Resources */,
+				1B3033620E47495000D7D5AC /* GLSLBuiltIn-Info.plist in Resources */,
+				1B30336A0E47495000D7D5AC /* blur.fs in Resources */,
+				1B30336B0E47495000D7D5AC /* brighten.fs in Resources */,
+				1B30336C0E47495000D7D5AC /* colorinvert.fs in Resources */,
+				1B30336D0E47495000D7D5AC /* dilation.fs in Resources */,
+				1B30336E0E47495000D7D5AC /* edgedetection.fs in Resources */,
+				1B30336F0E47495000D7D5AC /* GLSLPlugIn.strings in Resources */,
+				1B3033700E47495000D7D5AC /* erosion.fs in Resources */,
+				1B3033710E47495000D7D5AC /* extractcolor.fs in Resources */,
+				1B3033720E47495000D7D5AC /* fog.fs in Resources */,
+				1B3033730E47495000D7D5AC /* GLSLPlugIn.plist in Resources */,
+				1B3033740E47495000D7D5AC /* grayinvert.fs in Resources */,
+				1B3033750E47495000D7D5AC /* grayscale.fs in Resources */,
+				1B3033760E47495000D7D5AC /* heatsig.fs in Resources */,
+				1B3033770E47495000D7D5AC /* null.vs in Resources */,
+				1B3033780E47495000D7D5AC /* saturation.fs in Resources */,
+				1B3033790E47495000D7D5AC /* sepia.fs in Resources */,
+				1B30337A0E47495000D7D5AC /* sharpen.fs in Resources */,
+				1B30337B0E47495000D7D5AC /* sky.fs in Resources */,
+				1B30337C0E47495000D7D5AC /* toon.fs in Resources */,
+				1B30337D0E47495000D7D5AC /* twirl.fs in Resources */,
+				1B3033980E47495000D7D5AC /* Assistant.icns in Resources */,
+				1B3033990E47495000D7D5AC /* WBWizard.strings in Resources */,
+				1B30339A0E47495000D7D5AC /* WBWizard.xib in Resources */,
+				1B30339B0E47495000D7D5AC /* WBWizard.tiff in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1BF76C840D367E0000A8758E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1BF76C820D367E0000A8758E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1BE35ADC0D36E1120007ED9A /* WBFunctionsTest.m in Sources */,
+				1B1B3FFA0E0DC691002C3269 /* WBEnumeratorTest.m in Sources */,
+				1B1B3FFB0E0DC693002C3269 /* WBLSFunctionsTest.m in Sources */,
+				1B1B3FFC0E0DC695002C3269 /* WBPointerTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8DC2EF540486A6940098B216 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B3032960E47495000D7D5AC /* WBAppKitExtensions.m in Sources */,
+				1B3032980E47495000D7D5AC /* WBColor.m in Sources */,
+				1B30329A0E47495000D7D5AC /* WBImageView.m in Sources */,
+				1B30329C0E47495000D7D5AC /* WBOutlineView.m in Sources */,
+				1B30329E0E47495000D7D5AC /* WBOutlineViewController.m in Sources */,
+				1B3032A00E47495000D7D5AC /* WBTableDataSource.m in Sources */,
+				1B3032A20E47495000D7D5AC /* WBTableView.m in Sources */,
+				1B3032A40E47495000D7D5AC /* WBUITreeNode.m in Sources */,
+				1B3032A60E47495000D7D5AC /* WBViewController.m in Sources */,
+				1B3032A80E47495000D7D5AC /* WBWindowController.m in Sources */,
+				1B3032AA0E47495000D7D5AC /* WBBezelItem.m in Sources */,
+				1B3032AC0E47495000D7D5AC /* WBBezelItemContent.m in Sources */,
+				1B3032AE0E47495000D7D5AC /* WBNotificationWindow.m in Sources */,
+				1B3032BC0E47495000D7D5AC /* WBCFContext.m in Sources */,
+				1B3032BE0E47495000D7D5AC /* WBExtensions.m in Sources */,
+				1B3032C00E47495000D7D5AC /* WBFunctions.m in Sources */,
+				1B3032CF0E47495000D7D5AC /* WBAlias.m in Sources */,
+				1B3032D10E47495000D7D5AC /* WBAliasedApplication.m in Sources */,
+				1B3032D30E47495000D7D5AC /* WBAppleRemote.m in Sources */,
+				1B3032D50E47495000D7D5AC /* WBApplication.m in Sources */,
+				1B3032D70E47495000D7D5AC /* WBEnumerator.m in Sources */,
+				1B3032D90E47495000D7D5AC /* WBExtendedTreeNode.m in Sources */,
+				1B3032DB0E47495000D7D5AC /* WBMemoryObject.m in Sources */,
+				1B3032DD0E47495000D7D5AC /* WBPluginLoader.m in Sources */,
+				1B3032DF0E47495000D7D5AC /* WBSerialization.m in Sources */,
+				1B3032E10E47495000D7D5AC /* WBThreadPort.m in Sources */,
+				1B3032E30E47495000D7D5AC /* WBTreeNode.m in Sources */,
+				1B3032E50E47495000D7D5AC /* WBXMLWriter.m in Sources */,
+				1B3032E60E47495000D7D5AC /* AESendThreadSafe.c in Sources */,
+				1B3032E80E47495000D7D5AC /* WBAEFunctions.c in Sources */,
+				1B3032EA0E47495000D7D5AC /* WBCFFunctions.c in Sources */,
+				1B3032ED0E47495000D7D5AC /* WBCGFunctions.m in Sources */,
+				1B3032EE0E47495000D7D5AC /* WBDSFunctions.c in Sources */,
+				1B3032F00E47495000D7D5AC /* WBDynamicFunction.c in Sources */,
+				1B3032F30E47495000D7D5AC /* WBFSFunctions.m in Sources */,
+				1B3032F40E47495000D7D5AC /* WBIOFunctions.c in Sources */,
+				1B3032F60E47495000D7D5AC /* WBIOKitFunctions.c in Sources */,
+				1B3032F80E47495000D7D5AC /* WBLoginItems.c in Sources */,
+				1B3032FB0E47495000D7D5AC /* WBLSFunctions.m in Sources */,
+				1B3032FC0E47495000D7D5AC /* WBProcessFunctions.c in Sources */,
+				1B3032FE0E47495000D7D5AC /* WBTextFunctions.c in Sources */,
+				1B3033010E47495000D7D5AC /* WBIcnsCodec.m in Sources */,
+				1B3033030E47495000D7D5AC /* WBIconFamily.m in Sources */,
+				1B3033040E47495000D7D5AC /* WBIconFunctions.c in Sources */,
+				1B3033070E47495000D7D5AC /* WBIconView.m in Sources */,
+				1B3033090E47495000D7D5AC /* WBImageUtils.m in Sources */,
+				1B30331F0E47495000D7D5AC /* WBAboutController.m in Sources */,
+				1B3033210E47495000D7D5AC /* WBApplicationView.m in Sources */,
+				1B3033230E47495000D7D5AC /* WBBackgroundView.m in Sources */,
+				1B3033250E47495000D7D5AC /* WBBoxLayer.m in Sources */,
+				1B3033270E47495000D7D5AC /* WBConsoleManager.m in Sources */,
+				1B3033290E47495000D7D5AC /* WBCustomViewCell.m in Sources */,
+				1B30332B0E47495000D7D5AC /* WBDisclosurePanel.m in Sources */,
+				1B30332C0E47495000D7D5AC /* WBDisclosureView.m in Sources */,
+				1B30332E0E47495000D7D5AC /* WBHeaderView.m in Sources */,
+				1B3033300E47495000D7D5AC /* WBImageAndTextCell.m in Sources */,
+				1B3033320E47495000D7D5AC /* WBImageAndTextView.m in Sources */,
+				1B3033340E47495000D7D5AC /* WBProgressPanel.m in Sources */,
+				1B3033360E47495000D7D5AC /* WBShadowLabel.m in Sources */,
+				1B3033380E47495000D7D5AC /* WBSplitview.m in Sources */,
+				1B30333A0E47495000D7D5AC /* WBStringLayer.m in Sources */,
+				1B30333C0E47495000D7D5AC /* WBViewProxy.m in Sources */,
+				1B30333D0E47495000D7D5AC /* sha1.c in Sources */,
+				1B30333F0E47495000D7D5AC /* WBLicenseCrypto.c in Sources */,
+				1B3033410E47495000D7D5AC /* WBLicenseFunctions.c in Sources */,
+				1B3033440E47495000D7D5AC /* WBMachExceptions.c in Sources */,
+				1B3033460E47495000D7D5AC /* WBMachFunctions.c in Sources */,
+				1B3033490E47495000D7D5AC /* WBMachPort.m in Sources */,
+				1B30334B0E47495000D7D5AC /* WBMachServer.m in Sources */,
+				1B30334D0E47495000D7D5AC /* WBMachSpawn.m in Sources */,
+				1B30334E0E47495000D7D5AC /* WBMachSpawnChild.c in Sources */,
+				1B3033500E47495000D7D5AC /* wbnotify.defs in Sources */,
+				1B3033510E47495000D7D5AC /* wbspawn.defs in Sources */,
+				1B3033580E47495000D7D5AC /* WBConnection.m in Sources */,
+				1B30335A0E47495000D7D5AC /* WBHTTPMessage.m in Sources */,
+				1B30335C0E47495000D7D5AC /* WBReachability.m in Sources */,
+				1B30335E0E47495000D7D5AC /* WBServer.m in Sources */,
+				1B3033600E47495000D7D5AC /* WBSocket.m in Sources */,
+				1B3033640E47495000D7D5AC /* GLSLShader.m in Sources */,
+				1B3033660E47495000D7D5AC /* GLSLUnit.m in Sources */,
+				1B3033680E47495000D7D5AC /* GLSLUnitRegistry.m in Sources */,
+				1B30337F0E47495000D7D5AC /* WBGLFrameBuffer.m in Sources */,
+				1B3033810E47495000D7D5AC /* WBGLStringBox.m in Sources */,
+				1B3033830E47495000D7D5AC /* WBOpenGLQuad.m in Sources */,
+				1B3033850E47495000D7D5AC /* WBOpenGLTeapot.m in Sources */,
+				1B3033860E47495000D7D5AC /* WBOpenGLTeapotList.c in Sources */,
+				1B3033880E47495000D7D5AC /* WBCDSAFunctions.c in Sources */,
+				1B30338A0E47495000D7D5AC /* WBCryptoFunctions.c in Sources */,
+				1B30338C0E47495000D7D5AC /* WBDigestFunctions.c in Sources */,
+				1B30338E0E47495000D7D5AC /* WBKeychainFunctions.c in Sources */,
+				1B3033900E47495000D7D5AC /* WBSecurityFunctions.c in Sources */,
+				1B3033930E47495000D7D5AC /* WBTemplate.m in Sources */,
+				1B3033950E47495000D7D5AC /* WBTemplateParser.m in Sources */,
+				1B3033970E47495000D7D5AC /* WBXMLTemplate.m in Sources */,
+				1B30339D0E47495000D7D5AC /* WBWizard.m in Sources */,
+				1B30339F0E47495000D7D5AC /* WBWizardPage.m in Sources */,
+				1B3033A10E47495000D7D5AC /* WBAUFunctions.m in Sources */,
+				1B3033A30E47495000D7D5AC /* WBAUGraph.m in Sources */,
+				1B3033A50E47495000D7D5AC /* WBCAMovieLayer.m in Sources */,
+				1B3033A70E47495000D7D5AC /* WBCIMovieView.m in Sources */,
+				1B3033A90E47495000D7D5AC /* WBComponent.m in Sources */,
+				1B3033AB0E47495000D7D5AC /* WBMovieAudioInsert.m in Sources */,
+				1B3033AD0E47495000D7D5AC /* WBMovieLayer.m in Sources */,
+				1B3033AF0E47495000D7D5AC /* WBMoviePlayer.m in Sources */,
+				1B3033B10E47495000D7D5AC /* WBMovieTexture.m in Sources */,
+				1B3033B30E47495000D7D5AC /* WBMovieTextureStreaming.m in Sources */,
+				1B3033B50E47495000D7D5AC /* WBMovieView.m in Sources */,
+				1B3033B70E47495000D7D5AC /* WBQTMovieTimecode.m in Sources */,
+				1B3033B90E47495000D7D5AC /* WBQTVisualContext.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1BF76C8D0D367E0900A8758E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DC2EF4F0486A6940098B216 /* WonderBox */;
+			targetProxy = 1BF76C8C0D367E0900A8758E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1B3031D90E47495000D7D5AC /* WBProgress.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1B3031DA0E47495000D7D5AC /* English */,
+				1B3031DB0E47495000D7D5AC /* French */,
+			);
+			name = WBProgress.strings;
+			sourceTree = "<group>";
+		};
+		1B3032400E47495000D7D5AC /* GLSLPlugIn.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1B3032410E47495000D7D5AC /* English */,
+			);
+			name = GLSLPlugIn.strings;
+			sourceTree = "<group>";
+		};
+		1B30326F0E47495000D7D5AC /* WBWizard.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1B3032700E47495000D7D5AC /* English */,
+				1B3032730E47495000D7D5AC /* French */,
+			);
+			name = WBWizard.strings;
+			sourceTree = "<group>";
+		};
+		1B3032710E47495000D7D5AC /* WBWizard.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1B3032720E47495000D7D5AC /* English */,
+				1B3032740E47495000D7D5AC /* French */,
+			);
+			name = WBWizard.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1B2D5BE30D36791A00B28046 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B2D5BE00D36790F00B28046 /* Profile.xcconfig */;
+			buildSettings = {
+			};
+			name = Profile;
+		};
+		1B2D5BE40D36791A00B28046 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 22;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = WonderBox;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Profile;
+		};
+		1BF76C880D367E0000A8758E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				INFOPLIST_FILE = Tests/Info.plist;
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				PRODUCT_NAME = WonderTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		1BF76C890D367E0000A8758E /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				INFOPLIST_FILE = Tests/Info.plist;
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				PRODUCT_NAME = WonderTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Profile;
+		};
+		1BF76C8A0D367E0000A8758E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				INFOPLIST_FILE = Tests/Info.plist;
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				PRODUCT_NAME = WonderTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+		1DEB91AE08733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 22;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = WonderBox;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		1DEB91AF08733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 22;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				PRODUCT_NAME = WonderBox;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		1DEB91B208733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B2D5BDF0D36790F00B28046 /* Debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		1DEB91B308733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1B2D5BE10D36790F00B28046 /* Release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1BF76C8B0D367E0000A8758E /* Build configuration list for PBXNativeTarget "WonderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BF76C880D367E0000A8758E /* Debug */,
+				1BF76C890D367E0000A8758E /* Profile */,
+				1BF76C8A0D367E0000A8758E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "WonderBox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91AE08733DA50010E9CD /* Debug */,
+				1B2D5BE40D36791A00B28046 /* Profile */,
+				1DEB91AF08733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "WonderBox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91B208733DA50010E9CD /* Debug */,
+				1B2D5BE30D36791A00B28046 /* Profile */,
+				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
