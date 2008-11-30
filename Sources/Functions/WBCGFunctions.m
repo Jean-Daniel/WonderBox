@@ -7,6 +7,7 @@
  */
 
 #import WBHEADER(WBCGFunctions.h)
+#import WBHEADER(WBGeometry.h)
 
 #pragma mark -
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
@@ -301,33 +302,16 @@ void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, 
   CGContextStrokeLineSegments(ctxt, p, 2);
 }
 
-#pragma mark -
-#pragma mark Context
-CGFloat WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt) {
-  CGAffineTransform trans = CGContextGetUserSpaceToDeviceSpaceTransform(ctxt);
-  return ABS(trans.a);
-}
-
-void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width) {
-  CGAffineTransform space = CGContextGetUserSpaceToDeviceSpaceTransform(context);
-  if (!CGAffineTransformIsIdentity(space)) {
-    space = CGAffineTransformInvert(space);
-    width = CGSizeApplyAffineTransform(CGSizeMake(width, 0), space).width;
-  }
-  
-  CGContextSetLineWidth(context, width);
-}
-
 #pragma mark Colors Spaces
-CGColorSpaceRef WBCGColorSpaceCreateGray() {
+CGColorSpaceRef WBCGColorSpaceCreateGray(void) {
   return CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
 }
 
-CGColorSpaceRef WBCGColorSpaceCreateRGB() {
+CGColorSpaceRef WBCGColorSpaceCreateRGB(void) {
   return CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 }
 
-CGColorSpaceRef WBCGColorSpaceCreateCMYK() {
+CGColorSpaceRef WBCGColorSpaceCreateCMYK(void) {
   return CGColorSpaceCreateWithName(kCGColorSpaceGenericCMYK);
 }
 

@@ -22,7 +22,12 @@
     [super forwardInvocation:anInvocation]; \
   } \
 } \
- \
+/* Leopard fast forward path */ \
+- (id)forwardingTargetForSelector:(SEL)sel { \
+  if ([ivar respondsToSelector:sel]) \
+    return ivar; \
+	return [super forwardingTargetForSelector:sel]; \
+} \
 - (BOOL)respondsToSelector:(SEL)aSelector { \
   return [super respondsToSelector:aSelector] ? YES : [ivar respondsToSelector:aSelector]; \
 } \
@@ -54,3 +59,8 @@
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key { \
   [ivar setValue:value forKey:key]; \
 }
+
+/* Missing method from leopard header */
+@interface NSObject (FastForwardingPath)
+- (id)forwardingTargetForSelector:(SEL)sel;
+@end

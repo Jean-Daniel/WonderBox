@@ -7,7 +7,7 @@
  */
 
 #import WBHEADER(WBWizard.h>)
-#import WBHEADER(WBAppKitExtensions.h)
+#import WBHEADER(NSImage+WonderBox.h)
 
 @interface WBWizard (PageLoading)
 - (void)loadPage:(NSObject<WBWizardPage> *)aPage;
@@ -73,7 +73,7 @@
   [wizardTitle setStringValue:title ? : [self defaultTitle]];
   
   NSView *view = [aPage pageView];
-  NSAssert1(view != nil, @"Warning: %@ return nil view", aPage);
+  WBAssert(view != nil, @"Warning: %@ return nil view", aPage);
   
   [view setFrameOrigin:NSZeroPoint];
   [view setFrameSize:[pageView frame].size];
@@ -136,13 +136,13 @@
     NSBeep();
     return;
   }
-  NSAssert([self hasNext], @"Cannot call next: on last page.");
+  WBAssert([self hasNext], @"Cannot call next: on last page.");
   NSObject<WBWizardPage> *current = [self page];
 	
 	if ([current wizard:self shouldChangePage:WBWizardLeaveToNextPage]) {
 		NSObject<WBWizardPage> *nextPage = [current nextPage];
 		
-		NSAssert(nextPage != nil, @"Invalid Next page.");
+		WBAssert(nextPage != nil, @"Invalid Next page.");
 		wb_idx++;
 		/* Check if next page is always the same and if not, flush all pages following the current page */
 		if (wb_idx < [wb_pages count] && [wb_pages objectAtIndex:wb_idx] != nextPage) {
@@ -164,7 +164,7 @@
 }
 
 - (IBAction)previous:(id)sender {
-  NSAssert(wb_idx > 0, @"Cannot call previous when first page is loaded");
+  WBAssert(wb_idx > 0, @"Cannot call previous when first page is loaded");
   NSObject<WBWizardPage> *current = [self page];
 	if ([current wizard:self shouldChangePage:WBWizardLeaveToPreviousPage]) {
 		/* Should decrement after getting current page because we use idx in -page method. */

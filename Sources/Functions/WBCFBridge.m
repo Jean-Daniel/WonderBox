@@ -6,7 +6,7 @@
  *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
  */
 
-#import WBHEADER(WBCFContext.h)
+#import WBHEADER(WBCFBridge.h)
 
 #pragma mark CFAllocatorCallCack
 static

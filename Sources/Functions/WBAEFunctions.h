@@ -40,7 +40,7 @@ void WBAEInitDesc(AEDesc *desc) {
  @result Returns a new initialized descriptor
  */
 WB_INLINE
-AEDesc WBAEEmptyDesc() {
+AEDesc WBAEEmptyDesc(void) {
   AEDesc desc;
   AEInitializeDescInline(&desc);
   return desc;
@@ -83,27 +83,19 @@ CFStringRef WBAEDescCopyDescription(const AEDesc *desc);
 #pragma mark -
 #pragma mark Find Target for AppleEvents
 /**************************** Find Target for AppleEvents ****************************/
-
-/*!
-	@function
-	@abstract   Return an AEDesc to use in target field for creating an AppleEvent.
-	@discussion First this function try to find a process with signature <code>sign</code>. 
-				If find one, return a typeProcessSerialNumber AEDesc.
-				Else return a typeApplSignature AEDesc.
-    @param      sign The four char code signature of the target Application.
- 	@param 		findProcess if false, this function don't try to find a process with this Id.
-	@param      target On return, the target AEDesc.
-	@result     A result code.
- */
+WB_EXPORT OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target);
+WB_EXPORT OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target);
 WB_EXPORT OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target);
-WB_EXPORT OSStatus WBAECreateTargetWithSignature(OSType sign, Boolean findProcess, AEDesc *target);
-WB_EXPORT OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, Boolean findProcess, AEDesc *target);
 /* additional targets */
 WB_EXPORT OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target);
 WB_EXPORT OSStatus WBAECreateTargetWithKernelProcessID(pid_t pid, AEDesc *target);
 
 #pragma mark -
 #pragma mark Create Object Specifier
+WB_INLINE
+OSStatus WBAECreateDescWithFSRef(const FSRef *aRef, AEDesc *desc) {
+	return AECreateDesc(typeFSRef, aRef, sizeof(FSRef), desc);
+}
 WB_INLINE
 OSStatus WBAECreateDescWithAlias(AliasHandle alias, AEDesc *desc) {
 	return AECreateDesc(typeAlias, *alias, GetAliasSize(alias), desc);
@@ -177,9 +169,14 @@ enum {
 WB_EXPORT
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent);
 
+
 WB_INLINE
 OSStatus WBAEAddAEDesc(AppleEvent *theEvent, AEKeyword keyword, const AEDesc *desc) {
   return AEPutParamDesc(theEvent, keyword, desc);
+}
+WB_INLINE
+OSStatus WBAEAddParameter(AppleEvent *theEvent, AEKeyword keyword, DescType typeCode, const void *dataPtr, Size dataSize) {
+  return AEPutParamPtr(theEvent, keyword, typeCode, dataPtr, dataSize);
 }
 
 /*!
@@ -193,7 +190,7 @@ OSStatus WBAEAddAEDesc(AppleEvent *theEvent, AEKeyword keyword, const AEDesc *de
 */
 WB_INLINE
 OSStatus WBAEAddSInt16(AppleEvent *theEvent, AEKeyword keyword, SInt16 value) {
-  return AEPutParamPtr(theEvent, keyword, typeSInt16, &value, sizeof(SInt16));
+  return WBAEAddParameter(theEvent, keyword, typeSInt16, &value, sizeof(SInt16));
 }
 /*!
 	@function
@@ -206,7 +203,7 @@ OSStatus WBAEAddSInt16(AppleEvent *theEvent, AEKeyword keyword, SInt16 value) {
  */
 WB_INLINE
 OSStatus WBAEAddSInt32(AppleEvent *theEvent, AEKeyword keyword, SInt32 value) {
-  return AEPutParamPtr(theEvent, keyword, typeSInt32, &value, sizeof(SInt32));
+  return WBAEAddParameter(theEvent, keyword, typeSInt32, &value, sizeof(SInt32));
 }
 
 /*!
@@ -220,17 +217,17 @@ OSStatus WBAEAddSInt32(AppleEvent *theEvent, AEKeyword keyword, SInt32 value) {
  */
 WB_INLINE
 OSStatus WBAEAddUInt32(AppleEvent *theEvent, AEKeyword keyword, UInt32 value) {
-  return AEPutParamPtr(theEvent, keyword, typeUInt32, &value, sizeof(UInt32));
+  return WBAEAddParameter(theEvent, keyword, typeUInt32, &value, sizeof(UInt32));
 }
 
 WB_INLINE
 OSStatus WBAEAddSInt64(AppleEvent *theEvent, AEKeyword keyword, SInt64 value) {
-  return AEPutParamPtr(theEvent, keyword, typeSInt64, &value, sizeof(SInt64));
+  return WBAEAddParameter(theEvent, keyword, typeSInt64, &value, sizeof(SInt64));
 }
 
 WB_INLINE
 OSStatus WBAEAddUInt64(AppleEvent *theEvent, AEKeyword keyword, UInt64 value) {
-  return AEPutParamPtr(theEvent, keyword, typeUInt64, &value, sizeof(UInt64));
+  return WBAEAddParameter(theEvent, keyword, typeUInt64, &value, sizeof(UInt64));
 }
 
 /*!
@@ -245,24 +242,31 @@ OSStatus WBAEAddUInt64(AppleEvent *theEvent, AEKeyword keyword, UInt64 value) {
 WB_INLINE
 OSStatus WBAEAddBoolean(AppleEvent *theEvent, AEKeyword keyword, Boolean flag) {
   UInt8 value = flag ? 1 : 0;
-  return AEPutParamPtr(theEvent, keyword, typeBoolean, &value, sizeof(UInt8));
+  return WBAEAddParameter(theEvent, keyword, typeBoolean, &value, sizeof(UInt8));
+}
+
+WB_INLINE
+OSStatus WBAEAddFSRef(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) {
+  if (!aRef) return paramErr; // cannot send null fsref.
+  
+  return WBAEAddParameter(theEvent, keyword, typeFSRef, aRef, sizeof(FSRef));
 }
 
 WB_INLINE
 OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
   if (alias) {
-    return AEPutParamPtr(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
+    return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
   } else {
-    return AEPutParamPtr(theEvent, keyword, typeNull, NULL, 0);
+    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
   }
 }
 
 WB_INLINE
 OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, CFDataRef data) {
   if (data) {
-    return AEPutParamPtr(theEvent, keyword, type ? : typeData, CFDataGetBytePtr(data), CFDataGetLength(data));
+    return WBAEAddParameter(theEvent, keyword, type ? : typeData, CFDataGetBytePtr(data), CFDataGetLength(data));
   } else {
-    return AEPutParamPtr(theEvent, keyword, typeNull, NULL, 0);
+    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
   }
 }
 
@@ -281,7 +285,7 @@ OSStatus WBAESetReplyPort(AppleEvent *theEvent, mach_port_t port) {
  */
 WB_INLINE
 OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
-  return AEPutParamPtr(theEvent, keyAERequestedType, typeType, &requestType, sizeof(DescType));
+  return WBAEAddParameter(theEvent, keyAERequestedType, typeType, &requestType, sizeof(DescType));
 }
 
 /*!
@@ -598,6 +602,10 @@ WB_INLINE
 OSStatus WBAEGetNthUInt64FromDescList(const AEDescList *aList, CFIndex idx, UInt64 *value) {
   return WBAEGetNthDataFromDescList(aList, idx, typeUInt64, NULL, NULL, value, sizeof(UInt64), NULL);
 }
+
+WB_EXPORT OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef);
+WB_EXPORT OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef);
+WB_EXPORT OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef);
 
 WB_EXPORT OSStatus WBAECopyAliasFromDescriptor(const AEDesc* pAEDesc, AliasHandle *pAlias);
 WB_EXPORT OSStatus WBAECopyAliasFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, AliasHandle *pAlias);

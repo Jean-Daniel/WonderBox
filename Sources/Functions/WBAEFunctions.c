@@ -6,13 +6,16 @@
  *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
  */
 
-#include "AESendThreadSafe.h"
+#include <pthread.h>
 
 #include WBHEADER(WBAEFunctions.h)
-#include WBHEADER(WBProcessFunctions.h)
 
 Boolean WBAEDebug = false;
 OSType WBAEFinderSignature = 'MACS';
+
+static
+OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event, AppleEvent *reply,
+                                              AESendMode sendMode, long timeOutInTicks);
 
 static 
 void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...)	{
@@ -78,43 +81,26 @@ OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target) {
   return err;
 }
 
-OSStatus WBAECreateTargetWithSignature(OSType sign, Boolean findProcess, AEDesc *target) {
+OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target) {
   check(target != NULL);
   
   OSStatus err = noErr;
   WBAEInitDesc(target);
-  ProcessSerialNumber psn = {kNoProcess, kNoProcess};
-  if (findProcess) {
-    psn = WBProcessGetProcessWithSignature(sign);
-  }
-  if (psn.lowLongOfPSN != kNoProcess) {
-    err = WBAECreateTargetWithProcess(&psn, target);
-  } else {
-    err = AECreateDesc(typeApplSignature, &sign, sizeof(OSType), target);
-  }
+  err = AECreateDesc(typeApplSignature, &sign, sizeof(OSType), target);
   return err;
 }
 
-OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, Boolean findProcess, AEDesc *target) {
+OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target) {
   check(target != NULL);
   
   OSStatus err = noErr;
   WBAEInitDesc(target);
-  ProcessSerialNumber psn = {kNoProcess, kNoProcess};
-  if (findProcess) {
-    psn = WBProcessGetProcessWithBundleIdentifier(bundleId);
-  }
-  if (psn.lowLongOfPSN != kNoProcess) {
-    err = WBAECreateTargetWithProcess(&psn, target);
-  } else {
-    char bundleStr[512];
-    if (!CFStringGetCString(bundleId, bundleStr, 512, kCFStringEncodingUTF8)) {
-      err = paramErr; 
-    }
-    if (noErr == err) {
-      err = AECreateDesc(typeApplicationBundleID, bundleStr, strlen(bundleStr), target);
-    }
-  }
+  char bundleStr[512];
+  if (!CFStringGetCString(bundleId, bundleStr, 512, kCFStringEncodingUTF8))
+    err = coreFoundationUnknownErr;
+  
+  if (noErr == err)
+    err = AECreateDesc(typeApplicationBundleID, bundleStr, strlen(bundleStr), target);
   return err;
 }
 
@@ -281,7 +267,7 @@ OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass even
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
-  err = WBAECreateTargetWithSignature(targetSign, false, &target);
+  err = WBAECreateTargetWithSignature(targetSign, &target);
   if (noErr == err) {
     err = WBAECreateEventWithTarget(&target, eventClass, eventType, theEvent);
     WBAEDisposeDesc(&target);
@@ -295,7 +281,7 @@ OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass ev
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
-  err = WBAECreateTargetWithBundleID(targetId, false, &target);
+  err = WBAECreateTargetWithBundleID(targetId, &target);
   if (noErr == err) {
     err = WBAECreateEventWithTarget(&target, eventClass, eventType, theEvent);
     WBAEDisposeDesc(&target);
@@ -382,13 +368,13 @@ OSStatus WBAEAddCFStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, C
       }
       CFStringGetCharacters(str, CFRangeMake(0, length), chr);
     }
-  
-    err = AEPutParamPtr(theEvent, keyword, typeUnicodeText, chr, length * sizeof(UniChar));
+    // typeUnicodeText: native byte ordering, optional BOM
+    err = WBAEAddParameter(theEvent, keyword, typeUnicodeText, chr, length * sizeof(UniChar));
   
     if (release)
       CFAllocatorDeallocate(kCFAllocatorDefault, chr);
   } else {
-    err = AEPutParamPtr(theEvent, keyword, typeNull, NULL, 0);
+    err = WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
   }
   return err;
 }
@@ -451,6 +437,19 @@ OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword,
 
 #pragma mark -
 #pragma mark Send AppleEvents
+OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
+  check(theEvent != NULL);
+  
+  OSStatus		err = noErr;
+  AppleEvent	theReply = WBAEEmptyDesc();
+  
+  WBAEPrintDebug(theEvent, CFSTR("Send event no Reply: %@\n"));
+  err = AESendMessage(theEvent, &theReply, kAENoReply, kAEDefaultTimeout);
+  WBAEDisposeDesc( &theReply );
+  
+  return err;
+}
+
 OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply) {
   check(pAppleEvent != NULL);
   
@@ -470,16 +469,18 @@ OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 time
     timeout = lround(timeoutms * (60 / 1e3F));
   
   OSStatus err = (sendMode & kAEWaitReply) ? 
-    AESendMessageThreadSafeSynchronous(pAppleEvent, reply, sendMode, timeout) :
+    WBAESendMessageThreadSafeSynchronous(pAppleEvent, reply, sendMode, timeout) :
     AESendMessage(pAppleEvent, reply, sendMode, timeout);
   
   if (noErr == err) {
     err = WBAEGetHandlerError(reply);
     if (noErr != err) {
-      /* Print error message with explication if supported, else print the event */
-      const char *str = GetMacOSStatusErrorString(err);
-      const char *comment = GetMacOSStatusCommentString(err);
-      WBAEPrintDebug(reply, CFSTR("AEDesc Reply: %@ (%s, %s)\n"), str, comment);
+      /* Print error message with explication, else print the event */
+      if (WBAEDebug) {
+        const char *str = GetMacOSStatusErrorString(err);
+        const char *comment = GetMacOSStatusCommentString(err);
+        WBAEPrintDebug(reply, CFSTR("AEDesc Reply: %@ (%s: %s)\n"), str, comment);
+      }
       WBAEDisposeDesc(reply);
     } else {
       WBAEPrintDebug(reply, CFSTR("AEDesc Reply: %@\n"));
@@ -491,6 +492,7 @@ OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 time
   return err;
 }
 
+#pragma mark Simple Events
 OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType) {
   OSStatus err = noErr;
   AEDesc theEvent = WBAEEmptyDesc();
@@ -535,19 +537,76 @@ OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eve
   return err;
 }
 
-OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
-  check(theEvent != NULL);
+#pragma mark Primitive Reply
+
+OSStatus WBAESendEventReturnData(AppleEvent	*pAppleEvent,
+                                 DescType			pDesiredType,
+                                 DescType*			pActualType,
+                                 void*		 		pDataPtr,
+                                 Size				pMaximumSize,
+                                 Size 				*pActualSize) {
+  check(pAppleEvent != NULL);
   
-  OSStatus		err = noErr;
-  AppleEvent	theReply = WBAEEmptyDesc();
-  
-  WBAEPrintDebug(theEvent, CFSTR("Send event no Reply: %@\n"));
-  err = AESendMessage(theEvent, &theReply, kAENoReply, kAEDefaultTimeout);
-  WBAEDisposeDesc( &theReply );
-  
+  OSStatus err = noErr;
+  AppleEvent theReply = WBAEEmptyDesc();
+  err = WBAESendEvent(pAppleEvent, kAEWaitReply, kAEDefaultTimeout, &theReply);
+  if (noErr == err && theReply.descriptorType != typeNull) {
+    err = WBAEGetDataFromAppleEvent(&theReply, keyDirectObject, pDesiredType, 
+                                    pActualType, pDataPtr, pMaximumSize, pActualSize);
+    WBAEDisposeDesc(&theReply);
+  }
   return err;
 }
 
+OSStatus WBAESendEventReturnBoolean(AppleEvent* pAppleEvent, Boolean* pValue) {
+  check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeBoolean,
+                                 &actualType, pValue, sizeof(Boolean), &actualSize);
+}
+
+OSStatus WBAESendEventReturnSInt16(AppleEvent* pAppleEvent, SInt16* pValue) {
+  check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeSInt16,
+                                 &actualType, pValue, sizeof(SInt16), &actualSize);
+}
+
+OSStatus WBAESendEventReturnSInt32(AppleEvent* pAppleEvent, SInt32* pValue) {
+  check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeSInt32,
+                                 &actualType, pValue, sizeof(SInt32), &actualSize);
+}
+
+OSStatus WBAESendEventReturnUInt32(AppleEvent* pAppleEvent, UInt32* pValue) {
+  check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeUInt32,
+                                 &actualType, pValue, sizeof(UInt32), &actualSize);
+}
+
+OSStatus WBAESendEventReturnSInt64(AppleEvent* pAppleEvent, SInt64* pValue) {
+  check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeSInt64,
+                                 &actualType, pValue, sizeof(SInt64), &actualSize);
+}
+
+OSStatus WBAESendEventReturnUInt64(AppleEvent* pAppleEvent, UInt64* pValue) {
+	check(pAppleEvent != NULL);
+  Size actualSize;
+  DescType actualType;
+  return WBAESendEventReturnData(pAppleEvent, typeUInt64,
+                                 &actualType, pValue, sizeof(UInt64), &actualSize);
+}
+
+#pragma mark Object Reply
 OSStatus WBAESendEventReturnAEDesc(AppleEvent *pAppleEvent, const DescType pDescType, AEDesc *pAEDesc) {
   check(pAppleEvent != NULL);
   
@@ -608,81 +667,6 @@ OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType,
   return err;
 }
 
-OSStatus WBAESendEventReturnData(AppleEvent	*pAppleEvent,
-                                 DescType			pDesiredType,
-                                 DescType*			pActualType,
-                                 void*		 		pDataPtr,
-                                 Size				pMaximumSize,
-                                 Size 				*pActualSize) {
-  check(pAppleEvent != NULL);
-  
-  OSStatus err = noErr;
-  AppleEvent theReply = WBAEEmptyDesc();
-  err = WBAESendEvent(pAppleEvent, kAEWaitReply, kAEDefaultTimeout, &theReply);
-  if (noErr == err && theReply.descriptorType != typeNull) {
-    err = AEGetParamPtr(&theReply, keyDirectObject, pDesiredType,
-                        pActualType, pDataPtr, pMaximumSize, pActualSize);
-    WBAEDisposeDesc(&theReply);
-  }
-  return err;
-}
-
-OSStatus WBAESendEventReturnBoolean(AppleEvent* pAppleEvent, Boolean* pValue) {
-  check(pAppleEvent != NULL);
-  
-  DescType			actualType;
-  Size 				actualSize;
-  
-  return WBAESendEventReturnData(pAppleEvent, typeBoolean,
-                                 &actualType, pValue, sizeof(Boolean), &actualSize);
-}
-
-OSStatus WBAESendEventReturnSInt16(AppleEvent* pAppleEvent, SInt16* pValue) {
-  check(pAppleEvent != NULL);
-  
-  DescType			actualType;
-  Size 				actualSize;
-  
-  return WBAESendEventReturnData(pAppleEvent, typeSInt16,
-                                 &actualType, pValue, sizeof(SInt16), &actualSize);
-}
-
-OSStatus WBAESendEventReturnSInt32(AppleEvent* pAppleEvent, SInt32* pValue) {
-  check(pAppleEvent != NULL);
-  
-  DescType			actualType;
-  Size 				actualSize;
-  
-  return WBAESendEventReturnData(pAppleEvent, typeSInt32,
-                                 &actualType, pValue, sizeof(SInt32), &actualSize);
-}
-
-OSStatus WBAESendEventReturnUInt32(AppleEvent* pAppleEvent, UInt32* pValue) {
-  check(pAppleEvent != NULL);
-  
-  DescType			actualType;
-  Size 				actualSize;
-  
-  return WBAESendEventReturnData(pAppleEvent, typeUInt32,
-                                 &actualType, pValue, sizeof(UInt32), &actualSize);
-}
-
-OSStatus WBAESendEventReturnSInt64(AppleEvent* pAppleEvent, SInt64* pValue) {
-  check(pAppleEvent != NULL);
-  Size actualSize;
-  DescType actualType;
-  return WBAESendEventReturnData(pAppleEvent, typeSInt64,
-                                 &actualType, pValue, sizeof(SInt64), &actualSize);
-}
-
-OSStatus WBAESendEventReturnUInt64(AppleEvent* pAppleEvent, UInt64* pValue) {
-	check(pAppleEvent != NULL);
-  Size actualSize;
-  DescType actualType;
-  return WBAESendEventReturnData(pAppleEvent, typeUInt64,
-                                 &actualType, pValue, sizeof(UInt64), &actualSize);
-}
-
 #pragma mark -
 #pragma mark Retreive AEDesc Data
 OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc, DescType desiredType, DescType* typeCode, void *dataPtr, Size maximumSize, Size *pActualSize) {
@@ -698,20 +682,31 @@ OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc, DescType desiredType, 
     err = AECoerceDesc(pAEDesc, desiredType, &desc);
     if (noErr == err) {
       err = AEGetDescData(&desc, dataPtr, maximumSize);
-      if (pActualSize && noErr == err) {
+      if (pActualSize && noErr == err)
         *pActualSize = AEGetDescDataSize(&desc);
-      }
+      
       WBAEDisposeDesc(&desc);
     }
   } else {
     err = AEGetDescData(pAEDesc, dataPtr, maximumSize);
-    if (pActualSize && noErr == err) {
+    if (pActualSize && noErr == err)
       *pActualSize = AEGetDescDataSize(pAEDesc);
-    }
   }
   return err;
 }
 
+#pragma mark FSRef
+OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef) {
+  return WBAEGetDataFromDescriptor(pAEDesc, typeFSRef, NULL, pRef, sizeof(FSRef), NULL);
+}
+OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef) {
+  return WBAEGetDataFromAppleEvent(anEvent, aKey, typeFSRef, NULL, pRef, sizeof(FSRef), NULL);
+}
+OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef) {
+  return WBAEGetNthDataFromDescList(aList, idx, typeFSRef, NULL, NULL, pRef, sizeof(FSRef), NULL);
+}
+
+#pragma mark Alias
 OSStatus WBAECopyAliasFromDescriptor(const AEDesc* pAEDesc, AliasHandle *pAlias) {
 	return WBAECopyHandleFromDescriptor(pAEDesc, typeAlias, (Handle *)pAlias);
 }
@@ -722,6 +717,7 @@ OSStatus WBAECopyNthAliasFromDescList(const AEDescList *aList, CFIndex idx, Alia
 	return WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)pAlias);
 }
 
+#pragma mark CFStringRef
 OSStatus WBAECopyCFStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* aString) {
   check(pAEDesc != NULL);
   check(aString != NULL);
@@ -791,6 +787,7 @@ OSStatus WBAECopyNthCFStringFromDescList(const AEDescList *aList, CFIndex idx, C
   return err;
 }
 
+#pragma mark CFDataRef
 OSStatus WBAECopyCFDataFromDescriptor(const AEDesc* aDesc, CFDataRef *data) {
   check(aDesc != NULL);
   check(data != NULL);
@@ -947,15 +944,10 @@ OSStatus WBAEGetHandlerError(const AppleEvent* pAEReply) {
   check(pAEReply != NULL);
   
   OSStatus err = noErr;
-  SInt16 handlerErr;
-  Size actualSize;
-  DescType actualType;
-  
   if (pAEReply->descriptorType != typeNull ) {	// there's a reply, so there may be an error
-    OSStatus	getErrErr = noErr;
-    
-    getErrErr = AEGetParamPtr(pAEReply, keyErrorNumber, typeSInt32, &actualType,
-                              &handlerErr, sizeof(OSStatus), &actualSize );
+    SInt32 handlerErr;
+    OSStatus getErrErr = noErr;
+    getErrErr = WBAEGetSInt32FromAppleEvent(pAEReply, keyErrorNumber, &handlerErr);
     
     if (getErrErr != errAEDescNotFound) {	// found an errorNumber parameter
       err = handlerErr;					// so return it's value
@@ -1125,7 +1117,7 @@ OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) {
   return err;
 }
 
-CFURLRef WBAEFinderCopyCurrentFolderURL() {
+CFURLRef WBAEFinderCopyCurrentFolderURL(void) {
   FSRef folder;
   CFURLRef url = NULL;
   if (noErr == WBAEFinderGetCurrentFolder(&folder)) {
@@ -1134,7 +1126,7 @@ CFURLRef WBAEFinderCopyCurrentFolderURL() {
   return url;
 }
 
-CFStringRef WBAEFinderCopyCurrentFolderPath() {
+CFStringRef WBAEFinderCopyCurrentFolderPath(void) {
   CFStringRef path = NULL;
   CFURLRef url = WBAEFinderCopyCurrentFolderURL();
   if (url) {
@@ -1171,7 +1163,7 @@ dispose:
 OSStatus WBAEFinderSyncFSRef(const FSRef *aRef) {
   check(aRef);
   AEDesc item = WBAEEmptyDesc();
-  OSStatus err = AECreateDesc(typeFSRef, aRef, sizeof(FSRef), &item);
+  OSStatus err = WBAECreateDescWithFSRef(aRef, &item);
   require_noerr(err, dispose);
   
   err = WBAEFinderSyncItem(&item);
@@ -1222,7 +1214,7 @@ dispose:
 OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate) {
   check(aRef);
   AEDesc item = WBAEEmptyDesc();
-  OSStatus err = AECreateDesc(typeFSRef, aRef, sizeof(FSRef), &item);
+  OSStatus err = WBAECreateDescWithFSRef(aRef, &item);
   require_noerr(err, dispose);
   
   err = WBAEFinderRevealItem(&item, activate);
@@ -1243,6 +1235,7 @@ OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate) {
   return err;
 }
 
+#pragma mark -
 #pragma mark Internal
 //*******************************************************************************
 // This routine creates a new handle and puts the contents of the desc
@@ -1295,6 +1288,299 @@ OSStatus WBAECopyNthHandleFromDescList(const AEDescList *aList, CFIndex idx, Des
     err = WBAECopyHandleFromDescriptor(&nthItem, aType, pHandle);
   
   WBAEDisposeDesc(&nthItem);
+  return err;
+}
+
+#pragma mark -
+#pragma mark Thread safe Apple Event
+// WonderBox note: If min target version is 10.5, do not use the pool as the bug is solved
+
+/////////////////////////////////////////////////////////////////
+
+/*
+ How It Works
+ ------------
+ The basic idea behind this module is that it uses per-thread storage to keep 
+ track of an Apple event reply for any given thread.  The first time that the 
+ thread calls AESendMessageThreadSafeSynchronous, the per-thread storage will 
+ not be initialised and the code will grab an Apple event reply port and 
+ assign it to the per-thread storage.  Subsequent calls to AESendMessageThreadSafeSynchronous 
+ will continue to use that port.  When the thread dies, pthreads will automatically 
+ call the destructor for the per-thread storage, and that will clean up the port.
+ 
+ Because we can't dispose of the reply port (without triggering the Apple 
+ Event Manager bug that's the reason we wrote this code in the first place), 
+ the destructor doesn't actually dispose of the port.  Rather, it adds the 
+ port to a pool of ports that are available for reuse.  The next time a thread 
+ needs to allocate a port, it will grab it from the pool rather than allocating 
+ it from scratch.
+ 
+ This technique means that the code still 'leaks' Apple event reply ports, but 
+ the size of the leak is limited to the maximum number of threads that you run 
+ simultaneously.  This isn't a problem in practice.
+ */
+
+/////////////////////////////////////////////////////////////////
+
+// The PerThreadStorage structure is a trivial wrapper around the Mach port.  
+// I added this because I need to attach this structure a thread using 
+// per-thread storage.  The API for that (<x-man-page://3/pthread_setspecific>) 
+// is pointer based.  I could've just cast the Mach port to a (void *), but 
+// that's ugly because of a) pointer size issues (are pointers always bigger than 
+// ints?), and b) because it implies an equivalent between NULL and MACH_PORT_NULL.
+// Given this, I simply decided to create a structure to wrap the Mach port.
+
+enum {
+  kPerThreadStorageMagic = 'PTSm'
+};
+
+struct PerThreadStorage {
+  OSType          magic;          // must be kPerThreadStorageMagic
+  mach_port_t     port;
+};
+typedef struct PerThreadStorage PerThreadStorage;
+
+// The following static variables manage the per-thread storage key 
+// (sPerThreadStorageKey) and the pool of Mach ports (wrapped in 
+// PerThreadStorage structures) that are not currently attached to a thread.
+static pthread_once_t       sInited = PTHREAD_ONCE_INIT;    // covers initialisation of all of the following static variables
+
+static OSStatus             sPerThreadStorageKeyInitErrNum; // latches result of initialisation
+
+static pthread_key_t        sPerThreadStorageKey = 0;       // key for our per-thread storage
+
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+static pthread_mutex_t      sPoolMutex;                     // protects sPool
+static CFMutableArrayRef    sPool;                          // array of (PerThreadStorage *), holds the ports that aren't currently bound to a thread
+#endif
+
+static void PerThreadStorageDestructor(void *keyValue);     // forward declaration
+
+static void InitRoutine(void)
+// Call once (via pthread_once) to initialise various static variables.
+{
+  OSStatus    err;
+  
+  // Create the per-thread storage key.  Note that we assign a destructor to this key; 
+  // pthreads call the destructor to clean up that item of per-thread storage whenever 
+  // a thread terminates.
+  
+  err = (OSStatus) pthread_key_create(&sPerThreadStorageKey, PerThreadStorageDestructor);
+  
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+  // Create the pool of Mach ports that aren't bound to any thread, and its associated 
+  // lock.  The pool starts out empty.
+  if (err == noErr) {
+    err = (OSStatus) pthread_mutex_init(&sPoolMutex, NULL);
+  }
+  if (err == noErr) {
+    sPool = CFArrayCreateMutable(NULL, 0, NULL);
+    if (sPool == NULL) {
+      err = coreFoundationUnknownErr;
+    }
+  }
+#endif
+  check(err == noErr);
+  
+  sPerThreadStorageKeyInitErrNum = err;
+}
+
+// Grab a Mach port from sPool; if sPool is empty, create one.
+static
+OSStatus _AllocatePortFromPool(PerThreadStorage **storagePtr) {
+  OSStatus err = noErr;
+  PerThreadStorage *storage = NULL;
+  
+  check(storagePtr != NULL);
+  check(*storagePtr == NULL);
+  
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+  // First try to get an entry from pool.  We try to grab the last one because 
+  // that minimises the amount of copying that CFArrayRemoveValueAtIndex has to 
+  // do.
+  
+  err = (OSStatus) pthread_mutex_lock(&sPoolMutex);
+  if (err == noErr) {
+    OSStatus junk;
+    CFIndex poolCount;
+    
+    poolCount = CFArrayGetCount(sPool);
+    if (poolCount > 0) {
+      storage = (PerThreadStorage *) CFArrayGetValueAtIndex(sPool, poolCount - 1);
+      CFArrayRemoveValueAtIndex(sPool, poolCount - 1);
+    }
+    
+    junk = (OSStatus) pthread_mutex_unlock(&sPoolMutex);
+    check(junk == noErr);
+  }
+#endif
+  // If we failed to find an entry in the pool, create a new one.
+  
+  if ( (err == noErr) && (storage == NULL) ) {
+    storage = (PerThreadStorage *) malloc(sizeof(*storage));
+    if (storage == NULL) {
+      err = memFullErr;
+    } else {
+      storage->magic = kPerThreadStorageMagic;
+      storage->port  = MACH_PORT_NULL;
+      
+      err = (OSStatus) mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &storage->port);
+      if (err != noErr) {
+        check(storage->port == MACH_PORT_NULL);
+        free(storage);
+        storage = NULL;
+      }
+    }
+  }
+  if (err == noErr) {
+    *storagePtr = storage;
+  }
+  
+  check( (err == noErr) == (*storagePtr != NULL) );
+  check( (*storagePtr == NULL) || ((*storagePtr)->magic == kPerThreadStorageMagic) );
+  check( (*storagePtr == NULL) || ((*storagePtr)->port  != MACH_PORT_NULL) );
+  
+  return err;
+}
+
+// Returns a port to sPool.
+static 
+void _ReturnPortToPool(PerThreadStorage * storage) {
+  OSStatus err;
+  
+  check(storage != NULL);
+  check(storage->magic == kPerThreadStorageMagic);
+  check(storage->port  != MACH_PORT_NULL);
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+  err = (OSStatus) pthread_mutex_lock(&sPoolMutex);
+  if (err == noErr) {
+    CFArrayAppendValue(sPool, storage);
+    
+    err = (OSStatus) pthread_mutex_unlock(&sPoolMutex);
+  }
+#else
+  err = (OSStatus) mach_port_destroy(mach_task_self(), storage->port);
+  free(storage);
+#endif
+  check(err == noErr);
+}
+
+
+// Main Thread Notes
+// -----------------
+// There are two reasons why we don't assign a reply port to the main thread. 
+// First, the main thread already has a reply port created for it by Apple 
+// Event Manager.  Thus, we don't need a specific reply port.  Also, the 
+// destructor for per-thread storage isn't called for the main thread, so 
+// we wouldn't get a chance to clean up (although that's not really a problem 
+// in practice).
+
+// Get a reply port for this thread, remembering that we've done this 
+// in per-thread storage.
+// 
+// On success, *replyPortPtr is the port to use for this thread's reply 
+// port.  It will be MACH_PORT_NULL if you call it from the main thread.
+static
+OSStatus _BindReplyMachPortToThread(mach_port_t *replyPortPtr) {
+  OSStatus err;
+  
+  check( replyPortPtr != NULL);
+  check(*replyPortPtr == MACH_PORT_NULL);
+  
+  // Initialise ourselves the first time that we're called.
+  
+  err = (OSStatus) pthread_once(&sInited, InitRoutine);
+  
+  // If something went wrong, return the latched error.
+  
+  if ( (noErr == err) && (sPerThreadStorageKeyInitErrNum != noErr) ) {
+    err = sPerThreadStorageKeyInitErrNum;
+  }
+  
+  // Now do the real work.
+  if (noErr == err) {
+    if ( pthread_main_np() ) {
+      // This is the main thread, so do nothing; leave *replyPortPtr set 
+      // to MACH_PORT_NULL.
+      check(*replyPortPtr == MACH_PORT_NULL);
+    } else {
+      PerThreadStorage *  storage;
+      
+      // Get the per-thread storage for this thread.
+      storage = (PerThreadStorage *) pthread_getspecific(sPerThreadStorageKey);
+      if (storage == NULL) {
+        
+        // The per-thread storage hasn't been allocated yet for this specific 
+        // thread.  Let's go allocate it and attach it to this thread.
+        err = _AllocatePortFromPool(&storage);
+        if (err == noErr) {
+          err = (OSStatus) pthread_setspecific(sPerThreadStorageKey, (void *) storage);
+          if (err != noErr) {
+            _ReturnPortToPool(storage);
+            storage = NULL;
+          }
+        }
+      }
+      check( (err == noErr) == (storage != NULL) );
+      
+      // If all went well, copy the port out to our client.
+      
+      if (err == noErr) {
+        check(storage->magic == kPerThreadStorageMagic);
+        check(storage->port  != MACH_PORT_NULL);
+        *replyPortPtr = storage->port;
+      }
+    }
+  }
+  
+  // no error + MACH_PORT_NULL is a valid response if we're on the main 
+  // thread.
+  //
+  // check( (err == noErr) == (*replyPortPtr != MACH_PORT_NULL) );
+  check( (*replyPortPtr == MACH_PORT_NULL) || (err == noErr) );
+  return err;
+}
+
+// Called by pthreads when a thread dies and it has a non-null value for our 
+// per-thread storage key.  We use this callback to return the thread's 
+// Apple event reply port to the pool.
+static
+void PerThreadStorageDestructor(void *keyValue) {
+  PerThreadStorage *  storage;
+  
+  storage = (PerThreadStorage *) keyValue;
+  check(storage != NULL);                    // pthread won't call us if it's NULL
+  check(storage->magic == kPerThreadStorageMagic);
+  check(storage->port  != MACH_PORT_NULL);
+  
+  // Return the port associated with this thread to the pool.
+  _ReturnPortToPool(storage);
+  
+  // pthreads has already set this thread's per-thread storage for our key to 
+  // NULL before calling us. So we don't need to do anything to remove it.
+  check( pthread_getspecific(sPerThreadStorageKey) == NULL );
+}
+
+OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event,
+                                              AppleEvent *reply,                /* can be NULL */
+                                              AESendMode sendMode, long timeOutInTicks) {
+  OSStatus err;
+  mach_port_t replyPort;
+  check(event != NULL);
+  check(reply != NULL);
+  check(sendMode & kAEWaitReply);
+  
+  replyPort = MACH_PORT_NULL;
+  
+  // Set up the reply port if necessary.
+  err = _BindReplyMachPortToThread(&replyPort);
+  if ( (noErr == err) && (MACH_PORT_NULL != replyPort) )
+    err = AEPutAttributePtr(event, keyReplyPortAttr, typeMachPort, &replyPort, sizeof(replyPort));
+  
+  // Call through to AESendMessage.
+  if (noErr == err)
+    err = AESendMessage(event, reply, sendMode, timeOutInTicks);
+  
   return err;
 }
 

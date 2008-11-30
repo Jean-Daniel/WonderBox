@@ -37,40 +37,6 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period);
 WB_EXPORT
 void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, CGFloat y2);
 
-#pragma mark Resolution Independant UI
-WB_EXPORT
-CGFloat WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt);
-WB_EXPORT
-void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width);
-
-WB_INLINE
-CGRect WBCGContextIntegralPixelRect(CGContextRef aContext, CGRect aRect) {
-  aRect = CGContextConvertRectToDeviceSpace(aContext, aRect);
-  aRect = CGRectIntegral(aRect);
-  return CGContextConvertRectToUserSpace(aContext, aRect);
-}
-
-WB_INLINE
-CGFloat WBCGPointRoundToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (round(point * factor) + shift) / factor;
-}
-WB_INLINE
-CGFloat WBCGPointFloorToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (floor(point * factor) + shift) / factor;
-}
-WB_INLINE
-CGFloat WBCGPointCeilToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (ceil(point * factor) + shift) / factor;
-}
-
-WB_INLINE
-CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
-  return CGRectMake(round(aRect.origin.x * factor) / factor,
-                    round(aRect.origin.y * factor) / factor,
-                    round(aRect.size.width * factor) / factor,
-                    round(aRect.size.height * factor) / factor);
-}
-
 #pragma mark Color Spaces
 WB_EXPORT
 CGColorSpaceRef WBCGColorSpaceCreateGray(void);

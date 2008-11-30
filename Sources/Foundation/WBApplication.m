@@ -8,9 +8,9 @@
 
 #import WBHEADER(WBApplication.h)
 
-#import WBHEADER(WBFunctions.h)
 #import WBHEADER(WBLSFunctions.h)
 #import WBHEADER(WBProcessFunctions.h)
+#import WBHEADER(WonderBoxFunctions.h)
 
 enum {
   kWBUndefinedSignature = kUnknownType // '????'
@@ -168,11 +168,13 @@ bool __IsValidIdentifier(id identifier) {
   
   if (![object isKindOfClass:[WBApplication class]]) return NO;
   
-  if ([self signature])
+  if ([self signature]) {
     if (![object signature] || [object signature] != wb_signature) return NO;
+  } else if ([object signature]) return NO;
   
-  if ([self bundleIdentifier])
+  if ([self bundleIdentifier]) {
     if (![object bundleIdentifier] || ![wb_identifier isEqualToString:[object bundleIdentifier]]) return NO;
+  } else if ([object bundleIdentifier]) return NO;
   
   return YES;
 }

@@ -53,7 +53,7 @@ bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn) {
 }
 
 #pragma mark Front process
-OSType WBProcessGetFrontProcessSignature() {
+OSType WBProcessGetFrontProcessSignature(void) {
   ProcessSerialNumber psn;
   if (noErr == GetFrontProcess(&psn)) {
     return WBProcessGetSignature(&psn);
@@ -113,20 +113,20 @@ static
 OSStatus sysctlbyname_with_pid(const char *name, pid_t pid,  void *oldp, size_t *oldlenp, void *newp, size_t newlen) {
   if (pid == 0) {
     if (sysctlbyname(name, oldp, oldlenp, newp, newlen) == -1)  {
-      WBCLogWarning("%s(0): sysctlbyname failed: %m", __func__);
+      WBCLogWarning("%s(0): sysctlbyname failed: %s", __func__, strerror(errno));
       return -1;
     }
   } else {
     int mib[CTL_MAXNAME];
     size_t len = CTL_MAXNAME;
     if (sysctlnametomib(name, mib, &len) == -1) {
-      WBCLogWarning("%s(): sysctlnametomib failed: %m", __func__);
+      WBCLogWarning("%s(): sysctlnametomib failed: %s", __func__, strerror(errno));
       return -1;
     }
     mib[len] = pid;
     len++;
     if (sysctl(mib, (u_int)len, oldp, oldlenp, newp, newlen) == -1)  {
-      WBCLogWarning("%s(): sysct failed: %m", __func__);
+      WBCLogWarning("%s(): sysct failed: %s", __func__, strerror(errno));
       return -1;
     }
   }
