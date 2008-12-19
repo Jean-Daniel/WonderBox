@@ -10,6 +10,7 @@
 #define __WBCG_FUNCTIONS_H 1
 
 #include <ApplicationServices/ApplicationServices.h>
+#import WBHEADER(WBGeometry.h)
 
 #pragma mark Shapes
 WB_EXPORT

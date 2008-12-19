@@ -7,7 +7,6 @@
  */
 
 #import WBHEADER(WBCGFunctions.h)
-#import WBHEADER(WBGeometry.h)
 
 #pragma mark -
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
