@@ -71,7 +71,18 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 }
 
 - (void)setReleasedWhenClosed:(BOOL)release {
-  WBFlagSet(wb_wcFlags.autorelease, release);
+#if (__OBJC_GC__)
+  bool previous = WBFlagTestAndSet(wb_wcFlags.autorelease, release);
+  if (previous != wb_wcFlags.autorelease) {
+    // the object retains itself, so we have to tell the GC it should not collect it.
+    if (wb_wcFlags.autorelease) 
+      [[NSGarbageCollector defaultCollector] disableCollectorForPointer:self];
+    else
+      [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
+  }
+#else
+  WBFlagTestAndSet(wb_wcFlags.autorelease, release);
+#endif
 }
 
 - (NSInteger)runModal:(BOOL)processRunLoop {
@@ -114,7 +125,11 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   /* notify after setting modal status */
   [self windowWillClose];
   if ([self isReleasedWhenClosed]) {
+#if (__OBJC_GC__)
+    [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
+#else
     [self autorelease];
+#endif
   }
 }
 

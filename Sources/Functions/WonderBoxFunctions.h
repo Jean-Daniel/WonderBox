@@ -34,7 +34,7 @@ CFDataRef WBCFDataCreateFromHexString(CFStringRef str);
 #if defined(__OBJC__)
 WB_INLINE
 NSString *WBStringForOSType(OSType type) {
-  return [(id)WBCreateStringForOSType(type) autorelease];
+  return WBCFAutorelease(WBCreateStringForOSType(type));
 }
 WB_INLINE
 OSType WBOSTypeFromString(NSString *type) {

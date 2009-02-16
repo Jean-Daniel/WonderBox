@@ -91,17 +91,13 @@ WB_EXPORT OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target
 WB_EXPORT OSStatus WBAECreateTargetWithKernelProcessID(pid_t pid, AEDesc *target);
 
 #pragma mark -
-#pragma mark Create Object Specifier
-WB_INLINE
-OSStatus WBAECreateDescWithFSRef(const FSRef *aRef, AEDesc *desc) {
-	return AECreateDesc(typeFSRef, aRef, sizeof(FSRef), desc);
-}
-WB_INLINE
-OSStatus WBAECreateDescWithAlias(AliasHandle alias, AEDesc *desc) {
-	return AECreateDesc(typeAlias, *alias, GetAliasSize(alias), desc);
-}
-WB_EXPORT OSStatus WBAECreateDescWithCFString(CFStringRef string, AEDesc *desc);
+#pragma mark Create Complex Desc
+ // returns an alias desc as it's not safe to exchange fsref between processes
+WB_EXPORT OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromAlias(AliasHandle alias, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc);
 
+#pragma mark Create Object Specifier
 WB_EXPORT OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDesc *keyData, AEDesc *container, AEDesc *specifier);
 
 WB_EXPORT OSStatus WBAECreateIndexObjectSpecifier(DescType desiredType, CFIndex idx, AEDesc *container, AEDesc *specifier);
@@ -151,6 +147,16 @@ OSStatus WBAECreateEventWithTargetKernelProcessID(pid_t pid, AEEventClass eventC
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
 
+#pragma mark Build variants
+WB_EXPORT
+OSStatus WBAEBuildAppleEventWithTarget(const AEDesc *target, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                             AEBuildError *outError, const char *paramsFmt, ...);
+WB_EXPORT
+OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                                AEBuildError *outError, const char *paramsFmt, ...);
+WB_EXPORT
+OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                              AEBuildError *outError, const char *paramsFmt, ...);
 #pragma mark -
 #pragma mark Add Param & Attr
 /**************************** Add Param & Attr ****************************/
@@ -167,8 +173,11 @@ enum {
  	@result     A result code.
  */
 WB_EXPORT
-OSStatus WBAESetStandardAttributes(AppleEvent *theEvent);
-
+OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_OBSOLETE;
+WB_EXPORT
+OSStatus WBAESetEventSubject(AppleEvent *theEvent, const AEDesc *subject);
+WB_EXPORT
+OSStatus WBAESetEventConsiderations(AppleEvent *theEvent, UInt32 flags);
 
 WB_INLINE
 OSStatus WBAEAddAEDesc(AppleEvent *theEvent, AEKeyword keyword, const AEDesc *desc) {
@@ -246,13 +255,6 @@ OSStatus WBAEAddBoolean(AppleEvent *theEvent, AEKeyword keyword, Boolean flag) {
 }
 
 WB_INLINE
-OSStatus WBAEAddFSRef(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) {
-  if (!aRef) return paramErr; // cannot send null fsref.
-  
-  return WBAEAddParameter(theEvent, keyword, typeFSRef, aRef, sizeof(FSRef));
-}
-
-WB_INLINE
 OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
   if (alias) {
     return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
@@ -260,6 +262,9 @@ OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias
     return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
   }
 }
+
+WB_EXPORT
+OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef);
 
 WB_INLINE
 OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, CFDataRef data) {
@@ -603,6 +608,7 @@ OSStatus WBAEGetNthUInt64FromDescList(const AEDescList *aList, CFIndex idx, UInt
   return WBAEGetNthDataFromDescList(aList, idx, typeUInt64, NULL, NULL, value, sizeof(UInt64), NULL);
 }
 
+// Expect Alias descriptor as input
 WB_EXPORT OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef);
 WB_EXPORT OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef);
 WB_EXPORT OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef);
@@ -666,80 +672,6 @@ WB_EXPORT
 OSStatus WBAERecordAppend(AERecord *list, ...) WB_REQUIRES_NIL_TERMINATION;
 WB_EXPORT
 OSStatus WBAERecordAppendWithArguments(AERecord *list, va_list args);
-
-#pragma mark -
-#pragma mark Finder
-WB_EXPORT
-OSType WBAEFinderSignature;
-
-/*!
-    @function
-    @abstract   This function return Finder selection. As the return value are Finder references, you will probaly change it into
- 				FSRefs with the function <i>WBAEFinderSelectionToFSRefs</i>.
-    @param      items A pointer to an empty ADescList. On return, contains finder selection AEDesc.
-    @result     A result code.
-*/
-WB_EXPORT
-OSStatus WBAEFinderGetSelection(AEDescList *items);
-
-/*!
-    @function
-    @abstract   Change a AEDescList representing Finder selection (obtains from <i>WBAEGetFinderSelection</i>) into an
- 				array of FSRef.
-    @param      items AEDescList representing Finder items.
- 	@param		selection A pointer to an Array of FSRef. On return contains <i>itemsCount</i> converted items.
- 	@param		maxCount Size of <i>selection</i> array.
- 	@param		itemsCount Count of items successfully converted.
-    @result     A result code.
-*/
-WB_EXPORT
-OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFIndex maxCount, CFIndex *itemsCount);
-
-#pragma mark Current Folder
-/*!
-    @function
-    @abstract   Return a FSRef pointing on the Finder current folder, i.e. that will be choose if we create a new Folder for example.
-    @param      folder On return, a FSRef pointing on the Finder current folder.
-    @result     A result code.
-*/
-WB_EXPORT
-OSStatus WBAEFinderGetCurrentFolder(FSRef *folder);
-
-/*!
-@function
-	@abstract	Returns a CFURLRef representation of the path of the current Finder folder or NULL.
- */
-WB_EXPORT
-CFURLRef WBAEFinderCopyCurrentFolderURL(void);
-
-/*!
-    @function
-    @abstract	Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
-*/
-WB_EXPORT 
-CFStringRef WBAEFinderCopyCurrentFolderPath(void);
-
-#pragma mark Sync
-WB_EXPORT 
-OSStatus WBAEFinderSyncItem(const AEDesc *item);
-WB_EXPORT 
-OSStatus WBAEFinderSyncFSRef(const FSRef *aRef);
-WB_EXPORT 
-OSStatus WBAEFinderSyncItemAtURL(CFURLRef url);
-
-#pragma mark Reveal Item
-WB_EXPORT 
-OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate);
-WB_EXPORT 
-OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate);
-WB_EXPORT 
-OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate);
-
-#pragma mark Coerce
-WB_EXPORT
-OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file);
-WB_EXPORT
-OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias);
 
 #pragma mark -
 #pragma mark Internal

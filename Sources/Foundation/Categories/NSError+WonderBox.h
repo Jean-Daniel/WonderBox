@@ -8,8 +8,13 @@
 
 @interface NSError (WBExtensions)
 
++ (NSError *)cancel;
+
 + (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath;
++ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath description:(NSString *)message;
+
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL;
++ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL description:(NSString *)message;
 
 - (BOOL)isCancel;
 

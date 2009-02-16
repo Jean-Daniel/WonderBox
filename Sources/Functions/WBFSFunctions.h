@@ -30,13 +30,6 @@ WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBit
 WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path);
 WB_EXPORT CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix, CFStringRef extension, CFURLPathStyle pathType) WB_OBSOLETE;
 
-/* FSSpec functions */
-#if !__LP64__
-WB_EXPORT OSStatus WBFSRefMakeFSSpec(const FSRef *fileRef, FSSpec *fileSpec) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-WB_EXPORT OSStatus WBFSSpecCopyFileSystemPath(const FSSpec *spec, CFStringRef *path) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-WB_EXPORT Boolean WBFSSpecCreateWithFileSystemPath(CFStringRef path, FSSpec *spec, Boolean *isDirectory) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-#endif /* __LP64__ */
-
 /* Format a size and return buffer used length */
 WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length);
 
@@ -81,7 +74,7 @@ OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *cre
 enum {
 	kWBFSOSTypeIgnore = -1U
 };
-/* pass kWBFSOSTypeIgnore to set keep previous value */
+/* pass kWBFSOSTypeIgnore to keep previous value */
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator);
 WB_EXPORT
@@ -95,19 +88,12 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 + (NSString *)stringFromFSRef:(const FSRef *)ref;
 - (NSString *)initFromFSRef:(const FSRef *)ref;
 
-#if !__LP64__
-+ (NSString *)stringFromFSSpec:(const FSSpec *)spec DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-#endif /* __LP64__ */
-
 + (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length;
 
 /* traverse link by default */
 - (BOOL)getFSRef:(FSRef *)ref;
 - (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag;
 
-#if !__LP64__
-- (BOOL)getFSSpec:(FSSpec *)spec DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-#endif /* __LP64__ */
 @end
 
 @interface NSFileManager (WBResolveAlias)
@@ -120,7 +106,7 @@ WB_INLINE
 NSString *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
   CFStringRef path = NULL;
   if (noErr == WBFSCopyFolderPath(folderType, domain, create, &path))
-    return [(id)path autorelease];
+    return WBCFAutorelease(path);
   return nil;
 }
 

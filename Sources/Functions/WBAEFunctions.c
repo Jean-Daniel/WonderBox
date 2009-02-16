@@ -116,22 +116,40 @@ OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target) {
 
 #pragma mark -
 #pragma mark Create Object Specifier
-OSStatus WBAECreateDescWithCFString(CFStringRef string, AEDesc *desc) {
+OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc) {
+  check(aRef != NULL);
+  check(desc != NULL);
+  
+  AliasHandle alias;
+  OSStatus err = FSNewAliasMinimal(aRef, &alias);
+  if (noErr == err && alias == NULL)
+    err = paramErr;
+  
+  if (noErr == err) {
+    err = WBAECreateDescFromAlias(alias, desc);
+    DisposeHandle((Handle)alias);
+  }
+  return err;
+}
+OSStatus WBAECreateDescFromAlias(AliasHandle alias, AEDesc *desc) {
+  return AECreateDesc(typeAlias, *alias, GetAliasSize(alias), desc);
+}
+OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc) {
   check(desc != NULL);
   check(string != NULL);
   
   OSStatus err;
   /* Create Unicode String */
-  /* Use stack if length < 255, else use heap */
+  /* Use stack if length < 512, else use heap */
   UniChar *str = NULL;
-  UniChar stackStr[255];
+  UniChar stackStr[512];
   
   CFIndex length = CFStringGetLength(string);
   if (!length)
     return paramErr;
   
   CFRange range = CFRangeMake(0, length);
-  if (length <= 255) {
+  if (length <= 512) {
     str = stackStr;
   } else {
     str = CFAllocatorAllocate(kCFAllocatorDefault, length * sizeof(UniChar), 0);
@@ -210,7 +228,7 @@ OSStatus WBAECreateNameObjectSpecifier(DescType desiredType, CFStringRef name, A
   
   OSStatus err;
   AEDesc keyData = WBAEEmptyDesc();
-  err = WBAECreateDescWithCFString(name, &keyData);
+  err = WBAECreateDescFromCFString(name, &keyData);
   if (noErr == err) {
     err = WBAECreateObjectSpecifier(desiredType, formName, &keyData, container, specifier);
     AEDisposeDesc(&keyData);
@@ -316,6 +334,39 @@ OSStatus WBAECreateEventWithTargetKernelProcessID(pid_t pid, AEEventClass eventC
   return err;
 }
 
+#pragma mark Build Events
+OSStatus WBAEBuildAppleEventWithTarget(const AEDesc *target, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                       AEBuildError *outError, const char *paramsFmt, ...) {
+  OSStatus err = WBAECreateEventWithTarget(target, theClass, theID, outEvent);
+  if (noErr == err) {
+    va_list args;
+    va_start(args, paramsFmt);
+    err = vAEBuildParameters(outEvent, outError, paramsFmt, args);
+    va_end(args);
+  }
+  return err;
+}
+
+OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                                AEBuildError *outError, const char *paramsFmt, ...) {
+  va_list args;
+  va_start(args, paramsFmt);
+  OSStatus err = vAEBuildAppleEvent(theClass, theID, typeApplSignature, &sign, sizeof(OSType), 
+                                    kAutoGenerateReturnID, kAnyTransactionID, outEvent, outError, paramsFmt, args);
+  va_end(args);
+  return err;
+}
+
+OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                              AEBuildError *outError, const char *paramsFmt, ...) {
+  va_list args;
+  va_start(args, paramsFmt);
+  OSStatus err = vAEBuildAppleEvent(theClass, theID, typeProcessSerialNumber, psn, sizeof(ProcessSerialNumber), 
+                                    kAutoGenerateReturnID, kAnyTransactionID, outEvent, outError, paramsFmt, args);
+  va_end(args);
+  return err;  
+}
+
 #pragma mark -
 #pragma mark Add Param & Attr
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) {
@@ -333,6 +384,18 @@ OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) {
   return err;
 }
 
+OSStatus WBAESetEventSubject(AppleEvent *theEvent, const AEDesc *subject) {
+  check(theEvent != NULL);
+  return AEPutAttributeDesc(theEvent, 'subj' /* keySubjectAttr */,
+                            subject);
+}
+OSStatus WBAESetEventConsiderations(AppleEvent *theEvent, UInt32 flags) {
+  check(theEvent != NULL);
+  // flags = kAECaseIgnoreMask; // ignore all
+  return AEPutAttributePtr(theEvent, 'csig' /* enumConsidsAndIgnores */,
+                           typeUInt32, &flags, sizeof(flags));
+}
+
 OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, DescType typeCode, const void * dataPtr, Size dataSize) {
   check(theEvent != NULL);
   
@@ -347,6 +410,20 @@ OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, Des
   
 Bail:
     AEDisposeDesc(&aeDesc);
+  return err;
+}
+
+OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) {
+  AliasHandle alias;
+  OSStatus err = FSNewAliasMinimal(aRef, &alias);
+  
+  if (noErr == err && NULL == alias)
+    err = paramErr;
+  
+  if (noErr == err) {
+    err = WBAEAddAlias(theEvent, keyword, alias);
+    DisposeHandle((Handle)alias);
+  }
   return err;
 }
 
@@ -499,7 +576,7 @@ OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEvent
   
   err = WBAECreateEventWithTargetSignature(targetSign, eventClass, eventType, &theEvent);
   if (noErr == err) {
-    WBAESetStandardAttributes(&theEvent);
+    //WBAESetStandardAttributes(&theEvent);
     
     err = WBAESendEventNoReply(&theEvent);
     WBAEDisposeDesc(&theEvent);
@@ -513,7 +590,7 @@ OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventCla
   
   err = WBAECreateEventWithTargetBundleID(bundleID, eventClass, eventType, &theEvent);
   if (noErr == err) {
-    WBAESetStandardAttributes(&theEvent);
+    //WBAESetStandardAttributes(&theEvent);
     
     err = WBAESendEventNoReply(&theEvent);
     WBAEDisposeDesc(&theEvent);
@@ -529,7 +606,7 @@ OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eve
   
   err = WBAECreateEventWithTargetProcess(psn, eventClass, eventType, &theEvent);
   if (noErr == err) {
-    WBAESetStandardAttributes(&theEvent);
+    //WBAESetStandardAttributes(&theEvent);
     
     err = WBAESendEventNoReply(&theEvent);
     WBAEDisposeDesc(&theEvent);
@@ -696,14 +773,38 @@ OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc, DescType desiredType, 
 }
 
 #pragma mark FSRef
+WB_INLINE
+OSStatus __WBAEResolveAlias(AliasHandle alias, FSRef *outRef) {
+  Boolean changed;
+  return FSResolveAliasWithMountFlags(NULL, alias, outRef, &changed, kResolveAliasFileNoUI);
+}
+
 OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef) {
-  return WBAEGetDataFromDescriptor(pAEDesc, typeFSRef, NULL, pRef, sizeof(FSRef), NULL);
+  AliasHandle alias;
+  OSStatus err = WBAECopyAliasFromDescriptor(pAEDesc, &alias);
+  if (noErr == err) {
+    err = __WBAEResolveAlias(alias, pRef);
+    DisposeHandle((Handle)alias);
+  }
+  return err;
 }
 OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef) {
-  return WBAEGetDataFromAppleEvent(anEvent, aKey, typeFSRef, NULL, pRef, sizeof(FSRef), NULL);
+  AliasHandle alias;
+  OSStatus err = WBAECopyHandleFromAppleEvent(anEvent, aKey, typeAlias, (Handle *)alias);
+  if (noErr == err) {
+    err = __WBAEResolveAlias(alias, pRef);
+    DisposeHandle((Handle)alias);
+  }
+  return err;
 }
 OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef) {
-  return WBAEGetNthDataFromDescList(aList, idx, typeFSRef, NULL, NULL, pRef, sizeof(FSRef), NULL);
+  AliasHandle alias;
+  OSStatus err = WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)alias);
+  if (noErr == err) {
+    err = __WBAEResolveAlias(alias, pRef);
+    DisposeHandle((Handle)alias);
+  }
+  return err;
 }
 
 #pragma mark Alias
@@ -958,281 +1059,6 @@ OSStatus WBAEGetHandlerError(const AppleEvent* pAEReply) {
 
 OSStatus WBAECopyErrorStringFromReply(const AppleEvent *reply, CFStringRef *str) {
   return WBAECopyCFStringFromAppleEvent(reply, keyErrorString, str);
-}
-
-#pragma mark -
-#pragma mark Finder
-OSStatus WBAEFinderGetSelection(AEDescList *items) {
-  OSStatus err = noErr;
-  AEDesc theEvent = WBAEEmptyDesc();
-  
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
-  if (noErr == err) {
-    err = WBAEAddPropertyObjectSpecifier(&theEvent, keyDirectObject, typeAEList, pSelection, NULL);
-  }
-  if (noErr == err) {
-    err = WBAESetStandardAttributes(&theEvent);
-  }
-  if (noErr == err) {
-    err = WBAESendEventReturnAEDescList(&theEvent, items);
-  }
-  WBAEDisposeDesc(&theEvent);
-  return err;
-}
-
-OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFIndex maxCount, CFIndex *itemsCount) {
-  OSStatus err = noErr;
-  long numDocs;
-  CFIndex count = 0;
-  AEKeyword	keyword = 0;
-  
-  err = AECountItems(items, &numDocs);
-  
-  if (noErr == err) {
-    for (long idx = 1; (idx <= numDocs) && (count < maxCount); idx++) {
-      AEDesc tAEDesc = WBAEEmptyDesc();
-      
-      err = AEGetNthDesc(items, idx, typeWildCard, &keyword, &tAEDesc);
-      if (noErr == err) {
-        // Si c'est un objet, on le transforme en FSRef.
-        if (typeObjectSpecifier == tAEDesc.descriptorType) {
-          err = WBAEFinderGetObjectAsFSRef(&tAEDesc, &selection[count]);
-        }
-        else {
-          // Si ce n'est pas une FSRef, on coerce.
-          if (typeFSRef != tAEDesc.descriptorType) {
-            err = AECoerceDesc(&tAEDesc, typeFSRef, &tAEDesc);
-          } 
-          if (noErr == err) {
-            err = AEGetDescData(&tAEDesc, &selection[count], sizeof(FSRef));
-          }
-        }
-        if (noErr == err) {
-          count++;
-        }
-        WBAEDisposeDesc(&tAEDesc);
-      }
-    } // End for
-  }
-  *itemsCount = count;
-  return err;
-} //end WBAEFinderSelectionToFSRefs
-
-OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) {
-  AppleEvent theEvent = WBAEEmptyDesc();	//	If you always init AEDescs, it's always safe to dispose of them.
-  OSStatus err = noErr;
-  
-  // the descriptor pointer, alias handle is required
-  if (NULL == pAEDesc || NULL == alias)
-    return paramErr;
-  
-  if (typeObjectSpecifier != pAEDesc->descriptorType)
-    return paramErr;	// this has to be an object specifier
-  
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
-  
-  if (noErr == err) {
-    err = AEPutParamDesc(&theEvent, keyDirectObject, pAEDesc);
-  }
-  if (noErr == err) {
-    err = WBAESetRequestType(&theEvent, typeAlias);
-  }
-  if (noErr == err)
-    err = WBAESetStandardAttributes(&theEvent);
-  
-  if (noErr == err) {
-    AEDesc tAEDesc;
-    err = WBAESendEventReturnAEDesc(&theEvent, typeAlias, &tAEDesc);
-    if (noErr == err) {
-      err = WBAECopyAliasFromDescriptor(&tAEDesc, alias);
-      WBAEDisposeDesc(&tAEDesc);	// always dispose of AEDescs when you are finished with them
-    }
-  }
-  WBAEDisposeDesc(&theEvent);	// always dispose of AEDescs when you are finished with them
-  return err;
-}
-
-OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) {
-  AppleEvent theEvent = WBAEEmptyDesc();	//	If you always init AEDescs, it's always safe to dispose of them.
-  OSStatus err = noErr;
-  
-  // the descriptor pointer, alias handle is required
-  if (NULL == pAEDesc || NULL == file)
-    return paramErr;
-  
-  if (typeObjectSpecifier != pAEDesc->descriptorType)
-    return paramErr;	// this has to be an object specifier
-  
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
-  
-  if (noErr == err) {
-    err = AEPutParamDesc(&theEvent, keyDirectObject, pAEDesc);
-  }
-  if (noErr == err) {
-    err = WBAESetRequestType(&theEvent, typeFSRef);
-  }
-  if (noErr == err)
-    err = WBAESetStandardAttributes(&theEvent);
-  
-  if (noErr == err) {
-    AEDesc tAEDesc;
-    err = WBAESendEventReturnAEDesc(&theEvent, typeFSRef, &tAEDesc);
-    if (noErr == err) {
-      // Si ce n'est pas une FSRef, on coerce.
-      if (typeFSRef != tAEDesc.descriptorType) {
-        err = AECoerceDesc(&tAEDesc, typeFSRef, &tAEDesc);
-      } 
-      if (noErr == err) {
-        err = AEGetDescData(&tAEDesc, file, sizeof(FSRef));
-      }
-    }
-    WBAEDisposeDesc(&tAEDesc);	// always dispose of AEDescs when you are finished with them
-  }
-  WBAEDisposeDesc(&theEvent);	// always dispose of AEDescs when you are finished with them
-  return err;
-}
-
-#pragma mark Current Folder
-OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) {
-  OSStatus err = noErr;
-  AEDesc theEvent = WBAEEmptyDesc();
-  AEDesc result = WBAEEmptyDesc();
-  
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
-  if (noErr == err) {
-    err = WBAEAddPropertyObjectSpecifier(&theEvent, keyDirectObject, 'cfol', pInsertionLoc, NULL);
-  }
-  if (noErr == err) {
-    err = WBAESetStandardAttributes(&theEvent);
-  }
-  if (noErr == err) {
-    err = WBAESendEventReturnAEDesc(&theEvent, typeObjectSpecifier, &result);
-  }
-  if (noErr == err) {
-    err = WBAEFinderGetObjectAsFSRef(&result, folder);
-  }
-  
-  WBAEDisposeDesc(&theEvent);
-  WBAEDisposeDesc(&result);
-  return err;
-}
-
-CFURLRef WBAEFinderCopyCurrentFolderURL(void) {
-  FSRef folder;
-  CFURLRef url = NULL;
-  if (noErr == WBAEFinderGetCurrentFolder(&folder)) {
-    url = CFURLCreateFromFSRef(kCFAllocatorDefault, &folder);
-  }
-  return url;
-}
-
-CFStringRef WBAEFinderCopyCurrentFolderPath(void) {
-  CFStringRef path = NULL;
-  CFURLRef url = WBAEFinderCopyCurrentFolderURL();
-  if (url) {
-    path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-    CFRelease(url);
-  }
-  return path;
-  
-}
-
-#pragma mark Sync
-OSStatus WBAEFinderSyncItem(const AEDesc *item) {
-  AppleEvent aevt = WBAEEmptyDesc();
-  OSStatus err = WBAECreateEventWithTargetSignature(WBAEFinderSignature,
-                                                    'fndr', /* kAEFinderSuite, */ 
-                                                    'fupd', /* kAESync, */
-                                                    &aevt);
-  require_noerr(err, dispose);
-  
-  err = WBAEAddAEDesc(&aevt, keyDirectObject, item);
-  require_noerr(err, dispose);
-  
-  err = WBAESetStandardAttributes(&aevt);
-  require_noerr(err, dispose);
-  
-  err = WBAESendEventNoReply(&aevt);
-  require_noerr(err, dispose);
-  
-dispose:
-    WBAEDisposeDesc(&aevt);
-  return err;
-}
-
-OSStatus WBAEFinderSyncFSRef(const FSRef *aRef) {
-  check(aRef);
-  AEDesc item = WBAEEmptyDesc();
-  OSStatus err = WBAECreateDescWithFSRef(aRef, &item);
-  require_noerr(err, dispose);
-  
-  err = WBAEFinderSyncItem(&item);
-  require_noerr(err, dispose);
-  
-dispose:
-    WBAEDisposeDesc(&item);
-  return err;
-}
-
-OSStatus WBAEFinderSyncItemAtURL(CFURLRef url) {
-  check(url);
-  FSRef ref;
-  OSStatus err = paramErr;
-  if (CFURLGetFSRef(url, &ref)) {
-    err = WBAEFinderSyncFSRef(&ref);
-  }
-  return err;
-}
-
-#pragma mark Reveal Item
-OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate) {
-  OSStatus err = noErr;
-  AppleEvent aevt = WBAEEmptyDesc();
-  
-  if (activate) {
-    err = WBAESendSimpleEvent(WBAEFinderSignature, kAEMiscStandards, kAEActivate);
-    require_noerr(err, dispose);
-  }
-  
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAEMiscStandards, kAEMakeObjectsVisible, &aevt);
-  require_noerr(err, dispose);
-  
-  err = WBAEAddAEDesc(&aevt, keyDirectObject, item);
-  require_noerr(err, dispose);
-  
-  err = WBAESetStandardAttributes(&aevt);
-  require_noerr(err, dispose);
-  
-  err = WBAESendEventNoReply(&aevt);
-  require_noerr(err, dispose);
-  
-dispose:
-    WBAEDisposeDesc(&aevt);
-  return err;
-}
-
-OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate) {
-  check(aRef);
-  AEDesc item = WBAEEmptyDesc();
-  OSStatus err = WBAECreateDescWithFSRef(aRef, &item);
-  require_noerr(err, dispose);
-  
-  err = WBAEFinderRevealItem(&item, activate);
-  require_noerr(err, dispose);
-  
-dispose:
-    WBAEDisposeDesc(&item);
-  return err;
-}
-
-OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate) {
-  check(url);
-  FSRef ref;
-  OSStatus err = paramErr;
-  if (CFURLGetFSRef(url, &ref)) {
-    err = WBAEFinderRevealFSRef(&ref, activate);
-  }
-  return err;
 }
 
 #pragma mark -

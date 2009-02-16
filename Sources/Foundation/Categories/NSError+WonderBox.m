@@ -10,17 +10,37 @@
 
 @implementation NSError (WBExtensions)
 
++ (NSError *)cancel {
+  return [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
+}
+
 + (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath {
+  return [self fileErrorWithCode:code path:aPath description:nil];
+}
++ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath description:(NSString *)message {
   NSDictionary *info = nil;
   if (aPath)
-    info = [NSDictionary dictionaryWithObject:aPath forKey:NSFilePathErrorKey];
-  return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
+    info = [NSDictionary dictionaryWithObjectsAndKeys:
+            aPath, NSFilePathErrorKey,
+            message, NSLocalizedDescriptionKey, nil];
+  else if (message)
+    info = [NSDictionary dictionaryWithObjectsAndKeys:
+            message, NSLocalizedDescriptionKey, nil];    
+  return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];  
 }
 
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL {
+  return [self fileErrorWithCode:code url:anURL description:nil];
+}
++ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL description:(NSString *)message {
   NSDictionary *info = nil;
   if (anURL)
-    info = [NSDictionary dictionaryWithObject:anURL forKey:NSURLErrorKey];
+    info = [NSDictionary dictionaryWithObjectsAndKeys:
+            anURL, NSURLErrorKey,
+            message, NSLocalizedDescriptionKey, nil];
+  else if (message)
+    info = [NSDictionary dictionaryWithObjectsAndKeys:
+            message, NSLocalizedDescriptionKey, nil];
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
@@ -29,7 +49,7 @@
   if ([[self domain] isEqualToString:NSCocoaErrorDomain] && [self code] == NSUserCancelledError)
     return YES;
   /* Carbon */
-  if ([[self domain] isEqualToString:NSOSStatusErrorDomain] && [self code] == userCanceledErr)
+  if ([[self domain] isEqualToString:NSOSStatusErrorDomain] && ([self code] == userCanceledErr || [self code] == kPOSIXErrorECANCELED))
     return YES;
   /* Posix */
   if ([[self domain] isEqualToString:NSPOSIXErrorDomain] && [self code] == ECANCELED)

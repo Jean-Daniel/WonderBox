@@ -18,7 +18,7 @@
 + (NSString *)stringFromFSRef:(const FSRef *)ref {
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return [(id)str autorelease];
+    return WBCFAutorelease(str);
   return nil;
 }
 
@@ -46,18 +46,6 @@
   return noErr == FSPathMakeRefWithOptions((const UInt8 *)[self fileSystemRepresentation], opts, ref, NULL);
 }
 
-#if !__LP64__
-+ (NSString *)stringFromFSSpec:(const FSSpec *)spec {
-  CFStringRef str = NULL;
-  if (noErr == WBFSSpecCopyFileSystemPath(spec, &str))
-    return [(id)str autorelease];
-  return nil;
-}
-
-- (BOOL)getFSSpec:(FSSpec *)spec {
-  return WBFSSpecCreateWithFileSystemPath((CFStringRef)self, spec, NULL);
-}
-#endif /* __LP64__ */
 @end
 
 #pragma mark NSFileManager Extension
@@ -315,29 +303,6 @@ OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
 bail:
     return err;
 }
-
-#if !__LP64__
-OSStatus WBFSRefMakeFSSpec(const FSRef *fileRef, FSSpec *fileSpec) {
-  return FSGetCatalogInfo(fileRef, kFSCatInfoNone, NULL, NULL, fileSpec, NULL);
-}
-
-OSStatus WBFSSpecCopyFileSystemPath(const FSSpec *spec, CFStringRef *string) {
-  FSRef ref;
-  OSStatus err = FSpMakeFSRef(spec, &ref);
-  if (noErr == err) {
-    err = WBFSRefCopyFileSystemPath(&ref, string);
-  }
-  return err;
-}
-
-Boolean WBFSSpecCreateWithFileSystemPath(CFStringRef path, FSSpec *spec, Boolean *isDirectory) {
-  FSRef ref;
-  if (noErr == WBFSRefCreateFromFileSystemPath(path, kFSPathMakeRefDefaultOptions, &ref, isDirectory)) {
-    return noErr == WBFSRefMakeFSSpec(&ref, spec);
-  }
-  return false;
-}
-#endif /* __LP64__ */
 
 #pragma mark -
 #pragma mark OSTypes

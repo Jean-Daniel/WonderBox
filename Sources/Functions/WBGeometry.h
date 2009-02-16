@@ -122,6 +122,7 @@ CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
 
 
 #if (__OBJC__)
+
 WB_INLINE
 CGFloat WBWindowUserSpaceScaleFactor(NSWindow *window) {
   return window ? [window userSpaceScaleFactor] : 1;
@@ -131,23 +132,6 @@ WB_INLINE
 CGFloat WBScreenUserSpaceScaleFactor(NSScreen *screen) {
   return screen ? [screen userSpaceScaleFactor] : 1;
 }
-
-/* NS Functions */
-//WB_INLINE
-//NSSize WBNSScaleProportionally(NSSize imageSize, NSRect canvasRect) {
-//  return NSSizeFromCGSize(WBScaleProportionally(NSSizeToCGSize(imageSize), 
-//                                                NSRectToCGRect(canvasRect)));
-//}
-//WB_INLINE
-//CGFloat WBNSScaleGetProportionalRatio(NSSize imageSize, NSRect canvasRect) {
-//  return WBScaleGetProportionalRatio(NSSizeToCGSize(imageSize), 
-//                                     NSRectToCGRect(canvasRect));
-//}
-
-//WB_INLINE
-//NSSize WBMaxNSSizeForSizes(CGSize s1, CGSize s2) {
-//  return 
-//}
 
 #endif
 
