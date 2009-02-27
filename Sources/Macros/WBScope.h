@@ -11,7 +11,7 @@
 #define WBScopeReleased __attribute__((cleanup($wb_scopeReleaseObject)))
 #define WBScopeCFReleased __attribute__((cleanup($wb_scopeCFReleaseObject)))
 
-#define WBScopeAutoreleased() \
+#define WBScopeAutoreleasePool() \
 	NSAutoreleasePool *$wb_autoreleasePool##__LINE__ __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
 
 /* Internal functions */

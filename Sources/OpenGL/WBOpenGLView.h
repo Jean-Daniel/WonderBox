@@ -12,10 +12,12 @@
 @private
   struct _wb_glvFlags {
     unsigned int scales:1;
+    unsigned int reshape:1;
     unsigned int subview:1;
     unsigned int drawResize:1;
     unsigned int transparent:1;
-    unsigned int reserved:4;
+    unsigned int syncSwap:8;
+    unsigned int reserved:3;
   } wb_glvFlags;
 }
 
@@ -34,8 +36,11 @@
 - (NSRect)convertRectToOpenGLSpace:(NSRect)aRect;
 - (NSRect)convertRectFromOpenGLSpace:(NSRect)aRect;
 
+
 /* protected */
-// - Context locked. 
+// context locked
+- (void)reshape:(NSRect)bounds;
+// - Context locked.
 // - Do not flush in this method.
 - (void)glDraw:(NSRect)dirtyRect;
 

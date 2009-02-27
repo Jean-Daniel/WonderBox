@@ -286,8 +286,3 @@ home:
 
 @end
 
-@implementation WBComponentInstance
-
-
-@end
-
