@@ -1,10 +1,12 @@
-//
-//  WBOpenGLView.h
-//  QuickShow
-//
-//  Created by Jean-Daniel Dupas on 20/02/09.
-//  Copyright 2009 Ninsight. All rights reserved.
-//
+/*
+ *  WBOpenGLView.h
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
 #import WBHEADER(WBGLFrameBuffer.h)
 

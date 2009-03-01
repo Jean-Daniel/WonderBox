@@ -1,10 +1,12 @@
-//
-//  WBLicenseTest.m
-//  WonderBox
-//
-//  Created by Jean-Daniel Dupas on 13/02/08.
-//  Copyright 2008 Ninsight. All rights reserved.
-//
+/*
+ *  WBLicenseTest.m
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
 #import "WBLicenseTest.h"
 
@@ -19,7 +21,7 @@
 	char wonder[16], open[16];
 	WBPKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, wonder);
 	PKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, open);
-	STAssertTrue(0 == memcmp(wonder, open, 16), @"non conform PBKDF function");
+	GHAssertTrue(0 == memcmp(wonder, open, 16), @"non conform PBKDF function");
 }
 
 @end

@@ -2,8 +2,10 @@
  *  WBQTVisualContext.h
  *  WonderBox
  *
- *  Created by Shadow Team.
- *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 #include <QuickTime/QuickTime.h>
@@ -37,12 +39,11 @@ typedef NSUInteger WBQTVisualContextType;
 /* convenient */
 - (CGColorSpaceRef)workingColorSpace;
 - (void)setWorkingColorSpace:(CGColorSpaceRef)aColorspace;
-// force to link on Graphic frameworks…
-//- (void)setWorkingColorSpaceName:(CFStringRef)cgColorSpaceName;
+- (void)setWorkingColorSpaceName:(CFStringRef)cgColorSpaceName;
 
 - (CGColorSpaceRef)outputColorSpace;
 - (void)setOutputColorSpace:(CGColorSpaceRef)aColorspace;
-//- (void)setOutputColorSpaceName:(CFStringRef)cgColorSpaceName;
+- (void)setOutputColorSpaceName:(CFStringRef)cgColorSpaceName;
 
 /* image generation */
 - (BOOL)isNewImageAvailableForTime:(const CVTimeStamp *)timeStamp;

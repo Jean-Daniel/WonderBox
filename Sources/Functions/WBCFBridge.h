@@ -1,13 +1,15 @@
 /*
- *  WBCFContext.h
+ *  WBCFBridge.h
  *  WonderBox
  *
- *  Created by Shadow Team.
- *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBCFCONTEXT_H)
-#define __WBCFCONTEXT_H 1
+#if !defined(__WBCFBRIDGE_H)
+#define __WBCFBRIDGE_H 1
 /*!
 @header ShadowCFContext
  @abstract Provide some CallBack Wrapper to pass NSObject in CFContext
@@ -69,4 +71,4 @@ WB_EXPORT
 const CFDictionaryValueCallBacks kWBNSObjectDictionaryValueCallBacks;
 #endif
 
-#endif /* __WBCFCONTEXT_H */
+#endif /* __WBCFBRIDGE_H */

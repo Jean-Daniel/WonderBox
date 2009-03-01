@@ -1,13 +1,21 @@
-//
-//  WBEnumeratorTest.m
-//  WonderBox
-//
-//  Created by Grayfox on 28/07/06.
-//  Copyright 2006 Shadow Lab. All rights reserved.
-//
+/*
+ *  WBEnumeratorTest.m
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
-#import "WBEnumeratorTest.h"
+#import <GHUnit/GHUnit.h>
 #import WBHEADER(WBEnumerator.h)
+
+@interface WBEnumeratorTest : GHTestCase {
+  
+}
+
+@end
 
 @implementation WBEnumeratorTest
 
@@ -22,16 +30,16 @@
   NSEnumerator *enume = WBMapTableEnumerator(table, NO);
   while (str = [enume nextObject]) {
     count--;
-    STAssertTrue([str isEqualToString:@"Bonjour"] ||
+    GHAssertTrue([str isEqualToString:@"Bonjour"] ||
                  [str isEqualToString:@"Monde"] ||
                  [str isEqualToString:@"!"], @"Invalid value");
   }
-  STAssertTrue(0 == count, @"Count must be null");
+  GHAssertTrue(0 == count, @"Count must be null");
   
   NSInteger key = 0;
   enume = WBMapTableEnumerator(table, YES);
   while (key = (NSInteger)[enume nextObject]) {
-    STAssertTrue(25 == key ||
+    GHAssertTrue(25 == key ||
                  32 == key ||
                  43 == key, @"Invalid key");
   }

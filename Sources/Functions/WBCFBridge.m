@@ -1,9 +1,11 @@
 /*
- *  WBCFExtension.m
+ *  WBCFBridge.m
  *  WonderBox
  *
- *  Created by Shadow Team.
- *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 #import WBHEADER(WBCFBridge.h)

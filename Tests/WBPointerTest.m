@@ -1,13 +1,21 @@
-//
-//  WBPointerTest.m
-//  WonderBox
-//
-//  Created by Jean-Daniel Dupas on 22/06/08.
-//  Copyright 2008 Ninsight. All rights reserved.
-//
+/*
+ *  WBPointerTest.m
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
-#import "WBPointerTest.h"
+#import <GHUnit/GHUnit.h>
 #import WBHEADER(WBTaggedPointer.h)
+
+@interface WBPointerTest : GHTestCase {
+  
+}
+
+@end
 
 @implementation WBPointerTest
 
@@ -15,7 +23,7 @@
   void *ptr = malloc(1);
 //  WBTaggedPointer tptr = 0;
 //  WBTaggedPointerSetAddress(&tptr, ptr);
-  STAssertTrue(((intptr_t)ptr & 0xf) == 0, @"invalid pointer alignment: %x", ptr);
+  GHAssertTrue(((intptr_t)ptr & 0xf) == 0, @"invalid pointer alignment: %x", ptr);
   free(ptr);
 }
 
@@ -25,22 +33,22 @@
   WBTaggedPointerSetAddress(&ptr, addr);
   
   WBTaggedPointerSetFlags(&ptr, 0x0f);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 1), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 2), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 4), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 7), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(addr == WBTaggedPointerGetAddress(ptr), @"invalid pointer adress: %x ≠ %x", addr, WBTaggedPointerGetAddress(ptr));  
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 1), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 2), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 4), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 7), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(addr == WBTaggedPointerGetAddress(ptr), @"invalid pointer adress: %x ≠ %x", addr, WBTaggedPointerGetAddress(ptr));  
 
   WBTaggedPointerClearFlags(&ptr, 2);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 1), @"invalid pointer flags: %x", ptr);
-  STAssertFalse(WBTaggedPointerTestFlags(ptr, 2), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 4), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerTestFlags(ptr, 5), @"invalid pointer flags: %x", ptr);  
-  STAssertFalse(WBTaggedPointerTestFlags(ptr, 7), @"invalid pointer flags: %x", ptr);
-  STAssertTrue(WBTaggedPointerGetFlags(ptr, 7) == 5, @"invalid pointer flags: %x", ptr);  
-  STAssertTrue(addr == WBTaggedPointerGetAddress(ptr), @"invalid pointer adress: %x ≠ %x", addr, WBTaggedPointerGetAddress(ptr));  
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 1), @"invalid pointer flags: %x", ptr);
+  GHAssertFalse(WBTaggedPointerTestFlags(ptr, 2), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 4), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerTestFlags(ptr, 5), @"invalid pointer flags: %x", ptr);  
+  GHAssertFalse(WBTaggedPointerTestFlags(ptr, 7), @"invalid pointer flags: %x", ptr);
+  GHAssertTrue(WBTaggedPointerGetFlags(ptr, 7) == 5, @"invalid pointer flags: %x", ptr);  
+  GHAssertTrue(addr == WBTaggedPointerGetAddress(ptr), @"invalid pointer adress: %x ≠ %x", addr, WBTaggedPointerGetAddress(ptr));  
   
-  free(ptr);
+  WBTaggedPointerFree(ptr);
 }
 
 @end

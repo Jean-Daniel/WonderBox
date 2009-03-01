@@ -1,23 +1,32 @@
-//
-//  WBLSFunctionsTest.m
-//  WonderBox
-//
-//  Created by Grayfox on 29/07/06.
-//  Copyright 2006 Shadow Lab. All rights reserved.
-//
+/*
+ *  WBLSFunctionsTest.m
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
-#import "WBLSFunctionsTest.h"
+#import <GHUnit/GHUnit.h>
 #import WBHEADER(WBLSFunctions.h)
+
+@interface WBLSFunctionsTest : GHTestCase {
+  
+}
+
+@end
+
 
 @implementation WBLSFunctionsTest
 
 - (void)testIsApplication {
   NSString *iTunes = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"iTunes"];
-  STAssertNotNil(iTunes, @"iTunes not found. Cannot test isApplication");
+  GHAssertNotNil(iTunes, @"iTunes not found. Cannot test isApplication");
   Boolean isApp = FALSE;
   OSStatus err = WBLSIsApplicationAtPath((CFStringRef)iTunes, &isApp);
-  STAssertTrue(noErr == err, @"WBLSIsApplicationAtPath: %s", GetMacOSStatusCommentString(err));
-  STAssertTrue(isApp, @"iTunes should be an Application");
+  GHAssertTrue(noErr == err, @"WBLSIsApplicationAtPath: %s", GetMacOSStatusCommentString(err));
+  GHAssertTrue(isApp, @"iTunes should be an Application");
 }
 
 @end

@@ -2,8 +2,10 @@
  *  WBQTVisualContext.m
  *  WonderBox
  *
- *  Created by Shadow Team.
- *  Copyright (c) 2004 - 2008 Shadow Lab. All rights reserved.
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 #import WBHEADER(WBQTVisualContext.h)
@@ -107,11 +109,11 @@ void _WBImageAvailableCallBack(QTVisualContextRef visualContext, const CVTimeSta
 - (void)setWorkingColorSpace:(CGColorSpaceRef)aColorspace {
   [self setAttribute:aColorspace forKey:kQTVisualContextWorkingColorSpaceKey];
 }
-//- (void)setWorkingColorSpaceName:(CFStringRef)cgColorSpaceName {
-//  CGColorSpaceRef cs = CGColorSpaceCreateWithName(cgColorSpaceName);
-//  [self setWorkingColorSpace:cs];
-//  CGColorSpaceRelease(cs);
-//}
+- (void)setWorkingColorSpaceName:(CFStringRef)cgColorSpaceName {
+  CGColorSpaceRef cs = CGColorSpaceCreateWithName(cgColorSpaceName);
+  [self setWorkingColorSpace:cs];
+  CGColorSpaceRelease(cs);
+}
 
 - (CGColorSpaceRef)outputColorSpace {
   return (CGColorSpaceRef)[self attributeForKey:kQTVisualContextOutputColorSpaceKey error:nil];
@@ -119,11 +121,11 @@ void _WBImageAvailableCallBack(QTVisualContextRef visualContext, const CVTimeSta
 - (void)setOutputColorSpace:(CGColorSpaceRef)aColorspace {
   [self setAttribute:aColorspace forKey:kQTVisualContextOutputColorSpaceKey];
 }
-//- (void)setOutputColorSpaceName:(CFStringRef)cgColorSpaceName {
-//  CGColorSpaceRef cs = CGColorSpaceCreateWithName(cgColorSpaceName);
-//  [self setOutputColorSpace:cs];
-//  CGColorSpaceRelease(cs);
-//}
+- (void)setOutputColorSpaceName:(CFStringRef)cgColorSpaceName {
+  CGColorSpaceRef cs = CGColorSpaceCreateWithName(cgColorSpaceName);
+  [self setOutputColorSpace:cs];
+  CGColorSpaceRelease(cs);
+}
 
 - (BOOL)isNewImageAvailableForTime:(const CVTimeStamp *)timeStamp {
   WBQTVisualContextLock();
