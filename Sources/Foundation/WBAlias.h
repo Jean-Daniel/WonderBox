@@ -24,13 +24,17 @@ WB_CLASS_EXPORT
   AliasHandle wb_alias;
 }
 
-- (id)initWithPath:(NSString *)path;
-- (id)initWithData:(NSData *)data;
-- (id)initWithAliasHandle:(AliasHandle)handle;
++ (id)aliasWithURL:(NSURL *)anURL;
++ (id)aliasWithPath:(NSString *)aPath;
 
-+ (id)aliasWithPath:(NSString *)path;
-+ (id)aliasWithData:(NSData *)data;
-+ (id)aliasWithAliasHandle:(AliasHandle)handle;
+- (id)initWithURL:(NSURL *)anURL;
+- (id)initWithPath:(NSString *)aPath;
+
++ (id)aliasFromData:(NSData *)data;
++ (id)aliasFromAliasHandle:(AliasHandle)handle;
+
+- (id)initFromData:(NSData *)data;
+- (id)initFromAliasHandle:(AliasHandle)handle;
 
 /*!
     @method     path
@@ -39,9 +43,8 @@ WB_CLASS_EXPORT
 - (NSString *)path;
 - (void)setPath:(NSString *)path;
 
+- (BOOL)update;
 - (NSData *)data;
-
-- (NSString *)resolve;
 
 /*!
     @method     aliasHandle

@@ -10,13 +10,20 @@
 
 #import WBHEADER(WBAlias.h)
 #import WBHEADER(WBFSFunctions.h)
+#import WBHEADER(NSError+WonderBox.h)
+
+@interface WBAlias ()
+
+- (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle;
+
+@end
 
 @implementation WBAlias
 
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
   WBAlias *copy = (id)NSCopyObject(self, 0, zone);
-  copy->wb_path = [wb_path retain];
+  copy->wb_path = [wb_path copy];
   
   if (wb_alias) {
     /* Copy Handler */
@@ -49,45 +56,85 @@
 }
 
 #pragma mark -
-- (id)initWithPath:(NSString *)path {
-  if (self = [super init]) {
-    [self setPath:path];
-  }
-  return self;
++ (id)aliasFromData:(NSData *)data {
+  return [[[self alloc] initFromData:data] autorelease];
+}
++ (id)aliasFromAliasHandle:(AliasHandle)handle {
+  return [[[self alloc] initFromAliasHandle:handle] autorelease];  
 }
 
-- (id)initWithData:(NSData *)data {
-  if (self = [super init]) {
-    if ([data length]) {
-      // Create a new Handle with data
-      PtrToHand([data bytes], (Handle *)&wb_alias, [data length]);
-      [self resolve];
++ (id)aliasWithURL:(NSURL *)anURL {
+  return [[[self alloc] initWithURL:anURL] autorelease];
+}
++ (id)aliasWithPath:(NSString *)aPath {
+  return [[[self alloc] initWithPath:aPath] autorelease];
+}
+
+#pragma mark Initializers
+- (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle {
+  NSParameterAssert(anHandle);
+  if (self = [self init]) {
+    wb_alias = anHandle;
+    [self update];
+  }
+  return self;  
+}
+
+- (id)initFromData:(NSData *)data {
+  NSParameterAssert(data && [data length] > 0);
+  
+  AliasHandle alias;
+  if (noErr == PtrToHand([data bytes], (Handle *)&alias, [data length]))
+    return [self initFromAliasHandleNoCopy:alias];
+  
+  [self release];
+  return nil;
+}
+
+- (id)initFromAliasHandle:(AliasHandle)handle {
+  NSParameterAssert(handle);
+  
+  AliasHandle alias;
+  if (noErr == HandToHand((Handle *)&alias))
+    return [self initFromAliasHandleNoCopy:alias];
+  
+  [self release];
+  return nil;
+}
+
+- (id)initWithURL:(NSURL *)anURL {
+  if (!anURL) {
+    [self release];
+    return nil;
+  }
+  if (self = [self init]) {
+    FSRef ref;
+    // First, try using FSRef
+    if (CFURLGetFSRef((CFURLRef)anURL, &ref)) {
+      AliasHandle alias;
+      if (noErr == FSNewAlias(NULL, &ref, &alias))
+        return [self initFromAliasHandleNoCopy:alias];
+    } else if ([anURL isFileURL]) {
+      // If does not works, use file path
+      [self setPath:[anURL path]];
+    } else {
+      // unsupported URL
+      [self release];
+      self = nil;
     }
   }
   return self;
 }
 
-- (id)initWithAliasHandle:(AliasHandle)handle {
-  if (self = [super init]) {
-    if (handle) {
-      wb_alias = handle;
-      if (noErr == HandToHand((Handle *)&wb_alias))
-        [self resolve];
-    }
+- (id)initWithPath:(NSString *)aPath {
+  if (!aPath) {
+    [self release];
+    return nil;
+  }
+  if (self = [self init]) {
+    [self setPath:aPath];
   }
   return self;
-}
-
-+ (id)aliasWithPath:(NSString *)path {
-  return [[[self alloc] initWithPath:path] autorelease];
-}
-
-+ (id)aliasWithData:(NSData *)data {
-  return [[[self alloc] initWithData:data] autorelease];
-}
-
-+ (id)aliasWithAliasHandle:(AliasHandle)handle {
-  return [[[self alloc] initWithAliasHandle:handle] autorelease];
 }
 
 - (void)dealloc {
@@ -99,37 +146,28 @@
   [super dealloc];
 }
 
+#pragma mark -
 - (NSData *)data {
-  id data = nil;
-  if (wb_alias) {
-    data = [NSData dataWithBytes:*wb_alias length:GetAliasSize(wb_alias)];
-  }
-  return data;
+  if (wb_alias)
+    return [NSData dataWithBytes:*wb_alias length:GetAliasSize(wb_alias)];
+  return nil;
 }
 
 - (NSString *)path {
-  if (wb_path && ![[NSFileManager defaultManager] fileExistsAtPath:wb_path]) {
-    [self resolve];
-  }
-  return [[wb_path retain] autorelease];
+  return wb_path;
 }
 
 - (void)setPath:(NSString *)path {
   if (wb_path != path) {
     [wb_path release];
-    wb_path = nil;
+    wb_path = [path copy];
+    
     if (wb_alias) {
       DisposeHandle((Handle)wb_alias);
       wb_alias = nil;
     }
     
-    FSRef target;
-    if ([path getFSRef:&target]) {
-      OSErr err = FSNewAlias(nil, &target, &wb_alias);
-      if (err == noErr) {
-        wb_path = [path copy];
-      }
-    }
+    [self update];
   }
 }
 
@@ -137,22 +175,37 @@
   return wb_alias;
 }
 
-- (NSString *)resolve {
+- (BOOL)update {
+  FSRef target;
   if (wb_alias) {
-    FSRef target;
-    Boolean wasChanged;
-    [wb_path release];
-    wb_path = nil;
-    OSStatus err = FSResolveAliasWithMountFlags (nil,
-                                                 wb_alias,
-                                                 &target,
-                                                 &wasChanged,
-                                                 kResolveAliasFileNoUI);
-    if (err == noErr) {
-      wb_path = [[NSString stringFromFSRef:&target] retain];
+    Boolean wasChanged;  
+    OSStatus err = FSResolveAliasWithMountFlags(nil,
+                                                wb_alias,
+                                                &target,
+                                                &wasChanged,
+                                                kResolveAliasFileNoUI);
+    if (noErr == err) {
+      if (wasChanged && wb_path) {
+        [wb_path release];
+        wb_path = nil;
+      }
+      if (!wb_path) {
+        wb_path = [[NSString stringFromFSRef:&target] retain];
+        return YES;
+      }
+    } else if (wb_path) {
+      // no longer reference a valid file
+      [wb_path release];
+      wb_path = nil;
+      return YES;
     }
+  } else if (wb_path) {
+    // try to create alias
+    if ([wb_path getFSRef:&target])
+      verify_noerr(FSNewAlias(nil, &target, &wb_alias));
   }
-  return [[wb_path retain] autorelease];
+  // the path has not changed.
+  return NO;
 }
 
 @end
