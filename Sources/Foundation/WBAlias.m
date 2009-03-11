@@ -158,6 +158,7 @@
 }
 
 - (void)setPath:(NSString *)path {
+  NSParameterAssert(path);
   if (wb_path != path) {
     [wb_path release];
     wb_path = [path copy];
@@ -175,37 +176,57 @@
   return wb_alias;
 }
 
-- (BOOL)update {
-  FSRef target;
+//- (OSStatus)setTarget:(FSRef *)target wasChanged:(BOOL *)outChanged {
+//}
+
+- (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged {
+  NSParameterAssert(target);
+  if (outChanged) *outChanged = NO;
+  
   if (wb_alias) {
-    Boolean wasChanged;  
-    OSStatus err = FSResolveAliasWithMountFlags(nil,
-                                                wb_alias,
-                                                &target,
-                                                &wasChanged,
+    Boolean wasChanged;
+    OSStatus err = FSResolveAliasWithMountFlags(nil, wb_alias,
+                                                target, &wasChanged,
                                                 kResolveAliasFileNoUI);
     if (noErr == err) {
+      // update path if needed
       if (wasChanged && wb_path) {
         [wb_path release];
         wb_path = nil;
       }
       if (!wb_path) {
-        wb_path = [[NSString stringFromFSRef:&target] retain];
-        return YES;
+        wb_path = [[NSString stringFromFSRef:target] retain];
+        WBAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
+        if (outChanged) *outChanged = YES;  
       }
+      return noErr;
     } else if (wb_path) {
       // no longer reference a valid file
       [wb_path release];
       wb_path = nil;
-      return YES;
     }
-  } else if (wb_path) {
-    // try to create alias
-    if ([wb_path getFSRef:&target])
-      verify_noerr(FSNewAlias(nil, &target, &wb_alias));
+    return err;
   }
-  // the path has not changed.
-  return NO;
+  
+  // wb_alias is not valid. Try to use path.
+  if (!wb_path)
+    WBThrowException(NSInternalInconsistencyException, 
+                     @"Both alias and path are null");
+  // try to create alias
+  OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path fileSystemRepresentation], target, NULL);
+  if (noErr == err) {
+    // return noErr even if alias creation fail to indicate that the FSRef is valid
+    if (noErr == FSNewAlias(nil, target, &wb_alias) && outChanged) 
+      *outChanged = YES;
+  }
+  return err;
+}
+
+- (BOOL)update {
+  FSRef target;
+  BOOL updated;
+  [self getTarget:&target wasChanged:&updated];
+  return updated;
 }
 
 @end

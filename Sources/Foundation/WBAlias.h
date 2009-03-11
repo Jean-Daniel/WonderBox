@@ -41,8 +41,10 @@ WB_CLASS_EXPORT
     @abstract   Return the Alias path and resolve it if needed.
 */
 - (NSString *)path;
+// does not accept null path
 - (void)setPath:(NSString *)path;
 
+// returns true if the alias has been updated.
 - (BOOL)update;
 - (NSData *)data;
 
@@ -52,5 +54,8 @@ WB_CLASS_EXPORT
     @result     The native Alias Handle
 */
 - (AliasHandle)aliasHandle;
+- (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
+// TODO: 
+//- (OSStatus)setTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
 
 @end
