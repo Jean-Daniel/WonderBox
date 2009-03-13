@@ -26,7 +26,7 @@ enum  {
   kWBVersionInvalid = -1LLU
 };
 
-WB_EXPORT CFStringRef WBVersionBundleKey;
+WB_EXPORT CFStringRef const WBVersionBundleKey;
 
 /* 
 Version number: 

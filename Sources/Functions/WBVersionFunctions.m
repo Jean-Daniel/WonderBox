@@ -13,7 +13,7 @@
 #pragma mark Version Parser
 
 /* According to “Runtime Configuration Guidelines”, we should use short version string */
-CFStringRef WBVersionBundleKey = CFSTR("CFBundleShortVersionString");
+CFStringRef const WBVersionBundleKey = CFSTR("CFBundleShortVersionString");
 
 /* 
  Version number: 

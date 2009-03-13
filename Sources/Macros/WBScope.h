@@ -11,7 +11,9 @@
 // from http://www.kickingbear.com
 
 #define WBScopeReleased __attribute__((cleanup($wb_scopeReleaseObject)))
-#define WBScopeCFReleased __attribute__((cleanup($wb_scopeCFReleaseObject)))
+#define WBScopeCFReleased(type, var, value) \
+	__attribute__((cleanup($wb_scopeCFReleaseObject))) CFTypeRef __##var##__auto__ = value; \
+	type var = (type)__##var##__auto__
 
 #define WBScopeAutoreleasePool() \
 	NSAutoreleasePool *$wb_autoreleasePool##__LINE__ __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
@@ -23,7 +25,7 @@ void $wb_scopeReleaseObject(id *scopeReleasedObject) {
 }
 
 static __inline__
-void $wb_scopeCFReleaseObject(id *scopeReleasedObject) {
+void $wb_scopeCFReleaseObject(CFTypeRef *scopeReleasedObject) {
   if (*scopeReleasedObject) 
     CFRelease(*scopeReleasedObject);
 }

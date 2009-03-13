@@ -102,8 +102,7 @@
 }
 
 - (BOOL)isChildOf:(WBTreeNode *)parent {
-  if (!parent)
-    return NO;
+  if (!parent) return NO;
   WBTreeNode *ancestor = self;
   do {
     if (ancestor == parent)
