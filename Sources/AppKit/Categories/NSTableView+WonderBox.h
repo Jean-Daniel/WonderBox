@@ -13,12 +13,6 @@
 
 - (NSTableColumn *)columnAtIndex:(NSUInteger)idx;
 
-@end
-
-#pragma mark -
-#pragma mark Internal
-@interface NSTableView (WBContextualMenuExtension)
-
-- (BOOL)wb_handleMenuForEvent:(NSEvent *)theEvent row:(NSInteger)row;
+- (void)handleSelectEvent:(NSEvent *)rightMouseEvent;
 
 @end

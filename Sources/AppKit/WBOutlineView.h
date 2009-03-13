@@ -18,7 +18,8 @@ WB_CLASS_EXPORT
 @private
   struct _wb_ovFlags {
     unsigned int edit:1;
-    unsigned int reserved:31;
+    unsigned int drawOutline:1;
+    unsigned int reserved:30;
   } wb_ovFlags;
   NSHashTable *wb_noPadding;
 }
@@ -40,7 +41,13 @@ WB_CLASS_EXPORT
 
 @end
 
+
 @interface NSObject (WBOutlineViewDelegate)
+
 - (void)deleteSelectionInOutlineView:(NSOutlineView *)aView;
-- (NSMenu *)outlineView:(NSOutlineView *)outlineView menuForRow:(NSInteger)row;
+// returns NO to prevent outline cell drawing. Used in Source List.
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldDrawOutlineCellAtRow:(NSInteger)row;
+// Contextual menu helper.
+- (NSMenu *)outlineView:(NSOutlineView *)outlineView menuForRow:(NSInteger)row event:(NSEvent *)anEvent;
+
 @end

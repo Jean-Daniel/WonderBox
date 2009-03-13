@@ -96,6 +96,18 @@
                  object:nil];
   }
   [wb_outline reloadData];
+  // expand root uncollapsable items
+  if (root) {
+    if ([self displayRoot]) {
+      if (![root isCollapsable])
+        [wb_outline expandItem:root];
+    } else {
+      for (WBUITreeNode *node in [root childEnumerator]) {
+        if (![node isCollapsable])
+          [wb_outline expandItem:node];
+      }
+    }
+  }
 }
 
 - (NSOutlineView *)outlineView {
@@ -184,16 +196,15 @@
   id item = [aNotification object];
   
   if (_ContainsNode(item)) {
-    /* If remove all children (~ Set with nil info) ... */
+    /* If remove all children (~ "Set Children" with nil user info) ... */
     BOOL collapse = ![aNotification userInfo];
     if (!collapse) {
       /* ... or remove last child ... */
       collapse = [[aNotification userInfo] objectForKey:WBRemovedChild] != nil && [item count] == 1;
     }
     /* ... collapse item */
-    if (collapse) {
+    if (collapse)
       [wb_outline collapseItem:item];
-    }
   }
 }
 
@@ -202,8 +213,10 @@
   if (_ContainsNode(item)) {
     [wb_outline reloadItem:item reloadChildren:[wb_outline isItemExpanded:item]];
     
-    id child = [[aNotification userInfo] objectForKey:WBInsertedChild];
+    WBUITreeNode *child = [[aNotification userInfo] objectForKey:WBInsertedChild];
     if (child) {
+      if (![child isCollapsable])
+        [wb_outline expandItem:child];
       /* if autoselect and did insert child */
       if (wb_ocFlags.autoselect) {
         [self setSelectedNode:child];

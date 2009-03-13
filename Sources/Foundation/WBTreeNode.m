@@ -89,11 +89,8 @@
 
 - (NSString *)description {
   return [NSString stringWithFormat:@"<%@ %p>{parent = %p, children = %u, sibling = %p}",
-    NSStringFromClass([self class]),
-    self,
-    wb_parent,
-    [self count],
-    wb_sibling];
+    NSStringFromClass([self class]), self,
+    wb_parent, [self count], wb_sibling];
 }
 
 #pragma mark -
@@ -138,19 +135,18 @@
 
 - (id)findRoot {
   WBTreeNode *tree = self;
-  while (nil != tree->wb_parent) {
+  while (tree->wb_parent) 
     tree = tree->wb_parent;
-  }
   return tree;
 }
 
 #pragma mark Child access
 - (NSUInteger)count {
   NSUInteger cnt = 0;
-  WBTreeNode *tree = wb_child;
-  while (nil != tree) {
+  WBTreeNode *node = wb_child;
+  while (node) {
     cnt++;
-    tree = tree->wb_sibling;
+    node = node->wb_sibling;
   }
   return cnt;
 }
@@ -166,9 +162,8 @@
   WBTreeNode *last = nil;
   if (wb_child) {
     last = wb_child;
-    while (last->wb_sibling) {
+    while (last->wb_sibling) 
       last = last->wb_sibling;
-    }
   }
   return last;
 }
@@ -176,21 +171,21 @@
 /* Must return a mutable array for sort functions */
 - (NSArray *)children {
   NSMutableArray *children = [NSMutableArray array];
-  WBTreeNode *tree = wb_child;
-  while (nil != tree) {
-    [children addObject:tree];
-    tree = tree->wb_sibling;
+  WBTreeNode *node = wb_child;
+  while (node) {
+    [children addObject:node];
+    node = node->wb_sibling;
   }
   return children;
 }
 
 - (id)childAtIndex:(NSUInteger)anIndex {
-  WBTreeNode *tree = wb_child;
+  WBTreeNode *node = wb_child;
   NSUInteger idx = anIndex;
-  while (nil != tree) {
-    if (0 == idx) return tree;
+  while (node) {
+    if (0 == idx) return node;
     idx--;
-    tree = tree->wb_sibling;
+    node = node->wb_sibling;
   }
 	WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
 }
@@ -224,19 +219,19 @@
 #pragma mark -
 - (void)makeChildrenPerformSelector:(SEL)aSelector {
   NSParameterAssert(nil != aSelector);
-  WBTreeNode *tree = wb_child;
-  while (nil != tree) {
-    [tree performSelector:aSelector];
-    tree = tree->wb_sibling;
+  WBTreeNode *node = wb_child;
+  while (node) {
+    [node performSelector:aSelector];
+    node = node->wb_sibling;
   }
 }
 
 - (void)makeChildrenPerformSelector:(SEL)aSelector withObject:(id)object {
   NSParameterAssert(nil != aSelector);
-  WBTreeNode *tree = wb_child;
-  while (nil != tree) {
-    [tree performSelector:aSelector withObject:object];
-    tree = tree->wb_sibling;
+  WBTreeNode *node = wb_child;
+  while (node) {
+    [node performSelector:aSelector withObject:object];
+    node = node->wb_sibling;
   }
 }
 
@@ -348,7 +343,7 @@
 
 - (void)removeAllChildren {
   WBTreeNode *nextChild = wb_child;
-  while (nil != nextChild) {
+  while (nextChild) {
     WBTreeNode *sibling = nextChild->wb_sibling;
     [nextChild wb_remove];
     nextChild = sibling;
@@ -373,7 +368,7 @@
 
 - (void)remove {
   NSParameterAssert(wb_parent);
-  if (nil != wb_parent) {
+  if (wb_parent) {
     if (self == wb_parent->wb_child) {
       wb_parent->wb_child = wb_sibling;
     } else {
@@ -485,7 +480,7 @@
     wb_root = nil;
   }
   /* On descend d'un niveau */
-  if (nil == [wb_node firstChild]) {
+  if (![wb_node firstChild]) {
     /* Si on ne peut pas descendre on se deplace lateralement */
     WBTreeNode *sibling = nil;
     /* Tant qu'on est pas remonte en haut de l'arbre, et qu'on a pas trouvé de voisin */

@@ -62,8 +62,9 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
     unsigned int editable:1;
     unsigned int removable:1;
     unsigned int draggable:1;
+    unsigned int uncollapsable:1;
     /* reserved */
-    unsigned int reserved:9;
+    unsigned int reserved:8;
   } wb_utFlags;
 }
 
@@ -96,7 +97,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
 - (void)setNotify:(BOOL)notify;
 
 - (BOOL)isLeaf;
-- (void)setLeaf:(BOOL)flag;
+- (void)setIsLeaf:(BOOL)flag;
 
 - (BOOL)isGroupNode;
 - (void)setIsGroupNode:(BOOL)flag;
@@ -109,6 +110,9 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
 
 - (BOOL)isDraggable;
 - (void)setDraggable:(BOOL)flag;
+
+- (BOOL)isCollapsable;
+- (void)setCollapsable:(BOOL)flag;
 
 /* protected methods */
 - (void)wb_setIcon:(NSImage *)anIcon;

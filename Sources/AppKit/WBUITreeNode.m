@@ -151,33 +151,34 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 }
 
 #pragma mark -
+#pragma mark Undo
+- (BOOL)registerUndo {
+  return wb_utFlags.undo;
+}
+- (void)setRegisterUndo:(BOOL)flag {
+  WBFlagSet(wb_utFlags.undo, flag);
+}
 - (NSUndoManager *)undoManager {
-  return [self parent] ? [[self findRoot] undoManager] : nil;
+  return [[self parent] undoManager];
 }
 
-- (NSNotificationCenter *)notificationCenter {
-  return [self parent] ? [[self findRoot] notificationCenter] : nil;
-}
-
+#pragma mark Notify
 - (BOOL)notify {
   return wb_utFlags.notify;
 }
 - (void)setNotify:(BOOL)notify {
   WBFlagSet(wb_utFlags.notify, notify);
 }
+- (NSNotificationCenter *)notificationCenter {
+  return [[self parent] notificationCenter];
+}
 
+#pragma mark Node Properties
 - (BOOL)isLeaf {
   return wb_utFlags.leaf;
 }
-- (void)setLeaf:(BOOL)flag {
+- (void)setIsLeaf:(BOOL)flag {
   WBFlagSet(wb_utFlags.leaf, flag);
-}
-
-- (BOOL)isGroupNode {
-  return wb_utFlags.group;
-}
-- (void)setIsGroupNode:(BOOL)flag {
-  WBFlagSet(wb_utFlags.group, flag);
 }
 
 - (BOOL)isEditable {
@@ -201,11 +202,18 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   WBFlagSet(wb_utFlags.draggable, flag);
 }
 
-- (BOOL)registerUndo {
-  return wb_utFlags.undo;
+- (BOOL)isCollapsable {
+  return !wb_utFlags.uncollapsable;
 }
-- (void)setRegisterUndo:(BOOL)flag {
-  WBFlagSet(wb_utFlags.undo, flag);
+- (void)setCollapsable:(BOOL)flag {
+  WBFlagSet(wb_utFlags.uncollapsable, !flag);
+}
+
+- (BOOL)isGroupNode {
+  return wb_utFlags.group;
+}
+- (void)setIsGroupNode:(BOOL)flag {
+  WBFlagSet(wb_utFlags.group, flag);
 }
 
 #pragma mark Name & Icon

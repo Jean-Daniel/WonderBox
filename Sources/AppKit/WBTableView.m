@@ -1,5 +1,5 @@
 /*
- *  WBOutlineView.m
+ *	WBTableView.m
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
@@ -7,22 +7,16 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
- 
-#import WBHEADER(WBOutlineView.h)
+
+#import WBHEADER(WBTableView.h)
 #import WBHEADER(NSTableView+WonderBox.h)
 
-@implementation WBOutlineView
+@implementation WBTableView
 
 - (void)dealloc {
   if (wb_noPadding)
     NSFreeHashTable(wb_noPadding);
   [super dealloc];
-}
-
-#pragma mark -
-- (void)setDelegate:(id)aDelegate {
-  [super setDelegate:aDelegate];
-  wb_ovFlags.drawOutline = WBDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
 }
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
@@ -31,14 +25,18 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem*)anItem {
   if ([anItem action] == @selector(delete:)) {
-    return [self numberOfSelectedRows] != 0 && WBDelegateHandle([self delegate], deleteSelectionInOutlineView:);
+    if (WBDelegateHandle([self delegate], canDeleteSelectionInTableView:))
+      return [[self delegate] canDeleteSelectionInTableView:self];
+    return [self numberOfSelectedRows] > 0 && WBDelegateHandle([self delegate], deleteSelectionInTableView:);
+  } else if ([anItem action] == @selector(selectAll:)) {
+    return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
   }
   return YES;
 }
 
 - (void)wb_deleteSelection {
-  if (WBDelegateHandle([self delegate], deleteSelectionInOutlineView:)) {
-    [[self delegate] deleteSelectionInOutlineView:self];
+  if (WBDelegateHandle([self delegate], deleteSelectionInTableView:)) {
+    [[self delegate] deleteSelectionInTableView:self];
   } else {
     NSBeep();
   }
@@ -68,8 +66,7 @@
   }
 }
 
-- (void)editColumn:(NSInteger)column item:(id)anItem {
-  NSInteger row = [self rowForItem:anItem];
+- (void)editColumn:(NSInteger)column row:(NSInteger)row {
   if (row != -1) {
     [self editColumn:column row:row withEvent:nil select:YES];
   }
@@ -83,36 +80,20 @@
   id delegate = [self delegate];
   if ([theEvent clickCount] == 1) {
     /* If is maybe editable */
-    if (WBDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) && 
-        [[self dataSource] respondsToSelector:@selector(outlineView:setObjectValue:forTableColumn:byItem:)]) {
+    if (WBDelegateHandle(delegate, tableView:shouldEditTableColumn:row:)
+        && [[self dataSource] respondsToSelector:@selector(tableView:setObjectValue:forTableColumn:row:)]) {
       // If option key down when click => edit clicked cell
       if ([self shouldEditCellForEvent:theEvent]) {
         NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
-        // Check if click on the expand / collapse marker
-        if (row != -1 && column != -1 && [self columnAtIndex:column] == [self outlineTableColumn]) {
-          // find if click is on the button
-          CGFloat bias = 12;
-          CGFloat x = point.x - [self rectOfColumn:column].origin.x;
-          if ([self indentationMarkerFollowsCell]) {
-            bias = ([self levelForRow:row] + 1) * [self indentationPerLevel];
-          }
-          bias += 4; // left padding
-          if (x < (bias - 2) && x > (bias - 15)) {
-            [super mouseDown:theEvent];
-            return;
-          }
-        }
         
         if (column != -1 && row != -1) {
           // Check if already editing
           if ([self editedRow] == row && [self editedColumn] == column) return;
           
           // Check if editing allows
-          id item = [self itemAtRow:row];
-          if (item && 
-              [delegate outlineView:self shouldEditTableColumn:[self columnAtIndex:column] item:item]) {
+          if ([delegate tableView:self shouldEditTableColumn:[self columnAtIndex:column] row:row]) {
             // Select row if needed
             if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
               // [self selectRow:row byExtendingSelection:NO];
@@ -131,12 +112,12 @@
 }
 
 - (void)setContinueEditing:(BOOL)flag {
-  WBFlagSet(wb_ovFlags.edit, !flag);
+  WBFlagSet(wb_tvFlags.edit, !flag);
 }
 
 - (void)textDidEndEditing:(NSNotification *)notification {
   [super textDidEndEditing:notification];
-  if (wb_ovFlags.edit) {
+  if (wb_tvFlags.edit) {
     /* deselect next edited row */
     NSInteger row = [self selectedRow];
     if (row >= 0) {
@@ -148,9 +129,9 @@
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
   NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
-  if (WBDelegateHandle([self delegate], outlineView:menuForRow:event:))
-    return [[self delegate] outlineView:self menuForRow:row event:theEvent];
-  
+  if (WBDelegateHandle([self delegate], tableView:menuForRow:event:)) {
+    return [[self delegate] tableView:self menuForRow:row event:theEvent];
+  }
   return [super menuForEvent:theEvent];
 }
 
@@ -180,14 +161,6 @@
     }
   }
   return [super frameOfCellAtColumn:columnIndex row:rowIndex];
-}
-
-#pragma mark Disclosure
-- (NSRect)frameOfOutlineCellAtRow:(NSInteger)row {
-  if (!wb_ovFlags.drawOutline || [[self delegate] outlineView:self shouldDrawOutlineCellAtRow:row])
-    return [super frameOfOutlineCellAtRow:row];
-  
-  return NSZeroRect;
 }
 
 @end
