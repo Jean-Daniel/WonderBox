@@ -63,7 +63,8 @@
   return wb_image;
 }
 - (void)setImage:(NSImage *)anImage {
-  WBSetterRetain(&wb_image, anImage);
+  // should copy to avoid extern image alteration
+  WBSetterCopy(&wb_image, anImage);
 }
 
 - (BOOL)drawsLineOver {
@@ -118,7 +119,7 @@
   NSSize imageSize = [self wb_imageSize:cellFrame.size];
   NSDivideRect(cellFrame, &imageFrame, &textFrame, kWBImageMargin + imageSize.width, NSMinXEdge);
   if (NSMouseInRect(point, imageFrame, [controlView isFlipped]))
-    return NSCellHitContentArea | NSCellHitTrackableArea;
+    return NSCellHitContentArea;
   
   return [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
 }
@@ -182,6 +183,7 @@
     source.size = [wb_image size];
     CGContextSetShouldAntialias(ctxt, true);
     CGContextSetInterpolationQuality(ctxt, kCGInterpolationHigh);
+
     [wb_image drawInRect:imageFrame fromRect:source operation:NSCompositeSourceOver fraction:1];
     CGContextRestoreGState(ctxt);
 

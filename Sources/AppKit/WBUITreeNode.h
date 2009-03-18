@@ -90,11 +90,11 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
 - (NSUndoManager *)undoManager;
 - (NSNotificationCenter *)notificationCenter;
 
-- (BOOL)registerUndo;
-- (void)setRegisterUndo:(BOOL)flag;
-
 - (BOOL)notify;
 - (void)setNotify:(BOOL)notify;
+
+- (BOOL)registerUndo;
+- (void)setRegisterUndo:(BOOL)flag;
 
 - (BOOL)isLeaf;
 - (void)setIsLeaf:(BOOL)flag;

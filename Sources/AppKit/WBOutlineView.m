@@ -30,9 +30,9 @@
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)anItem {
-  if ([anItem action] == @selector(delete:)) {
+  if ([anItem action] == @selector(delete:)) 
     return [self numberOfSelectedRows] != 0 && WBDelegateHandle([self delegate], deleteSelectionInOutlineView:);
-  }
+  
   return YES;
 }
 
@@ -70,9 +70,8 @@
 
 - (void)editColumn:(NSInteger)column item:(id)anItem {
   NSInteger row = [self rowForItem:anItem];
-  if (row != -1) {
+  if (row >= 0)
     [self editColumn:column row:row withEvent:nil select:YES];
-  }
 }
 
 - (BOOL)shouldEditCellForEvent:(NSEvent *)theEvent {

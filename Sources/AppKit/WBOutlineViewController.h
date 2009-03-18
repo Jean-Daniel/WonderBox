@@ -8,11 +8,11 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-@class WBUITreeNode;
+@class WBBaseUITreeNode;
 WB_CLASS_EXPORT
 @interface WBOutlineViewController : NSObject {
 @private
-  WBUITreeNode *wb_root;
+  WBBaseUITreeNode *wb_root;
   NSOutlineView *wb_outline;
   struct _wb_ocFlags {
     unsigned int autoselect:1;
@@ -34,19 +34,19 @@ WB_CLASS_EXPORT
 - (void)setDisplayRoot:(BOOL)flag;
 
 - (id)root;
-- (void)setRoot:(WBUITreeNode *)root;
+- (void)setRoot:(WBBaseUITreeNode *)root;
 
 - (NSOutlineView *)outlineView;
 - (void)setOutlineView:(NSOutlineView *)anOutline;
 
 - (BOOL)containsNode:(id)aNode;
 
-- (void)displayNode:(WBUITreeNode *)aNode;
-- (void)editNode:(WBUITreeNode *)aNode column:(NSInteger)column;
+- (void)displayNode:(WBBaseUITreeNode *)aNode;
+- (void)editNode:(WBBaseUITreeNode *)aNode column:(NSInteger)column;
 
 - (id)selectedNode;
-- (void)setSelectedNode:(WBUITreeNode *)anObject;
-- (void)setSelectedNode:(WBUITreeNode *)anObject display:(BOOL)display;
+- (void)setSelectedNode:(WBBaseUITreeNode *)anObject;
+- (void)setSelectedNode:(WBBaseUITreeNode *)anObject display:(BOOL)display;
 
 /* Drag'n drop helper */
 - (BOOL)dropObject:(id)anObject item:(id)item childIndex:(NSInteger)index operation:(NSDragOperation)op;

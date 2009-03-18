@@ -59,7 +59,7 @@
 - (id)root {
   return wb_root;
 }
-- (void)setRoot:(WBUITreeNode *)root {
+- (void)setRoot:(WBBaseUITreeNode *)root {
   NSParameterAssert(root == nil || [root notify]);
   if (wb_root) {
     [[wb_root notificationCenter] removeObserver:self];
@@ -102,7 +102,7 @@
       if (![root isCollapsable])
         [wb_outline expandItem:root];
     } else {
-      for (WBUITreeNode *node in [root childEnumerator]) {
+      for (WBBaseUITreeNode *node in [root childEnumerator]) {
         if (![node isCollapsable])
           [wb_outline expandItem:node];
       }
@@ -129,10 +129,10 @@
   return _ContainsNode(aNode);
 }
 
-- (void)displayNode:(WBUITreeNode *)aNode {
+- (void)displayNode:(WBBaseUITreeNode *)aNode {
   if (_ContainsNode(aNode)) {
     // Expand all parents
-    WBUITreeNode *parent = [aNode parent];
+    WBBaseUITreeNode *parent = [aNode parent];
     if (parent) {
       NSMutableArray *path = [NSMutableArray array];
       do {
@@ -145,12 +145,12 @@
       }
     }
     //    int row = [wb_outline rowForItem:aNode];
-    //    if (row != -1)
+    //    if (row >= 0)
     //      [wb_outline scrollRowToVisible:row];
   }
 }
 
-- (void)editNode:(WBUITreeNode *)aNode column:(NSInteger)column {
+- (void)editNode:(WBBaseUITreeNode *)aNode column:(NSInteger)column {
   [self setSelectedNode:aNode display:YES];
   [wb_outline editColumn:column row:[wb_outline rowForItem:aNode] withEvent:nil select:YES];
 }
@@ -160,12 +160,12 @@
   return idx != -1 ? [wb_outline itemAtRow:idx] : nil;
 }
 
-- (void)setSelectedNode:(WBUITreeNode *)anObject {
+- (void)setSelectedNode:(WBBaseUITreeNode *)anObject {
   [self setSelectedNode:anObject display:YES];
 }
 
 #pragma mark Internal Methods
-- (void)setSelectedNode:(WBUITreeNode *)anObject display:(BOOL)display {
+- (void)setSelectedNode:(WBBaseUITreeNode *)anObject display:(BOOL)display {
   if (_ContainsNode(anObject)) {
     if (display) [self displayNode:anObject];
     // Select Row
@@ -184,12 +184,8 @@
 #pragma mark Notifications
 - (void)didChangeNodeName:(NSNotification *)aNotification {
   id item = [aNotification object];
-  if (_ContainsNode(item)) {
-    [wb_outline reloadItem:[aNotification object]];
-    //    if (item == [(SdefDocument *)[self document] dictionary]) {
-    //      [self synchronizeWindowTitleWithDocumentName];
-    //    }
-  }
+  if (_ContainsNode(item)) 
+    [wb_outline reloadItem:item];
 }
 
 - (void)willSetChildren:(NSNotification *)aNotification {
@@ -211,9 +207,12 @@
 - (void)didUpdateChildren:(NSNotification *)aNotification {
   id item = [aNotification object];
   if (_ContainsNode(item)) {
-    [wb_outline reloadItem:item reloadChildren:[wb_outline isItemExpanded:item]];
+    if (wb_root == item && ![self displayRoot])
+      [wb_outline reloadItem:nil reloadChildren:YES];
+    else
+      [wb_outline reloadItem:item reloadChildren:[wb_outline isItemExpanded:item]];
     
-    WBUITreeNode *child = [[aNotification userInfo] objectForKey:WBInsertedChild];
+    WBBaseUITreeNode *child = [[aNotification userInfo] objectForKey:WBInsertedChild];
     if (child) {
       if (![child isCollapsable])
         [wb_outline expandItem:child];
@@ -265,7 +264,7 @@
     @try {
       NSString *name = [item name];
       if ([object isKindOfClass:[NSString class]] && ![name isEqualToString:object]) {
-        [(WBUITreeNode *)item setName:object];
+        [(WBBaseUITreeNode *)item setName:object];
       }
     } @catch (id exception) {
       WBLogException(exception);
