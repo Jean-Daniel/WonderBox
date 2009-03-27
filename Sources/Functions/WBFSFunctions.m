@@ -586,6 +586,18 @@ OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool creat
   return err;
 }
 
+OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) {
+  FSRef ref;
+  if (!CFURLGetFSRef(anURL, &ref))
+    return coreFoundationUnknownErr;
+  
+  FSCatalogInfo catalog;
+  OSStatus err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catalog, NULL, NULL, NULL);
+  if (noErr == err) 
+    err = WBFSCopyFolderPath(folderType, catalog.volume, createFolder, path);
+  return err;
+}
+
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFStringRef target) {
   FSRef src;
   FSRef parent;

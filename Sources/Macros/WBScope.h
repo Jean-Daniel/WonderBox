@@ -11,9 +11,16 @@
 // from http://www.kickingbear.com
 
 #define WBScopeReleased __attribute__((cleanup($wb_scopeReleaseObject)))
+
+// Hack to workaround the compiler strictness in type checking.
+// passing something else than a CFTypeRef (like an CFStringRef for example) 
+// to the cleanup function will result in a compilation error.
+// We perform a stack var dereference to correctly handle case where we affect a new value
+// to 'var' afterward
 #define WBScopeCFReleased(type, var, value) \
-	__attribute__((cleanup($wb_scopeCFReleaseObject))) CFTypeRef __##var##__auto__ = value; \
-	type var = (type)__##var##__auto__
+	type var = value; \
+	__attribute__((cleanup($wb_scopeCFReleaseObject))) CFTypeRef *__##var##__auto__ = (CFTypeRef *)&var
+
 
 #define WBScopeAutoreleasePool() \
 	NSAutoreleasePool *$wb_autoreleasePool##__LINE__ __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
@@ -25,9 +32,9 @@ void $wb_scopeReleaseObject(id *scopeReleasedObject) {
 }
 
 static __inline__
-void $wb_scopeCFReleaseObject(CFTypeRef *scopeReleasedObject) {
-  if (*scopeReleasedObject) 
-    CFRelease(*scopeReleasedObject);
+void $wb_scopeCFReleaseObject(CFTypeRef **scopeReleasedObject) {
+  if (*scopeReleasedObject && **scopeReleasedObject) 
+    CFRelease(**scopeReleasedObject);
 }
 
 static __inline__
