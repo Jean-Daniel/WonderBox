@@ -49,9 +49,12 @@
 
 #pragma mark Protocols
 - (id)copyWithZone:(NSZone *)aZone {
-  WBComponent *copy = NSCopyObject(self, 0, aZone);
-  copy->_icon = [_icon retain];
+  WBComponent *copy = NSAllocateObject([self class], 0, aZone);
   
+  copy->_comp =_comp;
+  copy->_desc =_desc;
+  
+  copy->_icon = [_icon retain];
   copy->_name = [_name retain];
   copy->_manu = [_manu retain];
   copy->_info = [_info retain];

@@ -21,9 +21,9 @@
 WB_CLASS_EXPORT
 @interface WBTreeNode : NSObject <NSCopying, NSCoding> {
   @private
-  WBTreeNode*	wb_parent;
-  WBTreeNode*   wb_child;
-  WBTreeNode*	wb_sibling;
+  WBTreeNode *wb_child;
+  WBTreeNode *wb_parent;
+  WBTreeNode *wb_sibling;
 }
 #pragma mark Initializer
 + (id)node;

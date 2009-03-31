@@ -48,10 +48,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)aZone {
-  WBTreeNode *copy = (WBTreeNode *)NSCopyObject(self, 0, aZone);
-  copy->wb_child = nil;
-  copy->wb_parent = nil;
-  copy->wb_sibling = nil;
+  WBTreeNode *copy = NSAllocateObject([self class], 0, aZone);
   if (wb_child) {
     copy->wb_child = [wb_child copyWithZone:aZone];
     copy->wb_child->wb_parent = copy;
