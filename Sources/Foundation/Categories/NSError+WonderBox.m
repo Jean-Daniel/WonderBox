@@ -17,32 +17,32 @@
 }
 
 + (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath {
-  return [self fileErrorWithCode:code path:aPath description:nil];
+  return [self fileErrorWithCode:code path:aPath reason:nil];
 }
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath description:(NSString *)message {
++ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message {
   NSDictionary *info = nil;
   if (aPath)
     info = [NSDictionary dictionaryWithObjectsAndKeys:
             aPath, NSFilePathErrorKey,
-            message, NSLocalizedDescriptionKey, nil];
+            message, NSLocalizedFailureReasonErrorKey, nil];
   else if (message)
     info = [NSDictionary dictionaryWithObjectsAndKeys:
-            message, NSLocalizedDescriptionKey, nil];    
+            message, NSLocalizedFailureReasonErrorKey, nil];    
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];  
 }
 
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL {
-  return [self fileErrorWithCode:code url:anURL description:nil];
+  return [self fileErrorWithCode:code url:anURL reason:nil];
 }
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL description:(NSString *)message {
++ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message {
   NSDictionary *info = nil;
   if (anURL)
     info = [NSDictionary dictionaryWithObjectsAndKeys:
             anURL, NSURLErrorKey,
-            message, NSLocalizedDescriptionKey, nil];
+            message, NSLocalizedFailureReasonErrorKey, nil];
   else if (message)
     info = [NSDictionary dictionaryWithObjectsAndKeys:
-            message, NSLocalizedDescriptionKey, nil];
+            message, NSLocalizedFailureReasonErrorKey, nil];
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 

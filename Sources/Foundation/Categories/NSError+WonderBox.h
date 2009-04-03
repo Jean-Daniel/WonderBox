@@ -13,10 +13,10 @@
 + (NSError *)cancel;
 
 + (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath;
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath description:(NSString *)message;
++ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message;
 
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL;
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL description:(NSString *)message;
++ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message;
 
 - (BOOL)isCancel;
 
