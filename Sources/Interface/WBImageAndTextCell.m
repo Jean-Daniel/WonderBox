@@ -64,7 +64,7 @@
 }
 - (void)setImage:(NSImage *)anImage {
   // should copy to avoid extern image alteration
-  WBSetterCopy(&wb_image, anImage);
+  WBSetterRetain(&wb_image, anImage);
 }
 
 - (BOOL)drawsLineOver {
