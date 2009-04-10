@@ -83,7 +83,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
       [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
   }
 #else
-  WBFlagTestAndSet(wb_wcFlags.autorelease, release);
+  WBFlagSet(wb_wcFlags.autorelease, release);
 #endif
 }
 

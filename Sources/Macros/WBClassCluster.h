@@ -39,9 +39,15 @@
 */
 
 #define WBClassCluster(classname)		\
-WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-WBClassClusterImplementation(classname, classname, classname, classname)
+	WBClassClusterPlaceHolder(classname, classname, classname, classname) \
+	WBClassClusterImplementation(classname, classname, classname, classname)
 
+#define WBClassClusterNoClassForCoder(classname)		\
+	WBClassClusterPlaceHolder(classname, classname, classname, classname) \
+	WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)	
+
+
+// Details
 #define WBClassClusterPlaceHolder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
 	_WBInternalClassClusterPlaceHolder(classname, \
                                      WBClusterPlaceholder(placeholderPrefix), \
@@ -49,15 +55,25 @@ WBClassClusterImplementation(classname, classname, classname, classname)
                                      WBClusterZoneTable(zonestablePrefix))
 
 #define WBClassClusterImplementation(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
-_WBInternalClassClusterImplementation(classname, \
-                                      WBClusterPlaceholder(placeholderPrefix), \
-                                      WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
-                                      WBClusterZoneTable(zonestablePrefix))
+  _WBInternalClassClusterImplementation(classname, \
+                                        WBClusterPlaceholder(placeholderPrefix), \
+                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
+                                        WBClusterZoneTable(zonestablePrefix)) \
+	_WBInternalClassForCoder(classname)
 
+#define WBClassClusterImplementationNoClassForCoder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
+	_WBInternalClassClusterImplementation(classname, \
+																				WBClusterPlaceholder(placeholderPrefix), \
+																				WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
+																				WBClusterZoneTable(zonestablePrefix))
+
+// MARK: Names
 #define WBClusterZoneTable(classname)           classname##ClusterPlaceholderZones
 #define WBClusterPlaceholder(classname)         classname##ClusterPlaceholder
 #define WBClusterDefaultPlaceholder(classname)  classname##DefaultClusterPlaceholder
 
+// MARK: -
+// MARK: Internal
 #define _WBInternalClassClusterPlaceHolder(superclass, placeholderclass, defaultplaceholder, zonestable) \
 @interface placeholderclass : superclass { \
 } \
@@ -144,11 +160,14 @@ static placeholderclass *defaultplaceholder = nil; \
   } \
 } \
 \
+@end
+
+#define _WBInternalClassForCoder(classname) \
+@implementation classname (WBClusterClassForCoder) \
 \
 - (Class)classForCoder { \
   return [classname class]; \
 } \
 \
 @end
-
 
