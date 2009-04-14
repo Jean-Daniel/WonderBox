@@ -477,13 +477,14 @@ OSStatus _WBFSForceDeletePath(const char *path, void *ctxt) {
   if (0 != err) {
     /* basic error mapping */
     switch (errno) {
-      case EACCES:
+      default:
+        return kPOSIXErrorBase + errno;
       case EPERM:
+      case EACCES:
         return permErr;
       case ENAMETOOLONG:
         return errFSNameTooLong;
     }
-    return errno;
   }
   return noErr;
 }

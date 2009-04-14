@@ -70,6 +70,7 @@ typedef struct _WBCGSimpleShadingInfo {
   CGFloat end[4];
   WBShadingFactorFunction fct;
 } WBCGSimpleShadingInfo;
+// CGFunctionEvaluateCallback WBCGShadingSimpleShadingFunction;
 WB_EXPORT
 void WBCGShadingSimpleShadingFunction(void *pinfo, const CGFloat *in, CGFloat *out);
 
@@ -82,7 +83,8 @@ typedef struct {
     WBShadingFactorFunction fct;
   } steps[];
 } WBCGMultiShadingInfo;
-WB_EXPORT
+// CGFunctionEvaluateCallback WBCGShadingMultiShadingFunction;
+WB_EXPORT 
 void WBCGShadingMultiShadingFunction(void *pinfo, const CGFloat *in, CGFloat *out);
 
 WB_EXPORT
@@ -110,7 +112,7 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer);
 
 #pragma mark Images
 /*!
-@param type The UTI (uniform type identifier) of the resulting image file.
+ @param type The UTI (uniform type identifier) of the resulting image file.
  */
 WB_EXPORT
 bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type);
