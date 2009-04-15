@@ -19,7 +19,6 @@
 @interface _WBCollapseItemView ()
 
 - (void)wb_buildHeaderView;
-- (void)wb_setupItemView:(NSView *)aView;
 
 - (void)wb_attachItem:(WBCollapseViewItem *)anItem;
 - (void)wb_detachItem:(WBCollapseViewItem *)anItem;
@@ -36,20 +35,27 @@
   if (self = [super initWithFrame:frame]) {
     // setup self
     [self setAutoresizesSubviews:YES];
-    [self setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
     
     wb_item = [anItem retain];
 
     [self wb_buildHeaderView];
     [self wb_attachItem:wb_item];
-    [self wb_setupItemView:[wb_item view]];
     
     // setup title
     [wb_title setStringValue:[wb_item title] ? : @""];
     
     // set initial state
-    if ([wb_item isExpanded]) 
-      [self setExpanded:YES animate:NO];
+    if ([wb_item isExpanded]) {
+      CGFloat delta = [self expandHeight];
+      if (delta > 0) {
+        [self willSetExpanded:YES];
+        // adjust frame
+        frame.origin.y -= delta;
+        frame.size.height += delta;
+        [self setFrame:frame];
+        [self didSetExpanded:YES];
+      }
+    }
   }
   return self;
 }
@@ -65,46 +71,65 @@
 - (BOOL)isOpaque { return NO; }
 - (BOOL)isFlipped { return NO; }
 
-- (NSRect)headerFrame {
-  if ([wb_item isExpanded]) {
-    NSRect frame = [self frame];
-    frame.origin.y = frame.size.height - ITEM_HEADER_HEIGHT;
-    frame.size.height = ITEM_HEADER_HEIGHT;
-    return frame;
-  }
-  return [self frame];
+- (NSRect)headerBounds {
+  NSRect frame = [self bounds];
+  frame.origin.y = frame.size.height - ITEM_HEADER_HEIGHT;
+  frame.size.height = ITEM_HEADER_HEIGHT;
+  return frame;
 }
-- (NSRect)contentFrame {
-  if ([wb_item isExpanded]) {
-    NSRect frame = [self frame];
-    // margin bottom: 1px
-    frame.origin.y = ITEM_BOTTOM_MARGIN;
-    frame.size.height -= ITEM_HEADER_HEIGHT + ITEM_BOTTOM_MARGIN;
-    return frame;
-  }
-  return NSZeroRect;
+
+- (CGFloat)expandHeight {
+  return [wb_item view] ? NSHeight([[wb_item view] frame]) + ITEM_BOTTOM_MARGIN : 0;
 }
 
 - (id)identifier { return [wb_item identifier]; }
 - (WBCollapseView *)collapseView { return [wb_item collapseView]; }
 
 // MARK: Expension
-- (void)setExpanded:(BOOL)expanded animate:(BOOL)flag {
-  // TODO: 
-  
-  
-  // Update Collapse Button State
+- (void)willSetExpanded:(BOOL)expanded {
+  wb_civFlags.resizing = 1;
+  if (expanded) {
+    NSView *view = [wb_item view];
+    if (view) {
+      WBAssert(![view superview], @"why the item view is already in a view tree ?");
+      
+      wb_civFlags.resizeMask = [view autoresizingMask];
+      [view setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
+      
+      // insert subview
+      NSRect frame = [view frame];
+      frame.size.width = NSWidth([self frame]);
+      frame.origin = NSMakePoint(0, - NSHeight(frame));
+      [view setFrame:frame];
+      
+      [self addSubview:view];
+    }
+  } else {
+    
+  }
+}
+- (void)didSetExpanded:(BOOL)expanded {
   [wb_disclose setState:expanded ? NSOnState : NSOffState];
+  if (expanded) {
+    
+  } else {
+    // remove child view
+    [[wb_item view] removeFromSuperview];
+    // restore resizing mask
+    [[wb_item view] setAutoresizingMask:wb_civFlags.resizeMask];
+  }
+  wb_civFlags.resizing = 0;
 }
 
 // MARK: Event Handling
 - (void)mouseDown:(NSEvent *)theEvent {
-  NSRect header = [self headerFrame];
+  NSRect header = [self headerBounds];
   NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
   if (![self mouse:mouseLoc inRect:header]) return;
   
   // set is inside
   wb_civFlags.highlight = 1;
+  //[wb_disclose setState:NSMixedState];
   [self setNeedsDisplayInRect:header];
   
   BOOL keepOn = YES;
@@ -117,6 +142,7 @@
       case NSLeftMouseDragged:
         if (wb_civFlags.highlight != isInside) {
           wb_civFlags.highlight = isInside;
+          //[wb_disclose setState:isInside ? NSMixedState : [wb_item isExpanded] ? NSOnState : NSOffState];
           [self setNeedsDisplayInRect:header];
         }
         break;
@@ -124,6 +150,7 @@
         if (isInside) {
           // toggle state
           [wb_item setExpanded:![wb_item isExpanded]];
+          header = [self headerBounds];
         }
         wb_civFlags.highlight = 0;
         [self setNeedsDisplayInRect:header];
@@ -164,12 +191,10 @@
     [wb_title setStringValue:[object title] ? : @""];
   } else if ([keyPath isEqualToString:@"view"]) {
     // adjust height and notify parent
-    NSView *new = [change objectForKey:NSKeyValueChangeNewKey];
-    
-    [self wb_setupItemView:new];
     if (![wb_item isExpanded]) return;
     
     WBThrowException(NSInternalInconsistencyException, @"not implemented");
+//		NSView *new = [change objectForKey:NSKeyValueChangeNewKey];    
 //    NSView *old = [change objectForKey:NSKeyValueChangeOldKey];
 //    CGFloat delta = new ? NSHeight([new frame]) : 0;
 //    delta -= old ? NSHeight([old frame]) : 0;    
@@ -199,13 +224,13 @@
 // MARK: -
 // MARK: Drawing
 - (void)drawRect:(NSRect)aRect {
-  NSRect header = [self headerFrame];
+  NSRect header = [self headerBounds];
   // redraw header if needed
   if (NSIntersectsRect(header, aRect))
     [self drawHeaderInRect:header];
   
   // draw bottom border if expanded
-  if ([wb_item isExpanded]) {
+  if (wb_civFlags.resizing || [wb_item isExpanded]) {
     CGPoint line[2];
     NSRect bounds = [self bounds];
     CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
@@ -248,34 +273,22 @@
   
   // draw bottom border
   CGContextSetLineWidth(ctxt, 1);
-  CGContextSetGrayStrokeColor(ctxt, .33, 1);
-  
-  CGPoint line[] = {
-    CGPointMake(NSMinX(aRect), NSMinY(aRect) + .5),
-    CGPointMake(NSMaxX(aRect), NSMinY(aRect) + .5)
-  };
-  CGContextStrokeLineSegments(ctxt, line, 2);
+  {
+    // first line
+    CGContextSetGrayStrokeColor(ctxt, .33, 1);
+    CGPoint line[] = {
+      CGPointMake(NSMinX(aRect), NSMinY(aRect) + .5),
+      CGPointMake(NSMaxX(aRect), NSMinY(aRect) + .5)
+    };
+    CGContextStrokeLineSegments(ctxt, line, 2);
+  }
 }
 
 // MARK: -
 // MARK: Internal
-- (void)wb_setupItemView:(NSView *)aView {
-  if (!aView) return;
-  
-  // setup sizing mask to fit resizing behavior
-  [aView setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
-  
-  // adjust view width to fit self width
-  NSRect frame = [aView frame];
-  frame.size.width = NSWidth([self frame]);
-  frame.origin = NSZeroPoint;
-  
-  [aView setFrame:frame];
-}
-
 - (void)wb_buildHeaderView {
   // Init Header Components
-  NSRect buttonFrame, titleFrame = [self headerFrame];
+  NSRect buttonFrame, titleFrame = [self headerBounds];
   NSDivideRect(titleFrame, &buttonFrame, &titleFrame, 18, NSMinXEdge);
   
   // Text Field

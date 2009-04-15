@@ -38,6 +38,11 @@
   return self;
 }
 
+- (id)init {
+  [self release];
+  WBThrowException(NSInvalidArgumentException, @"use -initWithIdentifier instead");
+}
+
 - (id)initWithIdentifier:(id)anIdentifier {
   if (!anIdentifier) {
     [self release];
@@ -91,9 +96,9 @@
   if (expanded && wb_cviFlags.expanded) return;
   if (!expanded && !wb_cviFlags.expanded) return;
   
-  _WBCollapseItemView *view = [wb_owner _viewForItem:self];
-  [view setExpanded:expanded animate:flag];
-  WBFlagSet(wb_cviFlags.expanded, flag);
+  [wb_owner _setExpanded:expanded forItem:self animate:flag];
+  
+  WBFlagSet(wb_cviFlags.expanded, expanded);
 }
 
 @end

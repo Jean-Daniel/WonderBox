@@ -12,10 +12,10 @@
 @class _WBCollapseItemView;
 @interface WBCollapseView (WBInternal)
 
-- (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem;
-
 // change item height notification
 - (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta;
+
+- (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate;
 
 @end
 
@@ -28,8 +28,9 @@
   NSButton *wb_disclose;
   
   struct _wb_civFlags {
+    unsigned int resizing:1;
     unsigned int highlight:1;
-    unsigned int reserved:7;
+    unsigned int resizeMask:6;
   } wb_civFlags;
 }
 
@@ -39,13 +40,14 @@
 
 - (id)initWithItem:(WBCollapseViewItem *)anItem;
 
-- (NSRect)headerFrame;
-- (NSRect)contentFrame;
+- (NSRect)headerBounds;
+
+- (CGFloat)expandHeight;
 
 - (void)drawHeaderInRect:(NSRect)aRect;
 
-// never call directly. Use WBCollapseItem methods instead.
-- (void)setExpanded:(BOOL)expanded animate:(BOOL)flag;
+- (void)willSetExpanded:(BOOL)expanded;
+- (void)didSetExpanded:(BOOL)expanded;
 
 @end
 
