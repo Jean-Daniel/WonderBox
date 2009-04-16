@@ -44,6 +44,10 @@ WB_CLASS_EXPORT
 // does not accept null path
 - (void)setPath:(NSString *)path;
 
+- (NSURL *)URL;
+// does not accept null path
+- (void)setURL:(NSURL *)anURL;
+
 // returns true if the alias has been updated.
 - (BOOL)update;
 - (NSData *)data;

@@ -87,6 +87,8 @@
 
 // MARK: Expension
 - (void)willSetExpanded:(BOOL)expanded {
+  if (XOR([wb_item isExpanded], expanded))
+    [wb_item willSetExpanded:expanded];
   wb_civFlags.resizing = 1;
   if (expanded) {
     NSView *view = [wb_item view];
@@ -107,6 +109,7 @@
   } else {
     
   }
+  
 }
 - (void)didSetExpanded:(BOOL)expanded {
   [wb_disclose setState:expanded ? NSOnState : NSOffState];
@@ -119,6 +122,8 @@
     [[wb_item view] setAutoresizingMask:wb_civFlags.resizeMask];
   }
   wb_civFlags.resizing = 0;
+  if (XOR([wb_item isExpanded], expanded))
+    [wb_item didSetExpanded:expanded];
 }
 
 // MARK: Event Handling

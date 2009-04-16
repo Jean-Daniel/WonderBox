@@ -97,8 +97,17 @@
   if (!expanded && !wb_cviFlags.expanded) return;
   
   [wb_owner _setExpanded:expanded forItem:self animate:flag];
-  
+  //WBFlagSet(wb_cviFlags.expanded, expanded);
+}
+
+@end
+
+@implementation WBCollapseViewItem (WBInternal)
+
+- (void)willSetExpanded:(BOOL)expanded {}
+- (void)didSetExpanded:(BOOL)expanded {
   WBFlagSet(wb_cviFlags.expanded, expanded);
 }
 
 @end
+

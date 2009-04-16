@@ -153,12 +153,22 @@
   return nil;
 }
 
+- (NSURL *)URL {
+  return wb_path ? [NSURL fileURLWithPath:wb_path] : nil;
+}
+- (void)setURL:(NSURL *)anURL {
+  if (![anURL isFileURL])
+    WBThrowException(NSInvalidArgumentException, @"Unsupported URL scheme: %@", [anURL scheme]);
+  [self setPath:[anURL path]];
+}
+
 - (NSString *)path {
   return wb_path;
 }
-
 - (void)setPath:(NSString *)path {
-  NSParameterAssert(path);
+  if (!path)
+    WBThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
+  
   if (wb_path != path) {
     [wb_path release];
     wb_path = [path copy];

@@ -25,6 +25,8 @@
 
 @implementation WBCollapseView
 
+@synthesize delegate = wb_delegate;
+
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
     wb_views = [[NSMutableArray alloc] init];
@@ -175,6 +177,9 @@
   [wb_views insertObject:view atIndex:anIndex];
   [self addSubview:view];
   [view release];
+  
+  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+    [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
 - (void)removeItem:(WBCollapseViewItem *)anItem {
@@ -198,6 +203,9 @@
   
   // update collection
   [wb_views removeObjectAtIndex:idx];
+  
+  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+    [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
 - (void)removeItemWithIdentifier:(id)anIdentifier {
@@ -279,11 +287,19 @@
   WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]), 
            @"invalid operation for this item state");
   
+  // Let the delegate cancel the action
+  if (WBDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
+    if (![wb_delegate collapseView:self shouldSetExpanded:expands forItem:anItem])
+      return;
+  
   CGFloat delta = [view expandHeight];
   if (delta <= 0) return;
   
   // if collapse: delta should be negative
   if (!expands) delta = -delta;
+  
+  if (WBDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
+    [wb_delegate collapseView:self willSetExpanded:expands forItem:anItem];
   
   [view willSetExpanded:expands];
   
@@ -302,8 +318,11 @@
   
   // reset sizing mask to a good default (not required)
   [self _setResizingMask:NSViewWidthSizable | NSViewMaxYMargin range:NSMakeRange(0, count)];
-  
+
   [view didSetExpanded:expands];
+  
+  if (WBDelegateHandle(wb_delegate, collapseView:didSetExpanded:forItem:))
+    [wb_delegate collapseView:self didSetExpanded:expands forItem:anItem];
 }
 
 @end

@@ -7,10 +7,14 @@
 //
 
 @class WBCollapseViewItem;
+@protocol WBCollapseViewDelegate;
 @interface WBCollapseView : NSView <NSCoding> {
 @private
   NSMutableArray *wb_views;
+  id <WBCollapseViewDelegate> wb_delegate __weak;
 }
+
+@property(assign) __weak id <WBCollapseViewDelegate> delegate;
 
 - (void)expandAllItems;
 - (void)collapseAllItems;
@@ -35,3 +39,15 @@
 - (WBCollapseViewItem *)itemAtPoint:(NSPoint)point;			// point in local coordinates. returns nil if none.
 
 @end
+
+@protocol WBCollapseViewDelegate
+
+@optional
+- (void)collapseViewDidChangeNumberOfCollapseViewItems:(WBCollapseView *)aView;
+
+- (BOOL)collapseView:(WBCollapseView *)aView shouldSetExpanded:(BOOL)expanded forItem:(WBCollapseViewItem *)anItem;
+- (void)collapseView:(WBCollapseView *)aView willSetExpanded:(BOOL)expanded forItem:(WBCollapseViewItem *)anItem;
+- (void)collapseView:(WBCollapseView *)aView didSetExpanded:(BOOL)expanded forItem:(WBCollapseViewItem *)anItem;
+
+@end
+

@@ -7,7 +7,8 @@
  *
  */
 
-#import "WBCollapseView.h"
+#import WBHEADER(WBCollapseView.h)
+#import WBHEADER(WBCollapseViewItem.h)
 
 @class _WBCollapseItemView;
 @interface WBCollapseView (WBInternal)
@@ -16,6 +17,13 @@
 - (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta;
 
 - (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate;
+
+@end
+
+@interface WBCollapseViewItem (WBInternal)
+
+- (void)willSetExpanded:(BOOL)expanded;
+- (void)didSetExpanded:(BOOL)expanded;
 
 @end
 
