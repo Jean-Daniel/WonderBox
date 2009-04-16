@@ -21,13 +21,15 @@
 }
 
 @property(retain) NSView *view;
+@property(retain) id identifier;
+
 @property(copy) NSString *title;
 
 @property BOOL animates;
 
-- (id)initWithIdentifier:(id)anIdentifier;
-
-- (id)identifier;
+- (id)init;
+- (id)initWithView:(NSView *)aView;
+- (id)initWithView:(NSView *)aView identifier:(id)anIdentifier;
 
 - (WBCollapseView *)collapseView;
 

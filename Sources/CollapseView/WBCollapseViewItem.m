@@ -14,6 +14,7 @@
 
 @synthesize view = wb_view;
 @synthesize title = wb_title;
+@synthesize identifier = wb_uid;
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [aCoder encodeObject:wb_view forKey:@"item.view"];
@@ -39,20 +40,17 @@
 }
 
 - (id)init {
-  [self release];
-  WBThrowException(NSInvalidArgumentException, @"use -initWithIdentifier instead");
+  return [self initWithView:nil identifier:nil];
 }
-
-- (id)initWithIdentifier:(id)anIdentifier {
-  if (!anIdentifier) {
-    [self release];
-    WBThrowException(NSInvalidArgumentException,  @"identifier must not be nil");
-  }
-  
+- (id)initWithView:(NSView *)aView {
+  return [self initWithView:aView identifier:nil];
+}
+- (id)initWithView:(NSView *)aView identifier:(id)anIdentifier {
   if (self = [super init]) {
-    wb_uid = anIdentifier;
+    self.view = aView;
     wb_cviFlags.animates = 1;
     wb_cviFlags.expanded = 1;
+    self.identifier = anIdentifier;
   }
   return self;
 }

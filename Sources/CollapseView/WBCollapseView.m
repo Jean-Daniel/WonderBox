@@ -16,8 +16,6 @@
 - (void)_setResizingMask:(NSUInteger)mask range:(NSRange)aRange;
 - (void)_incrementHeightBy:(CGFloat)delta animate:(BOOL)animate;
 
-- (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem;
-
 - (void)_moveItemsInRange:(NSRange)aRange delta:(CGFloat)height;
 - (void)_insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex resize:(BOOL)flag;
 
@@ -27,24 +25,16 @@
 
 @synthesize delegate = wb_delegate;
 
-- (id)initWithCoder:(NSCoder *)aCoder {
-  if (self = [super initWithCoder:aCoder]) {
-    wb_views = [[NSMutableArray alloc] init];
-    // Decode items
-    NSArray *items = [aCoder decodeObjectForKey:@"view.items"];
-    for (WBCollapseViewItem *item in items) 
-      [self _insertItem:item atIndex:[wb_views count] resize:NO];  
-  }
-  return self;
-}
-
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [super encodeWithCoder:aCoder];
-  NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:[wb_views count]];
-  for (_WBCollapseItemView *view in wb_views) 
-    [items addObject:view.item];
-  [aCoder encodeObject:items forKey:@"view.items"];
-  [items release];
+  [aCoder encodeObject:wb_views forKey:@"view.items"];
+}
+
+- (id)initWithCoder:(NSCoder *)aCoder {
+  if (self = [super initWithCoder:aCoder]) {
+    wb_views = [[aCoder decodeObjectForKey:@"view.items"] retain];
+  }
+  return self;
 }
 
 - (id)initWithFrame:(NSRect)aFrame {
@@ -82,6 +72,13 @@
 - (void)collapseAllItems { [self doesNotRecognizeSelector:_cmd]; }
 
 // MARK: Query
+- (NSArray *)items {
+  NSMutableArray *items = [NSMutableArray array];
+  for (_WBCollapseItemView *view in wb_views)
+    [items addObject:view.item];
+  return items;
+}
+
 - (NSUInteger)numberOfItems {
   return [wb_views count];
 }
@@ -133,19 +130,15 @@
 }
 
 - (void)insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex {
-  if (!anItem || ![anItem identifier])
-    WBThrowException(NSInvalidArgumentException, @"trying to insert invalid item (either nil or has nil identifier)");
+  if (!anItem)
+    WBThrowException(NSInvalidArgumentException, @"try to insert nil in collapse view");
   if ([anItem collapseView])
-    WBThrowException(NSInvalidArgumentException, @"trying to insert an item that is already in a collapse view");
+    WBThrowException(NSInvalidArgumentException, @"try to insert an item that is already in a collapse view");
   [self _insertItem:anItem atIndex:anIndex resize:YES];
 }
 
 - (void)_insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex resize:(BOOL)resize {
-  WBAssert([anItem identifier], @"try to insert item with nil identifier: %@", anItem);
   WBAssert(![anItem collapseView] || [anItem collapseView] == self, @"%@ already part of an other collapse view", anItem);
-  
-  if ([self itemWithIdentifier:[anItem identifier]])
-    WBThrowException(NSInvalidArgumentException, @"an item with identifier %@ already exists in this view", [anItem identifier]);
   
   // Search position for this new item
   CGFloat height = 0;
@@ -183,9 +176,14 @@
 }
 
 - (void)removeItem:(WBCollapseViewItem *)anItem {
-  _WBCollapseItemView *view = [self _viewForItem:anItem];
-  if (!view)
+  NSUInteger idx = [self indexOfItem:anItem];
+  if (NSNotFound == idx)
     WBThrowException(NSInvalidArgumentException, @"%@ is not an item of this view", anItem);
+  
+  [self removeItemAtIndex:idx];
+}
+- (void)removeItemAtIndex:(NSUInteger)anIndex {
+  _WBCollapseItemView *view = [wb_views objectAtIndex:anIndex];
   
   // remove view
   [view removeFromSuperview];
@@ -193,16 +191,15 @@
   
   CGFloat delta = NSHeight([view frame]);
   // Move view that are after the one we remove.
-  NSUInteger idx = [wb_views indexOfObjectIdenticalTo:view];
   
-  if (idx < [wb_views count] - 1) // if not last item
-    [self _moveItemsInRange:NSMakeRange(idx + 1, [wb_views count] - (idx + 1)) delta:delta];
+  if (anIndex < [wb_views count] - 1) // if not last item
+    [self _moveItemsInRange:NSMakeRange(anIndex + 1, [wb_views count] - (anIndex + 1)) delta:delta];
   
   // update self height
   [self _incrementHeightBy:-delta animate:NO];
   
   // update collection
-  [wb_views removeObjectAtIndex:idx];
+  [wb_views removeObjectAtIndex:anIndex];
   
   if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
@@ -215,14 +212,6 @@
 }
 
 // MARK: Internal
-- (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem {
-  for (_WBCollapseItemView *view in wb_views) {
-    if ([view.item isEqual:anItem])
-      return view;
-  }
-  return nil;
-}
-
 - (void)_setResizingMask:(NSUInteger)mask range:(NSRange)aRange {
   if (0 == aRange.length) return;
   for (NSUInteger idx = aRange.location, count = NSMaxRange(aRange); idx < count; idx++) 
@@ -275,6 +264,14 @@
 
 #pragma mark -
 @implementation WBCollapseView (WBInternal)
+
+- (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem {
+  for (_WBCollapseItemView *view in wb_views) {
+    if ([view.item isEqual:anItem])
+      return view;
+  }
+  return nil;
+}
 
 - (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta {
   // TODO: 

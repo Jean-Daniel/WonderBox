@@ -13,6 +13,8 @@
 @class _WBCollapseItemView;
 @interface WBCollapseView (WBInternal)
 
+- (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem;
+
 // change item height notification
 - (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta;
 

@@ -24,9 +24,11 @@
 - (void)insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)index; // May raise an NSRangeException
 
 - (void)removeItem:(WBCollapseViewItem *)anItem;                           // Item must be an existing CollapseViewItem
+- (void)removeItemAtIndex:(NSUInteger)anIndex;
 - (void)removeItemWithIdentifier:(id)anIdentifier;
 
 /* Query */
+- (NSArray *)items;
 - (NSUInteger)numberOfItems;
 
 - (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;			// May raise an NSRangeException	

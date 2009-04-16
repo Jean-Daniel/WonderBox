@@ -29,6 +29,24 @@
 
 @synthesize item = wb_item;
 
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [super encodeWithCoder:aCoder];
+  [aCoder encodeObject:wb_item forKey:@"view.item"];
+  [aCoder encodeObject:wb_title forKey:@"view.title"];
+  [aCoder encodeObject:wb_disclose forKey:@"view.disclose"];
+}
+
+- (id)initWithCoder:(NSCoder *)aCoder {
+  if (self = [super initWithCoder:aCoder]) {
+    wb_item = [[aCoder decodeObjectForKey:@"view.item"] retain];
+    [self wb_attachItem:wb_item];
+    
+    wb_title = [aCoder decodeObjectForKey:@"view.title"];
+    wb_disclose = [aCoder decodeObjectForKey:@"view.disclose"];
+  }
+  return self;
+}
+
 - (id)initWithItem:(WBCollapseViewItem *)anItem {
   NSParameterAssert(anItem && [anItem collapseView]);
   NSRect frame = NSMakeRect(0, 0, [[anItem collapseView] frame].size.width, ITEM_HEADER_HEIGHT);
@@ -130,7 +148,8 @@
 - (void)mouseDown:(NSEvent *)theEvent {
   NSRect header = [self headerBounds];
   NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-  if (![self mouse:mouseLoc inRect:header]) return;
+  if (![self mouse:mouseLoc inRect:header]) 
+    return [super mouseDown:theEvent];
   
   // set is inside
   wb_civFlags.highlight = 1;
