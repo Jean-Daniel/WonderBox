@@ -238,7 +238,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
         
         NSInteger frames = lround(fmod(frame, rate));
         
-        str = [NSString stringWithFormat:@"%.2ld:%.2ld:%.2ld%:%.2ld", 
+        str = [NSString stringWithFormat:@"%.2ld:%.2ld:%.2ld:%.2ld", 
                hours, minutes, seconds, frames];        
       } else {
         aTime.timeValue += round(([self firstFrame] * aTime.timeScale) / rate);
