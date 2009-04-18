@@ -29,18 +29,18 @@
 
 @end
 
+@class _WBCollapseItemHeaderView;
 @interface _WBCollapseItemView : NSView {
 @private
   WBCollapseViewItem *wb_item;
   
-  /* Header Components */
-  NSTextField *wb_title;
-  NSButton *wb_disclose;
+  /* Components */
+  NSView *wb_body;
+  _WBCollapseItemHeaderView *wb_header;
   
   struct _wb_civFlags {
     unsigned int resizing:1;
-    unsigned int highlight:1;
-    unsigned int resizeMask:6;
+    unsigned int resizeMask:7;
   } wb_civFlags;
 }
 
@@ -50,11 +50,9 @@
 
 - (id)initWithItem:(WBCollapseViewItem *)anItem;
 
-- (NSRect)headerBounds;
+- (NSRect)headerFrame;
 
 - (CGFloat)expandHeight;
-
-- (void)drawHeaderInRect:(NSRect)aRect;
 
 - (void)willSetExpanded:(BOOL)expanded;
 - (void)didSetExpanded:(BOOL)expanded;

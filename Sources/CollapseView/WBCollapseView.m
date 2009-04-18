@@ -242,10 +242,13 @@
     [animation setAnimationCurve:NSAnimationEaseInOut];
     [animation setFrameRate:30];
     // for debugging and for fun
+    NSTimeInterval duration;
     if (([[NSApp currentEvent] modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask)
-      [animation setDuration:2];
+      duration = MIN(1.8, ABS(delta / 100));
     else
-      [animation setDuration:.25];
+      duration = MIN(.60, ABS(delta / 300)); //  300px per seconds, but 0.60s maxi.
+    
+    [animation setDuration:duration];
     
     NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:
                            self, NSViewAnimationTargetKey,
