@@ -23,7 +23,7 @@
 
 
 #define __WBScopeAutoreleasePool(line) \
-NSAutoreleasePool *$wb_autoreleasePool_##line __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
+  NSAutoreleasePool *$wb_autoreleasePool_##line __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
 // FIXME: find a cleaner way to tell the preprocessor to expand __LINE__
 #define _WBScopeAutoreleasePool(line) __WBScopeAutoreleasePool(line)
 #define WBScopeAutoreleasePool() _WBScopeAutoreleasePool(__LINE__)

@@ -10,7 +10,6 @@
 
 #import WBHEADER(WBAlias.h)
 #import WBHEADER(WBFSFunctions.h)
-#import WBHEADER(NSError+WonderBox.h)
 
 @interface WBAlias ()
 
