@@ -10,10 +10,9 @@
 
 #import "WBCollapseViewInternal.h"
 
+#import WBHEADER(WBGradient.h)
 #import WBHEADER(WBCollapseView.h)
 #import WBHEADER(WBCollapseViewItem.h)
-
-#import WBHEADER(WBCGFunctions.h)
 
 #define ITEM_HEADER_HEIGHT 19
 #define ITEM_BOTTOM_MARGIN 1 // bottom border (only when expanded)
@@ -152,8 +151,6 @@
       // insert subview
       NSRect frame = [view frame];
       frame.size.width = NSWidth([self frame]);
-      //frame.origin = NSMakePoint(0, - NSHeight(frame));
-      //frame.origin = NSMakePoint(0, ITEM_BOTTOM_MARGIN);
       frame.origin = NSMakePoint(0, 0);
       [view setFrame:frame];
       
@@ -374,13 +371,10 @@
   background.origin.y += 1;
   
   if (!sHeaderBackground) {
-    WBCGSimpleShadingInfo info = {
-      {.900, .900, .900, 1},
-      {.733, .733, .733, 1},
-      WBCGShadingSinFactorFunction,
-    };
-    sHeaderBackground = WBCGLayerCreateWithVerticalShading(ctxt, CGSizeMake(64, background.size.height), true, 
-                                                           WBCGShadingSimpleShadingFunction, &info);
+    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:.733 alpha:1]
+                                                                endingColor:[NSColor colorWithCalibratedWhite:.9 alpha:1]];
+    sHeaderBackground = [b createLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
+    [b release];
   }
   // draw background gradient
   CGContextDrawLayerInRect(ctxt, background, sHeaderBackground);
