@@ -1,10 +1,11 @@
 /*
  *  WBCollapseViewInternal.h
- *  Emerald
+ *  WonderBox
  *
- *  Created by Jean-Daniel Dupas on 14/04/09.
- *  Copyright 2009 Ninsight. All rights reserved.
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
  *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 #import WBHEADER(WBCollapseView.h)
