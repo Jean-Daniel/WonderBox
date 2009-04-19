@@ -187,24 +187,24 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 }
 
 // MARK: Shadings
-- (CGShadingRef)createAxialShadingFrom:(CGPoint)from to:(CGPoint)to {
+- (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to {
   return CGShadingCreateAxial([wb_cs CGColorSpace], from, to, [self function], (wb_extends & 1) != 0, (wb_extends & 2) != 0);
 }
 
-- (CGShadingRef)createRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
+- (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
                                      to:(CGPoint)to radius:(CGFloat)toRadius {
   return CGShadingCreateRadial([wb_cs CGColorSpace], from, fromRadius, to, toRadius, [self function], (wb_extends & 1) != 0, (wb_extends & 2) != 0);
 }
 
 // MARK: Layers
-- (CGLayerRef)createLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
-  return [self createLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(0, size.height) scale:scaleToUserSpace context:aContext];
+- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+  return [self newLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(0, size.height) scale:scaleToUserSpace context:aContext];
 }
-- (CGLayerRef)createLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
-  return [self createLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(size.width, 0) scale:scaleToUserSpace context:aContext];
+- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+  return [self newLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(size.width, 0) scale:scaleToUserSpace context:aContext];
 }
 
-- (CGLayerRef)createLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
   double angle = fmod(anAngle, 360);
   if (angle > 180) angle =  180 - angle;
   angle = angle * M_PI / 180;
@@ -248,11 +248,11 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
     p2.y = size.height - p2.y;
   }
   
-  return [self createLayerWithAxialGradient:size from:p1 to:p2 scale:scaleToUserSpace context:aContext];
+  return [self newLayerWithAxialGradient:size from:p1 to:p2 scale:scaleToUserSpace context:aContext];
 }
 
-- (CGLayerRef)createLayerWithAxialGradient:(CGSize)size from:(CGPoint)from to:(CGPoint)to scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
-  CGShadingRef shading = [self createAxialShadingFrom:from to:to];
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)from to:(CGPoint)to scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+  CGShadingRef shading = [self newAxialShadingFrom:from to:to];
   if (!shading) return nil;
   
   CGLayerRef layer = WBCGLayerCreateWithContext(aContext, size, NULL, scaleToUserSpace);

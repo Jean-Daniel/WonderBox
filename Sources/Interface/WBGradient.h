@@ -90,20 +90,21 @@ typedef struct {
 // output
 - (CGFunctionRef)function; // autorelease function
 
+// All following methods conform to Cocoa Memory Management rule: methods that begin with new return a not-autoreleased object.
 // caller MUST release it when over
-- (CGShadingRef)createAxialShadingFrom:(CGPoint)from to:(CGPoint)to;
+- (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to;
 
 // caller MUST release it when over
-- (CGShadingRef)createRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
-                                     to:(CGPoint)to radius:(CGFloat)toRadius;
+- (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
+                                  to:(CGPoint)to radius:(CGFloat)toRadius;
 
 // from bottom to top
-- (CGLayerRef)createLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
 // from left to right
-- (CGLayerRef)createLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
 
-- (CGLayerRef)createLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
-- (CGLayerRef)createLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)aPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)aPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
 
 @end
 

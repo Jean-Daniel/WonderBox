@@ -792,7 +792,7 @@ OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef) {
 }
 OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef) {
   AliasHandle alias;
-  OSStatus err = WBAECopyHandleFromAppleEvent(anEvent, aKey, typeAlias, (Handle *)alias);
+  OSStatus err = WBAECopyHandleFromAppleEvent(anEvent, aKey, typeAlias, (Handle *)&alias);
   if (noErr == err) {
     err = __WBAEResolveAlias(alias, pRef);
     DisposeHandle((Handle)alias);
@@ -801,7 +801,7 @@ OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, F
 }
 OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef) {
   AliasHandle alias;
-  OSStatus err = WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)alias);
+  OSStatus err = WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)&alias);
   if (noErr == err) {
     err = __WBAEResolveAlias(alias, pRef);
     DisposeHandle((Handle)alias);

@@ -373,7 +373,7 @@
   if (!sHeaderBackground) {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:.733 alpha:1]
                                                                 endingColor:[NSColor colorWithCalibratedWhite:.9 alpha:1]];
-    sHeaderBackground = [b createLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
+    sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
     [b release];
   }
   // draw background gradient

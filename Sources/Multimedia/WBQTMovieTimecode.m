@@ -186,6 +186,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
       NSInteger frame;
       bool drop = true;
       switch (wb_tcFlags.hdMode) {
+        default:
         case kWBQTTimecodeMode24FPS:
           drop = false;
           frame = [self frameForTime:aTime];

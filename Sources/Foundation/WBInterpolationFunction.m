@@ -52,7 +52,7 @@ WBClassCluster(WBInterpolationFunction)
 
 @implementation WBInterpolationFunction
 
-- (id)initWithCallBack:(WBInterpolationCallBack *)callback {
+- (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
   return [super init];
 }
 
