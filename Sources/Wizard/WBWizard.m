@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBWizard.h>)
+#import WBHEADER(WBWizard.h)
 #import WBHEADER(NSImage+WonderBox.h)
 
 @interface WBWizard (PageLoading)
