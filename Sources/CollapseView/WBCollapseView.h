@@ -10,8 +10,9 @@
 
 @class WBCollapseViewItem;
 @protocol WBCollapseViewDelegate;
-@interface WBCollapseView : NSView <NSCoding> {
+@interface WBCollapseView : NSView <NSCoding,NSFastEnumeration> {
 @private
+  NSMutableArray *wb_items;
   NSMutableArray *wb_views;
   id <WBCollapseViewDelegate> wb_delegate __weak;
 }
@@ -30,7 +31,7 @@
 - (void)removeItemWithIdentifier:(id)anIdentifier;
 
 /* Query */
-- (NSArray *)items;
+- (NSArray *)items; // safe to mutate items while iteratign the returned collection
 - (NSUInteger)numberOfItems;
 
 - (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;			// May raise an NSRangeException	
@@ -38,6 +39,8 @@
 
 - (NSUInteger)indexOfItem:(WBCollapseViewItem *)tabViewItem; // NSNotFound if not found
 - (NSUInteger)indexOfItemWithIdentifier:(id)identifier;			 // NSNotFound if not found
+
+- (void)sortItemsUsingFunction:(NSComparisonResult (*)(id, id, void *))compare context:(void *)context;
 
 /* Hit testing */
 - (WBCollapseViewItem *)itemAtPoint:(NSPoint)point;			// point in local coordinates. returns nil if none.

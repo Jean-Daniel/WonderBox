@@ -96,8 +96,10 @@
   if (expanded && wb_cviFlags.expanded) return;
   if (!expanded && !wb_cviFlags.expanded) return;
   
-  [wb_owner _setExpanded:expanded forItem:self animate:flag];
-  //WBFlagSet(wb_cviFlags.expanded, expanded);
+  if (wb_owner)
+    [wb_owner _setExpanded:expanded forItem:self animate:flag];
+  else
+    WBFlagSet(wb_cviFlags.expanded, expanded);
 }
 
 @end

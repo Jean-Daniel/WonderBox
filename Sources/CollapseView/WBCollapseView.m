@@ -29,12 +29,14 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [super encodeWithCoder:aCoder];
-  [aCoder encodeObject:wb_views forKey:@"view.items"];
+  [aCoder encodeObject:wb_views forKey:@"collapse.views"];
+  [aCoder encodeObject:wb_items forKey:@"collapse.items"];
 }
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_views = [[aCoder decodeObjectForKey:@"view.items"] retain];
+    wb_views = [[aCoder decodeObjectForKey:@"collapse.views"] retain];
+    wb_items = [[aCoder decodeObjectForKey:@"collapse.items"] retain];
   }
   return self;
 }
@@ -43,7 +45,7 @@
   aFrame.size.height = 0;
   if (self = [super initWithFrame:aFrame]) {
     wb_views = [[NSMutableArray alloc] init];
-    
+    wb_items = [[NSMutableArray alloc] init];
     // required
     [self setAutoresizesSubviews:YES];
   }
@@ -52,6 +54,7 @@
 
 - (void)dealloc {
   [wb_views release];
+  [wb_items release];
   [super dealloc];
 }
 
@@ -75,38 +78,35 @@
 
 // MARK: Query
 - (NSArray *)items {
-  NSMutableArray *items = [NSMutableArray array];
-  for (_WBCollapseItemView *view in wb_views)
-    [items addObject:view.item];
-  return items;
+  return [[wb_items copy] autorelease];
 }
 
 - (NSUInteger)numberOfItems {
-  return [wb_views count];
+  return [wb_items count];
 }
 
 - (WBCollapseViewItem *)itemAtIndex:(NSUInteger)anIndex {
-  return [[wb_views objectAtIndex:anIndex] item];
+  return [wb_items objectAtIndex:anIndex];
 }
 
 - (WBCollapseViewItem *)itemWithIdentifier:(id)identifier {
-  for (_WBCollapseItemView *view in wb_views) {
-    if ([[view identifier] isEqual:identifier])
-      return [view item];
+  for (WBCollapseViewItem *item in wb_items) {
+    if ([[item identifier] isEqual:identifier])
+      return item;
   }
   return nil;
 }
 
 - (NSUInteger)indexOfItem:(WBCollapseViewItem *)anItem {
-  for (NSUInteger idx = 0, count = [wb_views count]; idx < count; idx++) {
-    if ([[[wb_views objectAtIndex:idx] item] isEqual:anItem])
+  for (NSUInteger idx = 0, count = [wb_items count]; idx < count; idx++) {
+    if ([[wb_items objectAtIndex:idx] isEqual:anItem])
       return idx;
   }
   return NSNotFound;
 }
 - (NSUInteger)indexOfItemWithIdentifier:(id)identifier {
-  for (NSUInteger idx = 0, count = [wb_views count]; idx < count; idx++) {
-    if ([[[wb_views objectAtIndex:idx] identifier] isEqual:identifier])
+  for (NSUInteger idx = 0, count = [wb_items count]; idx < count; idx++) {
+    if ([[[wb_items objectAtIndex:idx] identifier] isEqual:identifier])
       return idx;
   }
   return NSNotFound;
@@ -170,6 +170,7 @@
   
   // add new view
   [wb_views insertObject:view atIndex:anIndex];
+  [wb_items insertObject:anItem atIndex:anIndex];
   [self addSubview:view];
   [view release];
   
@@ -202,7 +203,7 @@
   
   // update collection
   [wb_views removeObjectAtIndex:anIndex];
-  
+  [wb_items removeObjectAtIndex:anIndex];
   if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
@@ -228,7 +229,7 @@
     [view setFrameOrigin:origin];    
   }
 }
-@class CATransaction;
+
 - (void)_incrementHeightBy:(CGFloat)delta animate:(BOOL)animate {
   NSRect frame = [self frame];
   // update origin if superview is not flipped
@@ -248,7 +249,7 @@
     if (([[NSApp currentEvent] modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask)
       duration = MIN(1.8, ABS(delta / 100));
     else
-      duration = MIN(.60, ABS(delta / 300)); //  300px per seconds, but 0.60s maxi.
+      duration = MIN(.50, ABS(delta / 350)); //  350px per seconds, but 0.60s maxi.
     
     [animation setDuration:duration];
     
@@ -263,6 +264,35 @@
   } else {
     [self setFrame:frame];
   }
+}
+
+struct _WBCollapseViewCompare {
+  void *ctxt;
+  NSComparisonResult (*compare)(id, id, void *);
+};
+
+static 
+NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
+  struct _WBCollapseViewCompare *fct = (struct _WBCollapseViewCompare *)ctxt;
+  return fct->compare([v1 item], [v2 item], fct->ctxt);
+}
+
+- (void)sortItemsUsingFunction:(NSComparisonResult (*)(id, id, void *))compare context:(void *)context {
+  struct _WBCollapseViewCompare ctxt = { context, compare };
+  [wb_views sortUsingFunction:_WBCollapseViewCompare context:&ctxt];
+  
+  // rearrange view and resync wb_items
+  CGFloat height = 0;
+  [wb_items removeAllObjects];
+  for (_WBCollapseItemView *view in wb_views) {
+    [view setFrameOrigin:NSMakePoint(0, height)];
+    height += NSHeight([view frame]);
+    [wb_items addObject:[view item]];
+  }
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
+  return [wb_items countByEnumeratingWithState:state objects:stackbuf count:len];
 }
 
 @end
