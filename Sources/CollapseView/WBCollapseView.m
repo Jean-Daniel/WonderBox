@@ -202,6 +202,7 @@
   [self _incrementHeightBy:-delta animate:NO];
   
   // update collection
+  [view invalidate];
   [wb_views removeObjectAtIndex:anIndex];
   [wb_items removeObjectAtIndex:anIndex];
   if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))

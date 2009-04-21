@@ -23,7 +23,7 @@
 - (void)wb_buildHeaderView;
 
 - (void)wb_attachItem:(WBCollapseViewItem *)anItem;
-- (void)wb_detachItem:(WBCollapseViewItem *)anItem;
+- (void)wb_detachItem;
 
 @end
 
@@ -110,8 +110,7 @@
 }
 
 - (void)dealloc {
-  [self wb_detachItem:wb_item];
-  [wb_item release];
+  [self wb_detachItem];
   [super dealloc];
 }
 
@@ -132,6 +131,7 @@
 }
 
 - (id)identifier { return [wb_item identifier]; }
+- (void)invalidate { [self wb_detachItem]; }
 - (WBCollapseView *)collapseView { return [wb_item collapseView]; }
 
 // MARK: Expension
@@ -193,9 +193,13 @@
               context:_WBCollapseItemView.class];  
 }
 
-- (void)wb_detachItem:(WBCollapseViewItem *)anItem {
-  [anItem removeObserver:self forKeyPath:@"view"];
-  [anItem removeObserver:self forKeyPath:@"title"];
+- (void)wb_detachItem {
+  [wb_item removeObserver:self forKeyPath:@"view"];
+  [wb_item removeObserver:self forKeyPath:@"title"];
+  if ([wb_item isExpanded])
+    [[wb_item view] removeFromSuperview];
+  [wb_item release];
+  wb_item = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {

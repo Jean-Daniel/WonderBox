@@ -55,6 +55,8 @@
 
 - (CGFloat)expandHeight;
 
+- (void)invalidate; // call when removed
+
 - (void)willSetExpanded:(BOOL)expanded;
 - (void)didSetExpanded:(BOOL)expanded;
 
