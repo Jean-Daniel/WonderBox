@@ -22,8 +22,11 @@
 - (void)wb_buildBodyView;
 - (void)wb_buildHeaderView;
 
-- (void)wb_attachItem:(WBCollapseViewItem *)anItem;
+- (void)wb_attachItem;
 - (void)wb_detachItem;
+
+- (void)wb_attachView:(NSView *)theView;
+- (void)wb_detachView:(NSView *)theView;
 
 @end
 
@@ -70,7 +73,7 @@
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
     wb_item = [[aCoder decodeObjectForKey:@"view.item"] retain];
-    [self wb_attachItem:wb_item];
+    [self wb_attachItem];
     wb_body = [aCoder decodeObjectForKey:@"view.body"];
     wb_header = [aCoder decodeObjectForKey:@"view.header"];
   }
@@ -86,9 +89,10 @@
     
     wb_item = [anItem retain];
 
+    [self wb_attachItem];
     [self wb_buildBodyView];
     [self wb_buildHeaderView];
-    [self wb_attachItem:wb_item];
+    
     
     // setup title
     wb_header.title = [wb_item title];
@@ -119,13 +123,6 @@
 - (BOOL)isOpaque { return NO; }
 - (BOOL)isFlipped { return NO; }
 
-- (NSRect)headerFrame {
-  NSRect frame = [self bounds];
-  frame.origin.y = frame.size.height - ITEM_HEADER_HEIGHT;
-  frame.size.height = ITEM_HEADER_HEIGHT;
-  return frame;
-}
-
 - (CGFloat)expandHeight {
   return [wb_item view] ? NSHeight([[wb_item view] frame]) + ITEM_BOTTOM_MARGIN : 0;
 }
@@ -141,37 +138,29 @@
     [wb_item willSetExpanded:expanded];
   wb_civFlags.resizing = 1;
   if (expanded) {
-    NSView *view = [wb_item view];
-    if (view) {
-      WBAssert(![view superview], @"why the item view is already in a view tree ?");
-      
-      wb_civFlags.resizeMask = [view autoresizingMask];
-      [view setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-      
-      // insert subview
-      NSRect frame = [view frame];
-      frame.size.width = NSWidth([self frame]);
-      frame.origin = NSMakePoint(0, 0);
-      [view setFrame:frame];
-      
-      [wb_body addSubview:view];
+    if ([wb_item view]) {
+      // Add subview
+      [self wb_attachView:[wb_item view]];
       [wb_body setHidden:NO];
     }
   } else {
     // will collapse
     
   }
+  // temporary disabled notifications while resizing
+  [[wb_item view] setPostsFrameChangedNotifications:NO];
 }
 - (void)didSetExpanded:(BOOL)expanded {
+  // Restore notification state
+  [[wb_item view] setPostsFrameChangedNotifications:YES];
+  
   wb_header.state = expanded ? NSOnState : NSOffState;
   if (expanded) {
     
   } else {
-    [wb_body setHidden:YES];
     // remove child view
-    [[wb_item view] removeFromSuperview];
-    // restore resizing mask
-    [[wb_item view] setAutoresizingMask:wb_civFlags.resizeMask];
+    [wb_body setHidden:YES];
+    [self wb_detachView:[wb_item view]];
   }
   wb_civFlags.resizing = 0;
   if (XOR([wb_item isExpanded], expanded))
@@ -184,22 +173,56 @@
 }
 
 // MARK: Model Sync
-- (void)wb_attachItem:(WBCollapseViewItem *)anItem {
-  [anItem addObserver:self forKeyPath:@"title" 
+- (void)wb_attachItem {
+  WBAssert(wb_item, @"cannot attach nil item");
+  
+  [wb_item addObserver:self forKeyPath:@"title" 
               options:0 context:_WBCollapseItemView.class];
   
-  [anItem addObserver:self forKeyPath:@"view" 
+  [wb_item addObserver:self forKeyPath:@"view" 
               options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew 
-              context:_WBCollapseItemView.class];  
+              context:_WBCollapseItemView.class];
 }
 
 - (void)wb_detachItem {
   [wb_item removeObserver:self forKeyPath:@"view"];
   [wb_item removeObserver:self forKeyPath:@"title"];
-  if ([wb_item isExpanded])
-    [[wb_item view] removeFromSuperview];
+  if ([wb_item isExpanded]) // restore state
+    [self wb_detachView:[wb_item view]];
+  
   [wb_item release];
   wb_item = nil;
+}
+
+- (void)wb_attachView:(NSView *)theView {
+  WBAssert(![theView superview], @"why the item view is already in a view tree ?");
+  // resizing mask
+  wb_civFlags.resizeMask = [theView autoresizingMask];
+  if (wb_civFlags.resizeMask != NSViewWidthSizable | NSViewMaxYMargin)
+    [theView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+  
+  // frame change notification
+  wb_civFlags.posts = [[wb_item view] postsFrameChangedNotifications] ? 1 : 0;
+  if (!wb_civFlags.posts)
+    [theView setPostsFrameChangedNotifications:YES];
+  
+  // insert subview
+  NSRect frame = [theView frame];
+  frame.size.width = NSWidth([self frame]);
+  frame.origin = NSMakePoint(0, ITEM_BOTTOM_MARGIN);
+  [theView setFrame:frame];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didChangeItemFrame:) 
+                                               name:NSViewFrameDidChangeNotification 
+                                             object:theView];
+  [wb_body addSubview:theView];
+}
+
+- (void)wb_detachView:(NSView *)theView {
+  [theView removeFromSuperview];
+  [theView setAutoresizingMask:wb_civFlags.resizeMask];
+  [theView setPostsFrameChangedNotifications:wb_civFlags.posts];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:theView];  
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -241,6 +264,28 @@
   }
 }
 
+- (void)_didChangeItemFrame:(NSNotification *)aNotification {
+  WBAssert([aNotification object] == [wb_item view], @"notification object inconsistency");
+  NSView *view = [wb_item view];
+  NSRect frame = [view frame];
+  
+  if (!WBRealEquals(NSWidth([self frame]), NSWidth(frame)))
+    WBLogWarning(@"Changing item view width. This is not a good idea !");
+  
+  if (!WBRealEquals(frame.origin.x, 0) || !WBRealEquals(frame.origin.y, ITEM_BOTTOM_MARGIN))
+    WBLogWarning(@"Changing item origin. This is not a good idea !");
+  
+  // theorical item view height is body size - bottom margin (as the body origin is (0; 0))
+  CGFloat height = NSHeight([wb_body frame]) - ITEM_BOTTOM_MARGIN;
+  CGFloat delta = NSHeight(frame) - height;
+  
+  if (!WBRealEquals(0, delta)) {// item height did change. 
+    wb_civFlags.resizing = 1;
+    [self.collapseView _resizeItemView:self delta:delta animate:YES];
+    wb_civFlags.resizing = 0;
+  }
+}
+
 // MARK: -
 // MARK: Internal
 - (void)wb_buildBodyView {
@@ -252,7 +297,11 @@
 
 - (void)wb_buildHeaderView {
   // Init Header Components
-  wb_header = [[_WBCollapseItemHeaderView alloc] initWithFrame:[self headerFrame]];
+  NSRect frame = [self bounds];
+  frame.origin.y = frame.size.height - ITEM_HEADER_HEIGHT;
+  frame.size.height = ITEM_HEADER_HEIGHT;
+  
+  wb_header = [[_WBCollapseItemHeaderView alloc] initWithFrame:frame];
   [wb_header setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
   wb_header.target = self;
   wb_header.action = @selector(toggleCollapse:);

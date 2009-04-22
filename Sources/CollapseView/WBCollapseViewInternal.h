@@ -16,10 +16,10 @@
 
 - (_WBCollapseItemView *)_viewForItem:(WBCollapseViewItem *)anItem;
 
-// change item height notification
-- (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta;
-
 - (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate;
+
+// change item height notification
+- (void)_resizeItemView:(_WBCollapseItemView *)view delta:(CGFloat)delta animate:(BOOL)animate;
 
 @end
 
@@ -40,8 +40,9 @@
   _WBCollapseItemHeaderView *wb_header;
   
   struct _wb_civFlags {
+    unsigned int posts:1;
     unsigned int resizing:1;
-    unsigned int resizeMask:7;
+    unsigned int resizeMask:6; // MUSt not go down 6 bits
   } wb_civFlags;
 }
 
@@ -50,8 +51,6 @@
 @property(readonly) WBCollapseView *collapseView;
 
 - (id)initWithItem:(WBCollapseViewItem *)anItem;
-
-- (NSRect)headerFrame;
 
 - (CGFloat)expandHeight;
 

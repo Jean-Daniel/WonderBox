@@ -243,7 +243,7 @@
     // Prepare animation
     NSViewAnimation *animation = [[NSViewAnimation alloc] init];
     [animation setAnimationBlockingMode:NSAnimationBlocking];
-    [animation setAnimationCurve:NSAnimationEaseInOut];
+    //[animation setAnimationCurve:NSAnimationLinear];
     [animation setFrameRate:30];
     // for debugging and for fun
     NSTimeInterval duration;
@@ -309,33 +309,7 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
   return nil;
 }
 
-- (void)_didResizeItemView:(_WBCollapseItemView *)anItem delta:(CGFloat)delta {
-  // TODO: 
-}
-
-- (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate {
-  _WBCollapseItemView *view = [self _viewForItem:anItem];
-  WBAssert(view, @"%@ is not an item of this view", anItem);
-  
-  WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]), 
-           @"invalid operation for this item state");
-  
-  // Let the delegate cancel the action
-  if (WBDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
-    if (![wb_delegate collapseView:self shouldSetExpanded:expands forItem:anItem])
-      return;
-  
-  CGFloat delta = [view expandHeight];
-  if (delta <= 0) return;
-  
-  // if collapse: delta should be negative
-  if (!expands) delta = -delta;
-  
-  if (WBDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
-    [wb_delegate collapseView:self willSetExpanded:expands forItem:anItem];
-  
-  [view willSetExpanded:expands];
-  
+- (void)_resizeItemView:(_WBCollapseItemView *)view delta:(CGFloat)delta animate:(BOOL)animate {
   NSUInteger count = [wb_views count];
   NSUInteger idx = [wb_views indexOfObjectIdenticalTo:view];
   // all view before this one should have mask: NSViewWidthSizable | NSViewMaxYMargin
@@ -351,6 +325,34 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
   
   // reset sizing mask to a good default (not required)
   [self _setResizingMask:NSViewWidthSizable | NSViewMaxYMargin range:NSMakeRange(0, count)];
+}
+
+- (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate {
+  _WBCollapseItemView *view = [self _viewForItem:anItem];
+  WBAssert(view, @"%@ is not an item of this view", anItem);
+  
+  WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]), 
+           @"invalid operation for this item state");
+  
+  // Let the delegate cancel the action
+  if (WBDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
+    if (![wb_delegate collapseView:self shouldSetExpanded:expands forItem:anItem])
+      return;
+  
+  // tell the delegate…
+  if (WBDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
+    [wb_delegate collapseView:self willSetExpanded:expands forItem:anItem];
+  
+  // Then compute delta. It let a chance to the delegate to adjust item size before display
+  CGFloat delta = [view expandHeight];
+  if (delta <= 0) return;
+  
+  // if collapse: delta should be negative
+  if (!expands) delta = -delta;
+  
+  [view willSetExpanded:expands];
+  
+  [self _resizeItemView:view delta:delta animate:animate];
 
   [view didSetExpanded:expands];
   

@@ -233,7 +233,7 @@
 
 - (BOOL)update {
   FSRef target;
-  BOOL updated;
+  BOOL updated = NO;
   [self getTarget:&target wasChanged:&updated];
   return updated;
 }

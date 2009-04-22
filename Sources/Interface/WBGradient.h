@@ -31,10 +31,10 @@ typedef struct {
   } value;
 } WBInterpolationDefinition;
 
-#define kWBInterpolationLinear { 0, { cb: NULL } }
-#define kWBInterpolationDefault { kWBInterpolationTypeDefault, { cb: NULL } }
-#define WBInterpolationCallBackDef(function) { kWBInterpolationTypeCallBack, { cb: function } }
-#define WBInterpolationBezierDef(x1, y1, x2, y2, l) { kWBInterpolationTypeBezier, { bezier: { { { x1, y1 }, { x2, y2 } }, l } } }
+#define kWBInterpolationLinear { 0, { .cb = NULL } }
+#define kWBInterpolationDefault { kWBInterpolationTypeDefault, { .cb = NULL } }
+#define WBInterpolationCallBackDef(function) { kWBInterpolationTypeCallBack, { .cb = function } }
+#define WBInterpolationBezierDef(x1, y1, x2, y2, l) { kWBInterpolationTypeBezier, { .bezier = { { { x1, y1 }, { x2, y2 } }, l } } }
 
 @class WBInterpolationFunction;
 typedef union _WBShadingColor {
@@ -42,8 +42,8 @@ typedef union _WBShadingColor {
   CGFloat grayscale[2];
 } WBShadingColor;
 
-#define WBShadingColorRGB(r, g, b, a) { rgba: {r, g, b, a} }
-#define WBShadingColorGray(w, a) { grayscale: { w, a } }
+#define WBShadingColorRGB(r, g, b, a) { .rgba = {r, g, b, a} }
+#define WBShadingColorGray(w, a) { .grayscale = { w, a } }
 
 typedef struct {
   NSUInteger count; // count of steps

@@ -17,7 +17,7 @@
   id <WBCollapseViewDelegate> wb_delegate __weak;
 }
 
-@property(assign) __weak id <WBCollapseViewDelegate> delegate;
+@property(assign) id <WBCollapseViewDelegate> delegate;
 
 - (void)expandAllItems;
 - (void)collapseAllItems;
