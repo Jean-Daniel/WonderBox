@@ -281,7 +281,7 @@
   
   if (!WBRealEquals(0, delta)) {// item height did change. 
     wb_civFlags.resizing = 1;
-    [self.collapseView _resizeItemView:self delta:delta animate:YES];
+    [self.collapseView _resizeItemView:self delta:delta animate:[wb_item animates]];
     wb_civFlags.resizing = 0;
   }
 }

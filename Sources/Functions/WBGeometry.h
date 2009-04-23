@@ -31,7 +31,7 @@ CGSize WBMinSizeForSizes(CGSize s1, CGSize s2) {
 
 #pragma mark Scaling
 enum {
-  kWBScalingModeProportionallyFit, // default
+  kWBScalingModeProportionallyFit = 0, // default
   kWBScalingModeProportionallyFill,
   kWBScalingModeProportionallyFitDown,
   kWBScalingModeProportionallyFillDown,

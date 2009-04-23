@@ -276,9 +276,9 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
       return [[[WBInterpolationFunction alloc] initWithCallBack:&cb] autorelease];
     }
     case kWBInterpolationTypeBezier:
-      return [[WBInterpolationFunction alloc] initWithControlPoints:def->value.bezier.points[0].x :def->value.bezier.points[0].y 
-                                                                   :def->value.bezier.points[1].x :def->value.bezier.points[1].y 
-                                                             length:def->value.bezier.length];
+      return [[[WBInterpolationFunction alloc] initWithControlPoints:def->value.bezier.points[0].x :def->value.bezier.points[0].y 
+                                                                    :def->value.bezier.points[1].x :def->value.bezier.points[1].y 
+                                                              length:def->value.bezier.length] autorelease];
   }
   return nil;
 }
