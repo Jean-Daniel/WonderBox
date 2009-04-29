@@ -30,8 +30,13 @@
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem*)anItem {
-  if ([anItem action] == @selector(delete:)) 
+  if ([anItem action] == @selector(delete:)) {
+    if (WBDelegateHandle([self delegate], canDeleteSelectionInOutlineView:))
+      return [[self delegate] canDeleteSelectionInOutlineView:self];
     return [self numberOfSelectedRows] != 0 && WBDelegateHandle([self delegate], deleteSelectionInOutlineView:);
+  } else if ([anItem action] == @selector(selectAll:)) {
+    return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
+  }
   
   return YES;
 }

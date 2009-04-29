@@ -45,6 +45,9 @@ WB_CLASS_EXPORT
 @interface NSObject (WBOutlineViewDelegate)
 
 - (void)deleteSelectionInOutlineView:(NSOutlineView *)aView;
+// Used for UI validation
+- (BOOL)canDeleteSelectionInOutlineView:(NSOutlineView *)aView;
+
 // returns NO to prevent outline cell drawing. Used in Source List.
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldDrawOutlineCellAtRow:(NSInteger)row;
 // Contextual menu helper.
