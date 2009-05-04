@@ -33,7 +33,7 @@ Boolean WBAEDebug;
  */
 WB_INLINE
 void WBAEInitDesc(AEDesc *desc) {
-  check(desc != NULL);
+  assert(desc);
   AEInitializeDescInline(desc);
 }
 
@@ -56,7 +56,7 @@ AEDesc WBAEEmptyDesc(void) {
  */
 WB_INLINE
 OSStatus WBAEDisposeDesc(AEDesc *desc) {
-  check(desc != NULL);
+  assert(desc);
   return AEDisposeDesc(desc);
 }
 
@@ -270,17 +270,15 @@ OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRe
 
 WB_INLINE
 OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, CFDataRef data) {
-  if (data) {
+  if (data) 
     return WBAEAddParameter(theEvent, keyword, type ? : typeData, CFDataGetBytePtr(data), CFDataGetLength(data));
-  } else {
+  else 
     return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
-  }
 }
 
 WB_INLINE
 OSStatus WBAESetReplyPort(AppleEvent *theEvent, mach_port_t port) {
-  check(theEvent != NULL);
-  check(MACH_PORT_VALID(port));
+  if (!MACH_PORT_VALID(port)) return paramErr;
   return AEPutAttributePtr(theEvent, keyReplyPortAttr, typeMachPort, &port, sizeof(port));
 }
 /*!

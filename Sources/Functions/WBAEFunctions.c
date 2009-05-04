@@ -44,9 +44,9 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...)	{
 #pragma mark -
 #pragma mark Print AEDesc
 CFStringRef WBAEDescCopyDescription(const AEDesc *desc) {
-  CFStringRef str = NULL;
   OSStatus err;
   Handle handle;
+  CFStringRef str = NULL;
   err = AEPrintDescToHandle(desc, &handle);
   if (noErr == err) {
     str = CFStringCreateWithCString(kCFAllocatorDefault, *handle, kCFStringEncodingASCII);
@@ -56,9 +56,8 @@ CFStringRef WBAEDescCopyDescription(const AEDesc *desc) {
 }
 
 OSStatus WBAEPrintDesc(const AEDesc *desc) {
-  OSStatus err;
   Handle str;
-  err = AEPrintDescToHandle(desc, &str);
+  OSStatus err = AEPrintDescToHandle(desc, &str);
   if (noErr == err) {
     fprintf(stdout, "%s\n", *str);
     fflush(stdout);
@@ -70,8 +69,7 @@ OSStatus WBAEPrintDesc(const AEDesc *desc) {
 #pragma mark -
 #pragma mark Find Target for AppleEvents
 OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target) {
-  check(psn != NULL);
-  check(target != NULL);
+  if (!psn || !target) return paramErr;
   
   OSStatus err = noErr;
   WBAEInitDesc(target);
@@ -84,7 +82,7 @@ OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target) {
 }
 
 OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target) {
-  check(target != NULL);
+  if (!sign || !target) return paramErr;
   
   OSStatus err = noErr;
   WBAEInitDesc(target);
@@ -93,7 +91,7 @@ OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target) {
 }
 
 OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target) {
-  check(target != NULL);
+  if (!bundleId || !target) return paramErr;
   
   OSStatus err = noErr;
   WBAEInitDesc(target);
@@ -107,20 +105,19 @@ OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target) {
 }
 
 OSStatus WBAECreateTargetWithKernelProcessID(pid_t pid, AEDesc *target) {
-  check(target != NULL);
+  if (!pid || !target) return paramErr;
   return AECreateDesc(typeKernelProcessID, &pid, sizeof(pid), target);
 }
 
 OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target) {
-  check(target != NULL);
+  if (!MACH_PORT_VALID(port) || !target) return paramErr;
   return AECreateDesc(typeMachPort, &port, sizeof(port), target);
 }
 
 #pragma mark -
 #pragma mark Create Object Specifier
 OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc) {
-  check(aRef != NULL);
-  check(desc != NULL);
+  if (!aRef || !desc) return paramErr;
   
   AliasHandle alias;
   OSStatus err = FSNewAliasMinimal(aRef, &alias);
@@ -134,11 +131,11 @@ OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc) {
   return err;
 }
 OSStatus WBAECreateDescFromAlias(AliasHandle alias, AEDesc *desc) {
+  if (!alias || !desc) return paramErr;
   return AECreateDesc(typeAlias, *alias, GetAliasSize(alias), desc);
 }
 OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc) {
-  check(desc != NULL);
-  check(string != NULL);
+  if (!string || !desc) return paramErr;
   
   OSStatus err;
   /* Create Unicode String */
@@ -166,8 +163,7 @@ OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc) {
 }
 
 OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDesc *keyData, AEDesc *container, AEDesc *specifier) {
-  check(keyData != NULL);
-  check(specifier != NULL);
+  if (!keyData || !specifier) return paramErr;
   
   OSStatus err;
   AEDesc appli = WBAEEmptyDesc();
@@ -177,7 +173,7 @@ OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDes
 }
 
 OSStatus WBAECreateIndexObjectSpecifier(DescType desiredType, CFIndex idx, AEDesc *container, AEDesc *specifier) {
-  check(specifier != NULL);
+  if (!specifier) return paramErr;
   
   OSStatus err;
   AEDesc keyData = WBAEEmptyDesc();
@@ -211,7 +207,7 @@ OSStatus WBAECreateIndexObjectSpecifier(DescType desiredType, CFIndex idx, AEDes
 }
 
 OSStatus WBAECreateUniqueIDObjectSpecifier(DescType desiredType, SInt32 uid, AEDesc *container, AEDesc *specifier) {
-  check(specifier != NULL);
+  if (!specifier) return paramErr;
   
   OSStatus err;
   AEDesc keyData = WBAEEmptyDesc();
@@ -225,8 +221,7 @@ OSStatus WBAECreateUniqueIDObjectSpecifier(DescType desiredType, SInt32 uid, AED
 }
 
 OSStatus WBAECreateNameObjectSpecifier(DescType desiredType, CFStringRef name, AEDesc *container, AEDesc *specifier) {
-  check(name != NULL);
-  check(specifier != NULL);
+  if (!name || !specifier) return paramErr;
   
   OSStatus err;
   AEDesc keyData = WBAEEmptyDesc();
@@ -240,7 +235,7 @@ OSStatus WBAECreateNameObjectSpecifier(DescType desiredType, CFStringRef name, A
 }
 
 OSStatus WBAECreatePropertyObjectSpecifier(DescType desiredType, AEKeyword property, AEDesc *container, AEDesc *specifier) {
-  check(specifier != NULL);
+  if (!specifier) return paramErr;
   
   OSStatus err;
   AEDesc keyData = WBAEEmptyDesc();  
@@ -256,8 +251,7 @@ OSStatus WBAECreatePropertyObjectSpecifier(DescType desiredType, AEKeyword prope
 #pragma mark -
 #pragma mark Create AppleEvents
 OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(target != NULL);  
-  check(theEvent != NULL); 
+  if (!target || !theEvent) return paramErr;
   
   WBAEInitDesc(theEvent);
   return AECreateAppleEvent(eventClass, eventType,
@@ -268,8 +262,7 @@ OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass
 }
 
 OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(psn != NULL);
-  check(theEvent != NULL);
+  if (!psn || !theEvent) return paramErr;
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
@@ -282,8 +275,7 @@ OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass
 }
 
 OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(targetSign != 0);
-  check(theEvent != NULL);
+  if (!targetSign || !theEvent) return paramErr;
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
@@ -296,8 +288,7 @@ OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass even
 }
 
 OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(targetId != NULL);
-  check(theEvent != NULL);
+  if (!targetId || !theEvent) return paramErr;
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
@@ -310,8 +301,7 @@ OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass ev
 }
 
 OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(theEvent != NULL);
-  check(MACH_PORT_VALID(port));
+  if (!MACH_PORT_VALID(port) || !theEvent) return paramErr;
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
@@ -324,7 +314,7 @@ OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventC
 }
 
 OSStatus WBAECreateEventWithTargetKernelProcessID(pid_t pid, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
-  check(theEvent != NULL);
+  if (!pid || !theEvent) return paramErr;
   
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();

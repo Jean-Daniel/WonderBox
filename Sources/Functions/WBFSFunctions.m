@@ -115,7 +115,8 @@ OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path
 
 
 OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder) {
-  check(isFolder != NULL);
+  if (!isFolder) return paramErr;
+  
   OSStatus err;
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
@@ -126,7 +127,8 @@ OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder) {
 }
 
 OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible) {
-  check(isVisible != NULL);
+  if (!isVisible) return paramErr;
+
   OSStatus err;
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
@@ -145,7 +147,8 @@ bail:
 }
 
 OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon) {
-  check(hasIcon != NULL);
+  if (!hasIcon) return paramErr;
+
   OSStatus err;
   Boolean isFolder;
   FSCatalogInfo catInfo;
@@ -165,12 +168,14 @@ OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon) {
 }
 
 OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot) {
+  if (!isRoot) return paramErr;
+  
   OSStatus err;
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoNodeID, &catalogInfo, NULL, NULL, NULL);
-  if (noErr == err) {
+  if (noErr == err) 
     *isRoot = (catalogInfo.nodeID == fsRtDirID);
-  }
+  
   return err;
 }
 
@@ -182,15 +187,13 @@ OSStatus _WBFSRefCopyFileSystemPath(const char *path, void *ctxt) {
 }
 
 OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *string) {
-  check(string);
-  check(*string == NULL);
+  if (!string || *string != NULL) return paramErr;
   
   return _WBFSRefGetPath(ref, _WBFSRefCopyFileSystemPath, string);
 }
 
 OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory) {
-  check(ref != NULL);
-  check(string != NULL);
+  if (!string || !ref) return paramErr;
   
   char buffer[2048];
   char *path = buffer;
@@ -215,8 +218,9 @@ OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options,
 
 #pragma mark Folders
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders) {
-  FSVolumeInfo info;
   if (!size && !files && !folders) return paramErr;
+  
+  FSVolumeInfo info;
   OSStatus err = FSGetVolumeInfo(volume, 0, NULL, kFSVolInfoSizes | kFSVolInfoDirCount | kFSVolInfoFileCount, &info, NULL, NULL);
   require_noerr(err, bail);
   
@@ -266,8 +270,9 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex
 }
 
 OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders) {
-  FSCatalogInfo info;
   if (!lsize && !psize && !files && !folders) return paramErr;
+  
+  FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(folder, kFSCatInfoNodeFlags | kFSCatInfoNodeID | kFSCatInfoVolume, &info, NULL, NULL, NULL);
   require_noerr(err, bail);
   
@@ -295,6 +300,8 @@ bail:
 
 OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume, 
                            FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory) {
+  if (!object) return paramErr;
+  
   FSCatalogInfo fsinfo;
   OSStatus err = FSGetCatalogInfo(object, kFSCatInfoVolume, &fsinfo, NULL, NULL, NULL);
   require_noerr(err, bail);
@@ -309,8 +316,8 @@ bail:
 #pragma mark -
 #pragma mark OSTypes
 OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) {
-  if (!ref) return errFSBadFSRef;
-  if (!type && !creator) return noErr;
+  if (!ref) return paramErr;
+  if (!type && !creator) return paramErr;
 	
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(ref, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
@@ -328,7 +335,7 @@ OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) 
 
 OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator) {
   if (!url) return paramErr;
-  if (!type && !creator) return noErr;
+  if (!type && !creator) return paramErr;
 	
 	FSRef ref;
 	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
@@ -337,7 +344,7 @@ OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator)
 
 OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) {
 	if (!path) return paramErr;
-  if (!type && !creator) return noErr;
+  if (!type && !creator) return paramErr;
 	
   FSRef ref;
   Boolean isDir;
@@ -352,8 +359,8 @@ OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *cre
 }
 
 OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) {
-	if (!ref) return errFSBadFSRef;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return noErr;
+	if (!ref) return paramErr;
+	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 	
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(ref, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
@@ -372,7 +379,7 @@ OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) {
 
 OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator) {
 	if (!url) return paramErr;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return noErr;
+	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 	
 	FSRef ref;
 	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
@@ -380,8 +387,8 @@ OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator) {
 }
 
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) {
-	if (!path) return errFSBadFSRef;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return noErr;
+	if (!path) return paramErr;
+	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 	
 	FSRef ref;
   Boolean isDir;
@@ -397,6 +404,8 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 
 #pragma mark Misc
 ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length) {
+  if (!unit || !buffer) return paramErr;
+  
   if (size < ((UInt64)1 << 10))
     return snprintf(buffer, length, "%qu %s", size, unit);
   
@@ -420,8 +429,7 @@ ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *b
 }
 
 OSStatus WBFSCreateFolder(CFStringRef path) {
-  if (!CFStringGetLength(path))
-    return paramErr;
+  if (!path || !CFStringGetLength(path)) return paramErr;
   
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   
@@ -496,6 +504,8 @@ OSStatus __WBFSForceDeleteObject(const FSRef *object) {
 }
 
 OSStatus WBFSForceDeleteObject(const FSRef *object) {
+  if (!object) return paramErr;
+  
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(object, kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
   if (noErr == err) {
@@ -512,6 +522,8 @@ OSStatus WBFSForceDeleteObject(const FSRef *object) {
 }
 
 OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) {
+  if (!folder) return paramErr;
+  
   FSIterator iter;
   OSStatus err = FSOpenIterator(folder, kFSIterateFlat | kFSIterateDelete, &iter);
   if (noErr == err) {
@@ -562,6 +574,8 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
   return err;
 }
 OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) {
+  if (!fspath) return paramErr;
+  
   FSRef fref;
   OSStatus err = WBFSRefCreateFromFileSystemPath(fspath, kFSPathMakeRefDoNotFollowLeafSymlink, &fref, NULL);
   if (noErr == err)
@@ -571,7 +585,8 @@ OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(con
 
 /* Find Folder */
 OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) {
-  check(path);
+  if (!path) return paramErr;
+  
   FSRef folder;
   OSStatus err = FSFindFolder(domain,
                               folderType,
@@ -588,6 +603,8 @@ OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool creat
 }
 
 OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) {
+  if (!anURL || !path) return paramErr;
+  
   FSRef ref;
   if (!CFURLGetFSRef(anURL, &ref))
     return coreFoundationUnknownErr;
@@ -600,6 +617,8 @@ OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool create
 }
 
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFStringRef target) {
+  if (!folder || !aliasName || !target) return paramErr;
+  
   FSRef src;
   FSRef parent;
   OSStatus err = noErr;
