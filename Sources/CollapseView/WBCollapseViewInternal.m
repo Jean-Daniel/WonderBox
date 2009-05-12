@@ -265,6 +265,8 @@
 }
 
 - (void)_didChangeItemFrame:(NSNotification *)aNotification {
+  if (wb_civFlags.resizing) return;
+  
   WBAssert([aNotification object] == [wb_item view], @"notification object inconsistency");
   NSView *view = [wb_item view];
   NSRect frame = [view frame];
