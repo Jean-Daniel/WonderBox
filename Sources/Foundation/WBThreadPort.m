@@ -150,7 +150,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     
     CFRunLoopSourceRef src = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, wb_port, 0);
     if (src) {
-      CFRunLoopAddSource([[NSRunLoop currentRunLoop] getCFRunLoop], src, kCFRunLoopCommonModes);
+      CFRunLoopAddSource(CFRunLoopGetCurrent(), src, kCFRunLoopCommonModes);
       CFRelease(src);
     }
     
@@ -173,7 +173,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       current = nil;
     }
   }
-  return current; // release in pthread_specific destructor => _WBThreadReceivePortDestructor()
+  return current; // released in pthread_specific destructor => _WBThreadReceivePortDestructor()
 }
 
 - (id)init {
@@ -219,14 +219,14 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (![anInvocation target])
 		WBThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
   
-  if ([[self targetThread] isEqual:[NSThread currentThread]]) {
+  if ([wb_thread isEqual:[NSThread currentThread]]) {
     WBLogWarning(@"caller thread is the target thread. You should not use 'thread port' to send intra-thread messages.");
     [anInvocation invoke];
     return;
   }
   
   bool synch;
-  if (shouldWait < 0)
+	if (shouldWait < 0)
     synch = [[anInvocation methodSignature] methodReturnLength] > 0;
   else
     synch = shouldWait != 0;
@@ -311,6 +311,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (!wb_thread)
 		WBThrowException(NSInvalidArgumentException, @"call method on invalid port");
   
+  // message come from the target thread, no need to forward, use fast path.
+  if ([wb_thread isEqual:[NSThread currentThread]]) 
+    return wb_target;
+  
   [wb_lock lock];
   wb_sync = synch;
   wb_target = target;
@@ -337,9 +341,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   wb_target = nil;
   [wb_lock unlock];
   
-  if (target && ![target respondsToSelector:[anInvocation selector]]) {
+  if (target && ![target respondsToSelector:[anInvocation selector]]) 
     [target doesNotRecognizeSelector:[anInvocation selector]];
-  }
   
   if (!target) {
     [super forwardInvocation:anInvocation];
@@ -355,11 +358,13 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   
   id error = nil;
   NSInvocation *invocation = (NSInvocation *)msg->invocation;
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   @try {
     [invocation invoke];
   } @catch (id exception) {
     error = exception;
   }
+  [pool drain];
   if (!msg->async) {
     wbreply_msg reply_msg;
     bzero(&reply_msg, sizeof(reply_msg));
@@ -428,6 +433,15 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   [wb_port release];
   [wb_target release];
   [super dealloc];
+}
+
+#pragma mark -
+- (id)forwardingTargetForSelector:(SEL)sel {
+  // message come from the target thread, no need to forward, use fast path.
+  if ([[wb_port targetThread] isEqual:[NSThread currentThread]]) 
+    return wb_target;
+  
+	return nil;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
