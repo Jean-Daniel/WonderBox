@@ -348,8 +348,10 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   switch ([self type]) {
     case kWBGLAttachementTypeBuffer:
       glDeleteRenderbuffersEXT(1, &wb_name);
+      break;
     case kWBGLAttachementTypeTexture:
       glDeleteTextures(1, &wb_name);
+      break;
   }
 }
 

@@ -100,7 +100,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     [port invalidate];
     [port release];
     
-    [pool release];
+    [pool drain];
   }
 }
 
@@ -132,7 +132,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (id)wb_init {
-  /* return current port if exists */
+  /* return current port if exists (FIXME: should be done in alloc ? ) */
   WBThreadPort *current = (WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (current) {
     [self release];
@@ -140,6 +140,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   }
   
   if (self = [super init]) {    
+    // register receive port.
     CFMachPortContext ctxt = { 0, self, NULL, NULL, NULL };
     wb_port = CFMachPortCreate(kCFAllocatorDefault, _WBTPMachMessageCallBack, &ctxt, NULL);
     if (!wb_port) {
@@ -313,7 +314,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   
   // message come from the target thread, no need to forward, use fast path.
   if ([wb_thread isEqual:[NSThread currentThread]]) 
-    return wb_target;
+    return target;
   
   [wb_lock lock];
   wb_sync = synch;

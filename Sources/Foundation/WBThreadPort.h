@@ -36,6 +36,7 @@ WB_CLASS_EXPORT
 
 - (NSThread *)targetThread;
 
+// WARNING: messages handled by the receiver would not be forwarded (retain, release, etc…)
 - (id)prepareWithInvocationTarget:(id)target;
 - (id)prepareWithInvocationTarget:(id)target waitUntilDone:(NSInteger)sync;
 
