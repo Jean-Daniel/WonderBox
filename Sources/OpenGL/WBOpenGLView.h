@@ -16,10 +16,11 @@
     unsigned int scales:1;
     unsigned int reshape:1;
     unsigned int subview:1;
+    unsigned int doublebuf:1;
     unsigned int drawResize:1;
     unsigned int transparent:1;
     unsigned int syncSwap:8;
-    unsigned int reserved:3;
+    unsigned int reserved:2;
   } wb_glvFlags;
 }
 
@@ -38,6 +39,7 @@
 - (NSRect)convertRectToOpenGLSpace:(NSRect)aRect;
 - (NSRect)convertRectFromOpenGLSpace:(NSRect)aRect;
 
+- (void)flushBuffer;
 
 /* protected */
 // context locked

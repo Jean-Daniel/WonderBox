@@ -146,6 +146,20 @@
   }
 }
 
+- (void)prepareOpenGL {
+  [super prepareOpenGL];
+  CGLContextObj ctxt = [[self openGLContext] CGLContextObj];
+  if (ctxt) {
+    GLint value;
+    CGLLockContext(ctxt);
+    CGLPixelFormatObj format = CGLGetPixelFormat(ctxt);
+    if (kCGLNoError == CGLDescribePixelFormat(format, 0, kCGLPFADoubleBuffer, &value))
+      wb_glvFlags.doublebuf = value ? 1 : 0;
+    
+    CGLUnlockContext(ctxt);
+  }
+}
+
 - (void)drawRect:(NSRect)aRect {
   if (wb_glvFlags.subview) // must be transparent, so clear the Quartz Context.
     CGContextClearRect([[NSGraphicsContext currentContext] graphicsPort], NSRectToCGRect(aRect));
@@ -159,7 +173,7 @@
   
   [self glDraw:aRect];
   
-  [[self openGLContext] flushBuffer];
+  [self flushBuffer];
   CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
@@ -168,7 +182,15 @@
   
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
-  
+}
+
+- (void)flushBuffer {
+  if (wb_glvFlags.doublebuf)
+    [[self openGLContext] flushBuffer];
+  else {
+    CGLContextObj CGL_MACRO_CONTEXT = [[self openGLContext] CGLContextObj];
+    glFlush();
+  }
 }
 
 @end
