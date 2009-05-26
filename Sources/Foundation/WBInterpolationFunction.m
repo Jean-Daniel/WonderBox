@@ -52,6 +52,13 @@ WBClassCluster(WBInterpolationFunction)
 
 @implementation WBInterpolationFunction
 
++ (WBInterpolationFunction *)circularInterpolation {
+  return [[[self alloc] initWithCallBack:&WBInterpolationCallBackCircular] autorelease];
+}
++ (WBInterpolationFunction *)sinusoidalInterpolation {
+  return [[[self alloc] initWithCallBack:&WBInterpolationCallBackSin] autorelease];
+}
+
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
   return [super init];
 }

@@ -27,6 +27,9 @@ WB_CLASS_EXPORT
   
 }
 
++ (WBInterpolationFunction *)circularInterpolation;
++ (WBInterpolationFunction *)sinusoidalInterpolation;
+
 // Calback based
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback;
 
