@@ -27,4 +27,10 @@ void WBAudioTimeStampInitializeWithSampleTime(AudioTimeStamp *timeStamp, Float64
 WB_EXPORT
 void WBAudioTimeStampInitializeWithSampleAndHostTime(AudioTimeStamp *timeStamp, Float64 sample, UInt64 hostTime);
 
+// MARK: Channel Layout
+WB_EXPORT
+UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout);
+WB_EXPORT
+UInt32 WBAudioChannelLayoutGetNumberOfChannels(const AudioChannelLayout *inLayout);
+
 #endif /* __WBAUDIO_FUNCTIONS_H */

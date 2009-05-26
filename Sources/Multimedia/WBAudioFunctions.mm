@@ -27,3 +27,26 @@ void WBAudioTimeStampInitializeWithHostTime(AudioTimeStamp *timeStamp, UInt64 ho
 void WBAudioTimeStampInitializeWithSampleAndHostTime(AudioTimeStamp *timeStamp, Float64 sample, UInt64 hostTime) {
   FillOutAudioTimeStampWithSampleAndHostTime(*timeStamp, sample, hostTime);
 }
+
+// MARK: Channel Layout
+UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout) {
+  if (!inLayout) return 0;
+  
+	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+		return offsetof(AudioChannelLayout, mChannelDescriptions) + inLayout->mNumberChannelDescriptions * sizeof(AudioChannelDescription);
+	
+  return sizeof(AudioChannelLayout);
+}
+
+
+UInt32 WBAudioChannelLayoutGetNumberOfChannels(const AudioChannelLayout *inLayout) {
+  if (!inLayout) return 0;
+	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+		return inLayout->mNumberChannelDescriptions;
+	
+	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
+		return __builtin_popcount(inLayout->mChannelBitmap);
+  
+	return AudioChannelLayoutTag_GetNumberOfChannels(inLayout->mChannelLayoutTag);
+}
+

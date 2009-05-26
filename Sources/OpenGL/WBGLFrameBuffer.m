@@ -150,7 +150,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
                           GL_COLOR_ATTACHMENT0_EXT + anIndex, aBuffer);
 }
 
-- (BOOL)bind; {
+- (BOOL)bind {
   return [self bind:GL_FRAMEBUFFER_EXT];
 }
 - (void)unbind {
@@ -161,8 +161,9 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (BOOL)bind:(GLenum)mode {
   CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
 #if defined(DEBUG)
-  if ([self status] != 0) {
-    DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString([self status]));
+  GLint status = [self status];
+  if (status != 0) {
+    DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString(status));
     return NO;
   }
 #endif
