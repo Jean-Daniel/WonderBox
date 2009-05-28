@@ -34,6 +34,9 @@ WB_CLASS_EXPORT
 #pragma mark -
 - (IBAction)close:(id)sender;
 
+- (IBAction)ok:(id)sender;
+- (IBAction)cancel:(id)sender;
+
 - (void)windowWillClose;
 
 @end

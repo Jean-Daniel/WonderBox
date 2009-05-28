@@ -68,14 +68,22 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   [self close];
 }
 
+- (IBAction)ok:(id)sender {
+  [self setModalResultCode:NSOKButton];
+  [self close:sender];
+}
+- (IBAction)cancel:(id)sender {
+  [self setModalResultCode:NSCancelButton];
+  [self close:sender];  
+}
+
 - (BOOL)isReleasedWhenClosed {
   return wb_wcFlags.autorelease;
 }
 
 - (void)setReleasedWhenClosed:(BOOL)release {
 #if (__OBJC_GC__)
-  bool previous = WBFlagTestAndSet(wb_wcFlags.autorelease, release);
-  if (previous != wb_wcFlags.autorelease) {
+  if (WBFlagTestAndSet(wb_wcFlags.autorelease, release) != wb_wcFlags.autorelease) {
     // the object retains itself, so we have to tell the GC it should not collect it.
     if (wb_wcFlags.autorelease) 
       [[NSGarbageCollector defaultCollector] disableCollectorForPointer:self];
@@ -121,17 +129,16 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 
 - (void)wb_windowWillClose:(NSNotification *)aNotification {
   /* Check for safety. The window may be closed without a call to close: */
-  if ([NSApp modalWindow] == [self window]) {
+  if ([NSApp modalWindow] == [self window]) 
     [NSApp stopModalWithCode:wb_modalStatus];
-  }
+
   /* notify after setting modal status */
   [self windowWillClose];
   if ([self isReleasedWhenClosed]) {
 #if (__OBJC_GC__)
     [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
-#else
-    [self autorelease];
 #endif
+    [self autorelease];
   }
 }
 
