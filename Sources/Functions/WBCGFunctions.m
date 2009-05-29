@@ -366,31 +366,6 @@ CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictiona
   return layer;
 }
 
-CGLayerRef WBCGLayerCreateWithAxialShading(CGContextRef ctxt, CGSize size, bool scaleToUserSpace, CGPoint start, CGPoint end,
-                                           CGFunctionEvaluateCallback callback, const void *userInfo) {
-  CGShadingRef shading = WBCGShadingCreateAxial(start, end, callback, userInfo);
-  CGLayerRef layer = WBCGLayerCreateWithContext(ctxt, size, NULL, scaleToUserSpace);
-  if (layer)
-    CGContextDrawShading(CGLayerGetContext(layer), shading);
-  CGShadingRelease(shading);
-  
-  return layer;
-}
-
-CGLayerRef WBCGLayerCreateWithVerticalShading(CGContextRef ctxt, CGSize size, bool scaleToUserSpace,
-                                              CGFunctionEvaluateCallback callback, const void *userInfo) {
-  /* draw top to bottom */
-  CGPoint start = CGPointMake(0, size.height), end = CGPointMake(0, 0);
-  return WBCGLayerCreateWithAxialShading(ctxt, size, scaleToUserSpace, start, end, callback, userInfo);
-}
-
-CGLayerRef WBCGLayerCreateWithHorizontalShading(CGContextRef ctxt, CGSize size, bool scaleToUserSpace,
-                                                CGFunctionEvaluateCallback callback, const void *userInfo) {
-  /* draws left to right */
-  CGPoint start = CGPointMake(0, 0), end = CGPointMake(size.width, 0);
-  return WBCGLayerCreateWithAxialShading(ctxt, size, scaleToUserSpace, start, end, callback, userInfo);
-}
-
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   CGImageRef result = NULL;
   CGSize size = CGLayerGetSize(layer);
@@ -403,84 +378,6 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   }
   CGColorSpaceRelease(space);
   return result;
-}
-
-#pragma mark Shading
-static
-CGFunctionRef _WBCGCreateShadingFunction(CGFunctionEvaluateCallback callback, CGColorSpaceRef colorspace, const void *ctxt, UInt32 *count) {
-  size_t components = 1 + CGColorSpaceGetNumberOfComponents(colorspace);
-  CGFloat input_value_range [2] = { 0, 1 };
-  CGFloat output_value_ranges [components * 2];
-  for (NSUInteger idx = 0; idx < components; idx++) {
-    output_value_ranges[idx * 2] = 0;
-    output_value_ranges[1 + idx * 2] = 1;
-  }
-  
-  if (count) *count = (UInt32)components;
-  CGFunctionCallbacks callbacks = { 0, callback, NULL };
-  return CGFunctionCreate((void *)ctxt, 1, input_value_range, components, output_value_ranges, &callbacks);
-}
-
-CGShadingRef WBCGShadingCreateAxial(CGPoint start, CGPoint end, CGFunctionEvaluateCallback callback, const void *ctxt) {
-  CGColorSpaceRef colorspace = WBCGColorSpaceCreateRGB();
-  CGFunctionRef function = _WBCGCreateShadingFunction(callback, colorspace, ctxt, NULL);
-  
-  CGShadingRef shading = CGShadingCreateAxial(colorspace, start, end, function, false, false);
-  
-  CGColorSpaceRelease(colorspace);
-  CGFunctionRelease(function);
-  
-  return shading;
-}
-
-CGShadingRef WBCGShadingCreateRadial(CGPoint start, CGFloat startr, CGPoint end, CGFloat endr, CGFunctionEvaluateCallback callback, const void *ctxt) {
-  CGColorSpaceRef colorspace = WBCGColorSpaceCreateRGB();
-  CGFunctionRef function = _WBCGCreateShadingFunction(callback, colorspace, ctxt, NULL);
-  
-  CGShadingRef shading = CGShadingCreateRadial(colorspace, start, startr, end, endr, function, false, false);
-  
-  CGColorSpaceRelease(colorspace);
-  CGFunctionRelease(function);
-  
-  return shading;
-}
-
-CGFloat WBCGShadingSinFactorFunction(CGFloat factor) {
-  CGFloat sinus = sin(M_PI_2 * factor);
-  return sinus * sinus;
-}
-CGFloat WBCGShadingCircularFactorFunction(CGFloat factor) {
-  return sqrt(factor * (2 - factor));
-}
-
-void WBCGShadingSimpleShadingFunction(void *pinfo, const CGFloat *in, CGFloat *out) {
-  CGFloat v;
-  WBCGSimpleShadingInfo *ctxt = pinfo;
-  
-  v = ctxt->fct ? ctxt->fct(*in) : *in;
-  for (NSUInteger k = 0; k < 4; k++) {
-    *out++ = ctxt->start[k] - (ctxt->start[k] - ctxt->end[k]) * v;
-  }
-}
-
-void WBCGShadingMultiShadingFunction(void *pinfo, const CGFloat *in, CGFloat *out) {
-  CGFloat v, shift = 0;
-  WBCGMultiShadingInfo *ctxt = (WBCGMultiShadingInfo *)pinfo;
-  
-  v = *in;
-  for (NSUInteger idx = 0; idx < ctxt->count; idx++) {
-    if (v <= ctxt->steps[idx].end) {
-      CGFloat factor = (v - shift) / (ctxt->steps[idx].end - shift);
-      if (ctxt->steps[idx].fct) factor = ctxt->steps[idx].fct(factor);
-      for (NSUInteger k = 0; k < 4; k++) {
-        *out++ = ctxt->steps[idx].rgba[k] + (ctxt->steps[idx].rgba2[k] - ctxt->steps[idx].rgba[k]) * factor;
-      }
-      return;
-    } else {
-      shift = ctxt->steps[idx].end;
-    }
-  }
-  DCLog("Oops, what am i doing here?");
 }
 
 #pragma mark Images
