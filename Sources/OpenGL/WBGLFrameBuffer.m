@@ -42,6 +42,7 @@
 
 - (void)delete {
   if (wb_glctxt) {
+    CGLLockContext(wb_glctxt);
     [wb_depth release];
     wb_depth = nil;
     [wb_stencil release];
@@ -55,13 +56,14 @@
       glDeleteFramebuffersEXT(1, &wb_fbo);
       wb_fbo = 0;
     }
+    CGLUnlockContext(wb_glctxt);
     CGLReleaseContext(wb_glctxt);
     wb_glctxt = nil;
   }
 }
 
 - (void)dealloc {
-  [self delete];
+  [self delete]; 
   [super dealloc];
 }
 
@@ -83,6 +85,8 @@
 - (GLint)frameBufferObject {
   return wb_fbo;
 }
+
+- (CGLContextObj)CGLContextObj { return wb_glctxt; }
 
 WB_INLINE 
 void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, 
@@ -141,6 +145,9 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }  
 }
 
+- (NSArray *)colorBuffers {
+  return NSAllMapTableValues(wb_attachements);
+}
 - (WBGLFrameBufferAttachement *)colorBufferAtIndex:(NSUInteger)anIndex {
   return NSMapGet(wb_attachements, (const void *)anIndex);
 }

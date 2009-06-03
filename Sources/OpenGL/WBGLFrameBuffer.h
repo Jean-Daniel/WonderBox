@@ -80,6 +80,7 @@ enum {
 
 - (GLenum)status;
 - (GLint)frameBufferObject;
+- (CGLContextObj)CGLContextObj;
 
 - (BOOL)bind;
 - (void)unbind;
@@ -100,6 +101,7 @@ enum {
 - (WBGLFrameBufferAttachement *)stencilBuffer;
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer;
 
+- (NSArray *)colorBuffers;
 - (WBGLFrameBufferAttachement *)colorBufferAtIndex:(NSUInteger)anIndex;
 - (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex;
 
