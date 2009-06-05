@@ -79,6 +79,7 @@ enum {
 - (void)delete;
 
 - (GLenum)status;
+- (GLenum)status:(CGLContextObj)aContext;
 - (GLint)frameBufferObject;
 - (CGLContextObj)CGLContextObj;
 

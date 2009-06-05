@@ -68,7 +68,10 @@
 }
 
 - (GLenum)status {
-  CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
+  return [self status:nil];
+}
+- (GLenum)status:(CGLContextObj)aContext {
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   
   GLint save;
   glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &save);
@@ -176,7 +179,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
 #if defined(DEBUG)
-  GLint status = [self status];
+  GLint status = [self status:CGL_MACRO_CONTEXT];
   if (status != 0) {
     DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString(status));
     return NO;
