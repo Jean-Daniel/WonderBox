@@ -158,15 +158,23 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 }
 
 - (BOOL)bind {
-  return [self bind:GL_FRAMEBUFFER_EXT];
+  return [self bindMode:GL_FRAMEBUFFER_EXT context:nil];
 }
 - (void)unbind {
-  [self unbind:GL_FRAMEBUFFER_EXT];
+  return [self unbindMode:GL_FRAMEBUFFER_EXT context:nil];
+}
+
+- (BOOL)bind:(CGLContextObj)aContext {
+  return [self bindMode:GL_FRAMEBUFFER_EXT context:aContext];
+}
+
+- (void)unbind:(CGLContextObj)aContext {
+  return [self unbindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
 // mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
-- (BOOL)bind:(GLenum)mode {
-  CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
+- (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext {
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
 #if defined(DEBUG)
   GLint status = [self status];
   if (status != 0) {
@@ -199,8 +207,8 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
   return glGetError() == 0;
 }
-- (void)unbind:(GLenum)mode {
-  CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
+- (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext {
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   
   GLint actual = 0;
   switch (mode) {
@@ -224,18 +232,26 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 }
 
 - (void)setReadBuffer:(NSInteger)anIdx {
-  GLenum buffer;
-  CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
-  if (anIdx < 0) buffer = GL_NONE;
-  else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
-  glReadBuffer(buffer);
+  [self setReadBuffer:anIdx context:nil];  
 }
 - (void)setWriteBuffer:(NSInteger)anIdx {
+  [self setWriteBuffer:anIdx context:nil];  
+}
+
+- (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext {
   GLenum buffer;
-  CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
-  glDrawBuffer(buffer);  
+  glReadBuffer(buffer);  
+}
+
+- (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext {
+  GLenum buffer;
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
+  if (anIdx < 0) buffer = GL_NONE;
+  else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
+  glDrawBuffer(buffer);    
 }
 
 - (NSUInteger)maxBufferCount {

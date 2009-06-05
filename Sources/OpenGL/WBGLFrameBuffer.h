@@ -85,15 +85,21 @@ enum {
 - (BOOL)bind;
 - (void)unbind;
 
-// mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
-- (BOOL)bind:(GLenum)mode;
-- (void)unbind:(GLenum)mode;
+- (BOOL)bind:(CGLContextObj)aContext;
+- (void)unbind:(CGLContextObj)aContext;
+
+// mode can be GL_READ_FRAMEBUFFER_EXT or GL_DRAW_FRAMEBUFFER_EXT
+- (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext;
+- (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext;
 
 - (NSUInteger)maxBufferCount;
 
 // -1 mean GL_NONE
 - (void)setReadBuffer:(NSInteger)anIdx;
 - (void)setWriteBuffer:(NSInteger)anIdx;
+
+- (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
+- (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 
 - (WBGLFrameBufferAttachement *)depthBuffer;
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer;
