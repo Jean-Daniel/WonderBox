@@ -33,13 +33,14 @@
   WBThreadPort *wb_port;
 }
 
-- (id)initWithPort:(WBThreadPort *)aPort;
+- (id)init;
 
 - (void)abort;
 - (BOOL)isRecording;
 
 - (void)setTarget:(id)aTarget;
 - (void)setMode:(int8_t)syncMode;
+- (void)setPort:(WBThreadPort *)aPort;
 
 @end
 
@@ -96,10 +97,10 @@ mach_port_t _WBThreadGetSendPort(void) {
 }
 
 static 
-_WBRecorderProxy *_WBThreadGetRecorder(WBThreadPort *current) {
+_WBRecorderProxy *_WBThreadGetRecorder(void) {
   _WBRecorderProxy *proxy = pthread_getspecific(sThreadRecorderKey);
   if (!proxy) {
-    proxy = [[_WBRecorderProxy alloc] initWithPort:current];
+    proxy = [[_WBRecorderProxy alloc] init];
     if (0 != pthread_setspecific(sThreadRecorderKey, proxy)) {
       DCLog("pthread_setspecific error");
       [proxy release];
@@ -353,7 +354,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if ([wb_thread isEqual:[NSThread currentThread]]) 
     return target;
   
-  _WBRecorderProxy *recorder = _WBThreadGetRecorder(self);
+  _WBRecorderProxy *recorder = _WBThreadGetRecorder();
+  [recorder setPort:self];
   [recorder setMode:synch];
   [recorder setTarget:target];
   return recorder;
@@ -400,7 +402,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   @try {
     [invocation invoke];
   } @catch (id exception) {
-    error = exception;
+    // Note: we are in a local autorelease pool => must retain error
+    error = [exception retain];
   }
   [pool drain];
   if (!msg->async) {
@@ -422,7 +425,6 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     /* send message */
     mach_error_t err = mach_msg(reply_hdr, opts, reply_hdr->msgh_size, 0, MACH_PORT_NULL, wb_timeout, MACH_PORT_NULL);
     if (MACH_MSG_SUCCESS != err) {
-      [error release];
       WBCLogWarning("mach_msg(reply) : %s", mach_error_string(err));
     }
   } else if (error) {
@@ -431,6 +433,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
                  [error respondsToSelector:@selector(name)] ? [error name] : error,
                  [error respondsToSelector:@selector(reason)] ? [error reason] : @"undefined reason");
   }
+  [error release];
   [invocation release];
 }
 
@@ -510,15 +513,9 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 @implementation _WBRecorderProxy
 
-- (id)initWithPort:(WBThreadPort *)aPort  {
+- (id)init {
   /* NSProxy does not implements init => do not call super */
-  wb_port = [aPort retain];
   return self;
-}
-
-- (void)dealloc {
-  [wb_port release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -557,11 +554,12 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   return wb_target ? [wb_target isKindOfClass:aClass] : [super isKindOfClass:aClass];
 }
 
-- (void)abort { wb_target = nil; }
+- (void)abort { wb_port = nil; wb_target = nil; }
 - (BOOL)isRecording { return wb_target != nil; }
 
 - (void)setTarget:(id)aTarget { wb_target = aTarget; }
 - (void)setMode:(int8_t)syncMode { wb_sync = syncMode; }
+- (void)setPort:(WBThreadPort *)aPort { wb_port = aPort; }
 
 @end
 
