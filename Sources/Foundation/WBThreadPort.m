@@ -26,6 +26,23 @@
 
 @end
 
+@interface _WBRecorderProxy : NSProxy {
+@private
+  id wb_target;
+  SInt8 wb_sync;
+  WBThreadPort *wb_port;
+}
+
+- (id)initWithPort:(WBThreadPort *)aPort;
+
+- (void)abort;
+- (BOOL)isRecording;
+
+- (void)setTarget:(id)aTarget;
+- (void)setMode:(int8_t)syncMode;
+
+@end
+
 @interface WBThreadPort ()
 
 - (void)invalidate;
@@ -56,6 +73,7 @@ void _WBTPMachMessageCallBack(CFMachPortRef port, void *msg, CFIndex size, void 
 
 #pragma mark Thread Specific
 /* Each thread can have a send port (mach_port_t) and a receive port (WBThreadPort *) */
+static pthread_key_t sThreadRecorderKey;
 static pthread_key_t sThreadSendPortKey;
 static pthread_key_t sThreadReceivePortKey;
 
@@ -75,6 +93,28 @@ mach_port_t _WBThreadGetSendPort(void) {
     }
   }
   return port;
+}
+
+static 
+_WBRecorderProxy *_WBThreadGetRecorder(WBThreadPort *current) {
+  _WBRecorderProxy *proxy = pthread_getspecific(sThreadRecorderKey);
+  if (!proxy) {
+    proxy = [[_WBRecorderProxy alloc] initWithPort:current];
+    if (0 != pthread_setspecific(sThreadRecorderKey, proxy)) {
+      DCLog("pthread_setspecific error");
+      [proxy release];
+      proxy = NULL;
+    }
+  }
+  return proxy;
+}
+
+static
+void _WBThreadRecorderDestructor(void *ptr) {
+  _WBRecorderProxy *proxy = (_WBRecorderProxy *)ptr;
+  if ([proxy isRecording])
+    [proxy abort];
+  [proxy release];
 }
 
 static
@@ -120,6 +160,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 + (void)initialize {
   if ([WBThreadPort class] == self) {
+    verify(0 == pthread_key_create(&sThreadRecorderKey, _WBThreadRecorderDestructor));
     verify(0 == pthread_key_create(&sThreadSendPortKey, _WBThreadSendPortDestructor));
     verify(0 == pthread_key_create(&sThreadReceivePortKey, _WBThreadReceivePortDestructor));
   }
@@ -155,7 +196,6 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       CFRelease(src);
     }
     
-    wb_lock = [[NSLock alloc] init];
     wb_timeout = MACH_MSG_TIMEOUT_NONE;
     wb_thread = [[NSThread currentThread] retain];
   }
@@ -197,9 +237,6 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       
       [wb_thread autorelease];
       wb_thread = nil;
-      
-      [wb_lock autorelease];
-      wb_lock = nil;
     }
   }
 }
@@ -316,10 +353,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if ([wb_thread isEqual:[NSThread currentThread]]) 
     return target;
   
-  [wb_lock lock];
-  wb_sync = synch;
-  wb_target = target;
-  return self;
+  _WBRecorderProxy *recorder = _WBThreadGetRecorder(self);
+  [recorder setMode:synch];
+  [recorder setTarget:target];
+  return recorder;
 }
 
 - (id)prepareWithInvocationTarget:(id)target {
@@ -330,28 +367,28 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   return [self wb_prepareWithInvocationTarget:target waitUntilDone:synch];
 }
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-  if (!wb_target)
-    [super methodSignatureForSelector:aSelector];
-  
-  return [wb_target methodSignatureForSelector:aSelector];
-}
+//- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+//  if (!wb_target)
+//    [super methodSignatureForSelector:aSelector];
+//  
+//  return [wb_target methodSignatureForSelector:aSelector];
+//}
 
-- (void)forwardInvocation:(NSInvocation *)anInvocation {
-  id target = wb_target;
-  wb_target = nil;
-  [wb_lock unlock];
-  
-  if (target && ![target respondsToSelector:[anInvocation selector]]) 
-    [target doesNotRecognizeSelector:[anInvocation selector]];
-  
-  if (!target) {
-    [super forwardInvocation:anInvocation];
-  } else {
-    [anInvocation setTarget:target];
-    [self performInvocation:anInvocation waitUntilDone:kWBThreadPortWaitIfReturns timeout:wb_timeout];
-  }
-}
+//- (void)forwardInvocation:(NSInvocation *)anInvocation {
+//  id target = wb_target;
+//  wb_target = nil;
+//  [wb_lock unlock];
+//  
+//  if (target && ![target respondsToSelector:[anInvocation selector]]) 
+//    [target doesNotRecognizeSelector:[anInvocation selector]];
+//  
+//  if (!target) {
+//    [super forwardInvocation:anInvocation];
+//  } else {
+//    [anInvocation setTarget:target];
+//    [self performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];
+//  }
+//}
 
 #pragma mark Message handler
 - (void)handleMachMessage:(void *)machMessage {
@@ -452,7 +489,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
   [anInvocation setTarget:wb_target];
-  [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:[wb_port timeout]];
+  [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
@@ -470,4 +507,62 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 @end
+
+@implementation _WBRecorderProxy
+
+- (id)initWithPort:(WBThreadPort *)aPort  {
+  /* NSProxy does not implements init => do not call super */
+  wb_port = [aPort retain];
+  return self;
+}
+
+- (void)dealloc {
+  [wb_port release];
+  [super dealloc];
+}
+
+#pragma mark -
+- (id)forwardingTargetForSelector:(SEL)sel {
+  // message come from the target thread, no need to forward, use fast path.
+  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]]) 
+    return wb_target;
+  
+	return nil;
+}
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+  return wb_target ? [wb_target methodSignatureForSelector:aSelector] : [super methodSignatureForSelector:aSelector];
+}
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+  if (wb_target) {
+    [anInvocation setTarget:wb_target];
+    [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:[wb_port timeout]];
+    // record only one call
+    [self abort];
+  } else {
+    [super forwardInvocation:anInvocation];
+  }
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+  return wb_target ? [wb_target respondsToSelector:aSelector] : [super respondsToSelector:aSelector];
+}
+
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol {
+  return wb_target ? [wb_target conformsToProtocol:aProtocol] : [super conformsToProtocol:aProtocol];
+}
+
+- (BOOL)isKindOfClass:(Class)aClass {
+  return wb_target ? [wb_target isKindOfClass:aClass] : [super isKindOfClass:aClass];
+}
+
+- (void)abort { wb_target = nil; }
+- (BOOL)isRecording { return wb_target != nil; }
+
+- (void)setTarget:(id)aTarget { wb_target = aTarget; }
+- (void)setMode:(int8_t)syncMode { wb_sync = syncMode; }
+
+@end
+
 

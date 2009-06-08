@@ -20,11 +20,7 @@ WB_CLASS_EXPORT
   @private
   NSThread *wb_thread;
   CFMachPortRef wb_port;
-  
-  id wb_target;
-  SInt8 wb_sync;
-  
-  NSLock *wb_lock;
+
   mach_msg_timeout_t wb_timeout;
 }
 
