@@ -26,6 +26,7 @@
 - (void)addItem:(WBCollapseViewItem *)anItem;                              // Add item at the end.
 - (void)insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)index; // May raise an NSRangeException
 
+- (void)removeAllItems;
 - (void)removeItem:(WBCollapseViewItem *)anItem;                           // Item must be an existing CollapseViewItem
 - (void)removeItemAtIndex:(NSUInteger)anIndex;
 - (void)removeItemWithIdentifier:(id)anIdentifier;

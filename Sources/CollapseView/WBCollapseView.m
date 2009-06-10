@@ -178,6 +178,26 @@
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
+- (void)removeAllItems {
+  if (0 == [wb_views count]) return;
+  
+  for (_WBCollapseItemView *view in wb_views) {
+    // remove view
+    [view removeFromSuperview];
+    [view.item setCollapseView:nil];
+    [view invalidate];
+  }
+  // Set height to 0
+  [self _incrementHeightBy:- [self frame].size.height animate:NO];
+  
+  // update collection
+  [wb_views removeAllObjects];
+  [wb_items removeAllObjects];
+  // Notify
+  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+    [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
+}
+
 - (void)removeItem:(WBCollapseViewItem *)anItem {
   NSUInteger idx = [self indexOfItem:anItem];
   if (NSNotFound == idx)
