@@ -36,7 +36,7 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...)	{
     CFStringRef __event = WBAEDescCopyDescription(desc); \
       if (__event) { \
         _WBAEPrintDebug(desc, format, __event, ## args); \
-          CFRelease(__event); \
+        CFRelease(__event); \
       } \
   } \
 })

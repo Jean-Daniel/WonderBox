@@ -341,7 +341,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 @end
 
 void _WBGradientRelease(void *info) {
-  if (info) CFRelease(info);
+  WBRelease(info);
 }
 
 void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out) {

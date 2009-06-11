@@ -340,8 +340,7 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie inMovie, Media *outMedia, MediaH
  calculate the static frame rate.
  */
 OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
-  check(outFPS);
-  check(inMovieMedia);
+  if (!outFPS || !inMovieMedia) return paramErr;
   
   *outFPS = 0;
   
@@ -389,8 +388,7 @@ OSStatus _WBMediaHandlerIsMPEG(MediaHandler inMediaHandler, Boolean *outIsMPEG) 
  track, return the static frame rate.
  */
 ComponentResult _WBMPEGMediaGetStaticFrameRate(MediaHandler inMPEGMediaHandler, Fixed *outStaticFrameRate) {
-  check(inMPEGMediaHandler);
-  check(outStaticFrameRate);
+  if (!inMPEGMediaHandler || !outStaticFrameRate) return paramErr;
   
   *outStaticFrameRate = 0;
   

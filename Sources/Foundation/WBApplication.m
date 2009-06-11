@@ -269,7 +269,7 @@ bool __IsValidIdentifier(id identifier) {
   CFStringRef bundle = WBLSCopyBundleIdentifierForPath((CFStringRef)aPath);
   OSType signature = WBLSGetSignatureForPath((CFStringRef)aPath) ? : kWBUndefinedSignature;
   [self setSignature:signature bundleIdentifier:(NSString *)bundle];
-  if (bundle) CFRelease(bundle);
+  WBRelease(bundle);
   
   return [self isValid];
 }

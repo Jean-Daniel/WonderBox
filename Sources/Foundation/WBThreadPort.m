@@ -219,9 +219,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (id)init {
-  WBLogWarning(@"Invalid initializer. Should use +currentPort instead");
   [self release];
-  return [WBThreadPort currentPort];
+  WBThrowException(NSInvalidArgumentException, @"Invalid initializer. Should use +currentPort instead");
 }
 
 - (void)dealloc {

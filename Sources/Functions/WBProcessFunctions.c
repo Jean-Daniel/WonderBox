@@ -103,9 +103,7 @@ ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFProp
       CFRelease(info);
       break;
     }
-    if (info) {
-      CFRelease(info);
-    }
+    WBRelease(info);
   }
   return serialNumber; 
 }
