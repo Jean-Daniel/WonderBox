@@ -175,19 +175,40 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return [self unbindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
+WB_INLINE
+GLenum __WBGLFBOBindingForMode(GLenum mode) {
+  switch (mode) {
+    case GL_FRAMEBUFFER_EXT:
+      return GL_FRAMEBUFFER_BINDING_EXT;
+    case GL_DRAW_FRAMEBUFFER_EXT:
+      return GL_DRAW_FRAMEBUFFER_BINDING_EXT;
+    case GL_READ_FRAMEBUFFER_EXT:
+      return GL_READ_FRAMEBUFFER_BINDING_EXT;
+  }
+  WBThrowException(NSInvalidArgumentException, @"Invalid FBO mode");
+}
+
 // mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
 - (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
-#if defined(DEBUG)
-  GLint status = [self status:CGL_MACRO_CONTEXT];
-  if (status != 0) {
-    DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString(status));
-    return NO;
-  }
-#endif
   
+  GLint save;
+  glGetIntegerv(__WBGLFBOBindingForMode(mode), &save);
+  WBAssert(GL_ZERO == glGetError(), @"error while getting actual FBO");
+  
+  if ((GLuint)save == wb_fbo) return YES;
+
   glBindFramebufferEXT(mode, wb_fbo);
-  if (0 == glGetError()) {
+  
+  if (GL_ZERO == glGetError()) {
+#if defined(DEBUG)
+    GLenum status = glCheckFramebufferStatusEXT(mode);
+    if (status != GL_FRAMEBUFFER_COMPLETE_EXT) {
+      DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString(status));
+      glBindFramebufferEXT(mode, save);
+      return NO;
+    }
+#endif
     if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
       CGSize size = CGSizeMake(0, 0);
       if (wb_depth) 
@@ -210,21 +231,12 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
   return glGetError() == 0;
 }
+
 - (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   
   GLint actual = 0;
-  switch (mode) {
-    case GL_FRAMEBUFFER_EXT:
-      glGetIntegerv(GL_FRAMEBUFFER_BINDING_EXT, &actual);
-      break;
-    case GL_DRAW_FRAMEBUFFER_EXT:
-      glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &actual);
-      break;
-    case GL_READ_FRAMEBUFFER_EXT:
-      glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING_EXT, &actual);
-      break;
-  }
+  glGetIntegerv(__WBGLFBOBindingForMode(mode), &actual);
   if ((GLuint)actual != wb_fbo) return;
   
   // restore view port
