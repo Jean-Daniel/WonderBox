@@ -234,8 +234,8 @@
   ResFileRefNum curRes = CurResFile();
 	ResFileRefNum componentResFileID = kResFileNotOpened;
 	
-  UInt32 version;
 	OSStatus result;
+  UInt32 version = 0;
 	short thngResourceCount;
 	
 	require_noerr (result = OpenAComponentResFile(_comp, &componentResFileID), home);

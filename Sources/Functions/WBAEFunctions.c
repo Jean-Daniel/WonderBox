@@ -704,9 +704,8 @@ OSStatus WBAESendEventReturnAEDescList(AppleEvent* pAppleEvent, AEDescList* pAED
 }
 
 OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* string) {
-  check(string != NULL);
-  check(*string == NULL);
-  check(pAppleEvent != NULL);
+  if (!pAppleEvent) return paramErr;
+  if (!string || *string) return paramErr;
   
   AppleEvent theReply = WBAEEmptyDesc();  
   OSStatus err = WBAESendEvent(pAppleEvent, kAEWaitReply, kAEDefaultTimeout, &theReply);
@@ -718,9 +717,8 @@ OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* strin
 }
 
 OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType, DescType *actualType, CFDataRef *data) {
-  check(data != NULL);
-  check(*data == NULL);
-  check(pAppleEvent != NULL);
+  if (!pAppleEvent) return paramErr;
+  if (!data || *data) return paramErr;
   
   OSStatus err = noErr;
   *data = NULL;
@@ -739,8 +737,7 @@ OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType,
 #pragma mark -
 #pragma mark Retreive AEDesc Data
 OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc, DescType desiredType, DescType* typeCode, void *dataPtr, Size maximumSize, Size *pActualSize) {
-  check(pAEDesc);
-  check(dataPtr);
+  if (!pAEDesc || !dataPtr) return paramErr;
   
   OSStatus err = noErr;
   if (pActualSize) *pActualSize = 0;
@@ -812,9 +809,8 @@ OSStatus WBAECopyNthAliasFromDescList(const AEDescList *aList, CFIndex idx, Alia
 
 #pragma mark CFStringRef
 OSStatus WBAECopyCFStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* aString) {
-  check(pAEDesc != NULL);
-  check(aString != NULL);
-  check(*aString == NULL);
+  if (!pAEDesc) return paramErr;
+  if (!aString || *aString) return paramErr;
   
   if (typeNull == pAEDesc->descriptorType) {
     return noErr;
@@ -849,9 +845,8 @@ OSStatus WBAECopyCFStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* aStr
 }
 
 OSStatus WBAECopyCFStringFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, CFStringRef* aString) {
-  check(anEvent != NULL);
-  check(aString != NULL);
-  check(*aString == NULL);
+  if (!anEvent) return paramErr;
+  if (!aString || *aString) return paramErr;
 
   AEDesc strDesc = WBAEEmptyDesc();
   OSStatus err = AEGetParamDesc(anEvent, aKey, typeWildCard, &strDesc);
@@ -865,9 +860,8 @@ OSStatus WBAECopyCFStringFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKe
 }
 
 OSStatus WBAECopyNthCFStringFromDescList(const AEDescList *aList, CFIndex idx, CFStringRef *aString) {
-  check(aList != NULL);
-  check(aString != NULL);
-  check(*aString == NULL);
+  if (!aList) return paramErr;
+  if (!aString || *aString) return paramErr;
   
   AEDesc nthItem = WBAEEmptyDesc();
   
@@ -882,9 +876,8 @@ OSStatus WBAECopyNthCFStringFromDescList(const AEDescList *aList, CFIndex idx, C
 
 #pragma mark CFDataRef
 OSStatus WBAECopyCFDataFromDescriptor(const AEDesc* aDesc, CFDataRef *data) {
-  check(aDesc != NULL);
-  check(data != NULL);
-  check(*data == NULL);
+  if (!aDesc) return paramErr;
+  if (!data || *data) return paramErr;
   
   OSStatus err = noErr;
   if (typeNull == aDesc->descriptorType) {
@@ -914,9 +907,8 @@ OSStatus WBAECopyCFDataFromDescriptor(const AEDesc* aDesc, CFDataRef *data) {
 }
 
 OSStatus WBAECopyCFDataFromAppleEvent(const AppleEvent *anEvent, AEKeyword aKey, DescType aType, DescType *actualType, CFDataRef *data) {
-  check(anEvent != NULL);
-  check(data != NULL);
-  check(*data == NULL);
+  if (!anEvent) return paramErr;
+  if (!data || *data) return paramErr;
   
   AEDesc dataDesc = WBAEEmptyDesc();
   OSStatus err = AEGetParamDesc(anEvent, aKey, aType, &dataDesc);
@@ -931,9 +923,8 @@ OSStatus WBAECopyCFDataFromAppleEvent(const AppleEvent *anEvent, AEKeyword aKey,
 }
 
 OSStatus WBAECopyNthCFDataFromDescList(const AEDescList *aList, CFIndex idx, DescType aType, DescType *actualType, CFDataRef *data) {
-  check(aList != NULL);
-  check(data != NULL);
-  check(*data == NULL);
+  if (!aList) return paramErr;
+  if (!data || *data) return paramErr;
   
   AEDesc nthItem = WBAEEmptyDesc();
   OSStatus err = AEGetNthDesc(aList, idx, aType, NULL, &nthItem);
@@ -985,7 +976,8 @@ OSStatus WBAEDescListAppendWithArguments(AEDescList *list, va_list args) {
 }
 
 OSStatus WBAEDescListGetCount(const AEDescList *list, CFIndex *count) {
-	check(count);
+	if (!count) return paramErr;
+  
 	long cnt = 0;
 	OSStatus err = AECountItems(list, &cnt);
 	if (noErr == err)
@@ -1034,7 +1026,7 @@ OSStatus WBAERecordAppendWithArguments(AERecord *list, va_list args) {
 
 #pragma mark Errors
 OSStatus WBAEGetHandlerError(const AppleEvent* pAEReply) {
-  check(pAEReply != NULL);
+  if (!pAEReply) return paramErr;
   
   OSStatus err = noErr;
   if (pAEReply->descriptorType != typeNull ) {	// there's a reply, so there may be an error
@@ -1060,8 +1052,7 @@ OSStatus WBAECopyErrorStringFromReply(const AppleEvent *reply, CFStringRef *str)
 // in that handle.  Carbon's opaque AEDesc's means that we need this
 // functionality a lot.
 OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType, Handle* descData) {
-  check(pDesc != NULL);
-  check(descData != NULL);
+  if (!pDesc || !descData) return paramErr;
 	
   OSStatus err = noErr;
 	const AEDesc *desc = pDesc;
@@ -1084,8 +1075,7 @@ OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType,
 }
 
 OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, DescType desiredType, Handle *aHandle) {
-	check(anEvent != NULL);
-	check(aHandle != NULL);
+  if (!anEvent || !aHandle) return paramErr;
 	
 	AEDesc desc = WBAEEmptyDesc();
 	OSStatus err = AEGetParamDesc(anEvent, aKey, desiredType, &desc);
@@ -1097,8 +1087,7 @@ OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey,
 }
 
 OSStatus WBAECopyNthHandleFromDescList(const AEDescList *aList, CFIndex idx, DescType aType, Handle *pHandle) {
-  check(aList != NULL);
-  check(pHandle != NULL);
+  if (!aList || !pHandle) return paramErr;
   
   AEDesc nthItem = WBAEEmptyDesc();
   OSStatus err = AEGetNthDesc(aList, idx, aType, NULL, &nthItem);
@@ -1209,8 +1198,7 @@ OSStatus _AllocatePortFromPool(PerThreadStorage **storagePtr) {
   OSStatus err = noErr;
   PerThreadStorage *storage = NULL;
   
-  check(storagePtr != NULL);
-  check(*storagePtr == NULL);
+  if (!storagePtr || *storagePtr) return paramErr;
   
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
   // First try to get an entry from pool.  We try to grab the last one because 
@@ -1266,7 +1254,7 @@ static
 void _ReturnPortToPool(PerThreadStorage * storage) {
   OSStatus err;
   
-  check(storage != NULL);
+  assert(storage);
   check(storage->magic == kPerThreadStorageMagic);
   check(storage->port  != MACH_PORT_NULL);
 #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
@@ -1301,9 +1289,7 @@ void _ReturnPortToPool(PerThreadStorage * storage) {
 static
 OSStatus _BindReplyMachPortToThread(mach_port_t *replyPortPtr) {
   OSStatus err;
-  
-  check( replyPortPtr != NULL);
-  check(*replyPortPtr == MACH_PORT_NULL);
+  if (!replyPortPtr || *replyPortPtr != MACH_PORT_NULL) return paramErr;
   
   // Initialise ourselves the first time that we're called.
   
@@ -1344,6 +1330,7 @@ OSStatus _BindReplyMachPortToThread(mach_port_t *replyPortPtr) {
       // If all went well, copy the port out to our client.
       
       if (err == noErr) {
+        assert(storage);
         check(storage->magic == kPerThreadStorageMagic);
         check(storage->port  != MACH_PORT_NULL);
         *replyPortPtr = storage->port;
@@ -1367,7 +1354,7 @@ void PerThreadStorageDestructor(void *keyValue) {
   PerThreadStorage *  storage;
   
   storage = (PerThreadStorage *) keyValue;
-  check(storage != NULL);                    // pthread won't call us if it's NULL
+  assert(storage);                    // pthread won't call us if it's NULL
   check(storage->magic == kPerThreadStorageMagic);
   check(storage->port  != MACH_PORT_NULL);
   
