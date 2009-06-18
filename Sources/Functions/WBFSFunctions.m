@@ -437,7 +437,7 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
   NSFileManager *manager = [NSFileManager defaultManager];
   
   if ([manager fileExistsAtPath:(id)path isDirectory:&isDirectory]) {
-    [pool release];
+    WBAutoreleasePoolDrain(pool);
     return isDirectory ? noErr : errFSNotAFolder;
   }
   
@@ -466,7 +466,7 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
 
 dispose:
   [components release];
-  [pool release];
+  WBAutoreleasePoolDrain(pool);
   
   return err;
 }
