@@ -47,6 +47,7 @@
 @interface WBThreadPort ()
 
 - (void)invalidate;
++ (void)willBecomeMultiThreaded:(NSNotification *)aNotification;
 
 @end
 
