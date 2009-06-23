@@ -38,6 +38,9 @@ WB_CLASS_EXPORT
 
 - (void)performInvocation:(NSInvocation *)anInvocation waitUntilDone:(NSInteger)sync timeout:(uint32_t)timeout;
 
+- (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(BOOL)waitDone;
+- (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(NSInteger)sync timeout:(uint32_t)timeout;
+
 - (uint32_t)timeout;
 - (void)setTimeout:(uint32_t)timeout;
 

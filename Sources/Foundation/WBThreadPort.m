@@ -26,6 +26,23 @@
 
 @end
 
+@interface _WBSimpleInvocation : NSObject {
+@private
+  id wb_target;
+  SEL wb_action;
+  
+  id wb_argument; // argument and result
+}
+
+- (id)initWithAction:(SEL)anAction target:(id)aTarget argument:(id)anArgument;
+
+- (id)target;
+- (void)invoke;
+
+- (void)retainArguments;
+
+@end
+
 @interface _WBRecorderProxy : NSProxy {
 @private
   id wb_target;
@@ -331,9 +348,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     /* handle result */
     switch (err) {
       case MACH_MSG_SUCCESS:
-        if (reply.exception) {
+        if (reply.exception) 
           @throw [(id)reply.exception autorelease];
-        }
         break;
       case MACH_RCV_TIMED_OUT:
 				WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
@@ -342,6 +358,21 @@ void _WBThreadReceivePortDestructor(void *ptr) {
         WBThrowException(NSPortReceiveException, @"mach_msg(recv) return (%#x): %s", err, mach_error_string(err));
         break;
     }
+  }
+}
+
+- (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(BOOL)waitDone {
+  return [self performSelector:anAction target:aTarget argument:anObject
+                 waitUntilDone:waitDone ? kWBThreadPortWait : kWBThreadPortDontWait
+                       timeout:wb_timeout];
+}
+
+- (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(NSInteger)synch timeout:(uint32_t)timeout {
+  _WBSimpleInvocation *invok = [[_WBSimpleInvocation alloc] initWithAction:anAction target:aTarget argument:anObject];
+  @try {
+    [self performInvocation:(id)invok waitUntilDone:synch timeout:timeout];
+  } @finally {
+    [invok release];
   }
 }
 
@@ -563,4 +594,26 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 @end
 
+@implementation _WBSimpleInvocation
 
+- (id)initWithAction:(SEL)anAction target:(id)aTarget argument:(id)anArgument {
+  if (self = [super init]) {
+    wb_action = anAction;
+    wb_target = [aTarget retain];
+    wb_argument = [anArgument retain];
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [wb_argument release];
+  [wb_target release];
+  [super dealloc];
+}
+
+- (id)target { return wb_target; }
+- (void)invoke { [wb_target performSelector:wb_action withObject:wb_argument]; }
+
+- (void)retainArguments {}
+
+@end
