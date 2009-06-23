@@ -51,10 +51,10 @@ enum {
   kWBRectAlignBottomRight,
   kWBRectAlignRight
 };
-typedef NSUInteger WBRectAlignement;
+typedef NSUInteger WBRectAlignment;
 
 WB_EXPORT
-CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignement mode);
+CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment mode);
 
 WB_INLINE
 CGSize WBSizeScale(CGSize source, CGFloat xScale, CGFloat yScale) {
@@ -77,12 +77,12 @@ CGRect WBRectScaleToSize(CGRect source, CGSize size, WBScalingMode mode) {
 }
 
 WB_INLINE
-CGRect WBRectScaleToRect(CGRect source, CGRect dest, WBScalingMode mode, WBRectAlignement align) {
+CGRect WBRectScaleToRect(CGRect source, CGRect dest, WBScalingMode mode, WBRectAlignment align) {
   return WBRectAlignToRect(WBRectScaleToSize(source, dest.size, mode), dest, align);
 }
 
 WB_INLINE
-CGRect WBSizeScaleToRect(CGSize source, CGRect dest, WBScalingMode mode, WBRectAlignement align) {
+CGRect WBSizeScaleToRect(CGSize source, CGRect dest, WBScalingMode mode, WBRectAlignment align) {
   CGRect result = CGRectZero;
   result.size = WBSizeScaleToSize(source, dest.size, mode);
   return WBRectAlignToRect(result, dest, align);

@@ -50,7 +50,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
 //    alignee - rect to be aligned
 //    aligner - rect to be aligned to
 //    alignment - alignment to be applied to alignee based on aligner
-CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignement alignment) {
+CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignment) {
   switch (alignment) {
     case kWBRectAlignTop:
       alignee.origin.x = aligner.origin.x + (aligner.size.width * .5 - alignee.size.width * .5);
