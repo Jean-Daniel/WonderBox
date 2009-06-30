@@ -38,6 +38,7 @@
 
 - (id)target;
 - (void)invoke;
+- (SEL)selector;
 
 - (void)retainArguments;
 
@@ -613,6 +614,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (id)target { return wb_target; }
 - (void)invoke { [wb_target performSelector:wb_action withObject:wb_argument]; }
+- (SEL)selector { return wb_action; }
 
 - (void)retainArguments {}
 
