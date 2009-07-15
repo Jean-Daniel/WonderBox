@@ -75,7 +75,6 @@
   NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
   if (row < 0) return;
   
-  
   if ([theEvent modifierFlags] & NSCommandKeyMask) {
     // 1. cmd + click
     // add row to selection if multi selection allowed, 
@@ -102,7 +101,7 @@
         if (last < row) {
           range = NSMakeRange(last, row - last + 1);
         } else {
-          range = NSMakeRange(row, last - row);
+          range = NSMakeRange(row, last - row + 1);
         }
         [self wb_selectRows:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
       }
