@@ -1,10 +1,12 @@
-//
-//  WBInterpolationFunction.h
-//  NeoLab
-//
-//  Created by Jean-Daniel Dupas on 18/04/09.
-//  Copyright 2009 Ninsight. All rights reserved.
-//
+/*
+ *  WBInterpolationFunction.h
+ *  WonderBox
+ *
+ *  Created by Jean-Daniel Dupas.
+ *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
+ */
 
 typedef CGFloat (*WBInterpolationEvaluateCallBack)(CGFloat input, void *info);
 typedef void (*WBInterpolationReleaseInfoCallBack)(void *info);
