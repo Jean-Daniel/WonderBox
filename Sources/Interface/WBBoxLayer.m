@@ -321,7 +321,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 - (void)drawAtPoint:(NSPoint)aPoint {
   NSGraphicsContext *gctx = [NSGraphicsContext currentContext];
   CGRect bounds = NSRectToCGRect([self bounds:[gctx isFlipped]]);
-  CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+  CGContextRef ctxt = [gctx graphicsPort];
   
   bounds.origin.x += aPoint.x;
   bounds.origin.y += aPoint.y;

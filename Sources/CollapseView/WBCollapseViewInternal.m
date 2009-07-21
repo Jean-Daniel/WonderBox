@@ -11,6 +11,7 @@
 #import "WBCollapseViewInternal.h"
 
 #import WBHEADER(WBGradient.h)
+#import WBHEADER(WBGeometry.h)
 #import WBHEADER(WBCollapseView.h)
 #import WBHEADER(WBCollapseViewItem.h)
 
@@ -419,7 +420,7 @@
 - (void)drawRect:(NSRect)aRect {
   static CGLayerRef sHeaderBackground = NULL;
   
-  CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+  CGContextRef ctxt = WBCGContextGetCurrent();
   NSRect bounds = [self bounds];
   CGRect background = NSRectToCGRect(bounds);
   background.size.height -= 1;
@@ -461,7 +462,7 @@
   CGPoint line[2];
   NSRect bounds = [self bounds];
   if (NSIntersectsRect(bounds, aRect)) {
-    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctxt = WBCGContextGetCurrent();
     CGContextSetLineWidth(ctxt, 1);
     
     line[0] = CGPointMake(NSMinX(bounds), NSMinY(bounds) + .5);

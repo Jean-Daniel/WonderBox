@@ -146,7 +146,7 @@ static const CGFloat kAVImageRightMargin = 6;
 
 - (void)drawRect:(NSRect)rect {
   if ([self title] || [self icon]) {
-    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctxt = WBCGContextGetCurrent();
     
     CGContextSetShouldAntialias(ctxt, true);
     CGContextSetInterpolationQuality(ctxt, kCGInterpolationHigh);

@@ -167,7 +167,7 @@
       imageFrame.origin.y += ceil((NSHeight(cellFrame) - NSHeight(imageFrame)) / 2);
     }
     
-    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctxt = WBCGContextGetCurrent();
     CGContextSaveGState(ctxt);
     /* Flip if needed */
     if ([controlView isFlipped]) {
