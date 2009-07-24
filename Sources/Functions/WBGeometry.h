@@ -127,7 +127,7 @@ CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
 
 WB_INLINE
 CGContextRef WBCGContextGetCurrent(void) {
-  return [[NSGraphicsContext currentContext] graphicsPort];
+  return (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 }
 
 WB_INLINE
