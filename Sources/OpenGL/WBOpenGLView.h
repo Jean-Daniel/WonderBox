@@ -41,6 +41,9 @@
 
 - (void)flushBuffer;
 
+// safe to call it outside of the drawing loop
+- (void)drawRect:(NSRect)aRect;
+
 /* protected */
 // context locked
 - (void)reshape:(NSRect)bounds;
