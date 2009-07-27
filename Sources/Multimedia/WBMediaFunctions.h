@@ -25,13 +25,18 @@ NSString *WBMediaStringForPixelFormat(OSType format);
 WB_EXPORT
 CFStringRef WBMediaCopyStringForPixelFormat(OSType format);
 
+#if !__LP64__
+WB_EXPORT
+void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate);
+#endif
 
 /* Debugging purpose */
+#if !__LP64__
 WB_EXPORT
 void WBMediaPrintAtomContainer(QTAtomContainer atoms);
 
 WB_EXPORT
 void WBMediaPrintAtoms(QTAtomContainer atoms, QTAtom parentAtom, CFIndex level);
-
+#endif
 
 #endif /* __WBMEDIA_FUNCTIONS_H */

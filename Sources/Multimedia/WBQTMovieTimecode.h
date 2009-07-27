@@ -48,5 +48,3 @@ enum {
 
 @end
 
-WB_EXPORT
-void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate);
