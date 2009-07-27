@@ -38,7 +38,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
   wb_qtmedia = _WBMovieGetTimecodeMedia(aMovie, &hasTC);
   if (!wb_qtmedia) {
     [self release];
-    self = nil;
+    return nil;
   }
   if (self = [super init]) {
     wb_first = -1;
