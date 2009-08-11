@@ -29,7 +29,7 @@
   return flag ? NSDragOperationEvery : NSDragOperationNone;
 }
 
-- (BOOL)validateMenuItem:(NSMenuItem*)anItem {
+- (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem {
   if ([anItem action] == @selector(delete:)) {
     if (WBDelegateHandle([self delegate], canDeleteSelectionInOutlineView:))
       return [[self delegate] canDeleteSelectionInOutlineView:self];
