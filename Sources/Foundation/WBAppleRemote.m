@@ -164,44 +164,47 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
     IOHIDDeviceRegisterInputValueCallback(wb_device, _WBAppleRemoteInputValueCallback, self);
     
     CFArrayRef elements = IOHIDDeviceCopyMatchingElements(wb_device, NULL, 0);
-    for (CFIndex i = 0; i < CFArrayGetCount(elements); i++) {
-      IOHIDElementRef element = (IOHIDElementRef)CFArrayGetValueAtIndex(elements, i);
-      if (IOHIDElementGetUsagePage(element) == kHIDPage_GenericDesktop) {
-        switch (IOHIDElementGetUsage(element)) {
-          case kHIDUsage_GD_SystemAppMenu:
-            wb_cookies[kWBAppleRemoteButtonMenu] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_GD_SystemMenu:
-            wb_cookies[kWBAppleRemoteButtonSelect] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_GD_SystemMenuRight:
-            wb_cookies[kWBAppleRemoteButtonRight] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_GD_SystemMenuLeft:
-            wb_cookies[kWBAppleRemoteButtonLeft] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_GD_SystemMenuUp:
-            wb_cookies[kWBAppleRemoteButtonUp] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_GD_SystemMenuDown:
-            wb_cookies[kWBAppleRemoteButtonDown] = IOHIDElementGetCookie(element);
-            break;
-        }
-      } else if (IOHIDElementGetUsagePage(element) == kHIDPage_Consumer) {
-        switch (IOHIDElementGetUsage(element)) {
-          case kHIDUsage_Csmr_Rewind:
-            wb_cookies[kWBAppleRemoteButtonRewind] = IOHIDElementGetCookie(element);
-            break;
-          case kHIDUsage_Csmr_FastForward:
-            wb_cookies[kWBAppleRemoteButtonFastForward] = IOHIDElementGetCookie(element);
-            break;
-//          case kHIDUsage_Csmr_Menu:
-//            wb_cookies[kWBAppleRemoteButtonApplicationMenu] = IOHIDElementGetCookie(element);
-            break;            
-//          default:
-//            DLog(@"ignore consumer: %lx, %lx", IOHIDElementGetCookie(element), IOHIDElementGetUsage(element));
+    if (elements) {
+      for (CFIndex i = 0; i < CFArrayGetCount(elements); i++) {
+        IOHIDElementRef element = (IOHIDElementRef)CFArrayGetValueAtIndex(elements, i);
+        if (IOHIDElementGetUsagePage(element) == kHIDPage_GenericDesktop) {
+          switch (IOHIDElementGetUsage(element)) {
+            case kHIDUsage_GD_SystemAppMenu:
+              wb_cookies[kWBAppleRemoteButtonMenu] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_GD_SystemMenu:
+              wb_cookies[kWBAppleRemoteButtonSelect] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_GD_SystemMenuRight:
+              wb_cookies[kWBAppleRemoteButtonRight] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_GD_SystemMenuLeft:
+              wb_cookies[kWBAppleRemoteButtonLeft] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_GD_SystemMenuUp:
+              wb_cookies[kWBAppleRemoteButtonUp] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_GD_SystemMenuDown:
+              wb_cookies[kWBAppleRemoteButtonDown] = IOHIDElementGetCookie(element);
+              break;
+          }
+        } else if (IOHIDElementGetUsagePage(element) == kHIDPage_Consumer) {
+          switch (IOHIDElementGetUsage(element)) {
+            case kHIDUsage_Csmr_Rewind:
+              wb_cookies[kWBAppleRemoteButtonRewind] = IOHIDElementGetCookie(element);
+              break;
+            case kHIDUsage_Csmr_FastForward:
+              wb_cookies[kWBAppleRemoteButtonFastForward] = IOHIDElementGetCookie(element);
+              break;
+              //          case kHIDUsage_Csmr_Menu:
+              //            wb_cookies[kWBAppleRemoteButtonApplicationMenu] = IOHIDElementGetCookie(element);
+              break;            
+              //          default:
+              //            DLog(@"ignore consumer: %lx, %lx", IOHIDElementGetCookie(element), IOHIDElementGetUsage(element));
+          }
         }
       }
+      CFRelease(elements);
     }
   }
   return self;

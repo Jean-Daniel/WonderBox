@@ -266,7 +266,7 @@ GLenum __WBGLFBOBindingForMode(GLenum mode) {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
-  glDrawBuffer(buffer);    
+  glDrawBuffer(buffer);
 }
 
 - (NSUInteger)maxBufferCount {
