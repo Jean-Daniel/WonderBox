@@ -66,7 +66,6 @@ enum {
   CGLContextObj wb_glctxt;
   
   GLuint wb_fbo;
-  
   GLint wb_viewport[4];
   NSMapTable *wb_attachements;
   WBGLFrameBufferAttachement *wb_depth, *wb_stencil;
@@ -78,22 +77,25 @@ enum {
 // use to release resources in a deterministic way.
 - (void)delete;
 
-- (GLenum)status;
-- (GLenum)status:(CGLContextObj)aContext;
 - (GLint)frameBufferObject;
 - (CGLContextObj)CGLContextObj;
 
-- (BOOL)bind;
+// return 0 if FBO complete, else return a status enum.
+- (GLenum)status:(GLenum)mode context:(CGLContextObj)context;
+
+- (void)bind;
 - (void)unbind;
 
-- (BOOL)bind:(CGLContextObj)aContext;
+- (void)bind:(CGLContextObj)aContext;
 - (void)unbind:(CGLContextObj)aContext;
 
 // mode can be GL_READ_FRAMEBUFFER_EXT or GL_DRAW_FRAMEBUFFER_EXT
-- (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext;
+- (void)bindMode:(GLenum)mode context:(CGLContextObj)aContext;
 - (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext;
 
 - (NSUInteger)maxBufferCount;
+
+- (void)resetViewPort:(CGLContextObj)aContext;
 
 // -1 mean GL_NONE
 - (void)setReadBuffer:(NSInteger)anIdx;

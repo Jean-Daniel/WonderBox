@@ -19,23 +19,6 @@
     glGenFramebuffersEXT(1, &wb_fbo);
     wb_glctxt = CGLRetainContext(CGL_MACRO_CONTEXT);
     wb_attachements = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-    
-    // Sanity check against maximum OpenGL texture size
-    // If bigger adjust to maximum possible size while maintain the aspect ratio
-//    GLint maxTexSize;
-//    CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
-//    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-//    if (wb_width > (GLuint)maxTexSize || wb_height > (GLuint)maxTexSize) {
-//      CGFloat imageAspectRatio = wb_width / wb_height;
-//      if (imageAspectRatio > 1) {
-//        wb_width = maxTexSize; 
-//        wb_height = maxTexSize / imageAspectRatio;
-//      } else {
-//        wb_width = maxTexSize * imageAspectRatio ;
-//        wb_height = maxTexSize; 
-//      }
-//    }
-    
   }
   return self;
 }
@@ -67,65 +50,70 @@
   [super dealloc];
 }
 
-- (GLenum)status {
-  return [self status:nil];
-}
-- (GLenum)status:(CGLContextObj)aContext {
-  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
-  
-  GLint save;
-  glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &save);
-  if ((GLuint)save != wb_fbo)
-    glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, wb_fbo);
-  GLenum status = glCheckFramebufferStatusEXT(GL_DRAW_FRAMEBUFFER_EXT);
-  
-  if ((GLuint)save != wb_fbo)
-    glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, save);
-  
-  return GL_FRAMEBUFFER_COMPLETE_EXT == status ? 0 : status;
-}
-
+#pragma mark -
 - (GLint)frameBufferObject {
   return wb_fbo;
 }
 
 - (CGLContextObj)CGLContextObj { return wb_glctxt; }
 
+#if defined(DEBUG)
+WB_INLINE
+GLenum __WBGLFBOBindingForMode(GLenum mode) {
+  switch (mode) {
+    case GL_FRAMEBUFFER_EXT:
+      return GL_FRAMEBUFFER_BINDING_EXT;
+    case GL_DRAW_FRAMEBUFFER_EXT:
+      return GL_DRAW_FRAMEBUFFER_BINDING_EXT;
+    case GL_READ_FRAMEBUFFER_EXT:
+      return GL_READ_FRAMEBUFFER_BINDING_EXT;
+  }
+  WBThrowException(NSInvalidArgumentException, @"Invalid FBO mode");
+}
+
+WB_INLINE
+void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum mode) {
+  GLuint save;
+  glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
+  WBAssert(GL_ZERO == glGetError(), @"error while getting actual FBO");
+  
+  if (save != fbo)
+    WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
+}
+#else
+#define __WBGLFrameBufferCheck(ctxt, fbo, mode)
+#endif
+
 WB_INLINE 
 void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, 
                              GLenum slot, WBGLFrameBufferAttachement *buffer) {
-  GLint save;
-  glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &save);
-  if ((GLuint)save != fbo)
-    glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, fbo);
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, fbo, GL_FRAMEBUFFER_EXT);
   switch ([buffer type]) {
     case 0:
-      glFramebufferRenderbufferEXT(GL_DRAW_FRAMEBUFFER_EXT, slot, 0, 0);
+      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, slot, 0, 0);
       break;
     case kWBGLAttachementTypeBuffer:
-      glFramebufferRenderbufferEXT(GL_DRAW_FRAMEBUFFER_EXT, slot, 
+      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, slot, 
                                    [buffer target], [buffer name]);
       break;
     case kWBGLAttachementTypeTexture:
       switch ([buffer target]) {
         case GL_TEXTURE_1D:
-          glFramebufferTexture1DEXT(GL_DRAW_FRAMEBUFFER_EXT, slot, 
+          glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT, slot, 
                                     [buffer target], [buffer name], [buffer level]);
           break;
         case GL_TEXTURE_3D:
-          glFramebufferTexture3DEXT(GL_DRAW_FRAMEBUFFER_EXT, slot, 
+          glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, slot, 
                                     [buffer target], [buffer name], 
                                     [buffer level], [buffer zOffset]);
           break;
         default:
-          glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER_EXT, slot, 
+          glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, slot, 
                                     [buffer target], [buffer name], [buffer level]);          
           break;
       }
       break;
   }
-  if ((GLuint)save != fbo)
-    glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, save);
 }
 
 - (WBGLFrameBufferAttachement *)depthBuffer {
@@ -160,14 +148,22 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
                           GL_COLOR_ATTACHMENT0_EXT + anIndex, aBuffer);
 }
 
-- (BOOL)bind {
+- (GLenum)status:(GLenum)mode context:(CGLContextObj)aContext {
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, mode);
+  
+  GLenum status = glCheckFramebufferStatusEXT(mode);
+  return GL_FRAMEBUFFER_COMPLETE_EXT == status ? 0 : status;
+}
+
+- (void)bind {
   return [self bindMode:GL_FRAMEBUFFER_EXT context:nil];
 }
 - (void)unbind {
   return [self unbindMode:GL_FRAMEBUFFER_EXT context:nil];
 }
 
-- (BOOL)bind:(CGLContextObj)aContext {
+- (void)bind:(CGLContextObj)aContext {
   return [self bindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
@@ -175,72 +171,50 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return [self unbindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
-WB_INLINE
-GLenum __WBGLFBOBindingForMode(GLenum mode) {
-  switch (mode) {
-    case GL_FRAMEBUFFER_EXT:
-      return GL_FRAMEBUFFER_BINDING_EXT;
-    case GL_DRAW_FRAMEBUFFER_EXT:
-      return GL_DRAW_FRAMEBUFFER_BINDING_EXT;
-    case GL_READ_FRAMEBUFFER_EXT:
-      return GL_READ_FRAMEBUFFER_BINDING_EXT;
+- (void)resetViewPort:(CGLContextObj)aContext {
+  CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
+  
+  // All buffers must have the same size, so just try to find the size of one attachement.
+  CGSize size = CGSizeMake(0, 0);
+  if (wb_depth) 
+    size = [wb_depth size];
+  else if (wb_stencil) 
+    size = [wb_stencil size];
+  else {
+    // infer size from the first attached color
+    WBGLFrameBufferAttachement *buffer = nil;
+    NSMapEnumerator iter = NSEnumerateMapTable(wb_attachements);
+    if (NSNextMapEnumeratorPair(&iter, NULL, (void **)&buffer))
+      size = [buffer size];
+    NSEndMapTableEnumeration(&iter);
   }
-  WBThrowException(NSInvalidArgumentException, @"Invalid FBO mode");
+  
+  // Set the viewport to the dimensions of our texture	
+  glViewport(0, 0, size.width, size.height);
 }
 
 // mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
-- (BOOL)bindMode:(GLenum)mode context:(CGLContextObj)aContext {
+- (void)bindMode:(GLenum)mode context:(CGLContextObj)aContext {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   
-  GLint save;
-  glGetIntegerv(__WBGLFBOBindingForMode(mode), &save);
-  WBAssert(GL_ZERO == glGetError(), @"error while getting actual FBO");
-  
-  if ((GLuint)save == wb_fbo) return YES;
-
   glBindFramebufferEXT(mode, wb_fbo);
+  WBAssert(GL_ZERO == glGetError(), @"Error while binding FBO");
   
-  if (GL_ZERO == glGetError()) {
-#if defined(DEBUG)
-    GLenum status = glCheckFramebufferStatusEXT(mode);
-    if (status != GL_FRAMEBUFFER_COMPLETE_EXT) {
-      DLog(@"Warning trying to bind FBO but status: %@", WBGLFrameBufferGetErrorString(status));
-      glBindFramebufferEXT(mode, save);
-      return NO;
-    }
-#endif
-    if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
-      CGSize size = CGSizeMake(0, 0);
-      if (wb_depth) 
-        size = [wb_depth size];
-      else if (wb_stencil) 
-        size = [wb_stencil size];
-      else {
-        // infer size from the first attached color
-        WBGLFrameBufferAttachement *buffer = nil;
-        NSMapEnumerator iter = NSEnumerateMapTable(wb_attachements);
-        if (NSNextMapEnumeratorPair(&iter, NULL, (void **)&buffer))
-          size = [buffer size];
-        NSEndMapTableEnumeration(&iter);
-      }
-      
-      glGetIntegerv(GL_VIEWPORT, wb_viewport);			// Retrieves The Viewport Values (X, Y, Width, Height)
-      // Set the viewport to the dimensions of our texture	
-      glViewport(0, 0, size.width, size.height);
-    }
+  // When binding to draw, setup the view port.
+  if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
+    glGetIntegerv(GL_VIEWPORT, wb_viewport);			// Retrieves The Viewport Values (X, Y, Width, Height)
+    
+    [self resetViewPort:CGL_MACRO_CONTEXT];
   }
-  return glGetError() == 0;
 }
 
 - (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext {
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
   
-  GLint actual = 0;
-  glGetIntegerv(__WBGLFBOBindingForMode(mode), &actual);
-  if ((GLuint)actual != wb_fbo) return;
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, mode); // do not call unbind if not bind
   
   // restore view port
-  if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT)
+  if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) 
     glViewport(wb_viewport[0], wb_viewport[1], wb_viewport[2], wb_viewport[3]);
 
   glBindFramebufferEXT(mode, 0);
@@ -256,6 +230,8 @@ GLenum __WBGLFBOBindingForMode(GLenum mode) {
 - (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext {
   GLenum buffer;
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_READ_FRAMEBUFFER_EXT); // do not call unbind if not bind
+  
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
   glReadBuffer(buffer);  
@@ -264,6 +240,8 @@ GLenum __WBGLFBOBindingForMode(GLenum mode) {
 - (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext {
   GLenum buffer;
   CGLContextObj CGL_MACRO_CONTEXT = aContext ? : wb_glctxt;
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_DRAW_FRAMEBUFFER_EXT); // do not call unbind if not bind
+  
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
   glDrawBuffer(buffer);
@@ -418,7 +396,6 @@ GLenum __WBGLFBOBindingForMode(GLenum mode) {
 
 @end
 
-
 #pragma mark ===== Validation =====
 #define kOpenGLFramebufferUnsupported                   @"OpenGL framebuffer unsupported! Choose different format."
 #define kOpenGLFramebufferIncompleteAttachement         @"OpenGL framebuffer incomplete attachment!"
@@ -442,6 +419,4 @@ NSString *WBGLFrameBufferGetErrorString(GLenum error) {
 		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: return kOpenGLFramebufferIncompleteReadBuffer;
   }
 }
-
-
 
