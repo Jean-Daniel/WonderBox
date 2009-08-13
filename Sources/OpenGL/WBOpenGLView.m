@@ -132,7 +132,7 @@
   if(NSIsEmptyRect(theBounds)) {
     glViewport(0, 0, 1, 1);
   } else {
-    glViewport(0, 0, NSWidth(theBounds), NSHeight(theBounds));  // set the viewport
+    glViewport(0, 0, (GLuint)NSWidth(theBounds), (GLuint)NSHeight(theBounds));  // set the viewport
   }
   
   glMatrixMode(GL_PROJECTION);   // select the projection matrix

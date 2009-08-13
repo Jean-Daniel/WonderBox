@@ -191,7 +191,7 @@ OSStatus WBAECreateIndexObjectSpecifier(DescType desiredType, CFIndex idx, AEDes
       break;
       /* General case */
     default:
-#if __LP64__
+#if defined(__LP64__) && __LP64__
       err = AECreateDesc(typeSInt64, &idx, sizeof(SInt64), &keyData);
 #else
       err = AECreateDesc(typeSInt32, &idx, sizeof(SInt32), &keyData);
@@ -535,7 +535,7 @@ OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 time
   if (timeoutms <= 0)
     timeout = (long)timeoutms;
   else
-    timeout = lround(timeoutms * (60 / 1e3F));
+    timeout = lround(timeoutms * (60.0 / 1e3));
   
   OSStatus err = (sendMode & kAEWaitReply) ? 
     WBAESendMessageThreadSafeSynchronous(pAppleEvent, reply, sendMode, timeout) :

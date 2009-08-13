@@ -18,7 +18,7 @@ WB_INLINE
 OSStatus _WBProcessGetInformation(ProcessSerialNumber *psn, ProcessInfoRec *info) {
   info->processInfoLength = (UInt32)sizeof(*info);
   info->processName = NULL;
-#if __LP64__
+#if defined(__LP64__) && __LP64__
   info->processAppRef = NULL;
 #else
   info->processAppSpec = NULL;

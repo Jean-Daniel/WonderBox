@@ -145,7 +145,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex {
   NSMapInsert(wb_attachements, (const void *)anIndex, aBuffer);
   __WBGLFrameBufferAttach(wb_glctxt, wb_fbo, 
-                          GL_COLOR_ATTACHMENT0_EXT + anIndex, aBuffer);
+                          GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIndex, aBuffer);
 }
 
 - (GLenum)status:(GLenum)mode context:(CGLContextObj)aContext {
@@ -190,7 +190,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
   
   // Set the viewport to the dimensions of our texture	
-  glViewport(0, 0, size.width, size.height);
+  glViewport(0, 0, (GLuint)size.width, (GLuint)size.height);
 }
 
 // mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
@@ -233,7 +233,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_READ_FRAMEBUFFER_EXT); // do not call unbind if not bind
   
   if (anIdx < 0) buffer = GL_NONE;
-  else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
+  else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;
   glReadBuffer(buffer);  
 }
 
@@ -243,7 +243,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_DRAW_FRAMEBUFFER_EXT); // do not call unbind if not bind
   
   if (anIdx < 0) buffer = GL_NONE;
-  else buffer = GL_COLOR_ATTACHMENT0_EXT + anIdx;
+  else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;
   glDrawBuffer(buffer);
 }
 

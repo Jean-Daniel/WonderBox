@@ -10,7 +10,7 @@
 
 #import WBHEADER(WBMediaFunctions.h)
 
-#if !__LP64__
+#if !defined(__LP64__) || !__LP64__
 static const char sBlank[48] = {
 '\t', '\t', '\t', '\t', '\t', '\t', '\t', '\t',
 '\t', '\t', '\t', '\t', '\t', '\t', '\t', '\t',
@@ -120,6 +120,7 @@ QTTime WBCVBufferGetMovieTime(CVBufferRef buffer) {
 #pragma mark -
 #pragma mark Static Frame rate
 
+#if !defined(__LP64__) || !__LP64__
 #define   kCharacteristicIsAnMpegTrack     'mpeg'
 #define   kCharacteristicHasVideoFrameRate 'vfrr'
 
@@ -207,7 +208,7 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie inMovie, Media *outMedia, MediaH
  Given a reference to the media that contains the sample data for a track,
  calculate the static frame rate.
  */
-OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
+OSStatus _WBMediaGetStaticFrameRate(QTMedia *inMovieMedia, double *outFPS) {
   if (!outFPS || !inMovieMedia) return paramErr;
   
   *outFPS = 0;
@@ -275,3 +276,60 @@ ComponentResult _WBMPEGMediaGetStaticFrameRate(MediaHandler inMPEGMediaHandler, 
   
   return err;
 }
+
+#else
+
+static
+void _WBMovieGetVideoMedia(QTMovie *inMovie, QTMedia **outMedia) {
+  assert(inMovie != NULL);
+  assert(outMedia != NULL);
+  
+  *outMedia = NULL;
+  
+  /* get first video track */
+  QTTrack *videoTrack = nil;
+  // search enabled track with frame rate
+  for (QTTrack *track in [inMovie tracks]) {
+    if ([track isEnabled]) {
+      QTMedia *media = [track media];
+      if ([media hasCharacteristic:QTMediaCharacteristicHasVideoFrameRate]) {
+        videoTrack = track;
+        break;
+      }
+    }
+  }
+  
+  // else search first video track
+  if (!videoTrack) {
+    for (QTTrack *track in [inMovie tracksOfMediaType:QTMediaTypeVideo]) {
+      if ([track isEnabled]) {
+        videoTrack = track;
+        break;
+      }
+    }
+  }
+  
+  if (videoTrack) // get media ref. for track's sample data
+    *outMedia = [videoTrack media];
+}
+
+void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate) {
+  assert(aMovie != NULL);
+  assert(outStaticFrameRate != NULL);
+  
+  *outStaticFrameRate = 0;
+  
+  QTMedia *movieMedia;
+  _WBMovieGetVideoMedia(aMovie, &movieMedia);
+  if (movieMedia) {
+    NSUInteger scount = [[movieMedia attributeForKey:QTMediaSampleCountAttribute] integerValue]; 
+    if (scount > 0) {
+      /* find the media duration */
+      QTTime t = [[movieMedia attributeForKey:QTMediaDurationAttribute] QTTimeValue];
+      *outStaticFrameRate = (double)scount * (double)t.timeScale / (double)t.timeValue;
+    }
+  }
+}
+
+#endif
+

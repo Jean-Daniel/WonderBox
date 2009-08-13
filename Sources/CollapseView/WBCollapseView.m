@@ -239,7 +239,7 @@
 - (void)_setResizingMask:(NSUInteger)mask range:(NSRange)aRange {
   if (0 == aRange.length) return;
   for (NSUInteger idx = aRange.location, count = NSMaxRange(aRange); idx < count; idx++) 
-    [[wb_views objectAtIndex:idx] setAutoresizingMask:mask];
+    [(NSView *)[wb_views objectAtIndex:idx] setAutoresizingMask:mask];
 }
 
 - (void)_moveItemsInRange:(NSRange)aRange delta:(CGFloat)delta {

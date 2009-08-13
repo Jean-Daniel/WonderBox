@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !defined(__LP64__) || !__LP64__
+
 #import WBHEADER(WBQTVisualContext.h)
 
 #include <pthread.h>
@@ -179,3 +181,4 @@ void _WBImageAvailableCallBack(QTVisualContextRef visualContext, const CVTimeSta
 
 @end
 
+#endif /* LP64 */

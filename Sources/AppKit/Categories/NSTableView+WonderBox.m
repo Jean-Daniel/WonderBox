@@ -43,13 +43,13 @@
       
       BOOL add;
       if (outlineView)
-        add = [[self delegate] outlineView:(NSOutlineView *)self
-                          shouldSelectItem:[(NSOutlineView *)self itemAtRow:row]];
+        add = [[(NSOutlineView *)self delegate] outlineView:(NSOutlineView *)self
+                                           shouldSelectItem:[(NSOutlineView *)self itemAtRow:row]];
       else 
         add = [[self delegate] tableView:self shouldSelectRow:row];
       
       if (add) {
-        [self selectRow:row byExtendingSelection:extends];  
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:extends];  
         extends = true; // should append now
       }
     }
@@ -124,7 +124,7 @@
       //      } else
       if ([self numberOfSelectedRows] == 0 || [self allowsMultipleSelection]) {
         //if (WBDelegateHandle([self delegate], 
-        [self selectRow:row byExtendingSelection:YES];
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:YES];
       }
       return NO;
     } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
@@ -150,7 +150,7 @@
       }
     } else {
       if (![self isRowSelected:row]) 
-        [self selectRow:row byExtendingSelection:NO];
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
   }
   [self displayIfNeeded];

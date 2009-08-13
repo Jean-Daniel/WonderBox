@@ -10,7 +10,7 @@
 
 #include <IOKit/hid/IOHIDBase.h>
 
-typedef enum {
+enum {
   kWBAppleRemoteButtonMenu = 0,
   kWBAppleRemoteButtonSelect,
   
@@ -21,11 +21,13 @@ typedef enum {
   /* others */
   kWBAppleRemoteButtonRewind,
   kWBAppleRemoteButtonFastForward,
-} WBAppleRemoteButton;
+};
+typedef NSUInteger WBAppleRemoteButton;
 
 #define kWBAppleRemoteButtonCount 8
 
 @protocol WBAppleRemoteListener;
+WB_CLASS_EXPORT
 @interface WBAppleRemote : NSObject {
 @private
   NSMutableArray *wb_listeners;

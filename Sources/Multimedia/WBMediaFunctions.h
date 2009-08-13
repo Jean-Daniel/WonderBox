@@ -17,7 +17,6 @@
 WB_EXPORT
 QTTime WBCVBufferGetMovieTime(CVBufferRef buffer);
 
-
 /* Pretty print helper */
 WB_EXPORT
 NSString *WBMediaStringForPixelFormat(OSType format);
@@ -25,13 +24,11 @@ NSString *WBMediaStringForPixelFormat(OSType format);
 WB_EXPORT
 CFStringRef WBMediaCopyStringForPixelFormat(OSType format);
 
-#if !__LP64__
 WB_EXPORT
 void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate);
-#endif
 
 /* Debugging purpose */
-#if !__LP64__
+#if !defined(__LP64__) || !__LP64__
 WB_EXPORT
 void WBMediaPrintAtomContainer(QTAtomContainer atoms);
 

@@ -9,6 +9,7 @@
  */
 
 @class WBCollapseView;
+WB_CLASS_EXPORT
 @interface WBCollapseViewItem : NSObject <NSCoding> {
 @private
   id wb_uid;

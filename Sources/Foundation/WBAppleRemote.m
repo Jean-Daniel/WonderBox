@@ -101,7 +101,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 
 #pragma mark -
 - (void)handleEvent:(IOHIDElementCookie)aCookie value:(CFIndex)aValue {
-  for (CFIndex idx = 0; idx < kWBAppleRemoteButtonCount; idx++) {
+  for (NSUInteger idx = 0; idx < kWBAppleRemoteButtonCount; idx++) {
     if (wb_cookies[idx] == aCookie) {
       //DLog(@"handle event: %@", __WBAppleRemoteButtonName(idx));
       for (NSUInteger jdx = 0, count = [wb_listeners count]; jdx < count; jdx++) {

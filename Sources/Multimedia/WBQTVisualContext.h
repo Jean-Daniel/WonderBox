@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !defined(__LP64__) || !__LP64__
+
 #include <QuickTime/QuickTime.h>
 
 enum {
@@ -64,3 +66,5 @@ typedef NSUInteger WBQTVisualContextType;
 - (void)visualContext:(WBQTVisualContext *)ctxt imageIsAvailable:(CVImageBufferRef)anImage time:(const CVTimeStamp *)timeStamp;
 
 @end
+
+#endif /* LP64 */

@@ -8,10 +8,14 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 /*!
-    @header WBOutlineView
-    @abstract   (description)
-    @discussion (description)
-*/
+ @header WBOutlineView
+ @abstract   (description)
+ @discussion (description)
+ */
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+@protocol WBOutlineViewDelegate;
+#endif
 
 WB_CLASS_EXPORT
 @interface WBOutlineView : NSOutlineView {
@@ -24,25 +28,34 @@ WB_CLASS_EXPORT
   NSHashTable *wb_noPadding;
 }
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+- (id<WBOutlineViewDelegate>)delegate;
+- (void)setDelegate:(id<WBOutlineViewDelegate>)aDelegate;
+#endif
+
 - (IBAction)delete:(id)sender;
 /*!
-	@method		keyDown:
- 	@abstract	informe the delegate if delete backward or forward is pressed 
- 				and send target doubleAction message if Enter is pressed.
- 	@param 		theEvent	
-*/
+ @method		keyDown:
+ @abstract	informe the delegate if delete backward or forward is pressed 
+ and send target doubleAction message if Enter is pressed.
+ @param 		theEvent	
+ */
 - (void)keyDown:(NSEvent *)theEvent;
 - (void)editColumn:(NSInteger)column item:(id)anItem;
 
 - (void)setPadding:(BOOL)flag forTableColumn:(NSString *)columnIdentifier;
 
-  /* Should edit next cell after cell edition */
+/* Should edit next cell after cell edition */
 - (void)setContinueEditing:(BOOL)flag;
 
 @end
 
-
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+@protocol WBOutlineViewDelegate <NSOutlineViewDelegate>
+@optional
+#else
 @interface NSObject (WBOutlineViewDelegate)
+#endif
 
 - (void)deleteSelectionInOutlineView:(NSOutlineView *)aView;
 // Used for UI validation
@@ -54,3 +67,4 @@ WB_CLASS_EXPORT
 - (NSMenu *)outlineView:(NSOutlineView *)outlineView menuForRow:(NSInteger)row event:(NSEvent *)anEvent;
 
 @end
+

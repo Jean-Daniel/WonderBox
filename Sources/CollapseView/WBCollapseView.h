@@ -10,6 +10,7 @@
 
 @class WBCollapseViewItem;
 @protocol WBCollapseViewDelegate;
+WB_CLASS_EXPORT
 @interface WBCollapseView : NSView <NSCoding,NSFastEnumeration> {
 @private
   NSMutableArray *wb_items;

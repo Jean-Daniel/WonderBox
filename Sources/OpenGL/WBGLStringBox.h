@@ -12,6 +12,7 @@
 
 #include <OpenGL/CGLTypes.h>
 
+WB_CLASS_EXPORT
 @interface WBGLStringLayer : WBStringLayer {
 @private	
   GLuint wb_texName;

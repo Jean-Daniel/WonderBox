@@ -20,10 +20,20 @@
 }
 
 #pragma mark -
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+- (id<WBOutlineViewDelegate>)delegate {
+  return (id<WBOutlineViewDelegate>)[super delegate];
+}
+- (void)setDelegate:(id<WBOutlineViewDelegate>)aDelegate {
+  [super setDelegate:aDelegate];
+  wb_ovFlags.drawOutline = WBDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
+}
+#else
 - (void)setDelegate:(id)aDelegate {
   [super setDelegate:aDelegate];
   wb_ovFlags.drawOutline = WBDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
 }
+#endif
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
   return flag ? NSDragOperationEvery : NSDragOperationNone;
@@ -145,7 +155,7 @@
     NSInteger row = [self selectedRow];
     if (row >= 0) {
       [self deselectRow:row];
-      [self selectRow:row byExtendingSelection:NO];
+      [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
   }
 }

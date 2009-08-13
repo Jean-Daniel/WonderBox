@@ -184,7 +184,7 @@
   if (0 == wb_texName) glGenTextures (1, &wb_texName);
   glBindTexture(GL_TEXTURE_RECTANGLE_ARB, wb_texName);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, wb_texBounds.size.width);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, (GLuint)wb_texBounds.size.width);
 
   glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE); // (fast) extension
   glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_SHARED_APPLE);
@@ -192,10 +192,10 @@
   glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   if (CGSizeEqualToSize(previousSize, wb_texBounds.size)) {
-    glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, wb_texBounds.size.width, wb_texBounds.size.height,
+    glTexSubImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, 0, 0, (GLsizei)wb_texBounds.size.width, (GLsizei)wb_texBounds.size.height,
                     GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, wb_buffer);    
   } else {
-    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, wb_texBounds.size.width, wb_texBounds.size.height, 
+    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA, (GLsizei)wb_texBounds.size.width, (GLsizei)wb_texBounds.size.height, 
                  0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, wb_buffer);
   }
   
@@ -253,20 +253,20 @@
 		glBindTexture(GL_TEXTURE_RECTANGLE_ARB, wb_texName);
 		glBegin(GL_QUADS);
     if (colors) glColor4f(colors[0], colors[1], colors[2], colors[3]);
-    glTexCoord2f(0, wb_texBounds.size.height); // draw upper left in world coordinates
-    glVertex2f(aPoint.x, aPoint.y);
+    glTexCoord2d(0, wb_texBounds.size.height); // draw upper left in world coordinates
+    glVertex2d(aPoint.x, aPoint.y);
     
     if (colors) glColor4f(colors[4], colors[5], colors[6], colors[7]);
-    glTexCoord2f(0, 0); // draw lower left in world coordinates
-    glVertex2f(aPoint.x, aPoint.y + imgSize.height);
+    glTexCoord2d(0, 0); // draw lower left in world coordinates
+    glVertex2d(aPoint.x, aPoint.y + imgSize.height);
     
     if (colors) glColor4f(colors[8], colors[9], colors[10], colors[11]);
-    glTexCoord2f(wb_texBounds.size.width, 0); // draw lower right in world coordinates
-    glVertex2f(aPoint.x + imgSize.width, aPoint.y + imgSize.height);
+    glTexCoord2d(wb_texBounds.size.width, 0); // draw lower right in world coordinates
+    glVertex2d(aPoint.x + imgSize.width, aPoint.y + imgSize.height);
     
     if (colors) glColor4f(colors[12], colors[13], colors[14], colors[15]);
-    glTexCoord2f(wb_texBounds.size.width, wb_texBounds.size.height); // draw upper right in world coordinates
-    glVertex2f(aPoint.x + imgSize.width, aPoint.y);
+    glTexCoord2d(wb_texBounds.size.width, wb_texBounds.size.height); // draw upper right in world coordinates
+    glVertex2d(aPoint.x + imgSize.width, aPoint.y);
 		glEnd();
 		
 		glPopAttrib();

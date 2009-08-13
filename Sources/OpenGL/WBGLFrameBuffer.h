@@ -15,6 +15,7 @@ enum {
   kWBGLAttachementTypeTexture = 2,
 };
 
+WB_CLASS_EXPORT
 @interface WBGLFrameBufferAttachement : NSObject {
 @private  
   GLuint wb_name;
@@ -61,6 +62,7 @@ enum {
   kWBGLFrameBufferNoBuffer = -1,
 };
 
+WB_CLASS_EXPORT
 @interface WBGLFrameBuffer : NSObject {
 @private
   CGLContextObj wb_glctxt;

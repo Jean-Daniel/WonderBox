@@ -33,7 +33,7 @@ UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout) {
   if (!inLayout) return 0;
   
 	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
-		return offsetof(AudioChannelLayout, mChannelDescriptions) + inLayout->mNumberChannelDescriptions * sizeof(AudioChannelDescription);
+		return (UInt32)offsetof(AudioChannelLayout, mChannelDescriptions) + inLayout->mNumberChannelDescriptions * (UInt32)sizeof(AudioChannelDescription);
 	
   return sizeof(AudioChannelLayout);
 }
