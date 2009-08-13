@@ -208,7 +208,7 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie inMovie, Media *outMedia, MediaH
  Given a reference to the media that contains the sample data for a track,
  calculate the static frame rate.
  */
-OSStatus _WBMediaGetStaticFrameRate(QTMedia *inMovieMedia, double *outFPS) {
+OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
   if (!outFPS || !inMovieMedia) return paramErr;
   
   *outFPS = 0;
