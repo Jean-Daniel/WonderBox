@@ -382,6 +382,8 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
 
 #pragma mark Images
 CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options) {
+  if (!url) return NULL;
+  
   CGImageRef img = NULL;
   CGImageSourceRef src = CGImageSourceCreateWithURL(url, options);
   if (src) {
@@ -392,6 +394,7 @@ CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options) {
 }
 
 bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
+  NSCParameterAssert(image && url && type);
   bool result = false;
   CGImageDestinationRef dest = CGImageDestinationCreateWithURL(url, type, 1, NULL);
   if (dest) {
@@ -403,6 +406,7 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
 }
 
 bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type) {
+  NSCParameterAssert(image && file && type);
   bool result = false;
   CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, file, kCFURLPOSIXPathStyle, FALSE);
   if (url) {
