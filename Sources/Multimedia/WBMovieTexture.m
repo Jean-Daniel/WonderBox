@@ -178,7 +178,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
     SetMoviePlayHints([wb_movie quickTimeMovie], hintsHighQuality, hintsHighQuality);
     
     [self configureMovie:wb_movie];
-    if (WBRealEquals(rate, 0)) {
+    if (fiszero(rate)) {
       MoviesTask([wb_movie quickTimeMovie], 0);	// QTKit is not doing this automatically
     }
   }
@@ -230,7 +230,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
 
 - (void)wb_setMovie:(QTMovie *)aMovie visualContext:(WBQTVisualContext *)ctxt {
   CGFloat rate = ctxt ? [aMovie rate] : 0;
-  if (!WBRealEquals(rate, 0)) [aMovie stop];
+  if (fnonzero(rate)) [aMovie stop];
   // WARNING: QTMovie uses its own qt context, and so, when calling 
   // setVisualContext: it does not replace it, but just register it and transfert
   // message from its internal context to our own context (like image ready).
@@ -239,7 +239,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   SetMovieVisualContext([aMovie quickTimeMovie], [ctxt quickTimeContext]);
   if (wb_backup) QTVisualContextTask(wb_backup);
   //[aMovie setVisualContext:[ctxt quickTimeContext]];
-  if (!WBRealEquals(rate, 0)) [aMovie setRate:rate];  
+  if (fnonzero(rate)) [aMovie setRate:rate];  
 }
 
 - (id)initWithMovie:(QTMovie *)aMovie {

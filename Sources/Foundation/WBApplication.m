@@ -10,9 +10,9 @@
 
 #import WBHEADER(WBApplication.h)
 
+#import WBHEADER(WBFunctions.h)
 #import WBHEADER(WBLSFunctions.h)
 #import WBHEADER(WBProcessFunctions.h)
-#import WBHEADER(WonderBoxFunctions.h)
 
 enum {
   kWBUndefinedSignature = kUnknownType // '????'
@@ -38,7 +38,7 @@ enum {
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_signature = WBDecodeInteger(coder, @"WBSignature");
+    wb_signature = (OSType)WBDecodeInteger(coder, @"WBSignature");
     wb_name = [[coder decodeObjectForKey:@"WBName"] retain];
     wb_identifier = [[coder decodeObjectForKey:@"WBIdentifier"] retain];
   }

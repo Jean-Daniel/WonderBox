@@ -347,9 +347,9 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 		
 		glPushMatrix();
 		
-			glRotatef(90.0, 1.0, 0.0, 0.0);
-			glScalef(0.5 * scale, 0.5 * scale, 0.5 * scale);
-			glTranslatef(0.0, 0.0, -1.5);
+			glRotatef(90, 1, 0, 0);
+			glScaled(0.5 * scale, 0.5 * scale, 0.5 * scale);
+			glTranslated(0, 0, -1.5);
 
 			for (i = 0; i < 10; i++)
 			{
@@ -364,7 +364,7 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 							
 							if (l == 1)
 							{
-								q[j][k][l] *= -1.0;
+								q[j][k][l] *= -1;
 							} // if
 							
 							if (i < 6)
@@ -373,19 +373,19 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 								
 								if (l == 0)
 								{
-									r[j][k][l] *= -1.0;
+									r[j][k][l] *= -1;
 								} // if
 								
 								s[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
 								
 								if (l == 0)
 								{
-									s[j][k][l] *= -1.0;
+									s[j][k][l] *= -1;
 								} // if
 								
 								if (l == 1)
 								{
-									s[j][k][l] *= -1.0;
+									s[j][k][l] *= -1;
 								} // if
 							} // if
 						} // for l
@@ -394,7 +394,7 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 				
 				glMap2f(GL_MAP2_TEXTURE_COORD_2, 0, 1, 2, 2, 1, 0, 4, 2, &tex[0][0][0]);
 				glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &p[0][0][0]);
-				glMapGrid2f(grid, 0.0, 1.0, grid, 0.0, 1.0);
+				glMapGrid2f(grid, 0, 1, grid, 0, 1);
 				glEvalMesh2(theTeapotType, 0, grid, 0, grid);
 				
 				vertexCount += grid * grid;

@@ -10,6 +10,8 @@
 
 #import <QTKit/QTKit.h>
 
+#if !defined(__LP64__) || !__LP64__
+
 enum {
   kWBQTTimecodeMode24FPS,
   kWBQTTimecodeModeNTSC, // 29.97 drop frame
@@ -48,3 +50,4 @@ enum {
 
 @end
 
+#endif /* LP64 */

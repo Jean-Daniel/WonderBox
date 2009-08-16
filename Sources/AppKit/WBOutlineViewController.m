@@ -13,6 +13,12 @@
 
 #define _ContainsNode(item)		 		({(nil != item) && ([item findRoot] == wb_root);})
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+@interface WBOutlineViewController () <NSOutlineViewDataSource>
+
+@end
+#endif
+
 @implementation WBOutlineViewController
 
 - (id)initWithOutlineView:(NSOutlineView *)aView {
@@ -174,7 +180,7 @@
       if ([wb_outline selectedRow] == row) {
         [[NSNotificationCenter defaultCenter] postNotificationName:NSOutlineViewSelectionDidChangeNotification object:wb_outline];
       } else {
-        [wb_outline selectRow:row byExtendingSelection:NO];
+        [wb_outline selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [wb_outline scrollRowToVisible:row];
       }
     }

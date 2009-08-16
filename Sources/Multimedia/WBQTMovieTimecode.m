@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !defined(__LP64__) || !__LP64__
+
 #import WBHEADER(WBQTMovieTimecode.h)
 #import WBHEADER(WBMediaFunctions.h)
 
@@ -226,7 +228,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
       str = [NSString stringWithFormat:@"%.2ld:%.2ld:%.2ld%c%.2ld", 
              hours, minutes, seconds, drop ? ';' : ':', frames];
     } else {
-      if (WBRealEquals(0, rate - floor(rate))) {
+      if (fiszero(rate - floor(rate))) {
         /* integral rate */
         CGFloat frame = [self frameForTime:aTime];
         NSUInteger seconds = frame / rate;
@@ -252,3 +254,4 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 
 @end
 
+#endif /*LP64 */
