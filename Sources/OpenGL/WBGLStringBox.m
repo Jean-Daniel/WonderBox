@@ -67,7 +67,7 @@
 }
 
 - (void)setCornerRadius:(CGFloat)aRadius {
-  if (!WBRealEquals(aRadius, [self cornerRadius])) {
+  if (fnotequal(aRadius, [self cornerRadius])) {
     [super setCornerRadius:aRadius];
     [self setNeedsUpdateTexture:YES];
   }
@@ -99,7 +99,7 @@
   return wb_userScale;
 }
 - (void)setUserSpaceScaleFactor:(CGFloat)aFactor {
-  if (!WBRealEquals(wb_userScale, aFactor)) {
+  if (fnotequal(wb_userScale, aFactor)) {
     wb_userScale = aFactor;
     [self setNeedsUpdateTexture:YES];
   }

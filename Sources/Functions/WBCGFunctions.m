@@ -118,7 +118,7 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
 
-  if (WBRealEquals(radius.width, radius.height)) {
+  if (fequal(radius.width, radius.height)) {
     WBCGPathAddRoundRect(path, transform, rect, radius.width);
     return;
   }
@@ -169,7 +169,7 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
   
-  if (WBRealEquals(radius.width, radius.height)) {
+  if (fequal(radius.width, radius.height)) {
     WBCGContextAddRoundRect(context, rect, radius.width);
     return;
   }

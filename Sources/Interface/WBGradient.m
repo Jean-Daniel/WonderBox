@@ -210,14 +210,14 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
   angle = angle * M_PI / 180;
   
   // normalize
-  if (WBRealEquals(angle, -M_PI)) angle = M_PI;
+  if (fequal(angle, -M_PI)) angle = M_PI;
   
   CGPoint p1, p2;
-  if (WBRealEquals(angle, 0) || WBRealEquals(angle, M_PI)) {
+  if (fiszero(angle) || fequal(angle, M_PI)) {
     // Horizontal
     p1 = CGPointZero;
     p2 = CGPointMake(size.width, 0);
-  } else if (WBRealEquals(angle, M_PI_2) || WBRealEquals(angle, -M_PI_2)) {
+  } else if (fequal(angle, M_PI_2) || fequal(angle, -M_PI_2)) {
     // Vertical
     p1 = CGPointZero;
     p2 = CGPointMake(0, size.height);

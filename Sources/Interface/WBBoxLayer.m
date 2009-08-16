@@ -74,7 +74,7 @@
   return wb_bwidth;
 }
 - (void)setBorderWidth:(CGFloat)aWidth {
-  if (!WBRealEquals(aWidth, wb_bwidth)) {
+  if (fnotequal(aWidth, wb_bwidth)) {
     wb_bwidth = aWidth;
     [self setNeedsUpdate:YES];
   }
@@ -85,7 +85,7 @@
   NSSize size = NSZeroSize;
   
   /* width */
-  if (WBRealEquals(0, wb_box.size.width)) { // fit to content
+  if (fiszero(wb_box.size.width)) { // fit to content
     size.width = cntSize.width + 2 * (wb_bwidth + wb_padding.width);
   } else {
     if (wb_box.size.width < 0) { // relative to container
@@ -104,7 +104,7 @@
   }
   
   /* height */
-  if (WBRealEquals(0, wb_box.size.height)) { // fit to content
+  if (fiszero(wb_box.size.height)) { // fit to content
     size.height = cntSize.height + 2 * (wb_bwidth + wb_padding.height);
   } else {
     if (wb_box.size.height < 0) { // relative to container
@@ -143,8 +143,8 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
     
     NSSize box = NSZeroSize;
     // if fit to content, we ignore container size and choose an arbitrary big value
-    if (WBRealEquals(0, wb_box.size.width)) content.width = 64e3;
-    if (WBRealEquals(0, wb_box.size.height)) content.height = 64e3;
+    if (fiszero(wb_box.size.width)) content.width = 64e3;
+    if (fiszero(wb_box.size.height)) content.height = 64e3;
     
     /* if box size is absolute or relative to container => box actual size, 
      if box size is fit to container => box max size */

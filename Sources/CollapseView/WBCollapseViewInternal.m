@@ -272,17 +272,17 @@
   NSView *view = [wb_item view];
   NSRect frame = [view frame];
   
-  if (!WBRealEquals(NSWidth([self frame]), NSWidth(frame)))
+  if (fnotequal(NSWidth([self frame]), NSWidth(frame)))
     WBLogWarning(@"Changing item view width. This is not a good idea !");
   
-  if (!WBRealEquals(frame.origin.x, 0) || !WBRealEquals(frame.origin.y, ITEM_BOTTOM_MARGIN))
+  if (fnonzero(frame.origin.x) || fnotequal(frame.origin.y, ITEM_BOTTOM_MARGIN))
     WBLogWarning(@"Changing item origin. This is not a good idea !");
   
   // theorical item view height is body size - bottom margin (as the body origin is (0; 0))
   CGFloat height = NSHeight([wb_body frame]) - ITEM_BOTTOM_MARGIN;
   CGFloat delta = NSHeight(frame) - height;
   
-  if (!WBRealEquals(0, delta)) {// item height did change. 
+  if (fnonzero(delta)) {// item height did change. 
     wb_civFlags.resizing = 1;
     [self.collapseView _resizeItemView:self delta:delta animate:[wb_item animates]];
     wb_civFlags.resizing = 0;
