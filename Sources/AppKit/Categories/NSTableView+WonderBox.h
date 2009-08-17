@@ -13,6 +13,6 @@
 
 - (NSTableColumn *)columnAtIndex:(NSUInteger)idx;
 
-- (void)handleSelectEvent:(NSEvent *)rightMouseEvent;
+//- (void)handleSelectEvent:(NSEvent *)rightMouseEvent;
 
 @end

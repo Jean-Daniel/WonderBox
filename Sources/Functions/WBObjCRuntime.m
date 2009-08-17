@@ -177,6 +177,9 @@ void _WBRuntimeExchangeMethods(Class class, SEL orig, SEL new, bool instance) {
 	Method (*getMethod)(Class, SEL) = instance ? class_getInstanceMethod : class_getClassMethod;
   Method m1 = getMethod(class, orig);
   check(m1 != NULL);
+  // make sure the class implements the source method and not it's superclass
+  check(getMethod(class_getSuperclass(class), orig) != m1);
+  
   Method m2 = getMethod(class, new);
   check(m2 != NULL);
 	return __WBRuntimeExchangeMethods(m1, m2);

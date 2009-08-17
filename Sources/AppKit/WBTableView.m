@@ -136,13 +136,15 @@
   }
 }
 
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-  NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
-  if (WBDelegateHandle([self delegate], tableView:menuForRow:event:)) {
-    return [[self delegate] tableView:self menuForRow:row event:theEvent];
-  }
-  return [super menuForEvent:theEvent];
-}
+//- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+//  NSMenu *menu = [super menuForEvent:theEvent];
+//  if (!menu) {
+//    NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+//    if (WBDelegateHandle([self delegate], tableView:menuForRow:event:)) 
+//      menu = [[self delegate] tableView:self menuForRow:row event:theEvent];
+//  }
+//  return menu;
+//}
 
 #pragma mark -
 #pragma mark Padding
