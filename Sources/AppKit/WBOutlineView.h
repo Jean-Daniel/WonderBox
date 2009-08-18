@@ -63,8 +63,6 @@ WB_CLASS_EXPORT
 
 // returns NO to prevent outline cell drawing. Used in Source List.
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldDrawOutlineCellAtRow:(NSInteger)row;
-// Contextual menu helper.
-- (NSMenu *)outlineView:(NSOutlineView *)outlineView menuForRow:(NSInteger)row event:(NSEvent *)anEvent;
 
 @end
 

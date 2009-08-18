@@ -9,7 +9,6 @@
  */
  
 #import WBHEADER(WBOutlineView.h)
-#import WBHEADER(NSTableView+WonderBox.h)
 
 @implementation WBOutlineView
 
@@ -105,7 +104,7 @@
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
         // Check if click on the expand / collapse marker
-        if (row != -1 && column != -1 && [self columnAtIndex:column] == [self outlineTableColumn]) {
+        if (row != -1 && column != -1 && [[self tableColumns] objectAtIndex:column] == [self outlineTableColumn]) {
           // find if click is on the button
           CGFloat bias = 12;
           CGFloat x = point.x - [self rectOfColumn:column].origin.x;
@@ -126,7 +125,7 @@
           // Check if editing allows
           id item = [self itemAtRow:row];
           if (item && 
-              [delegate outlineView:self shouldEditTableColumn:[self columnAtIndex:column] item:item]) {
+              [delegate outlineView:self shouldEditTableColumn:[[self tableColumns] objectAtIndex:column] item:item]) {
             // Select row if needed
             if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
               // [self selectRow:row byExtendingSelection:NO];
@@ -159,14 +158,6 @@
     }
   }
 }
-
-//- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-//  NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
-//  if (WBDelegateHandle([self delegate], outlineView:menuForRow:event:))
-//    return [[self delegate] outlineView:self menuForRow:row event:theEvent];
-//  
-//  return [super menuForEvent:theEvent];
-//}
 
 #pragma mark -
 #pragma mark Padding

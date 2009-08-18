@@ -9,7 +9,6 @@
  */
 
 #import WBHEADER(WBTableView.h)
-#import WBHEADER(NSTableView+WonderBox.h)
 
 @implementation WBTableView
 
@@ -102,7 +101,7 @@
           if ([self editedRow] == row && [self editedColumn] == column) return;
           
           // Check if editing allows
-          if ([delegate tableView:self shouldEditTableColumn:[self columnAtIndex:column] row:row]) {
+          if ([delegate tableView:self shouldEditTableColumn:[[self tableColumns] objectAtIndex:column] row:row]) {
             // Select row if needed
             if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
               // [self selectRow:row byExtendingSelection:NO];
@@ -135,16 +134,6 @@
     }
   }
 }
-
-//- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-//  NSMenu *menu = [super menuForEvent:theEvent];
-//  if (!menu) {
-//    NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
-//    if (WBDelegateHandle([self delegate], tableView:menuForRow:event:)) 
-//      menu = [[self delegate] tableView:self menuForRow:row event:theEvent];
-//  }
-//  return menu;
-//}
 
 #pragma mark -
 #pragma mark Padding

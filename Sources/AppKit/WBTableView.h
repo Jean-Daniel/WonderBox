@@ -48,6 +48,5 @@ WB_CLASS_EXPORT
 - (void)deleteSelectionInTableView:(NSTableView *)aTableView;
 // Used for UI validation
 - (BOOL)canDeleteSelectionInTableView:(NSTableView *)aTableView;
-- (NSMenu *)tableView:(NSTableView *)aTableView menuForRow:(NSInteger)row event:(NSEvent *)theEvent;
 
 @end
