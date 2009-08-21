@@ -164,22 +164,25 @@
   if (wb_glvFlags.subview) // must be transparent, so clear the Quartz Context.
     CGContextClearRect(WBCGContextGetCurrent(), NSRectToCGRect(aRect));
   
-  [[self openGLContext] makeCurrentContext];
-  CGLLockContext([[self openGLContext] CGLContextObj]);
-  if (wb_glvFlags.reshape) {
-    [self reshape:[self bounds]];
-    wb_glvFlags.reshape = 0;
+  NSOpenGLContext *ctxt = [self openGLContext];
+  if (ctxt) {
+    [ctxt makeCurrentContext];
+    CGLLockContext([ctxt CGLContextObj]);
+    if (wb_glvFlags.reshape) {
+      [self reshape:[self bounds]];
+      wb_glvFlags.reshape = 0;
+    }
+    
+    [self glDraw:aRect];
+    
+    [self flushBuffer];
+    CGLUnlockContext([ctxt CGLContextObj]);
   }
-  
-  [self glDraw:aRect];
-  
-  [self flushBuffer];
-  CGLUnlockContext([[self openGLContext] CGLContextObj]);
 }
 
 - (void)glDraw:(NSRect)dirtyRect {
   CGLContextObj CGL_MACRO_CONTEXT = [[self openGLContext] CGLContextObj];
-  
+
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 }
