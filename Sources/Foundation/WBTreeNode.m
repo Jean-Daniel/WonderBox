@@ -470,34 +470,37 @@
 
 - (id)nextObject {
   WBTreeNode *node = wb_node;
+  
   /* End was reached */
   if (!node) {
     [wb_root release];
     wb_root = nil;
   }
+  
   /* On descend d'un niveau */
-  if (![wb_node firstChild]) {
+  WBTreeNode *child = [wb_node firstChild];
+  if (!child) {
     /* Si on ne peut pas descendre on se deplace lateralement */
     WBTreeNode *sibling = nil;
     /* Tant qu'on est pas remonte en haut de l'arbre, et qu'on a pas trouvé de voisin */
-    while (wb_node && wb_node != wb_root && !(sibling = [wb_node nextSibling])) {
+    while (wb_node && wb_node != wb_root && !(sibling = [wb_node nextSibling]))
       wb_node = [wb_node parent];
-    }
+    
     wb_node = sibling;
-  } else {
-    wb_node = [wb_node firstChild];
-  }
+  } else
+    wb_node = child;
+
   return node;
 }
 
 - (NSArray *)allObjects {
   if (!wb_node) { return [NSArray array]; }
   
-  NSMutableArray *children = [NSMutableArray array];
   WBTreeNode *node = nil;
-  while (node = [self nextObject]) {
+  NSMutableArray *children = [NSMutableArray array];
+  while (node = [self nextObject])
     [children addObject:node];
-  }
+
   return children;
 }
 
