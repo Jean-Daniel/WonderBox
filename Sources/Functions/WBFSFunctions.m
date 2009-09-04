@@ -583,8 +583,8 @@ OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(con
   return err;
 }
 
-/* Find Folder */
-OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) {
+/* MARK: Find Folder */
+OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFURLRef *path) {
   if (!path) return paramErr;
   
   FSRef folder;
@@ -593,16 +593,14 @@ OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool creat
                               createFolder ? kCreateFolder : kDontCreateFolder,
                               &folder);
   if (noErr == err) {
-    CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &folder);
-    if (url) {
-      *path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);    
-      CFRelease(url);
-    }
+    *path = CFURLCreateFromFSRef(kCFAllocatorDefault, &folder);
+    if (!*path)
+      err = coreFoundationUnknownErr;
   }
   return err;
 }
-
-OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) {
+// look on the same volume than anURL
+OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path) {
   if (!anURL || !path) return paramErr;
   
   FSRef ref;
@@ -612,7 +610,36 @@ OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool create
   FSCatalogInfo catalog;
   OSStatus err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catalog, NULL, NULL, NULL);
   if (noErr == err) 
-    err = WBFSCopyFolderPath(folderType, catalog.volume, createFolder, path);
+    err = WBFSCopyFolderURL(folderType, catalog.volume, createFolder, path);
+  return err;
+}
+
+// MARK: Deprecated
+OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) {
+  if (!path) return paramErr;
+  
+  CFURLRef url;
+  OSStatus err = WBFSCopyFolderURL(folderType, domain, createFolder, &url);
+  if (noErr == err) {
+    *path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    if (!*path)
+      err = coreFoundationUnknownErr;
+    CFRelease(url);    
+  }
+  return err;
+}
+
+OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) {
+  if (!anURL || !path) return paramErr;
+  
+  CFURLRef url;
+  OSStatus err = WBFSCopyFolderURLForURL(folderType, anURL, createFolder, &url);
+  if (noErr == err) {
+    *path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    if (!*path)
+      err = coreFoundationUnknownErr;
+    CFRelease(url);    
+  }
   return err;
 }
 

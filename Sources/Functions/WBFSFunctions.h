@@ -29,9 +29,13 @@ WB_EXPORT OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot);
 WB_EXPORT OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *path);
 WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory);
 
-WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path);
+WB_EXPORT OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFURLRef *path);
 // look on the same volume than anURL
-WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path);
+WB_EXPORT OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path);
+
+WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) WB_OBSOLETE;
+// look on the same volume than anURL
+WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) WB_OBSOLETE;
 
 WB_EXPORT CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix, CFStringRef extension, CFURLPathStyle pathType) WB_OBSOLETE;
 
@@ -42,20 +46,20 @@ WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *uni
 WB_EXPORT OSStatus WBFSCreateFolder(CFStringRef path) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
 
 /*!
-@function 
+ @function 
  @param willDeleteObject return <code>false</code> to abort operation, <code>true</code> to continue.
-*/
+ */
 WB_EXPORT OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt);
 WB_EXPORT OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt);
 /* delete an object using the posix convention (ignore busy files), and unlock it if needed */
 WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
 
 /*!
-@function WBFSCreateAliasFile
+ @function WBFSCreateAliasFile
  @param folder Destination folder.
  @param alias Path of the new alias file.
  @param target The file pointed by the new alias.
-*/
+ */
 WB_EXPORT
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target);
 
@@ -74,7 +78,7 @@ OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator);
 WB_EXPORT
 OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator);
 WB_EXPORT
-OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator);
+OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_OBSOLETE;
 
 enum {
 	kWBFSOSTypeIgnore = -1U
@@ -85,7 +89,7 @@ OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator);
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator);
 WB_EXPORT
-OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator);
+OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_OBSOLETE;
 
 #if defined(__WB_OBJC__)
 
@@ -108,9 +112,9 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 
 #pragma mark -
 WB_INLINE
-NSString *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
-  CFStringRef path = NULL;
-  if (noErr == WBFSCopyFolderPath(folderType, domain, create, &path))
+NSURL *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
+  CFURLRef path = NULL;
+  if (noErr == WBFSCopyFolderURL(folderType, domain, create, &path))
     return WBCFAutorelease(path);
   return nil;
 }
