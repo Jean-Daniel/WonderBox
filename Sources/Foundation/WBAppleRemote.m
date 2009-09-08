@@ -148,9 +148,16 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
 - (id)initWithService:(io_service_t)service options:(IOOptionBits)options {
   if (self = [super initWithService:service options:(IOOptionBits)options]) {  
     wb_device = IOHIDDeviceCreate(kCFAllocatorDefault, service);
+    if (!wb_device) {
+      WBCLogWarning("Failed to create Apple Remote device");
+      [self release];
+      return nil;
+    }
     IOReturn result = IOHIDDeviceOpen(wb_device, options); // kIOHIDOptionsTypeSeizeDevice
     if (kIOReturnSuccess != result) {
       WBCLogWarning("Error while opening remote: %s", mach_error_string(result));
+      CFRelease(wb_device);
+      wb_device = NULL;
       [self release];
       return nil;
     }
@@ -215,16 +222,19 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
     IOHIDDeviceUnscheduleFromRunLoop(wb_device, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
     IOHIDDeviceClose(wb_device, 0);
     CFRelease(wb_device);
+    wb_device = NULL;
   }
   [super dealloc];
 }
 
 #pragma mark -
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop {
-  IOHIDDeviceScheduleWithRunLoop(wb_device, [aRunLoop getCFRunLoop], kCFRunLoopCommonModes);
+  if (wb_device)
+    IOHIDDeviceScheduleWithRunLoop(wb_device, [aRunLoop getCFRunLoop], kCFRunLoopCommonModes);
 }
 - (void)removeFromRunLoop:(NSRunLoop *)aRunLoop {
-  IOHIDDeviceUnscheduleFromRunLoop(wb_device, [aRunLoop getCFRunLoop], kCFRunLoopCommonModes);
+  if (wb_device)
+    IOHIDDeviceUnscheduleFromRunLoop(wb_device, [aRunLoop getCFRunLoop], kCFRunLoopCommonModes);
 }
 
 @end
