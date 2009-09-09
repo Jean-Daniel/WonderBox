@@ -25,7 +25,8 @@ enum {
   struct _wb_tcFlags {
     unsigned int hdMode:2;
     unsigned int tcTrack:1;
-    unsigned int reserved:5;
+    unsigned int useTcTrack:1;
+    unsigned int reserved:4;
   } wb_tcFlags;
   /* cache */
   double wb_fps;
@@ -47,6 +48,9 @@ enum {
 
 - (QTTime)timeForFrame:(NSInteger)aFrame;
 - (QTTime)timeForAbsoluteFrame:(NSInteger)aFrame;
+
+- (BOOL)usesTimeCodeTrack;
+- (void)setUsesTimeCodeTrack:(BOOL)flag;
 
 @end
 

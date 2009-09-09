@@ -44,9 +44,10 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
   }
   if (self = [super init]) {
     wb_first = -1;
+    wb_tcFlags.useTcTrack = 1;
     wb_movie = [aMovie retain];
     WBFlagSet(wb_tcFlags.tcTrack, hasTC);
-    wb_tcFlags.hdMode = kWBQTTimecodeModeNTSC;
+    wb_tcFlags.hdMode = kWBQTTimecodeMode24FPS;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(wb_didEditMovie:) 
                                                  name:QTMovieEditedNotification object:aMovie];
@@ -61,6 +62,14 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 }
 
 #pragma mark -
+- (BOOL)usesTimeCodeTrack {
+  return wb_tcFlags.useTcTrack;
+}
+- (void)setUsesTimeCodeTrack:(BOOL)flag {
+  WBFlagSet(wb_tcFlags.useTcTrack, flag);
+  wb_first = -1;
+}
+
 - (double)staticFrameRate {
   if (wb_fps <= 0) WBQTMovieGetStaticFrameRate(wb_movie, &wb_fps);
   return wb_fps;
@@ -89,7 +98,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (NSInteger)firstFrame {
   if (wb_first >= 0) return wb_first;
   
-  if (wb_tcFlags.tcTrack) {
+  if (wb_tcFlags.tcTrack && wb_tcFlags.useTcTrack) {
     Track track = GetMediaTrack(wb_qtmedia);
     MediaHandler mh = GetMediaHandler(wb_qtmedia);
     if (track && mh) {
@@ -115,7 +124,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
   
   long frame = 0;
   OSStatus err = -1;
-  if (wb_tcFlags.tcTrack) {
+  if (wb_tcFlags.tcTrack && wb_tcFlags.useTcTrack) {
     Track track = GetMediaTrack(wb_qtmedia);
     MediaHandler mh = GetMediaHandler(wb_qtmedia);
     if (track && mh) {
@@ -157,14 +166,17 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (NSString *)stringForTime:(QTTime)aTime {
   if (QTTimeIsIndefinite(aTime)) return @"--:--:--:--";
   NSString *str = nil;
-  if (wb_tcFlags.tcTrack) {
+  if (wb_tcFlags.tcTrack && wb_tcFlags.useTcTrack) {
     Track track = GetMediaTrack(wb_qtmedia);
     MediaHandler mh = GetMediaHandler(wb_qtmedia);
     if (track && mh) {
       TimeCodeDef tcdef;
       TimeCodeRecord tcrec;
-//      long duration = GetMediaDuration(wb_qtmedia);
-//      if (aTime.timeValue >= duration) aTime.timeValue = duration -1;
+      
+      // Avoid warning when reaching end of movie.
+      long duration = GetMediaDuration(wb_qtmedia); 
+      if (aTime.timeValue >= duration) aTime.timeValue = duration -1;
+      
       if (noErr == TCGetTimeCodeAtTime(mh, TrackTimeToMediaTime(aTime.timeValue, track), NULL, &tcdef, &tcrec, NULL)) {
         Str255 pstring;
         if (noErr == TCTimeCodeToString(mh, &tcdef, &tcrec, pstring)) {
