@@ -166,13 +166,17 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (NSString *)stringForTime:(QTTime)aTime {
   if (QTTimeIsIndefinite(aTime)) return @"--:--:--:--";
   NSString *str = nil;
+  if (wb_qtmedia)
+    // scale time to media time scale
+    aTime = QTMakeTimeScaled(aTime, GetMediaTimeScale(wb_qtmedia));
+  
   if (wb_tcFlags.tcTrack && wb_tcFlags.useTcTrack) {
     Track track = GetMediaTrack(wb_qtmedia);
     MediaHandler mh = GetMediaHandler(wb_qtmedia);
     if (track && mh) {
       TimeCodeDef tcdef;
       TimeCodeRecord tcrec;
-      
+
       // Avoid warning when reaching end of movie.
       long duration = GetMediaDuration(wb_qtmedia); 
       if (aTime.timeValue >= duration) aTime.timeValue = duration -1;
