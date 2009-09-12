@@ -43,9 +43,6 @@ OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, co
 WB_EXPORT
 OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *digest, CSSM_ALGORITHMS digestAlg, const CSSM_DATA *signature, Boolean *valid);
 
-WB_EXPORT
-CSSM_ALGORITHMS WBRSASignatureAlgorithForDigest(CSSM_ALGORITHMS digest); // RSA only
-
 #pragma mark Developement
 
 WB_EXPORT

@@ -273,22 +273,6 @@ bail:
     return err;
 }
 
-CSSM_ALGORITHMS WBRSASignatureAlgorithForDigest(CSSM_ALGORITHMS digest) {
-  switch (digest) {
-    case CSSM_ALGID_SHA1:
-      return CSSM_ALGID_SHA1WithRSA;
-    case CSSM_ALGID_SHA224:
-      return CSSM_ALGID_SHA224WithRSA;
-    case CSSM_ALGID_SHA256:
-      return CSSM_ALGID_SHA256WithRSA;
-    case CSSM_ALGID_SHA384:
-      return CSSM_ALGID_SHA384WithRSA;
-    case CSSM_ALGID_SHA512:
-      return CSSM_ALGID_SHA512WithRSA;
-  }
-  return 0;
-}
-
 OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, const CSSM_DATA *data, CSSM_ALGORITHMS algid, CSSM_DATA *signature) {
   OSStatus err = noErr;
   CSSM_CC_HANDLE ccHandle = 0;
