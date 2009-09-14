@@ -11,6 +11,8 @@
 #include WBHEADER(WBSecurityFunctions.h)
 #include WBHEADER(WBCDSAFunctions.h)
 
+#include <unistd.h>
+
 OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght) {
   OSStatus err = noErr;
 #if 0
@@ -54,7 +56,7 @@ bail:
 }
 
 static
-OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypt, CSSM_CC_HANDLE *ccHandle) {
+OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypts, CSSM_CC_HANDLE *ccHandle) {
   const CSSM_KEY *ckey;
   CSSM_CSP_HANDLE cspHandle;
   
@@ -64,9 +66,9 @@ OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypt, CSSM_CC_HANDLE *c
   err = SecKeyGetCSPHandle(key, &cspHandle);
   require_noerr(err, bail);
   
-  /* If sign or verify (~ crypt with private key, or decrypt with public key) */
-  if ((crypt && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PRIVATE_KEY) ||
-      (!crypt && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PUBLIC_KEY))
+  /* If sign or verify (~ crypts with private key, or decrypt with public key) */
+  if ((crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PRIVATE_KEY) ||
+      (!crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PUBLIC_KEY))
     err = CSSM_CSP_CreateSignatureContext(cspHandle, CSSM_ALGID_SHA1WithRSA, NULL, ckey, ccHandle);
   else
     err = WBCDSACreateCryptContext(cspHandle, ckey, NULL, ccHandle);
@@ -77,14 +79,14 @@ bail:
   return err;
 }
 
-OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypt, uint32 inputSize, uint32 *outputSize) {
+OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) {
   CSSM_CC_HANDLE ccHandle;
   CSSM_QUERY_SIZE_DATA size = { inputSize, 0 };
   
-  OSStatus err = _WBKeyCreateDefaultContext(key, crypt, &ccHandle);
+  OSStatus err = _WBKeyCreateDefaultContext(key, crypts, &ccHandle);
   require_noerr(err, bail);
   
-  err = CSSM_QuerySize(ccHandle, crypt, 1, &size);
+  err = CSSM_QuerySize(ccHandle, crypts, 1, &size);
   CSSM_DeleteContext(ccHandle);
   require_noerr(err, bail);
   
@@ -311,6 +313,120 @@ bail:
     /* cleanup */
     if (ccHandle) CSSM_DeleteContext(ccHandle);
   
+  return err;
+}
+
+// MARK: File Signature
+CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature) {
+  if (!path || !pkey || !signature) return CSSMERR_CSSM_INVALID_POINTER;
+  
+  int fd = open(path, O_RDONLY);
+  if (fd <= 0) return CSSMERR_CSSM_FUNCTION_FAILED;
+  /* disable file system caching */
+  fcntl(fd, F_NOCACHE, 0);
+  
+  CSSM_CC_HANDLE ctxt;
+  CSSM_RETURN err = WBSecurityCreateSignatureContext(pkey, credentials, algid, &ctxt);
+  if (CSSM_OK == err) {
+    err = CSSM_SignDataInit(ctxt);
+    
+    if (CSSM_OK == err) {
+      const size_t blen = 64 * 1024;
+      /* must be 4k align because caching is disabled */
+      unsigned char *buffer = malloc(blen);
+      if (!buffer) {
+        err = CSSMERR_CSSM_MEMORY_ERROR;
+      } else {
+        ssize_t count = 0;
+        while (CSSM_OK == err && (count = read(fd, buffer, blen)) > 0) {
+          CSSM_DATA data = { count, buffer };
+          err = CSSM_SignDataUpdate(ctxt, &data, 1);
+        }
+        if (count < 0)
+          err = CSSMERR_CSSM_FUNCTION_FAILED;
+        free(buffer);
+      }
+    }
+    
+    if (CSSM_OK == err) 
+      err = CSSM_SignDataFinal(ctxt, signature);
+    
+    CSSM_DeleteContext(ctxt);
+  }
+  
+  close(fd);  
+  return err;
+}
+
+CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *signature, SecKeyRef pkey, CSSM_ALGORITHMS algid, bool *outValid) {
+  if (!path || !signature || !pkey || !outValid) return CSSMERR_CSSM_INVALID_POINTER;
+  
+  int fd = open(path, O_RDONLY);
+  if (fd <= 0) return CSSMERR_CSSM_FUNCTION_FAILED;
+  /* disable file system caching */
+  fcntl(fd, F_NOCACHE, 0);
+  
+  *outValid = false;
+  CSSM_CC_HANDLE ctxt;
+  CSSM_RETURN err = WBSecurityCreateVerifyContext(pkey, algid, &ctxt);
+  if (CSSM_OK == err) {
+    err = CSSM_VerifyDataInit(ctxt);
+    
+    if (CSSM_OK == err) {
+      const size_t blen = 64 * 1024;
+      /* must be 4k align because caching is disabled */
+      unsigned char *buffer = malloc(blen);
+      if (!buffer) {
+        err = CSSMERR_CSSM_MEMORY_ERROR;
+      } else {
+        ssize_t count = 0;
+        while (CSSM_OK == err && (count = read(fd, buffer, blen)) > 0) {
+          CSSM_DATA data = { count, buffer };
+          err = CSSM_VerifyDataUpdate(ctxt, &data, 1);
+        }
+        if (count < 0)
+          err = CSSMERR_CSSM_FUNCTION_FAILED;
+        free(buffer);
+      }
+    }
+    
+    if (CSSM_OK == err) {
+      err = CSSM_VerifyDataFinal(ctxt, signature);
+      if (CSSM_OK == err)
+        *outValid = true;
+      else if (CSSMERR_CSP_VERIFY_FAILED == err)
+        err = CSSM_OK; // just means that the signature is not valid
+    }
+    
+    CSSM_DeleteContext(ctxt);
+  }
+  close(fd);
+  
+  return err;
+}
+
+CSSM_RETURN WBSecuritySignFileWithIdentity(const char *path, SecIdentityRef identity, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature) {
+  SecKeyRef privKey;
+  CSSM_RETURN err = SecIdentityCopyPrivateKey(identity, &privKey);
+  if (noErr == err) {
+    err = WBSecuritySignFile(path, privKey, credentials, algid, signature);
+    CFRelease(privKey);
+  }
+  return err;
+}
+
+CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CSSM_DATA *signature, SecIdentityRef identity, CSSM_ALGORITHMS algid, bool *outValid) {
+  SecCertificateRef cert;
+  CSSM_RETURN err = SecIdentityCopyCertificate(identity, &cert);
+  if (noErr == err) {
+    SecKeyRef pubKey;
+    err = SecCertificateCopyPublicKey(cert, &pubKey);
+    if (noErr == err) {
+      err = WBSecurityVerifyFileSignature(path, signature, pubKey, algid, outValid);
+      CFRelease(pubKey);
+    }
+    CFRelease(cert);
+  }
   return err;
 }
 

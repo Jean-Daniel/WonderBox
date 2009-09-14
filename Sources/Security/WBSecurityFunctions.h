@@ -43,6 +43,16 @@ OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, co
 WB_EXPORT
 OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *digest, CSSM_ALGORITHMS digestAlg, const CSSM_DATA *signature, Boolean *valid);
 
+WB_EXPORT
+CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature);
+WB_EXPORT
+CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *signature, SecKeyRef pkey, CSSM_ALGORITHMS algid, bool *outValid);
+
+WB_EXPORT
+CSSM_RETURN WBSecuritySignFileWithIdentity(const char *path, SecIdentityRef identity, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature);
+WB_EXPORT
+CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CSSM_DATA *signature, SecIdentityRef identity, CSSM_ALGORITHMS algid, bool *outValid);
+
 #pragma mark Developement
 
 WB_EXPORT
