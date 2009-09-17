@@ -6,8 +6,12 @@
 //  Copyright 2009 Ninsight. All rights reserved.
 //
 
-WB_EXPORT Boolean WBServiceSubmitJob(CFDictionaryRef job, CFErrorRef *outError);
-WB_EXPORT Boolean WBServiceRemoveJob(CFStringRef name, CFErrorRef *outError);
+#include <CoreFoundation/CoreFoundation.h>
 
-WB_EXPORT Boolean WBServiceStartJob(CFStringRef name, CFErrorRef *outError);
-WB_EXPORT Boolean WBServiceStopJob(CFStringRef name, CFErrorRef *outError);
+extern Boolean WBServiceSubmitJob(CFDictionaryRef job, CFErrorRef *outError);
+extern Boolean WBServiceRemoveJob(CFStringRef name, CFErrorRef *outError);
+
+extern Boolean WBServiceStartJob(CFStringRef name, CFErrorRef *outError);
+extern Boolean WBServiceStopJob(CFStringRef name, CFErrorRef *outError);
+
+extern CFTypeRef WBServiceCheckIn(CFStringRef name, CFErrorRef *outError);

@@ -6,9 +6,12 @@
 //  Copyright 2009 Ninsight. All rights reserved.
 //
 
-#import WBHEADER(WBServiceManagement.h)
+#include "WBServiceManagement.h"
 
 #include <launch.h>
+#include <unistd.h>
+
+#include <CoreServices/CoreServices.h>
 
 // MARK: Serialization
 static
@@ -25,11 +28,25 @@ launch_data_t _WBServiceSerializeBoolean(CFBooleanRef dict);
 static
 launch_data_t _WBServiceSerializeString(CFStringRef dict);
 
+// MARK: Launchd -> CoreFoundation
+static 
+CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data);
+
+static 
+CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data);
+static 
+CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data);
+
+static
+void _WBServiceCleanupObject(CFTypeRef object); // properly release object on error
+
 // MARK: Message Send
 static 
 OSStatus _WBServiceSendMessage(launch_data_t request, launch_data_t *outResponse);
 static
-Boolean _WBServiceSendSimpleJobMessage(CFStringRef name, CFErrorRef *outError, const char *msg);
+Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_data_t *outResponse, CFErrorRef *outError);
+static
+CFTypeRef _WBServiceSendSimpleMessage2(CFStringRef name, const char *msg, CFErrorRef *outError);
 
 // MARK: String Utilities
 static 
@@ -71,15 +88,19 @@ Boolean WBServiceSubmitJob(CFDictionaryRef job, CFErrorRef *outError) {
 Boolean WBServiceRemoveJob(CFStringRef name, CFErrorRef *outError) {
   //  if (SMJobRemove)
   //    return SMJobRemove(kSMDomainUserLaunchd, name, NULL, outError);
-  return _WBServiceSendSimpleJobMessage(name, outError, LAUNCH_KEY_REMOVEJOB);
+  return _WBServiceSendSimpleMessage(name, LAUNCH_KEY_REMOVEJOB, NULL, outError);
 }
 
 Boolean WBServiceStartJob(CFStringRef name, CFErrorRef *outError) {
-  return _WBServiceSendSimpleJobMessage(name, outError, LAUNCH_KEY_STARTJOB);
+  return _WBServiceSendSimpleMessage(name, LAUNCH_KEY_STARTJOB, NULL, outError);
 }
 
 Boolean WBServiceStopJob(CFStringRef name, CFErrorRef *outError) {
-  return _WBServiceSendSimpleJobMessage(name, outError, LAUNCH_KEY_STOPJOB);
+  return _WBServiceSendSimpleMessage(name, LAUNCH_KEY_STOPJOB, NULL, outError);
+}
+
+CFTypeRef WBServiceCheckIn(CFStringRef name, CFErrorRef *outError) {
+  return _WBServiceSendSimpleMessage2(NULL, LAUNCH_KEY_CHECKIN, outError);
 }
 
 // MARK: Serialization
@@ -217,14 +238,29 @@ OSStatus _WBServiceSendMessage(launch_data_t request, launch_data_t *outResponse
   return err;
 }
 
-Boolean _WBServiceSendSimpleJobMessage(CFStringRef name, CFErrorRef *outError, const char *msg) {
-  launch_data_t str = NULL;
-  launch_data_t request = launch_data_alloc(LAUNCH_DATA_DICTIONARY);
-  OSStatus err = _WBCFStringGetBytes(name, kCFStringEncodingUTF8, _WBServiceGetString, &str);
-  if (noErr == err) {
-    launch_data_dict_insert(request, str, msg);
-    err = _WBServiceSendMessage(request, NULL);    
+Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_data_t *response, CFErrorRef *outError) {
+  OSStatus err = noErr;
+  launch_data_t request;
+  if (name) {
+    launch_data_t str = NULL;
+    request = launch_data_alloc(LAUNCH_DATA_DICTIONARY); 
+    if (!request) err = memFullErr;
+    if (noErr == err)
+      err = _WBCFStringGetBytes(name, kCFStringEncodingUTF8, _WBServiceGetString, &str);
+    if (noErr == err) {
+      if (!launch_data_dict_insert(request, str, msg)) {
+        err = kPOSIXErrorBase + errno;
+        launch_data_free(str);
+      }
+    }
+  } else {
+    // no job name
+    request = launch_data_new_string(msg);
+    if (!request) err = memFullErr;
   }
+  
+  if (noErr == err)
+    err = _WBServiceSendMessage(request, response);    
 
   if (noErr != err) {
     if (outError) 
@@ -232,6 +268,21 @@ Boolean _WBServiceSendSimpleJobMessage(CFStringRef name, CFErrorRef *outError, c
   }
   launch_data_free(request);
   return noErr == err;
+}
+
+CFTypeRef _WBServiceSendSimpleMessage2(CFStringRef name, const char *msg, CFErrorRef *outError) {
+  launch_data_t response;
+  CFTypeRef service = NULL;
+  OSStatus err = _WBServiceSendSimpleMessage(name, msg, &response, outError);
+  if (noErr == err && response) {
+    service = _WBServiceCreateObjectFromData(response);
+    if (!service) 
+      err = coreFoundationUnknownErr;
+    launch_data_free(response);
+  }
+  if (noErr != err && outError)
+    *outError = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainOSStatus, err, NULL);
+  return service;
 }
 
 // MARK: String Utilities 
@@ -283,4 +334,119 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
     if (buffer != stack) CFAllocatorDeallocate(kCFAllocatorDefault, buffer);
   }
   return result;
+}
+
+// MARK: -
+CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
+  if (!data) return NULL;
+  CFTypeRef object = NULL;
+  switch (launch_data_get_type(data)) {
+    case LAUNCH_DATA_DICTIONARY:
+      object = _WBServiceCreateDictionaryFromData(data);
+      break;
+    case LAUNCH_DATA_ARRAY:
+      object = _WBServiceCreateArrayFromData(data);
+      break;
+    case LAUNCH_DATA_FD:
+      object = CFFileDescriptorCreate(kCFAllocatorDefault, launch_data_get_fd(data), false, NULL, NULL);
+      break;
+    case LAUNCH_DATA_INTEGER: {
+      long long value = launch_data_get_integer(data);
+      object = CFNumberCreate(kCFAllocatorDefault, kCFNumberLongLongType, &value);
+    }
+      break;
+    case LAUNCH_DATA_REAL: {
+      double value = launch_data_get_real(data);
+      object = CFNumberCreate(kCFAllocatorDefault, kCFNumberDoubleType, &value);      
+    }
+      break;      
+    case LAUNCH_DATA_BOOL:
+      object = CFRetain(launch_data_get_bool(data) ? kCFBooleanTrue : kCFBooleanFalse);
+      break;
+    case LAUNCH_DATA_STRING:
+      object = CFStringCreateWithCString(kCFAllocatorDefault, launch_data_get_string(data), kCFStringEncodingUTF8);
+      break;
+    case LAUNCH_DATA_OPAQUE:
+      object = CFDataCreate(kCFAllocatorDefault, launch_data_get_opaque(data), launch_data_get_opaque_size(data));
+      break;
+    case LAUNCH_DATA_ERRNO:
+      object = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, launch_data_get_errno(data), NULL);
+      break;
+    case LAUNCH_DATA_MACHPORT:
+      object = CFMachPortCreateWithPort(kCFAllocatorDefault, launch_data_get_machport(data), NULL, NULL, NULL);
+      break;
+  }
+  return object;
+}
+
+static 
+void __WBServiceCleanupObject(const void *key, const void *value, void *ctxt) {
+  // Dictionary callback
+  _WBServiceCleanupObject(value);
+}
+
+void _WBServiceCleanupObject(CFTypeRef object) {
+  if (!object) return;
+  CFTypeID type = CFGetTypeID(object);
+  if (CFDictionaryGetTypeID() == type) {
+    CFDictionaryApplyFunction(object, __WBServiceCleanupObject, NULL);
+  } else if (CFArrayGetTypeID() == type) {
+    for (CFIndex idx = 0, count = CFArrayGetCount(object); idx < count; idx++)
+      _WBServiceCleanupObject(CFArrayGetValueAtIndex(object, idx));
+  } else if (CFFileDescriptorGetTypeID() == type) {
+    // close file descriptor (as we init it with 'do not close on invalidate')
+    close(CFFileDescriptorGetNativeDescriptor((CFFileDescriptorRef)object));
+    // Note: invalidate set fd to -1 but does not close it.
+    CFFileDescriptorInvalidate((CFFileDescriptorRef)object);
+  } else if (CFMachPortGetTypeID() == type) {
+    CFMachPortInvalidate((CFMachPortRef)object); // optional as the mach port object listen death notifications
+    mach_port_destroy(mach_task_self(), CFMachPortGetPort((CFMachPortRef)object));
+  }
+}
+
+CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) {
+  CFMutableArrayRef array = CFArrayCreateMutable(kCFAllocatorDefault, launch_data_array_get_count(data), &kCFTypeArrayCallBacks);
+  for (size_t idx = 0, count = launch_data_array_get_count(data); idx < count; idx++) {
+    CFTypeRef item = _WBServiceCreateObjectFromData(launch_data_array_get_index(data, idx));
+    if (item) {
+      CFArrayAppendValue(array, item);
+      CFRelease(item);
+    } else {
+      _WBServiceCleanupObject(array);
+      CFRelease(array);
+      array = NULL;
+      break;
+    }
+  }
+  return array;
+}
+
+static
+void __WBServiceCreateDictionary(const launch_data_t value, const char *key, void *ctxt) {
+  CFMutableDictionaryRef *dict = (CFMutableDictionaryRef *)ctxt;
+  if (!*dict) return;
+  
+  bool ok = false;
+  CFStringRef str = CFStringCreateWithCString(kCFAllocatorDefault, key, kCFStringEncodingUTF8);
+  if (str) {
+    CFTypeRef obj = _WBServiceCreateObjectFromData(value);
+    if (obj) {
+      CFDictionarySetValue(*dict, str, obj);
+      CFRelease(obj);
+      ok = true;
+    }
+    CFRelease(str);
+  }
+  if (!ok) {
+    _WBServiceCleanupObject(*dict);
+    CFRelease(*dict);
+    *dict = NULL;
+  }
+}
+
+CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data) {
+  CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorDefault, launch_data_dict_get_count(data), 
+                                                          &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+  launch_data_dict_iterate(data, __WBServiceCreateDictionary, &dict);
+  return dict;
 }
