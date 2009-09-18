@@ -6,12 +6,10 @@
 //  Copyright 2009 Ninsight. All rights reserved.
 //
 
-#include "WBServiceManagement.h"
+#include WBHEADER(WBServiceManagement.h)
 
 #include <launch.h>
 #include <unistd.h>
-
-#include <CoreServices/CoreServices.h>
 
 // MARK: Serialization
 static
@@ -36,9 +34,6 @@ static
 CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data);
 static 
 CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data);
-
-static
-void _WBServiceCleanupObject(CFTypeRef object); // properly release object on error
 
 // MARK: Message Send
 static 
@@ -273,12 +268,17 @@ Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_da
 CFTypeRef _WBServiceSendSimpleMessage2(CFStringRef name, const char *msg, CFErrorRef *outError) {
   launch_data_t response;
   CFTypeRef service = NULL;
-  OSStatus err = _WBServiceSendSimpleMessage(name, msg, &response, outError);
-  if (noErr == err && response) {
+  if (!_WBServiceSendSimpleMessage(name, msg, &response, outError))
+    return NULL;
+
+  OSStatus err = noErr;
+  if (response) {
     service = _WBServiceCreateObjectFromData(response);
     if (!service) 
       err = coreFoundationUnknownErr;
     launch_data_free(response);
+  } else {
+    err = -1;
   }
   if (noErr != err && outError)
     *outError = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainOSStatus, err, NULL);
@@ -382,17 +382,17 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
 static 
 void __WBServiceCleanupObject(const void *key, const void *value, void *ctxt) {
   // Dictionary callback
-  _WBServiceCleanupObject(value);
+  WBServiceCleanupObject(value);
 }
 
-void _WBServiceCleanupObject(CFTypeRef object) {
+void WBServiceCleanupObject(CFTypeRef object) {
   if (!object) return;
   CFTypeID type = CFGetTypeID(object);
   if (CFDictionaryGetTypeID() == type) {
     CFDictionaryApplyFunction(object, __WBServiceCleanupObject, NULL);
   } else if (CFArrayGetTypeID() == type) {
     for (CFIndex idx = 0, count = CFArrayGetCount(object); idx < count; idx++)
-      _WBServiceCleanupObject(CFArrayGetValueAtIndex(object, idx));
+      WBServiceCleanupObject(CFArrayGetValueAtIndex(object, idx));
   } else if (CFFileDescriptorGetTypeID() == type) {
     // close file descriptor (as we init it with 'do not close on invalidate')
     close(CFFileDescriptorGetNativeDescriptor((CFFileDescriptorRef)object));
@@ -412,7 +412,7 @@ CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) {
       CFArrayAppendValue(array, item);
       CFRelease(item);
     } else {
-      _WBServiceCleanupObject(array);
+      WBServiceCleanupObject(array);
       CFRelease(array);
       array = NULL;
       break;
@@ -438,7 +438,7 @@ void __WBServiceCreateDictionary(const launch_data_t value, const char *key, voi
     CFRelease(str);
   }
   if (!ok) {
-    _WBServiceCleanupObject(*dict);
+    WBServiceCleanupObject(*dict);
     CFRelease(*dict);
     *dict = NULL;
   }
