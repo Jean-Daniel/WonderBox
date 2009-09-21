@@ -78,14 +78,14 @@
 
 //@property(retain) id keepAlive;
 - (uint32_t)timeout {
-  return [[self valueForProperty:@LAUNCH_JOBKEY_TIMEOUT] unsignedIntegerValue];
+  return [[self valueForProperty:@LAUNCH_JOBKEY_TIMEOUT] unsignedIntValue];
 } 
 - (void)setTimeout:(uint32_t)aValue {
   [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_TIMEOUT];
 }
 
 - (uint32_t)exitTimeout {
-  return [[self valueForProperty:@LAUNCH_JOBKEY_EXITTIMEOUT] unsignedIntegerValue];
+  return [[self valueForProperty:@LAUNCH_JOBKEY_EXITTIMEOUT] unsignedIntValue];
 } 
 - (void)setExitTimeout:(uint32_t)aValue {
   [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_EXITTIMEOUT];
