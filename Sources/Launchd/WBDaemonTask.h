@@ -29,6 +29,9 @@
 @property BOOL startImmediatly; // run at load
 @property BOOL unregisterAtExit; // run once
 
+@property(copy) NSString *standardError;
+@property(copy) NSString *standardOutput;
+
 @property(copy) NSString *rootDirectoryPath;
 @property(copy) NSString *workingDirectoryPath;
 

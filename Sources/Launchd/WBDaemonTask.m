@@ -105,6 +105,19 @@
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_LAUNCHONLYONCE];
 }
 
+- (NSString *)standardError {
+  return [self valueForProperty:@LAUNCH_JOBKEY_STANDARDERRORPATH];
+}
+- (void)setStandardError:(NSString *)aValue {
+  [self setValue:[[aValue copy] autorelease] forProperty:@LAUNCH_JOBKEY_STANDARDERRORPATH];
+}
+- (NSString *)standardOutput {
+  return [self valueForProperty:@LAUNCH_JOBKEY_STANDARDOUTPATH];
+}
+- (void)setStandardOutput:(NSString *)aValue {
+  [self setValue:[[aValue copy] autorelease] forProperty:@LAUNCH_JOBKEY_STANDARDOUTPATH];
+}
+
 - (NSString *)rootDirectoryPath {
   return [self valueForProperty:@LAUNCH_JOBKEY_ROOTDIRECTORY];
 }
@@ -216,7 +229,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     }
     return port;
   } else {
-    fprintf(stderr, "bootstrap_look_up: %s\n", bootstrap_strerror(kr));
+    WBLogWarning(@"bootstrap_look_up: %s", bootstrap_strerror(kr));
   }
 
   return MACH_PORT_NULL;
