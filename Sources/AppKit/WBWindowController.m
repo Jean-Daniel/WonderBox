@@ -10,6 +10,10 @@
 
 #import WBHEADER(WBWindowController.h)
 
+@interface WBWindowController ()
+- (void)wb_windowWillClose:(NSNotification *)aNotification;
+@end
+
 WB_INLINE
 void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   if (aWindow) {

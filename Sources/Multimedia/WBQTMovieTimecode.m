@@ -15,6 +15,10 @@
 
 #define   kCharacteristicHasVideoFrameRate 'vfrr'
 
+@interface WBQTMovieTimecode ()
+- (void)wb_didEditMovie:(NSNotification *)aNotification;
+@end
+
 @implementation WBQTMovieTimecode
 
 static

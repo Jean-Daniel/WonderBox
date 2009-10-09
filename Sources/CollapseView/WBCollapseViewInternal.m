@@ -29,6 +29,8 @@
 - (void)wb_attachView:(NSView *)theView;
 - (void)wb_detachView:(NSView *)theView;
 
+- (void)_didChangeItemFrame:(NSNotification *)aNotification;
+
 @end
 
 @interface _WBCollapseItemHeaderView : NSView {
@@ -50,6 +52,8 @@
 
 @property SEL action;
 @property(assign) id target;
+
+- (void)wb_performAction:(id)sender;
 
 @end
 
