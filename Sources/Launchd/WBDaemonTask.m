@@ -226,6 +226,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
                                                       &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
       CFDictionarySetValue(_ports, aName, cfport);
       CFMachPortSetInvalidationCallBack(cfport, _CFMachPortInvalidation);
+      CFRelease(cfport);
     }
     return port;
   } else {

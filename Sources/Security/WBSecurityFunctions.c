@@ -189,8 +189,7 @@ CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *polic
 }
 
 OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, SecIdentityRef *identity) {
-	check(identity);
-	check(!*identity);
+	check(identity && !*identity);
 	
   //SecKeychainItemRef pref;
 	OSStatus err = SecIdentityCopyPreference(email, 0, NULL, identity);
@@ -502,7 +501,7 @@ const char *__WBAttributeName(OSType type) {
 
 WB_INLINE
 void __WBAttributeInfoPrint(SecKeychainAttributeInfo *info) {
-  check(info != NULL);
+  if (!info) return;
   for (UInt32 idx = 0; idx < info->count; idx++) {
     const char *name = __WBAttributeName(info->tag[idx]);
     if (name) {

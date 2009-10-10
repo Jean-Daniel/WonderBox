@@ -251,7 +251,8 @@ Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_da
     if (outError) 
       *outError = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainOSStatus, err, NULL);
   }
-  launch_data_free(request);
+  if (noErr == err)
+    launch_data_free(request);
   return noErr == err;
 }
 
