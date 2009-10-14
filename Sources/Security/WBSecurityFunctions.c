@@ -189,7 +189,7 @@ CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *polic
 }
 
 OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, SecIdentityRef *identity) {
-	check(identity && !*identity);
+	if (!identity) return paramErr;
 	
   //SecKeychainItemRef pref;
 	OSStatus err = SecIdentityCopyPreference(email, 0, NULL, identity);
