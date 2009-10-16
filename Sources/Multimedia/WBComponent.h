@@ -23,9 +23,6 @@ WB_CLASS_EXPORT
 @property(readonly) NSString *manufacturer;
 @property(readonly) NSString *informations;
 @property(readonly) NSString *componentName;
-
-// TODO: find a component with icon to test it.
-//@property(readonly) NSImage *icon;
 #endif
 
 + (NSArray *)componentsWithComponentDescription:(const ComponentDescription *)search;

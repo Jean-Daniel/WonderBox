@@ -199,7 +199,7 @@
 - (NSString *)name {
   if (!_cname)
     [self wb_setInfo];
-  return _name ? : _cname;
+  return [_name length] > 0 ? _name : _cname;
 }
 - (NSString *)manufacturer {
   if (!_cname)
