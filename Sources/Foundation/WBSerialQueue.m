@@ -32,10 +32,9 @@
 
 - (void)addOperation:(NSOperation *)op {
   @synchronized(self) {
-    if (wb_last) {
-      [wb_last removeObserver:self forKeyPath:@"isFinished"];
+    if (wb_last)
       [op addDependency:wb_last];
-    }
+    
     WBSetterRetain(&wb_last, op);
     [op addObserver:self forKeyPath:@"isFinished" options:0 context:WBSerialQueue.class];
   }
@@ -69,10 +68,9 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
   if (context == WBSerialQueue.class) {
     @synchronized(self) {
-      if (wb_last == object) {
-        [wb_last removeObserver:self forKeyPath:@"isFinished"];
+      [object removeObserver:self forKeyPath:@"isFinished"];
+      if (wb_last == object) 
         WBSetterRetain(&wb_last, nil);
-      }
     }
     // an op is finished, tell it to all 'synchronous op' waiter.
     [wb_event lock];

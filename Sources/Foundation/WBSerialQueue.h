@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-
+// SHould use GCD when possible instead
 @interface WBSerialQueue : NSOperationQueue {
 @private
   NSOperation *wb_last;
