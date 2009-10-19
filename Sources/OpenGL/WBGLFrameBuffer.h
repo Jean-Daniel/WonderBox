@@ -80,7 +80,7 @@ WB_CLASS_EXPORT
 - (void)delete;
 
 - (GLint)frameBufferObject;
-- (CGLContextObj)CGLContextObj;
+- (CGLContextObj)openGLContext;
 
 // return 0 if FBO complete, else return a status enum.
 - (GLenum)status:(GLenum)mode context:(CGLContextObj)context;

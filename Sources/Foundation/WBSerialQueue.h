@@ -12,10 +12,13 @@
 @interface WBSerialQueue : NSOperationQueue {
 @private
   NSOperation *wb_last;
+  NSCondition *wb_event;
 }
 
 - (void)addOperation:(NSOperation *)op;
+- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait;
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg;
+- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
 
 @end

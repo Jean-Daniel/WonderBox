@@ -14,6 +14,9 @@
 
 - (id)init {
   if (self = [super init]) {
+    if (![NSOperation instancesRespondToSelector:@selector(waitUntilFinished)])
+      wb_event = [[NSCondition alloc] init];
+    
     [self setMaxConcurrentOperationCount:1];
     if ([self respondsToSelector:@selector(setName:)])
       [self setName:@"org.shadowlab.serial-queue"];
@@ -22,6 +25,7 @@
 }
 
 - (void)dealloc {
+  [wb_event release];
   [wb_last release];
   [super dealloc];
 }
@@ -38,10 +42,28 @@
   [super addOperation:op];
 }
 
-- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg {
-  NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:target selector:sel object:arg];
+- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait {
+  NSParameterAssert(op);
   [self addOperation:op];
-  [op release];
+  if (shouldWait) {
+    if (wb_event) {
+      [wb_event lock];
+      while (![op isFinished])
+        [wb_event wait];
+      [wb_event unlock];
+    } else {
+      [op waitUntilFinished];
+    }
+  }
+}
+
+- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg {
+  [self addOperationWithTarget:target selector:sel object:arg waitUntilFinished:NO];
+}
+- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
+  NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:target selector:sel object:arg];
+  [self addOperation:op waitUntilFinished:shouldWait];
+  [op release];  
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -52,6 +74,11 @@
         WBSetterRetain(&wb_last, nil);
       }
     }
+    // an op is finished, tell it to all 'synchronous op' waiter.
+    [wb_event lock];
+    // MUST lock to prevent race condition
+    [wb_event broadcast];
+    [wb_event unlock];
   }
   else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

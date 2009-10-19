@@ -55,7 +55,7 @@
   return wb_fbo;
 }
 
-- (CGLContextObj)CGLContextObj { return wb_glctxt; }
+- (CGLContextObj)openGLContext { return wb_glctxt; }
 
 #if defined(DEBUG)
 WB_INLINE
