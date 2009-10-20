@@ -162,7 +162,7 @@
 
 - (void)drawRect:(NSRect)aRect {
   if (wb_glvFlags.subview) // must be transparent, so clear the Quartz Context.
-    CGContextClearRect(WBCGContextGetCurrent(), NSRectToCGRect(aRect));
+    CGContextClearRect([NSGraphicsContext currentGraphicsPort], NSRectToCGRect(aRect));
   
   NSOpenGLContext *ctxt = [self openGLContext];
   if (ctxt) {

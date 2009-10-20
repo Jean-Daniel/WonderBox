@@ -424,7 +424,7 @@
 - (void)drawRect:(NSRect)aRect {
   static CGLayerRef sHeaderBackground = NULL;
   
-  CGContextRef ctxt = WBCGContextGetCurrent();
+  CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
   NSRect bounds = [self bounds];
   CGRect background = NSRectToCGRect(bounds);
   background.size.height -= 1;
@@ -466,7 +466,7 @@
   CGPoint line[2];
   NSRect bounds = [self bounds];
   if (NSIntersectsRect(bounds, aRect)) {
-    CGContextRef ctxt = WBCGContextGetCurrent();
+    CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
     CGContextSetLineWidth(ctxt, 1);
     
     line[0] = CGPointMake(NSMinX(bounds), NSMinY(bounds) + .5);
