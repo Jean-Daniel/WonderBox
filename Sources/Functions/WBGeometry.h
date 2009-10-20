@@ -11,20 +11,22 @@
 #if !defined (__WBGEOMETRY_H)
 #define __WBGEOMETRY_H 1
 
+#include <ApplicationServices/ApplicationServices.h>
+
 #pragma mark -
 WB_INLINE
 CGSize WBMaxSizeForSizes(CGSize s1, CGSize s2) {
   CGSize s;
-  s.width = MAX(s1.width, s2.width);
-  s.height = MAX(s1.height, s2.height);
+  s.width = s1.width < s2.width ? s2.width : s1.width;
+  s.height = s1.height < s2.height ? s2.height : s1.height;
   return s;
 }
 
 WB_INLINE
 CGSize WBMinSizeForSizes(CGSize s1, CGSize s2) {
   CGSize s;
-  s.width = MIN(s1.width, s2.width);
-  s.height = MIN(s1.height, s2.height);
+  s.width = s1.width < s2.width ? s1.width : s2.width;
+  s.height = s1.height < s2.height ? s1.height : s2.height;
   return s;
 }
 
@@ -38,7 +40,7 @@ enum {
   kWBScalingModeAxesIndependently,
   kWBScalingModeNone,
 };
-typedef NSUInteger WBScalingMode;
+typedef uint32_t WBScalingMode;
 
 enum {
   kWBRectAlignCenter = 0,
@@ -51,7 +53,7 @@ enum {
   kWBRectAlignBottomRight,
   kWBRectAlignRight
 };
-typedef NSUInteger WBRectAlignment;
+typedef uint32_t WBRectAlignment;
 
 WB_EXPORT
 CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment mode);
