@@ -16,11 +16,13 @@
 #import "WBServiceManagement.h"
 
 @interface WBDaemonTask ()
-- (void)_cleanup:(NSNotification *)aNotification;
+- (void)_cleanup;
 - (void)_addMachService:(NSString *)portName properties:(id)properties;
 @end
 
 @implementation WBDaemonTask
+
+static NSMutableSet *sDaemons = nil;
 
 - (id)initWithName:(NSString *)aName {
   if (self = [self init]) {
@@ -30,7 +32,7 @@
 }
 
 - (void)dealloc {
-  [self _cleanup:nil];
+  [self _cleanup];
   [_properties release];
   [super dealloc];
 }
@@ -239,9 +241,11 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 }
 
 // MARK: -
-- (void)_cleanup:(NSNotification *)aNotification {
+- (void)_cleanup {
+  @synchronized(WBDaemonTask.class) {
+    [sDaemons removeObject:self];
+  }
   CFErrorRef error;
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
   if (_running && !WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
     CFShow(error);
     CFRelease(error);
@@ -256,6 +260,12 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     CFRelease(_ports);
     _ports = NULL;  
   }
+}
+
+static
+void _WBDaemonCleanup(void) {
+  for (WBDaemonTask *task in [sDaemons copy])  // leak but we don't care as we are exiting
+    [task _cleanup];
 }
 
 - (BOOL)launch:(NSError **)outError {
@@ -281,9 +291,13 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   }
   _running = YES;
   // listen for application death notification
-  [[NSNotificationCenter defaultCenter] addObserver:self 
-                                           selector:@selector(_cleanup:) name:NSApplicationWillTerminateNotification 
-                                             object:nil];
+  @synchronized(WBDaemonTask.class) {
+    if (!sDaemons) {
+      sDaemons = [[NSMutableSet alloc] init];
+      atexit(_WBDaemonCleanup);
+    }
+    [sDaemons addObject:self];
+  }
   // TODO: listen for application crash too.
   
   
@@ -291,7 +305,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 }
 
 - (void)terminate {
-  [self _cleanup:nil];
+  [self _cleanup];
 }
 
 @end
