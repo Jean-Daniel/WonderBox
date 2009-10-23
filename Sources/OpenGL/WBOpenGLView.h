@@ -42,6 +42,7 @@ WB_CLASS_EXPORT
 
 // safe to call it outside of the drawing loop
 - (void)drawRect:(NSRect)aRect;
+- (void)refresh; // call glDraw (thread safe). Do not clear the CGContextRef
 
 /* protected */
 // context locked
