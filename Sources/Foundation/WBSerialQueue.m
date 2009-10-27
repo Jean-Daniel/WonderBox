@@ -35,7 +35,7 @@
     if (wb_last)
       [op addDependency:wb_last];
     
-    WBSetterRetain(&wb_last, op);
+    WBSetterRetain(wb_last, op);
     [op addObserver:self forKeyPath:@"isFinished" options:0 context:WBSerialQueue.class];
   }
   [super addOperation:op];
@@ -70,7 +70,7 @@
     @synchronized(self) {
       [object removeObserver:self forKeyPath:@"isFinished"];
       if (wb_last == object) 
-        WBSetterRetain(&wb_last, nil);
+        WBSetterRetain(wb_last, nil);
     }
     // an op is finished, tell it to all 'synchronous op' waiter.
     [wb_event lock];

@@ -120,7 +120,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return wb_depth;
 }
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer {
-  if (WBSetterRetain(&wb_depth, aBuffer)) {
+  if (WBSetterRetain(wb_depth, aBuffer)) {
     __WBGLFrameBufferAttach(wb_glctxt, wb_fbo, 
                             GL_DEPTH_ATTACHMENT_EXT, aBuffer);
   }
@@ -130,7 +130,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return wb_stencil;
 }
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer {
-  if (WBSetterRetain(&wb_stencil, aBuffer)) {
+  if (WBSetterRetain(wb_stencil, aBuffer)) {
     __WBGLFrameBufferAttach(wb_glctxt, wb_fbo, 
                             GL_STENCIL_ATTACHMENT_EXT, aBuffer);
   }  

@@ -100,22 +100,8 @@ bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t 
   if (KERN_SUCCESS == kr) 
     kr = mach_port_move_member(mach_task_self(), sServiceContext.service, sServiceContext.ports);
   
-  if (KERN_SUCCESS == kr) {
-    if (idle > 0) {
-      // setup idle timer
-      struct mach_timebase_info info;
-      mach_timebase_info(&info);    
-      sServiceContext.idle = llround((idle * 1.0e9 / (double)info.numer) * (double)info.denom);
-      sServiceContext.timer = mk_timer_create();
-      if (sServiceContext.timer)
-        kr = mk_timer_arm(sServiceContext.timer, mach_absolute_time() + sServiceContext.idle);  
-      else
-        kr = KERN_INVALID_OBJECT;
-      
-      if (KERN_SUCCESS == kr)
-        kr = mach_port_move_member(mach_task_self(), sServiceContext.timer, sServiceContext.ports);
-    }
-  }
+  if (KERN_SUCCESS == kr) 
+    kr = WBServiceSetTimeout(idle);
   
   if (KERN_SUCCESS != kr) {
     if (outError)
@@ -126,6 +112,40 @@ bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t 
   kr = mach_msg_server(_WBServiceDemuxer, msgMaxSize > 0 ? msgMaxSize : 512, sServiceContext.ports, MACH_RCV_LARGE);
   DCLog("mach_msg_server: %s", mach_error_string(kr));
   return true;
+}
+
+kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
+  if (!sServiceContext.ports) return KERN_INVALID_TASK;
+  
+  kern_return_t kr = KERN_SUCCESS;
+  if (idle > 0) {
+    struct mach_timebase_info info;
+    mach_timebase_info(&info);    
+    sServiceContext.idle = llround((idle * 1.0e9 / (double)info.numer) * (double)info.denom);
+    // Create the time if needed
+    if (!sServiceContext.timer) {
+      sServiceContext.timer = mk_timer_create();
+      if (sServiceContext.timer) {
+        kr = mach_port_move_member(mach_task_self(), sServiceContext.timer, sServiceContext.ports);
+        if (KERN_SUCCESS != kr) {
+          mk_timer_destroy(sServiceContext.timer);
+          sServiceContext.timer = MACH_PORT_NULL;
+        }
+      } else
+        kr = KERN_INVALID_OBJECT;
+    } else {
+      uint64_t fire;
+      kr = mk_timer_cancel(sServiceContext.timer, &fire);
+    }
+    
+    if (KERN_SUCCESS == kr) // Arm the timer
+      kr = mk_timer_arm(sServiceContext.timer, mach_absolute_time() + sServiceContext.idle);
+  } else if (sServiceContext.timer) { // idle < 0, disable timer (if it is enabled)
+    mk_timer_destroy(sServiceContext.timer);
+    sServiceContext.timer = MACH_PORT_NULL;
+    sServiceContext.idle = 0;
+  }
+  return kr;
 }
 
 void WBServiceStop(void) {
@@ -139,4 +159,3 @@ void WBServiceStop(void) {
   }
   memset(&sServiceContext, 0, sizeof(sServiceContext));
 }
-
