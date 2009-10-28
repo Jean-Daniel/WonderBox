@@ -264,8 +264,10 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 
 static
 void _WBDaemonCleanup(void) {
-  for (WBDaemonTask *task in [sDaemons copy])  // leak but we don't care as we are exiting
+  NSArray *daemons = [sDaemons copy];
+  for (WBDaemonTask *task in daemons)
     [task _cleanup];
+  [daemons release];
 }
 
 - (BOOL)launch:(NSError **)outError {
