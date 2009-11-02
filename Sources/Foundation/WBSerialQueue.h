@@ -8,15 +8,13 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-// SHould use GCD when possible instead
-@interface WBSerialQueue : NSOperationQueue {
+@interface WBSerialQueue : NSObject {
 @private
-  NSOperation *wb_last;
-  NSCondition *wb_event;
+
 }
 
-- (void)addOperation:(NSOperation *)op;
-- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait;
+//- (void)addOperation:(NSOperation *)op;
+//- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait;
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg;
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
