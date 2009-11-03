@@ -57,7 +57,7 @@
 
 - (CGLContextObj)openGLContext { return wb_glctxt; }
 
-#if defined(DEBUG)
+#if DEBUG
 WB_INLINE
 GLenum __WBGLFBOBindingForMode(GLenum mode) {
   switch (mode) {
