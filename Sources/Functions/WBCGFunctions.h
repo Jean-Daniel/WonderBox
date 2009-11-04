@@ -74,5 +74,7 @@ bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type);
 WB_EXPORT 
 CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options);
 
+WB_EXPORT
+CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage);
 
 #endif /* __WBCGFUNCTIONS_H */

@@ -415,3 +415,24 @@ bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type) 
   }
   return result;
 }
+
+CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
+  NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                            WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                            [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
+                            nil];
+  CFDictionaryRef properties = (CFDictionaryRef)[NSDictionary dictionaryWithObject:tiffDict
+                                                                            forKey:(id)kCGImagePropertyTIFFDictionary];
+  
+  CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
+  CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypeTIFF, 1, NULL);
+  if (dest) {
+    CGImageDestinationAddImage(dest, anImage, properties);
+    CGImageDestinationFinalize(dest);
+    CFRelease(dest);
+  } else {
+    CFRelease(data);
+    data = NULL;
+  }
+  return data;
+}
