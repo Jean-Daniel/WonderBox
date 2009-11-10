@@ -12,9 +12,7 @@
 #import WBHEADER(WBFSFunctions.h)
 
 @interface WBAlias ()
-
 - (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle;
-
 @end
 
 @implementation WBAlias

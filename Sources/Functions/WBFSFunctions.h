@@ -61,7 +61,7 @@ WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
  @param target The file pointed by the new alias.
  */
 WB_EXPORT
-OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target);
+OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target) WB_OBSOLETE;
 
 WB_EXPORT
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders);
