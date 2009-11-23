@@ -10,7 +10,11 @@
 
 #import "WBSerialQueue.h"
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 #include <dispatch/dispatch.h>
+#else
+#warning GCD not available with 10.5 SDK
+#endif
 
 @interface _WBSerialOperationQueue : WBSerialQueue {
 @private
@@ -26,6 +30,7 @@
 
 @end
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @interface _WBGCDSerialQueue : WBSerialQueue {
 @private
   dispatch_queue_t wb_queue;
@@ -34,13 +39,16 @@
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
 
 @end
+#endif
 
 @implementation WBSerialQueue
 
 + (id)allocWithZone:(NSZone *)zone {
   if (WBSerialQueue.class == self) {
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
     if (dispatch_sync_f)
       return [_WBGCDSerialQueue allocWithZone:zone];
+#endif
     return [_WBSerialOperationQueue allocWithZone:zone];    
   }
   return [super allocWithZone:zone];
@@ -65,8 +73,10 @@
     
     wb_queue = [[NSOperationQueue alloc] init];
     [wb_queue setMaxConcurrentOperationCount:1];
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
     if ([wb_queue respondsToSelector:@selector(setName:)])
       [wb_queue setName:@"org.shadowlab.serial-queue"];
+#endif
   }
   return self;
 }
@@ -91,7 +101,7 @@
 
 - (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait {
   NSParameterAssert(op);
-  [wb_queue addOperation:op];
+  [self addOperation:op];
   if (shouldWait) {
     if (wb_event) {
       [wb_event lock];
@@ -143,7 +153,7 @@
 @property(nonatomic, retain) id argument;
 
 @end
-
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @implementation _WBGCDSerialQueue
 
 - (id)init {
@@ -183,7 +193,7 @@ void wb_dispatch_execute(void *ctxt) {
 }
 
 @end
-
+#endif
 @implementation _WBSerialQueueBlock
 
 @synthesize target = wb_target;
