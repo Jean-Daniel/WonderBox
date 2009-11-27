@@ -49,8 +49,8 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
 
 // MARK: launchd API
 Boolean WBServiceRegisterJob(CFDictionaryRef job, CFErrorRef *outError) {
-  //  if (SMJobSubmit)
-  //    return SMJobSubmit(kSMDomainUserLaunchd, job, NULL, outError);
+//  if (SMJobSubmit)
+//    return SMJobSubmit(kSMDomainUserLaunchd, job, NULL, outError);
   launch_data_t ljob = _WBServiceNewDataDictionary(job);
   OSStatus err = ljob ? noErr : paramErr;
   
@@ -79,8 +79,8 @@ Boolean WBServiceRegisterJob(CFDictionaryRef job, CFErrorRef *outError) {
   return noErr == err;
 }
 Boolean WBServiceUnregisterJob(CFStringRef name, CFErrorRef *outError) {
-  //  if (SMJobRemove)
-  //    return SMJobRemove(kSMDomainUserLaunchd, name, NULL, outError);
+//  if (SMJobRemove)
+//    return SMJobRemove(kSMDomainUserLaunchd, name, NULL, outError);
   return _WBServiceSendSimpleMessage(name, LAUNCH_KEY_REMOVEJOB, NULL, outError);
 }
 
@@ -90,6 +90,10 @@ Boolean WBServiceStartJob(CFStringRef name, CFErrorRef *outError) {
 
 Boolean WBServiceStopJob(CFStringRef name, CFErrorRef *outError) {
   return _WBServiceSendSimpleMessage(name, LAUNCH_KEY_STOPJOB, NULL, outError);
+}
+
+CFDictionaryRef WBServiceCopyJob(CFStringRef name, CFErrorRef *outError) {
+  return _WBServiceSendSimpleMessage2(name, LAUNCH_KEY_GETJOB, outError);
 }
 
 CFTypeRef WBServiceCheckIn(CFErrorRef *outError) {

@@ -10,10 +10,14 @@
 
 @interface WBDaemonTask : NSObject {
 @private
-  BOOL _running;
+  BOOL _registred;
+  BOOL _unregister;
   CFMutableDictionaryRef _ports;
   NSMutableDictionary *_properties;
 }
+
+@property BOOL unregisterAtExit;
+@property(getter=isRegistred, readonly) BOOL registred;
 
 - (id)initWithName:(NSString *)aName;
 
@@ -28,8 +32,8 @@
 @property uint32_t timeout; // seconds
 @property uint32_t exitTimeout; // seconds
 
+@property BOOL launchOnlyOnce; // run once
 @property BOOL startImmediatly; // run at load
-@property BOOL unregisterAtExit; // run once
 
 @property(copy) NSString *standardError;
 @property(copy) NSString *standardOutput;
@@ -47,8 +51,8 @@
 - (void)setValue:(id)anObject forProperty:(NSString *)aProperty;
 
 // MARK: Running
-- (BOOL)launch:(NSError **)outError;
-- (void)terminate;
+- (BOOL)registerDaemon:(NSError **)outError;
+- (void)unregister;
 
 - (void)addMachService:(NSString *)portName;
 - (void)addMachService:(NSString *)portName properties:(NSDictionary *)properties;
@@ -85,7 +89,6 @@
 //#define LAUNCH_JOBKEY_LASTEXITSTATUS				"LastExitStatus"
 //#define LAUNCH_JOBKEY_PID							"PID"
 //#define LAUNCH_JOBKEY_THROTTLEINTERVAL				"ThrottleInterval"
-//#define LAUNCH_JOBKEY_LAUNCHONLYONCE				"LaunchOnlyOnce"
 //#define LAUNCH_JOBKEY_ABANDONPROCESSGROUP			"AbandonProcessGroup"
 //#define LAUNCH_JOBKEY_IGNOREPROCESSGROUPATSHUTDOWN	"IgnoreProcessGroupAtShutdown"
 //#define LAUNCH_JOBKEY_POLICIES						"Policies"

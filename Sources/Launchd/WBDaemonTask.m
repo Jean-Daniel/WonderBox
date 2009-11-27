@@ -16,28 +16,73 @@
 #import "WBServiceManagement.h"
 
 @interface WBDaemonTask ()
-- (void)_cleanup;
+- (void)_cleanup:(BOOL)force;
 - (void)_addMachService:(NSString *)portName properties:(id)properties;
 @end
 
-@implementation WBDaemonTask
-
 static NSMutableSet *sDaemons = nil;
+
+static
+void _WBDaemonCleanup(void) {
+  NSArray *daemons = [sDaemons copy];
+  for (WBDaemonTask *task in daemons)
+    [task _cleanup:NO];
+  [daemons release];
+}
+
+static
+void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
+  @synchronized(WBDaemonTask.class) {
+    if (!sDaemons) {
+      sDaemons = [[NSMutableSet alloc] init];
+      atexit(_WBDaemonCleanup);
+    }
+    [sDaemons addObject:aDaemon];
+  }
+}
+
+@implementation WBDaemonTask
 
 - (id)initWithName:(NSString *)aName {
   if (self = [self init]) {
     self.name = aName;
+    _unregister = YES; // by default, cleanup at exit
+    CFDictionaryRef properties = WBServiceCopyJob((CFStringRef)aName, NULL);
+    if (properties) {
+      _registred = YES;
+      _properties = [(id)properties mutableCopy];
+      CFRelease(properties);
+    }
   }
   return self;
 }
 
 - (void)dealloc {
-  [self _cleanup];
+  [self _cleanup:NO];
   [_properties release];
   [super dealloc];
 }
 
 // MARK: -
+- (BOOL)isRegistred {
+  return _registred;
+}
+- (BOOL)unregisterAtExit {
+  return _unregister;
+}
+- (void)setUnregisterAtExit:(BOOL)flag {
+  if (XOR(_unregister, flag)) {
+    _unregister = flag;
+    if (_registred) {
+      if (_unregister) {
+        __WBDaemonUnregisterAtExit(self);
+      } else {
+        [sDaemons removeObject:self];
+      }
+    }
+  }
+}
+
 - (NSString *)name {
   return [self valueForProperty:@LAUNCH_JOBKEY_LABEL];
 }
@@ -102,10 +147,10 @@ static NSMutableSet *sDaemons = nil;
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_RUNATLOAD];
 }
 
-- (BOOL)unregisterAtExit {
+- (BOOL)launchOnlyOnce {
   return [[self valueForProperty:@LAUNCH_JOBKEY_LAUNCHONLYONCE] boolValue];
 } 
-- (void)setUnregisterAtExit:(BOOL)flag {
+- (void)setLaunchOnlyOnce:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_LAUNCHONLYONCE];
 }
 
@@ -160,7 +205,7 @@ static NSMutableSet *sDaemons = nil;
   return [_properties objectForKey:aProperty];
 }
 - (void)setValue:(id)anObject forProperty:(NSString *)aProperty {
-  if (_running) 
+  if (_registred) 
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"running !" userInfo:nil];
   
   if (!_properties) _properties = [[NSMutableDictionary alloc] init];
@@ -241,16 +286,18 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 }
 
 // MARK: -
-- (void)_cleanup {
+- (void)_cleanup:(BOOL)force {
   @synchronized(WBDaemonTask.class) {
     [sDaemons removeObject:self];
   }
   CFErrorRef error;
-  if (_running && !WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
+  if (_registred && (_unregister || force) && !WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
     CFShow(error);
     CFRelease(error);
   } else {
-    _running = NO;   
+    [self willChangeValueForKey:@"registred"];
+    _registred = NO;
+    [self didChangeValueForKey:@"registred"];
   }
   if (_ports) {
     for (NSString *key in (NSDictionary *)_ports) {
@@ -262,52 +309,49 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   }
 }
 
-static
-void _WBDaemonCleanup(void) {
-  NSArray *daemons = [sDaemons copy];
-  for (WBDaemonTask *task in daemons)
-    [task _cleanup];
-  [daemons release];
-}
-
-- (BOOL)launch:(NSError **)outError {
-  if (_running) 
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"running !" userInfo:nil];
+- (BOOL)registerDaemon:(NSError **)outError {
+  if (_registred) 
+    WBThrowException(NSInvalidArgumentException, @"already registred !");
   
   CFErrorRef error;
   if (!WBServiceRegisterJob((CFDictionaryRef)_properties, &error)) {
-    bool ok = false;
-//    if (CFErrorGetCode(error) == kPOSIXErrorEEXIST && WBServiceUnregisterJob((CFStringRef)self.name, NULL)) {
-//      CFRelease(error);
-//      // second chance: need wait before register, else it conflict
-//      ok = WBServiceRegisterJob((CFDictionaryRef)_properties, &error);
-//    }
-    
-    if (!ok) {
-      if (outError)
-        *outError = [NSMakeCollectable(error) autorelease];
-      else
-        CFRelease(error);
-      return NO;
-    }
+    if (outError)
+      *outError = [NSMakeCollectable(error) autorelease];
+    else
+      CFRelease(error);
+    return NO;
   }
-  _running = YES;
-  // listen for application death notification
-  @synchronized(WBDaemonTask.class) {
-    if (!sDaemons) {
-      sDaemons = [[NSMutableSet alloc] init];
-      atexit(_WBDaemonCleanup);
-    }
-    [sDaemons addObject:self];
-  }
-  // TODO: listen for application crash too.
   
+  [self willChangeValueForKey:@"registred"];
+  _registred = YES;
+  [self didChangeValueForKey:@"registred"];  
+  
+  if (_unregister)
+    __WBDaemonUnregisterAtExit(self);
   
   return YES;
 }
 
-- (void)terminate {
-  [self _cleanup];
+- (BOOL)unregisterDaemon:(NSError **)outError {
+  CFErrorRef error;
+  if (!WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
+    if (outError)
+      *outError = [NSMakeCollectable(error) autorelease];
+    else
+      CFRelease(error);
+    return NO;
+  }
+  @synchronized(WBDaemonTask.class) {
+    [sDaemons removeObject:self];
+  }
+  [self willChangeValueForKey:@"registred"];
+  _registred = NO;
+  [self didChangeValueForKey:@"registred"];
+  return YES;
+}
+
+- (void)unregister {
+  [self _cleanup:YES];
 }
 
 @end
