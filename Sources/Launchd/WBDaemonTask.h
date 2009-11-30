@@ -31,6 +31,7 @@
 
 @property uint32_t timeout; // seconds
 @property uint32_t exitTimeout; // seconds
+@property uint32_t throttleInterval; // seconds
 
 @property BOOL launchOnlyOnce; // run once
 @property BOOL startImmediatly; // run at load
@@ -79,8 +80,6 @@
 //#define LAUNCH_JOBKEY_SOFTRESOURCELIMITS			"SoftResourceLimits"
 //#define LAUNCH_JOBKEY_HARDRESOURCELIMITS			"HardResourceLimits"
 //#define LAUNCH_JOBKEY_STANDARDINPATH				"StandardInPath"
-//#define LAUNCH_JOBKEY_STANDARDOUTPATH				"StandardOutPath"
-//#define LAUNCH_JOBKEY_STANDARDERRORPATH				"StandardErrorPath"
 //#define LAUNCH_JOBKEY_QUEUEDIRECTORIES				"QueueDirectories"
 //#define LAUNCH_JOBKEY_WATCHPATHS					"WatchPaths"
 //#define LAUNCH_JOBKEY_STARTINTERVAL					"StartInterval"
@@ -88,7 +87,6 @@
 //#define LAUNCH_JOBKEY_BONJOURFDS					"BonjourFDs"
 //#define LAUNCH_JOBKEY_LASTEXITSTATUS				"LastExitStatus"
 //#define LAUNCH_JOBKEY_PID							"PID"
-//#define LAUNCH_JOBKEY_THROTTLEINTERVAL				"ThrottleInterval"
 //#define LAUNCH_JOBKEY_ABANDONPROCESSGROUP			"AbandonProcessGroup"
 //#define LAUNCH_JOBKEY_IGNOREPROCESSGROUPATSHUTDOWN	"IgnoreProcessGroupAtShutdown"
 //#define LAUNCH_JOBKEY_POLICIES						"Policies"

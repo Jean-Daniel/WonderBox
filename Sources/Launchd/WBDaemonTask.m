@@ -51,6 +51,14 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
     if (properties) {
       _registred = YES;
       _properties = [(id)properties mutableCopy];
+      // remove volatile properties
+      [_properties removeObjectForKey:@LAUNCH_JOBKEY_PID];
+      [_properties removeObjectForKey:@"TransactionCount"];
+      [_properties removeObjectForKey:@"PerJobMachServices"];
+      // FIXME: should reset it instead
+      [_properties removeObjectForKey:@LAUNCH_JOBKEY_MACHSERVICES];
+      [_properties removeObjectForKey:@LAUNCH_JOBKEY_LASTEXITSTATUS];
+
       CFRelease(properties);
     }
   }
@@ -138,6 +146,13 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 } 
 - (void)setExitTimeout:(uint32_t)aValue {
   [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_EXITTIMEOUT];
+}
+
+- (uint32_t)throttleInterval {
+  return [[self valueForProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL] unsignedIntValue];  
+}
+- (void)setThrottleInterval:(uint32_t)aValue {
+  [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL];  
 }
 
 - (BOOL)startImmediatly {
