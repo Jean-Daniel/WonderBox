@@ -347,23 +347,23 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   return YES;
 }
 
-- (BOOL)unregisterDaemon:(NSError **)outError {
-  CFErrorRef error;
-  if (!WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
-    if (outError)
-      *outError = [NSMakeCollectable(error) autorelease];
-    else
-      CFRelease(error);
-    return NO;
-  }
-  @synchronized(WBDaemonTask.class) {
-    [sDaemons removeObject:self];
-  }
-  [self willChangeValueForKey:@"registred"];
-  _registred = NO;
-  [self didChangeValueForKey:@"registred"];
-  return YES;
-}
+//- (BOOL)unregisterDaemon:(NSError **)outError {
+//  CFErrorRef error;
+//  if (!WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
+//    if (outError)
+//      *outError = [NSMakeCollectable(error) autorelease];
+//    else
+//      CFRelease(error);
+//    return NO;
+//  }
+//  @synchronized(WBDaemonTask.class) {
+//    [sDaemons removeObject:self];
+//  }
+//  [self willChangeValueForKey:@"registred"];
+//  _registred = NO;
+//  [self didChangeValueForKey:@"registred"];
+//  return YES;
+//}
 
 - (void)unregister {
   [self _cleanup:YES];
