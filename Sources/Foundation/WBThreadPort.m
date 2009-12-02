@@ -13,7 +13,7 @@
 #include <pthread.h>
 #include <libkern/OSAtomic.h>
 
-@interface _WBThreadProxy : NSProxy {
+@interface WBInternalClass(ThreadProxy) : NSProxy {
 @private
   id wb_target;
   SInt8 wb_sync;
@@ -26,7 +26,7 @@
 
 @end
 
-@interface _WBSimpleInvocation : NSObject {
+@interface WBInternalClass(SimpleInvocation) : NSObject {
 @private
   id wb_target;
   SEL wb_action;
@@ -44,7 +44,7 @@
 
 @end
 
-@interface _WBRecorderProxy : NSProxy {
+@interface WBInternalClass(RecorderProxy) : NSProxy {
 @private
   id wb_target;
   SInt8 wb_sync;
@@ -116,10 +116,10 @@ mach_port_t _WBThreadGetSendPort(void) {
 }
 
 static 
-_WBRecorderProxy *_WBThreadGetRecorder(void) {
-  _WBRecorderProxy *proxy = pthread_getspecific(sThreadRecorderKey);
+WBInternalClass(RecorderProxy) *_WBThreadGetRecorder(void) {
+  WBInternalClass(RecorderProxy) *proxy = pthread_getspecific(sThreadRecorderKey);
   if (!proxy) {
-    proxy = [[_WBRecorderProxy alloc] init];
+    proxy = [[WBInternalClass(RecorderProxy) alloc] init];
     if (0 != pthread_setspecific(sThreadRecorderKey, proxy)) {
       DCLog("pthread_setspecific error");
       [proxy release];
@@ -131,7 +131,7 @@ _WBRecorderProxy *_WBThreadGetRecorder(void) {
 
 static
 void _WBThreadRecorderDestructor(void *ptr) {
-  _WBRecorderProxy *proxy = (_WBRecorderProxy *)ptr;
+  WBInternalClass(RecorderProxy) *proxy = (WBInternalClass(RecorderProxy) *)ptr;
   if ([proxy isRecording])
     [proxy abort];
   [proxy release];
@@ -369,7 +369,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(NSInteger)synch timeout:(uint32_t)timeout {
-  _WBSimpleInvocation *invok = [[_WBSimpleInvocation alloc] initWithAction:anAction target:aTarget argument:anObject];
+  WBInternalClass(SimpleInvocation) *invok = [[WBInternalClass(SimpleInvocation) alloc] initWithAction:anAction target:aTarget argument:anObject];
   @try {
     [self performInvocation:(id)invok waitUntilDone:synch timeout:timeout];
   } @finally {
@@ -386,7 +386,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if ([wb_thread isEqual:[NSThread currentThread]]) 
     return target;
   
-  _WBRecorderProxy *recorder = _WBThreadGetRecorder();
+  WBInternalClass(RecorderProxy) *recorder = _WBThreadGetRecorder();
   [recorder setPort:self];
   [recorder setMode:synch];
   [recorder setTarget:target];
@@ -482,12 +482,98 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   return [self proxyWithTarget:target sync:synch timeout:wb_timeout];
 }
 - (NSProxy *)proxyWithTarget:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout {
-  return [_WBThreadProxy proxyWithPort:self target:target sync:synch timeout:timeout];
+  return [WBInternalClass(ThreadProxy) proxyWithPort:self target:target sync:synch timeout:timeout];
 }
 
 @end
 
-@implementation _WBThreadProxy
+#pragma mark -
+#pragma mark Detach Thread
+
+// MARK: Thread 
+@interface WBInternalClass(ThreadArgument) : NSObject {
+@private
+  WBThreadPort *wb_port;
+  id wb_target;
+  SEL wb_action;
+  id wb_argument;
+  NSCondition *wb_condition;
+}
+
+@property SEL action;
+@property(retain) id target;
+@property(retain) id argument;
+
+@property(assign) WBThreadPort *port;
+@property(retain) NSCondition *condition;
+
++ (void)wb_ThreadPortMain:(WBInternalClass(ThreadArgument) *)arg;
+
+@end
+
+@implementation WBInternalClass(ThreadArgument)
+
+@synthesize port = wb_port;
+@synthesize action = wb_action;
+@synthesize target = wb_target;
+@synthesize argument = wb_argument;
+@synthesize condition = wb_condition;
+
++ (void)wb_ThreadPortMain:(WBInternalClass(ThreadArgument) *)arg {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  [arg.condition lock];
+  arg.port = [WBThreadPort currentPort]; 
+  [arg.condition signal];
+  [arg.condition unlock];
+  
+  id target = arg.target;
+  SEL action = arg.action;
+  id argument = arg.argument;
+  
+  [pool drain];
+  
+  [target performSelector:action withObject:argument];
+}
+
+- (void)dealloc {
+  [wb_condition release];
+  [wb_argument release];
+  [wb_target release];
+  [super dealloc];
+}
+
+@end
+
+@implementation WBThreadPort (WBThreadDetach)
+
++ (WBThreadPort *)detachThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument {
+  WBInternalClass(ThreadArgument) *arg = [[WBInternalClass(ThreadArgument) alloc] init];
+  
+  NSCondition *condition = [[NSCondition alloc] init];
+  arg.condition = condition;
+  arg.target = target;
+  arg.action = selector;
+  arg.argument = argument;
+  
+  [NSThread detachNewThreadSelector:@selector(wb_ThreadPortMain:) 
+                           toTarget:WBInternalClass(ThreadArgument).class withObject:arg];
+  // Wait thread initialization
+  [condition lock];
+  while (!arg.port) 
+    [condition wait];
+  [condition unlock];
+  
+  WBThreadPort *port = arg.port;
+  arg.condition = nil;
+  [condition release];
+  [arg release];
+  return port;
+}
+
+@end
+
+#pragma mark -
+@implementation WBInternalClass(ThreadProxy)
 
 + (id)proxyWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
   return [[[self alloc] initWithPort:port target:target sync:synch timeout:timeout] autorelease];
@@ -543,7 +629,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 @end
 
-@implementation _WBRecorderProxy
+@implementation WBInternalClass(RecorderProxy)
 
 - (id)init {
   /* NSProxy does not implements init => do not call super */
@@ -595,7 +681,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 @end
 
-@implementation _WBSimpleInvocation
+@implementation WBInternalClass(SimpleInvocation)
 
 - (id)initWithAction:(SEL)anAction target:(id)aTarget argument:(id)anArgument {
   if (self = [super init]) {

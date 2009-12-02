@@ -58,3 +58,8 @@ WB_CLASS_EXPORT
 - (NSProxy *)proxyWithTarget:(id)target sync:(NSUInteger)sync timeout:(uint32_t)timeout;
 
 @end
+
+@interface WBThreadPort (WBThreadDetach)
++ (WBThreadPort *)detachThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument;
+@end
+
