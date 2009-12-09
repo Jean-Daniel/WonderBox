@@ -176,10 +176,10 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
   void *info = NULL;
   CGFunctionCallbacks callbacks = { 0, NULL, _WBGradientRelease };
   if ([wb_steps count] == 1) {
-    info = (void *)CFRetain([wb_steps objectAtIndex:0]); // GC
+    info = (void *)CFRetain([wb_steps objectAtIndex:0]); // leak -> Released by _WBGradientRelease
     callbacks.evaluate = _WBGradientDrawStep;
   } else {
-    info = (void *)CFRetain([wb_steps sortedArrayUsingSelector:@selector(compare:)]); // GC
+    info = (void *)CFRetain([wb_steps sortedArrayUsingSelector:@selector(compare:)]); // leak -> Released by _WBGradientRelease
     callbacks.evaluate = _WBGradientDrawSteps;
   }
   

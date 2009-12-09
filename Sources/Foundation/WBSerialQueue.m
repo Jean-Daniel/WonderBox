@@ -181,7 +181,7 @@ void wb_dispatch_execute(void *ctxt) {
 }
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
-  _WBSerialQueueBlock *block = [[_WBSerialQueueBlock alloc] init];
+  _WBSerialQueueBlock *block = [[_WBSerialQueueBlock alloc] init]; // leak -> released in wb_dispatch_execute
   block.target = target;
   block.argument = arg;
   block.action = sel;
