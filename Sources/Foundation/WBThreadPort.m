@@ -589,42 +589,46 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (void)dealloc {
-  [wb_port release];
   [wb_target release];
+  wb_target = nil;
+  [wb_port release];
+  wb_port = nil;
   [super dealloc];
 }
 
 #pragma mark -
 - (id)forwardingTargetForSelector:(SEL)sel {
   // message come from the target thread, no need to forward, use fast path.
-  if ([[wb_port targetThread] isEqual:[NSThread currentThread]]) 
+  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]]) 
     return wb_target;
   
 	return nil;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
-  NSMethodSignature *sign = [wb_target methodSignatureForSelector:aSelector];
-  return sign ? : [super methodSignatureForSelector:aSelector];
+  // NSProxy subclass MUST NOT invoke super->methodSignatureForSelector:
+  return wb_target ? [wb_target methodSignatureForSelector:aSelector] : nil;
 }
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
-  [anInvocation setTarget:wb_target];
-  [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];
+  if (wb_target) {
+    [anInvocation setTarget:wb_target];
+    [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];    
+  }
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector {
-  if ([wb_target respondsToSelector:aSelector])
+  if (wb_target && [wb_target respondsToSelector:aSelector])
     return YES;
-  return NO;
+  return [super respondsToSelector:aSelector];
 }
 
 - (BOOL)conformsToProtocol:(Protocol *)aProtocol {
-  return [wb_target conformsToProtocol:aProtocol];
+  return wb_target ? [wb_target conformsToProtocol:aProtocol] : NO;
 }
 
 - (BOOL)isKindOfClass:(Class)aClass {
-  return [wb_target isKindOfClass:aClass];
+  return wb_target ? [wb_target isKindOfClass:aClass] : [super isKindOfClass:aClass];
 }
 
 @end

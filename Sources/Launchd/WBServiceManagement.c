@@ -250,15 +250,17 @@ Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_da
     if (!request) err = memFullErr;
   }
   
-  if (noErr == err)
-    err = _WBServiceSendMessage(request, response);    
+  if (noErr == err) 
+    err = _WBServiceSendMessage(request, response);
+
+  if (request)
+    launch_data_free(request);
 
   if (noErr != err) {
     if (outError) 
       *outError = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainOSStatus, err, NULL);
   }
-  if (noErr == err)
-    launch_data_free(request);
+  
   return noErr == err;
 }
 
