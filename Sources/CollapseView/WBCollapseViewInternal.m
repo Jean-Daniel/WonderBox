@@ -203,7 +203,7 @@
   WBAssert(![theView superview], @"why the item view is already in a view tree ?");
   // resizing mask
   wb_civFlags.resizeMask = [theView autoresizingMask];
-  if (wb_civFlags.resizeMask != NSViewWidthSizable | NSViewMaxYMargin)
+  if (wb_civFlags.resizeMask != (NSViewWidthSizable | NSViewMaxYMargin))
     [theView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
   
   // frame change notification
@@ -398,7 +398,7 @@
     
     switch ([theEvent type]) {
       case NSLeftMouseDragged:
-        if (wb_chvFlags.highlight != isInside) {
+        if (wb_chvFlags.highlight != (uint8_t)isInside) {
           wb_chvFlags.highlight = isInside;
           //[wb_disclose setState:isInside ? NSMixedState : [wb_item isExpanded] ? NSOnState : NSOffState];
           [self setNeedsDisplayInRect:bounds];

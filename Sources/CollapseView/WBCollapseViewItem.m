@@ -65,10 +65,6 @@
 }
 
 #pragma mark -
-- (id)identifier {
-  return wb_uid;
-}
-
 - (WBCollapseView *)collapseView {
   return wb_owner;
 }
