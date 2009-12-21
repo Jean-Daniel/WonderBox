@@ -195,7 +195,7 @@ bool __IsValidIdentifier(id identifier) {
 }
 
 - (void)setName:(NSString *)newName {
-  WBSetterCopy(&wb_name, newName);
+  WBSetterCopy(wb_name, newName);
 }
 
 - (OSType)signature {
@@ -230,7 +230,7 @@ bool __IsValidIdentifier(id identifier) {
 - (void)setSignature:(OSType)aSignature bundleIdentifier:(NSString *)identifier {
   // Should we invalidate the name ?
   wb_signature = aSignature;
-  WBSetterCopy(&wb_identifier, identifier);
+  WBSetterCopy(wb_identifier, identifier);
 }
 
 #pragma mark -

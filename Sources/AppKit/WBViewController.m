@@ -67,21 +67,21 @@
 }
 /* Called by Nib Loader */
 - (void)setView:(NSView *)aView {
-  WBSetterRetain(&view, aView);
+  WBSetterRetain(view, aView);
 }
 
 - (NSString *)title {
   return wb_title;
 }
 - (void)setTitle:(NSString *)string {
-  WBSetterCopy(&wb_title, string);
+  WBSetterCopy(wb_title, string);
 }
 
 - (id)representedObject {
 	return wb_representedObject;
 }
 - (void)setRepresentedObject:(id)representedObject {
-	WBSetterRetain(&wb_representedObject, representedObject);
+	WBSetterRetain(wb_representedObject, representedObject);
 }
 
 @end

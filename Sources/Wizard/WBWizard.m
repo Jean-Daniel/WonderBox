@@ -106,7 +106,7 @@
 }
 
 - (void)setDefaultImage:(NSImage *)anImage {
-  WBSetterRetain(&wb_image, anImage);
+  WBSetterRetain(wb_image, anImage);
 }
 
 - (NSString *)defaultTitle {
@@ -114,14 +114,14 @@
 }
 
 - (void)setDefaultTitle:(NSString *)aTitle {
-  WBSetterCopy(&wb_pageTitle, aTitle);
+  WBSetterCopy(wb_pageTitle, aTitle);
 }
 
 - (id)object {
   return wb_object;
 }
 - (void)setObject:(id)anObject {
-  WBSetterRetain(&wb_object, anObject);
+  WBSetterRetain(wb_object, anObject);
 }
 
 - (id)delegate {
