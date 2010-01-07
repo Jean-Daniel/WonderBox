@@ -23,10 +23,10 @@
    switch (type) {
      case 'yops':
      case 'spoy':
-       self = [[MyYopsClass alloc] initWithType:type];
+       self = [[MyYopsClass allocWithZone:[self zone]] initWithType:type];
        break;
      case 'flop':
-       self = [[MyFlopClass alloc] init];
+       self = [[MyFlopClass allocWithZone:[self zone]] init];
        break;
      default:
        self = nil;
