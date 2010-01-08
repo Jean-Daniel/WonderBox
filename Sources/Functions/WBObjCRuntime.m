@@ -40,7 +40,7 @@ BOOL __WBRuntimeIsSubclass(Class cls, Class parent) {
   do {
     if (super == parent)
       return YES;
-  } while (super = class_getSuperclass(super));
+  } while ((super = class_getSuperclass(super)));
   return NO;
 }
 

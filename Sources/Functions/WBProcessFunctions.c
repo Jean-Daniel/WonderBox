@@ -38,7 +38,8 @@ CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn) {
   CFStringRef identifier = NULL;
   CFDictionaryRef infos = ProcessInformationCopyDictionary(psn, kProcessDictionaryIncludeAllInformationMask);
   if (infos) {
-    if (identifier = CFDictionaryGetValue(infos, kCFBundleIdentifierKey))
+    identifier = CFDictionaryGetValue(infos, kCFBundleIdentifierKey);
+    if (identifier)
       CFRetain(identifier);
     CFRelease(infos);
   }

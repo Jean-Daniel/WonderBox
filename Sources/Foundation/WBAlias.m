@@ -20,7 +20,7 @@
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
   WBAlias *copy = NSAllocateObject([self class], 0, zone);
-  copy->wb_path = [wb_path copy];
+  copy->wb_path = [wb_path copyWithZone:zone];
   
   if (wb_alias) {
     /* Copy Handler */

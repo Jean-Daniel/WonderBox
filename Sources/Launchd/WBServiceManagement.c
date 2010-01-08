@@ -297,7 +297,7 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
   
   const char *string;
   OSStatus result = noErr;
-  if (string = CFStringGetCStringPtr(str, encoding)) {
+  if ((string = CFStringGetCStringPtr(str, encoding))) {
     cb(string, strlen(string), ctxt);
   } else {
 #define kStackBufferSize 4096
