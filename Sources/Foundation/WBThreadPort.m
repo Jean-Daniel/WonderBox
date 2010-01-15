@@ -234,7 +234,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       current = nil;
     }
   }
-  return current; // released in pthread_specific destructor => _WBThreadReceivePortDestructor()
+  return current; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
 }
 
 - (id)init {
