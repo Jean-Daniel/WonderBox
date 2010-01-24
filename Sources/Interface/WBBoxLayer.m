@@ -49,14 +49,14 @@
   return wb_border;
 }
 - (void)setBorderColor:(NSColor *)color {
-  WBSetterRetain(&wb_border, color);
+  WBSetterRetain(wb_border, color);
 }
 
 - (NSColor *)backgroundColor {
   return wb_background;
 }
 - (void)setBackgroundColor:(NSColor *)color {
-  WBSetterRetain(&wb_background, color);  
+  WBSetterRetain(wb_background, color);  
 }
 
 #pragma mark Sizing

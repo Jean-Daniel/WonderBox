@@ -70,7 +70,7 @@
   if (wb_root) {
     [[wb_root notificationCenter] removeObserver:self];
   }
-  WBSetterRetain(&wb_root, root);
+  WBSetterRetain(wb_root, root);
   if (wb_root) {
     NSNotificationCenter *notify = [wb_root notificationCenter];
     [notify addObserver:self selector:@selector(didChangeNodeName:)

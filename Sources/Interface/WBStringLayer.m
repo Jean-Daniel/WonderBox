@@ -70,7 +70,7 @@
   return wb_storage;
 }
 - (void)setTextStorage:(NSTextStorage *)aStorage {
-  WBSetterRetain(&wb_storage, aStorage);
+  WBSetterRetain(wb_storage, aStorage);
 }
 
 - (NSTextContainer *)textContainer {

@@ -85,7 +85,7 @@ static const CGFloat kAVImageRightMargin = 6;
   return wb_icon;
 }
 - (void)setIcon:(NSImage *)anImage {
-  WBSetterRetain(&wb_icon, anImage);
+  WBSetterRetain(wb_icon, anImage);
 }
 - (NSString *)title {
   return wb_title;

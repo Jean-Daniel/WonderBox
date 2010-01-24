@@ -69,14 +69,14 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   return wb_icon;
 }
 - (void)wb_setIcon:(NSImage *)anIcon {
-  WBSetterRetain(&wb_icon, anIcon);
+  WBSetterRetain(wb_icon, anIcon);
 }
 
 - (NSString *)name {
   return wb_name;
 }
 - (void)wb_setName:(NSString *)aName {
-  WBSetterCopy(&wb_name, aName);
+  WBSetterCopy(wb_name, aName);
 }
 
 @end
