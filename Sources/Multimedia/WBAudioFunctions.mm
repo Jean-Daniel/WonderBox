@@ -12,7 +12,7 @@
 void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame, 
                                             UInt32 inValidBitsPerChannel, UInt32 inTotalBitsPerChannel, bool inIsFloat,
                                             bool inIsBigEndian, bool inIsNonInterleaved) {
-  bzero(outASBD, sizeof(*outASBD));
+  memset(outASBD, 0, sizeof(*outASBD));
   FillOutASBDForLPCM(*outASBD, inSampleRate, inChannelsPerFrame, inValidBitsPerChannel, inTotalBitsPerChannel, inIsFloat, inIsBigEndian, inIsNonInterleaved);
 }
 

@@ -107,7 +107,7 @@ OSStatus WBLSIsApplicationAtPath(CFStringRef aPath, Boolean *isApp) {
 
 OSStatus WBLSLaunchApplication(FSRef *app, LSLaunchFlags flags, ProcessSerialNumber *psn) {
   LSApplicationParameters params;
-  bzero(&params, sizeof(params));
+  memset(&params, 0, sizeof(params));
   params.application = app;
   params.flags = flags;
   params.version = 0;

@@ -474,7 +474,7 @@ dispose:
 static 
 OSStatus _WBFSForceDeletePath(const char *path, void *ctxt) {
   struct stat info;
-  bzero(&info, sizeof(info));
+  memset(&info, 0, sizeof(info));
   int err = lstat(path, &info);
   if (0 == err) {
     if (S_ISDIR(info.st_mode))
@@ -679,7 +679,7 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
     
     /* set type, creator, and flags */
     FSCatalogInfo info;
-    bzero(&info, sizeof(info));
+    memset(&info, 0, sizeof(info));
     FileInfo *finfo = (FileInfo *)info.finderInfo;
     finfo->fileType = kContainerFolderAliasType;
     finfo->fileCreator = 'MACS';

@@ -96,7 +96,7 @@ uint32_t WBDigestCSSMAlgorithmForDigest(WBDigestAlgorithm algo) {
 
 #pragma mark Digest
 int WBDigestInit(WBDigestContext *c, WBDigestAlgorithm algo) {
-  bzero(c, sizeof(*c));
+  memset(c, 0, sizeof(*c));
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   ctxt->digest = __WBDigestInfoForAlgoritm(algo);
   if (!ctxt->digest) return 0; // error ?
@@ -147,7 +147,7 @@ int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsign
       err = WBDigestFinal(md, &ctxt);
     } else {
       /* cleanup context */
-      bzero(&ctxt, sizeof(ctxt));
+      memset(&ctxt, 0, sizeof(ctxt));
     }
   }
   
@@ -181,7 +181,7 @@ int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
       err = WBDigestFinal(md, &ctxt);
     } else {
       /* cleanup context */
-      bzero(&ctxt, sizeof(ctxt));
+      memset(&ctxt, 0, sizeof(ctxt));
     }
   }
   close(fd);
