@@ -90,21 +90,19 @@ ProcessSerialNumber WBProcessGetProcessWithBundleIdentifier(CFStringRef bundleId
 
 ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFPropertyListRef value) {
   ProcessSerialNumber serialNumber = {kNoProcess, kNoProcess};
-  CFPropertyListRef procValue;
-  CFDictionaryRef info;
-  
-  if (!value) {
+  if (!value)
     return serialNumber;
-  }
+  
   while (procNotFound != GetNextProcess(&serialNumber))  {
-    info = ProcessInformationCopyDictionary(&serialNumber, kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
-    procValue = CFDictionaryGetValue (info, property);
-    
-    if (procValue && (CFEqual(procValue , value)) ) {
+    CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
+    if (info) {
+      CFPropertyListRef procValue = CFDictionaryGetValue(info, property);
+      if (procValue && (CFEqual(procValue, value))) {
+        CFRelease(info);
+        break;
+      }
       CFRelease(info);
-      break;
     }
-    WBRelease(info);
   }
   return serialNumber; 
 }
