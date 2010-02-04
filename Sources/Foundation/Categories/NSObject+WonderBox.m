@@ -54,7 +54,7 @@ void _WBCFRunLoopObserver(CFRunLoopObserverRef observer, CFRunLoopActivity activ
     .release = CFRelease,
     .copyDescription = CFCopyDescription,
   };
-  CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeTimers, 
+  CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopAllActivities, 
                                                           false, 0, _WBCFRunLoopObserver, &ctxt);  
   CFRunLoopAddObserver(CFRunLoopGetCurrent(), observer, (CFStringRef)aMode);
   CFRelease(observer);
