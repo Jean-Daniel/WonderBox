@@ -65,8 +65,6 @@ enum {
 WB_CLASS_EXPORT
 @interface WBGLFrameBuffer : NSObject {
 @private
-  CGLContextObj wb_glctxt;
-  
   GLuint wb_fbo;
   GLint wb_viewport[4];
   NSMapTable *wb_attachements;
@@ -77,16 +75,13 @@ WB_CLASS_EXPORT
 
 // cleanup underlying gl objects
 // use to release resources in a deterministic way.
-- (void)delete;
+- (void)delete:(CGLContextObj)aContext;
 
 - (GLint)frameBufferObject;
-- (CGLContextObj)openGLContext;
 
+- (NSUInteger)maxBufferCount:(CGLContextObj)aContext;
 // return 0 if FBO complete, else return a status enum.
 - (GLenum)status:(GLenum)mode context:(CGLContextObj)context;
-
-- (void)bind;
-- (void)unbind;
 
 - (void)bind:(CGLContextObj)aContext;
 - (void)unbind:(CGLContextObj)aContext;
@@ -95,26 +90,24 @@ WB_CLASS_EXPORT
 - (void)bindMode:(GLenum)mode context:(CGLContextObj)aContext;
 - (void)unbindMode:(GLenum)mode context:(CGLContextObj)aContext;
 
-- (NSUInteger)maxBufferCount;
-
 - (void)resetViewPort:(CGLContextObj)aContext;
 
 // -1 mean GL_NONE
-- (void)setReadBuffer:(NSInteger)anIdx;
-- (void)setWriteBuffer:(NSInteger)anIdx;
+- (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
+- (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 
 - (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 - (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 
 - (WBGLFrameBufferAttachement *)depthBuffer;
-- (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer;
+- (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext;
 
 - (WBGLFrameBufferAttachement *)stencilBuffer;
-- (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer;
+- (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext;
 
 - (NSArray *)colorBuffers;
 - (WBGLFrameBufferAttachement *)colorBufferAtIndex:(NSUInteger)anIndex;
-- (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex;
+- (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex context:(CGLContextObj)aContext;
 
 @end
 
