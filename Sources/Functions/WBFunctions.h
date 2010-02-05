@@ -32,6 +32,12 @@ CFComparisonResult WBUTCDateTimeCompare(UTCDateTime *t1, UTCDateTime *t2);
 WB_EXPORT
 CFDataRef WBCFDataCreateFromHexString(CFStringRef str);
 
+// Hash functions
+WB_EXPORT
+CFHashCode WBHashInteger(CFIndex i);
+WB_EXPORT
+CFHashCode WBHashDouble(double d);
+
 #pragma mark Objective C Functions
 #if defined(__OBJC__)
 WB_INLINE

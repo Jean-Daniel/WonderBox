@@ -119,57 +119,67 @@
 #pragma mark -
 - (void)wb_setInfo {
   if (!_name) {
-    Handle h1 = NewHandle(4);
-    Handle h2 = NewHandle(4);
+    Handle h1 = NewHandle(0);
+    Handle h2 = NewHandle(0);
     
 		ComponentDescription desc;
 		OSStatus err = GetComponentInfo(_comp, &desc, h1, h2, 0);
     
     if (noErr == err) {
-      char* ptr1 = *h1;
-      // Get the manufacturer's name... look for the ':' character convention
-      _cname = [[NSString alloc] initWithBytes:*h1 + 1 length:**h1 encoding:NSMacOSRomanStringEncoding]; // pascal string
-      
-      size_t len = *ptr1++;
-      char* displayStr = 0;
-      
-      for (size_t i = 0; i < len; ++i) {
-        if (ptr1[i] == ':') { // found the name
-          ptr1[i] = 0;
-          displayStr = ptr1;
-          break;
+      if (GetHandleSize(h1) > 1) {
+        char* ptr1 = *h1 + 1;
+        size_t len = GetHandleSize(h1) - 1;
+        // Get the manufacturer's name... look for the ':' character convention
+        _cname = [[NSString alloc] initWithBytes:ptr1 
+                                          length:MIN(StrLength(*h1), len) 
+                                        encoding:NSMacOSRomanStringEncoding]; // pascal string
+        
+        char* end = NULL;
+        
+        end = memchr(ptr1, ':', len);
+        size_t strLength = end ? end - ptr1 : 0;
+        // if ':' is the last char or the name contains more than one ':' (common in codec name like 4:2:2 decoder)
+        if (end && (strLength + 1 < len || memchr(end + 1, ':', len - strLength - 1)))
+          end = NULL;
+        
+        if (end) {
+          _manu = [[NSString alloc] initWithBytes:ptr1 
+                                           length:strLength
+                                         encoding:NSMacOSRomanStringEncoding];
+          ptr1 = end + 1; // skip ':'
+          len = len - strLength - 1;
+          // skip white spaces
+          while (len > 0 && *ptr1 == ' ') {
+            ptr1++; 
+            len--;
+          }
+        } else {
+          switch (_desc.componentManufacturer) {
+            default:
+              _manu = [NSFileTypeForHFSTypeCode(_desc.componentManufacturer) retain];
+              break;
+            case 0:
+              _manu = @"";
+              break;
+            case 'appl':
+            case 'appx':
+              _manu = @"Apple";
+              break;            
+          }
         }
+        
+        if (len > 0)
+          _name = [[NSString alloc] initWithBytes:ptr1 length:len encoding:NSMacOSRomanStringEncoding];
+        else 
+          _name = @"";
       }
-      
-      if (displayStr) {
-        _manu = [[NSString alloc] initWithCString:displayStr encoding:kCFStringEncodingMacRoman];
-        
-        // move displayStr ptr past the manu, to the name
-        // we move the characters down a index, because the handle doesn't have any room
-        // at the end for the \0
-        size_t i = strlen(displayStr), j = 0;
-        while (displayStr[++i] == ' ' && i < len)
-          ;
-        while (i < len)
-          displayStr[j++] = displayStr[i++];
-        displayStr[j] = 0;
-        
-        _name = [[NSString alloc] initWithCString:displayStr encoding:NSMacOSRomanStringEncoding];
-      } else {
-        switch (_desc.componentManufacturer) {
-          default:
-            _manu = [NSFileTypeForHFSTypeCode(_desc.componentManufacturer) retain];
-            break;
-          case 'appl':
-            _manu = @"Apple";
-            break;            
-        }
-        
-        _name = [[NSString alloc] initWithBytes:ptr1 length:len encoding:NSMacOSRomanStringEncoding];
+      if (GetHandleSize(h2) > 1) {
+        char* ptr2 = *h2 + 1;
+        size_t len = GetHandleSize(h2);
+        _info = [[NSString alloc] initWithBytes:ptr2
+                                         length:MIN(StrLength(*h2), len)
+                                       encoding:NSMacOSRomanStringEncoding];        
       }
-      
-      if (**h2 > 0) 
-        _info = [[NSString alloc] initWithBytes:*h2 + 1 length:**h2 encoding:NSMacOSRomanStringEncoding];
     }
     DisposeHandle(h2);
 		DisposeHandle(h1);

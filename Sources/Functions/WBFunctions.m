@@ -51,6 +51,29 @@ CFComparisonResult WBUTCDateTimeCompare(UTCDateTime *t1, UTCDateTime *t2) {
   return kCFCompareEqualTo;
 }
 
+/* From CoreFoundation sources
+ 
+ Hashing algorithm for CFNumber:
+ M = Max CFHashCode (assumed to be unsigned)
+ For positive integral values: (N * HASHFACTOR) mod M
+ For negative integral values: ((-N) * HASHFACTOR) mod M
+ For floating point numbers that are not integral: hash(integral part) + hash(float part * M)
+ HASHFACTOR is 2654435761, from Knuth's multiplicative method
+ */
+#define HASHFACTOR 2654435761U
+
+CFHashCode WBHashInteger(CFIndex i) {
+  return ((i > 0) ? (CFHashCode)(i) : (CFHashCode)(-i)) * HASHFACTOR;
+}
+CFHashCode WBHashDouble(double d) {
+  double dInt;
+  if (d < 0) d = -d;
+  dInt = floor(d+0.5);
+  CFHashCode integralHash = HASHFACTOR * (CFHashCode)fmod(dInt, (double)ULONG_MAX);
+  return (CFHashCode)(integralHash + (CFHashCode)((d - dInt) * ULONG_MAX));
+}
+
+
 #pragma mark Base 16
 WB_INLINE
 CFIndex __WBHexCharToByte(UniChar ch) {
