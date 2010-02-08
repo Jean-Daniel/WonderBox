@@ -17,6 +17,7 @@
 
 - (BOOL)needsUpdateTexture;
 - (void)setNeedsUpdateTexture:(BOOL)update;
+- (void)wb_didProcessEditing:(NSNotification *)aNotification;
 
 @end
 
