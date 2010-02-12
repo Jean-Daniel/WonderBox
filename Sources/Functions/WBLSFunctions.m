@@ -71,8 +71,7 @@ OSStatus WBLSGetApplicationForBundleIdentifier(CFStringRef identifier, FSRef *ap
 
 #pragma mark -
 OSStatus WBLSIsApplication(const FSRef *aRef, Boolean *isApp) {
-  check(aRef);
-  check(isApp);
+  if (!aRef || !isApp) return paramErr;
   LSItemInfoRecord info;
   OSStatus err = LSCopyItemInfoForRef(aRef, kLSRequestBasicFlagsOnly, &info);
   if (noErr == err) {
@@ -82,8 +81,7 @@ OSStatus WBLSIsApplication(const FSRef *aRef, Boolean *isApp) {
 }
 
 OSStatus WBLSIsApplicationAtURL(CFURLRef anURL, Boolean *isApp) {
-  check(anURL);
-  check(isApp);
+  if (anURL || !isApp) return paramErr;
   LSItemInfoRecord info;
   OSStatus err = LSCopyItemInfoForURL(anURL, kLSRequestBasicFlagsOnly, &info);
   if (noErr == err) {
