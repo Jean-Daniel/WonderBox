@@ -37,6 +37,8 @@ WB_EXPORT
 CFHashCode WBHashInteger(CFIndex i);
 WB_EXPORT
 CFHashCode WBHashDouble(double d);
+WB_EXPORT
+CFHashCode WBHashBytes(const uint8_t *bytes, size_t length);
 
 #pragma mark Objective C Functions
 #if defined(__OBJC__)
