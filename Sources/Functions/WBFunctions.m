@@ -1,5 +1,5 @@
 /*
- *  WonderBoxFunctions.m
+ *  WBFunctions.m
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.

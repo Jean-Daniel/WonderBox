@@ -1,5 +1,5 @@
 /*
- *  WonderBoxFunctions.h
+ *  WBFunctions.h
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined (__WONDERBOX_FUNCTIONS_H)
-#define __WONDERBOX_FUNCTIONS_H 1
+#if !defined (__WB_FUNCTIONS_H)
+#define __WB_FUNCTIONS_H 1
 
 WB_EXPORT
 OSType WBGetOSTypeFromString(CFStringRef str);
@@ -57,4 +57,4 @@ NSString *WBApplicationGetName(void) {
 }
 #endif
 
-#endif /* __WONDERBOX_FUNCTIONS_H */
+#endif /* __WB_FUNCTIONS_H */
