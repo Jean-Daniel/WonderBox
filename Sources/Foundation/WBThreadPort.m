@@ -225,7 +225,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 + (WBThreadPort *)currentPort {
   WBThreadPort *current = (WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (!current) {
-    current = [[WBThreadPort alloc] wb_init];
+    current = [[WBThreadPort alloc] wb_init]; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
     
     if (0 != pthread_setspecific(sThreadReceivePortKey, current)) {
       WBCLogWarning("pthread_setspecific failed");
@@ -234,7 +234,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       current = nil;
     }
   }
-  return current; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
+  return current;
 }
 
 - (id)init {
