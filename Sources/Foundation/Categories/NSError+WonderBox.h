@@ -18,6 +18,8 @@
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL;
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message;
 
++ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message, ...;
+
 - (BOOL)isCancel;
 
 @end

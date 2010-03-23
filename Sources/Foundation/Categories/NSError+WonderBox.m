@@ -46,6 +46,16 @@
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
++ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message, ... {
+  va_list args;
+  va_start(args, message);
+  NSString *str = [[NSString alloc] initWithFormat:message arguments:args];
+  va_end(args);
+  NSDictionary *info = [NSDictionary dictionaryWithObject:str forKey:NSLocalizedFailureReasonErrorKey];
+  [str release];
+  return [NSError errorWithDomain:aDomain code:code userInfo:info];
+}
+
 - (BOOL)isCancel {
   /* Cocoa */
   if ([[self domain] isEqualToString:NSCocoaErrorDomain] && [self code] == NSUserCancelledError)
