@@ -604,8 +604,25 @@ OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createF
   if (!anURL || !path) return paramErr;
   
   FSRef ref;
-  if (!CFURLGetFSRef(anURL, &ref))
-    return coreFoundationUnknownErr;
+  Boolean ok = CFURLGetFSRef(anURL, &ref);
+  if (!ok) {
+    // We may want a folder for an url that does not exists yet. so check parents until we find one that exists.
+    CFURLRef parent = CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, anURL);
+    while (parent && !(ok = CFURLGetFSRef(parent, &ref))) {
+      CFURLRef previous = parent;
+      parent = CFURLCreateCopyDeletingLastPathComponent(kCFAllocatorDefault, parent);
+      if (parent && CFEqual(parent, previous)) { // deleting last path component returns the same path -> break.
+        CFRelease(parent);
+        parent = NULL;
+      }
+      CFRelease(previous);
+    }
+    if (parent)
+      CFRelease(parent);
+  }
+  
+  if (!ok)
+    return coreFoundationUnknownErr; // probably fnfErr
   
   FSCatalogInfo catalog;
   OSStatus err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catalog, NULL, NULL, NULL);
@@ -715,6 +732,50 @@ bail:
   
     return err;
 }
+
+OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result) {
+  CFURLRef folder;
+  OSStatus err = WBFSCopyFolderURLForURL(kTemporaryFolderType, anURL, true, &folder);
+  if (noErr != err) return err;
+  
+  char stack[PATH_MAX];
+  char *buffer = stack;
+  if (!CFURLGetFileSystemRepresentation(folder, true, (UInt8 *)buffer, PATH_MAX - 25)) {
+    buffer = NULL;
+    // avoid stupid 1024 file path length limitation
+    CFStringRef str = CFURLCopyFileSystemPath(folder, kCFURLPOSIXPathStyle);
+    if (str) {
+      CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
+      buffer = malloc(length + 25);
+      if (!CFStringGetFileSystemRepresentation(str, buffer, length)) {
+        free(buffer);
+        buffer = NULL;
+      }
+      CFRelease(str);
+    }
+  }
+  CFRelease(folder);
+  
+  if (!buffer)
+    return coreFoundationUnknownErr;
+  
+  char filename[32];
+  snprintf(filename, 32, "/%.14s.XXXXXXXX", getprogname());
+  strncat(buffer, filename, 24);
+
+  if (!mktemp(buffer))
+    return kPOSIXErrorBase + errno;
+  
+  *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), false);
+  if (!*result)
+    err = coreFoundationUnknownErr;
+  
+  if (buffer != stack)
+    free(buffer);
+  
+  return err;
+}
+
 
 CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix, CFStringRef ext, CFURLPathStyle pathType) {
   if (ext && CFStringGetLength(ext) > 16) {

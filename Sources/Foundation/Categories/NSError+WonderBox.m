@@ -46,14 +46,18 @@
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message, ... {
++ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message {
+  NSDictionary *info = message ? [NSDictionary dictionaryWithObject:message forKey:NSLocalizedFailureReasonErrorKey] : nil;
+  return [NSError errorWithDomain:aDomain code:code userInfo:info];  
+}
++ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... {
   va_list args;
   va_start(args, message);
   NSString *str = [[NSString alloc] initWithFormat:message arguments:args];
   va_end(args);
-  NSDictionary *info = [NSDictionary dictionaryWithObject:str forKey:NSLocalizedFailureReasonErrorKey];
+  NSError *error = [NSError errorWithDomain:aDomain code:code reason:str];
   [str release];
-  return [NSError errorWithDomain:aDomain code:code userInfo:info];
+  return error;
 }
 
 - (BOOL)isCancel {

@@ -33,6 +33,9 @@ WB_EXPORT OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, b
 // look on the same volume than anURL
 WB_EXPORT OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path);
 
+// create temporary URL on the same volume than anURL (suitable for exchangedata)
+WB_EXPORT OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result);
+
 WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) WB_OBSOLETE;
 // look on the same volume than anURL
 WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) WB_OBSOLETE;
