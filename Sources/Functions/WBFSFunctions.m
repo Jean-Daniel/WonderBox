@@ -763,8 +763,11 @@ OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result) {
   snprintf(filename, 32, "/%.14s.XXXXXXXX", getprogname());
   strncat(buffer, filename, 24);
 
-  if (!mktemp(buffer))
+  // by using mkstemp, we avoid a race condition
+  int fd = mkstemp(buffer);
+  if (fd < 0)
     return kPOSIXErrorBase + errno;
+  close(fd);
   
   *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), false);
   if (!*result)
