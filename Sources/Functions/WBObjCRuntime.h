@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined (__WBRUNTIME_FUNCTIONS_H)
-#define __WBRUNTIME_FUNCTIONS_H 1
+#if !defined (__WB_RUNTIME_FUNCTIONS_H)
+#define __WB_RUNTIME_FUNCTIONS_H 1
+
+__BEGIN_DECLS
 
 WB_EXPORT
 Class WBRuntimeSetObjectClass(id anObject, Class newClass);
@@ -35,4 +37,6 @@ BOOL WBRuntimeClassImplementsSelector(Class cls, SEL method);
 WB_EXPORT
 BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL method);
 
-#endif /* __WBRUNTIME_FUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_RUNTIME_FUNCTIONS_H */

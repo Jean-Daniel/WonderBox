@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBLS_FUNCTIONS_H)
-#define __WBLS_FUNCTIONS_H
+#if !defined(__WB_LS_FUNCTIONS_H)
+#define __WB_LS_FUNCTIONS_H
+
+__BEGIN_DECLS
 
 WB_EXPORT
 OSType WBLSGetSignatureForPath(CFStringRef path);
@@ -51,4 +53,6 @@ NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle);
 
 #endif /* __WB_OBJC__ */
 
-#endif /* __WBLS_FUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_LS_FUNCTIONS_H */

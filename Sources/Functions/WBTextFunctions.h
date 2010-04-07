@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBTEXTFUNCTIONS_H)
-#define __WBTEXTFUNCTIONS_H 1
+#if !defined(__WB_TEXT_FUNCTIONS_H)
+#define __WB_TEXT_FUNCTIONS_H 1
+
+__BEGIN_DECLS
 
 enum {
   kWBParagraphSeparatorCharacter = 0x2029,
@@ -30,4 +32,6 @@ CFIndex WBTextGetCountOfLines(CFStringRef str);
 WB_EXPORT
 CFIndex WBTextConvertLineEnding(CFMutableStringRef str, CFStringRef endOfLine);
 
-#endif /* __WBTEXTFUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_TEXT_FUNCTIONS_H */

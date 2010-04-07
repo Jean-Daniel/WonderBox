@@ -8,10 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined (__WBGEOMETRY_H)
-#define __WBGEOMETRY_H 1
+#if !defined (__WB_GEOMETRY_H)
+#define __WB_GEOMETRY_H 1
 
 #include <ApplicationServices/ApplicationServices.h>
+
+__BEGIN_DECLS
 
 #pragma mark -
 WB_INLINE
@@ -143,4 +145,6 @@ CGFloat WBScreenUserSpaceScaleFactor(NSScreen *screen) {
 
 #endif
 
-#endif /* __WBGEOMETRY_H */
+__END_DECLS
+
+#endif /* __WB_GEOMETRY_H */

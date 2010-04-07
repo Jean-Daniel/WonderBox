@@ -8,10 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBAEFUNCTIONS_H)
-#define __WBAEFUNCTIONS_H 1
+#if !defined(__WB_AE_FUNCTIONS_H)
+#define __WB_AE_FUNCTIONS_H 1
 
 #include <ApplicationServices/ApplicationServices.h>
+
+__BEGIN_DECLS
 
 /*!
 	@header		WBAEFunctions
@@ -682,4 +684,6 @@ OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey,
 WB_EXPORT
 OSStatus WBAECopyNthHandleFromDescList(const AEDescList *aList, CFIndex idx, DescType aType, Handle *pHandle);
 
-#endif /* __WBAEFUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_AEF_UNCTIONS_H */

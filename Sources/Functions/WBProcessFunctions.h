@@ -8,10 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBPROCESS_FUNCTIONS_H)
-#define __WBPROCESS_FUNCTIONS_H
+#if !defined(__WB_PROCESS_FUNCTIONS_H)
+#define __WB_PROCESS_FUNCTIONS_H
 
 #include <sys/sysctl.h>
+
+__BEGIN_DECLS
 
 #pragma mark Process
 WB_EXPORT
@@ -41,4 +43,6 @@ Boolean WBProcessIsNative(pid_t pid);
 WB_EXPORT
 CFStringRef WBProcessCopyNameForPID(pid_t pid);
 
-#endif /* __WBPROCESS_FUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_PROCESS_FUNCTIONS_H */

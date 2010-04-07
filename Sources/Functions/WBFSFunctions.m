@@ -599,9 +599,9 @@ OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool create
   }
   return err;
 }
-// look on the same volume than anURL
-OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path) {
-  if (!anURL || !path) return paramErr;
+
+OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume) {
+  if (!anURL || !volume) return paramErr;
   
   FSRef ref;
   Boolean ok = CFURLGetFSRef(anURL, &ref);
@@ -621,13 +621,27 @@ OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createF
       CFRelease(parent);
   }
   
-  if (!ok)
-    return coreFoundationUnknownErr; // probably fnfErr
+  if (!ok) 
+    return coreFoundationUnknownErr;
   
   FSCatalogInfo catalog;
   OSStatus err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catalog, NULL, NULL, NULL);
   if (noErr == err) 
-    err = WBFSCopyFolderURL(folderType, catalog.volume, createFolder, path);
+    *volume = catalog.volume;
+  
+  return err;
+}
+
+// look on the same volume than anURL
+OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path) {
+  if (!anURL || !path) return paramErr;
+  
+  FSVolumeRefNum volume;
+  OSStatus err = WBFSGetVolumeForURL(anURL, &volume);
+  
+  if (noErr == err)
+    err = WBFSCopyFolderURL(folderType, volume, createFolder, path);
+  
   return err;
 }
 
@@ -733,10 +747,11 @@ bail:
     return err;
 }
 
-OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result) {
+OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptionFlags flags) {
   CFURLRef folder;
-  OSStatus err = WBFSCopyFolderURLForURL(kTemporaryFolderType, anURL, true, &folder);
-  if (noErr != err) return err;
+  bool autoDelete = (flags & kWBFSTemporaryItemAutoDelete) != 0;
+  OSStatus err = WBFSCopyFolderURL(autoDelete ? kChewableItemsFolderType : kTemporaryFolderType, volume, true, &folder);
+  if (noErr != err) return err;  
   
   char stack[PATH_MAX];
   char *buffer = stack;
@@ -763,23 +778,41 @@ OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result) {
   snprintf(filename, 32, "/%.14s.XXXXXXXX", getprogname());
   strncat(buffer, filename, 24);
 
-  // by using mkstemp, we avoid a race condition
-  int fd = mkstemp(buffer);
-  if (fd < 0)
-    return kPOSIXErrorBase + errno;
-  close(fd);
+  bool isDir = (flags & kWBFSTemporaryItemIsFolder) != 0;
+  if (isDir) {
+    if (mkdtemp(buffer) < 0)
+      err = kPOSIXErrorBase + errno;
+  } else {
+    // by using mkstemp, we avoid a race condition
+    int fd = mkstemp(buffer);
+    if (fd < 0)
+      err = kPOSIXErrorBase + errno;
+    else
+      close(fd);    
+  }
   
-  *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), false);
-  if (!*result)
-    err = coreFoundationUnknownErr;
+  if (noErr == err) {
+    *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), isDir);
+    if (!*result)
+      err = coreFoundationUnknownErr;    
+  }
   
   if (buffer != stack)
     free(buffer);
   
+  return err;  
+}
+
+OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result, CFOptionFlags flags) {
+  FSVolumeRefNum volume;
+  OSStatus err = WBFSGetVolumeForURL(anURL, &volume);
+  if (noErr == err)
+    err = WBFSCreateTemporaryURL(volume, result, flags);
+  
   return err;
 }
 
-
+#if 0
 CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix, CFStringRef ext, CFURLPathStyle pathType) {
   if (ext && CFStringGetLength(ext) > 16) {
     debug_string("\"ext\" length must be less than 16 characters");
@@ -859,3 +892,4 @@ CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix,
   }
   return temp;
 }
+#endif

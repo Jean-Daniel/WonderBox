@@ -8,6 +8,11 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !defined(__WB_FINDER_SUITE_H)
+#define __WB_FINDER_SUITE_H 1
+
+__BEGIN_DECLS
+
 WB_EXPORT
 OSType WBAEFinderSignature;
 
@@ -80,3 +85,6 @@ OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file);
 WB_EXPORT
 OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias);
 
+__END_DECLS
+
+#endif /* __WB_FINDER_SUITE_H */

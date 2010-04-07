@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBIOFUNCTIONS_H)
-#define __WBIOFUNCTIONS_H 1
+#if !defined(__WB_IO_FUNCTIONS_H)
+#define __WB_IO_FUNCTIONS_H 1
+
+__BEGIN_DECLS
 
 /* Low level functions */
 WB_EXPORT
@@ -30,5 +32,6 @@ CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length);
 WB_EXPORT
 CFIndex WBCFStreamWrite(CFWriteStreamRef stream, UInt8 *buffer, CFIndex length);
 
+__END_DECLS
 
-#endif /* __WBIOFUNCTIONS_H */
+#endif /* __WB_IO_FUNCTIONS_H */

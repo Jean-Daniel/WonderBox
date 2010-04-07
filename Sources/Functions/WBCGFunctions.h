@@ -8,11 +8,13 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBCG_FUNCTIONS_H)
-#define __WBCG_FUNCTIONS_H 1
+#if !defined(__WB_CG_FUNCTIONS_H)
+#define __WB_CG_FUNCTIONS_H 1
 
 #include <ApplicationServices/ApplicationServices.h>
 #import WBHEADER(WBGeometry.h)
+
+__BEGIN_DECLS
 
 #pragma mark Shapes
 WB_EXPORT
@@ -77,4 +79,6 @@ CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options);
 WB_EXPORT
 CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage);
 
-#endif /* __WBCGFUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_CG_FUNCTIONS_H */

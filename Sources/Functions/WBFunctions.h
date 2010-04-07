@@ -11,6 +11,8 @@
 #if !defined (__WB_FUNCTIONS_H)
 #define __WB_FUNCTIONS_H 1
 
+__BEGIN_DECLS
+
 WB_EXPORT
 OSType WBGetOSTypeFromString(CFStringRef str);
 WB_EXPORT
@@ -56,5 +58,7 @@ NSString *WBApplicationGetName(void) {
 	[[NSProcessInfo processInfo] processName];
 }
 #endif
+
+__END_DECLS
 
 #endif /* __WB_FUNCTIONS_H */

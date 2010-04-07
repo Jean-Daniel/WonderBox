@@ -8,10 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBFS_FUNCTIONS_H)
-#define __WBFS_FUNCTIONS_H 1
+#if !defined(__WB_FS_FUNCTIONS_H)
+#define __WB_FS_FUNCTIONS_H 1
 
 #include <fcntl.h>
+
+__BEGIN_DECLS
 
 #pragma mark -
 #pragma mark File System C API
@@ -29,18 +31,25 @@ WB_EXPORT OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot);
 WB_EXPORT OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *path);
 WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory);
 
+WB_EXPORT OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume);
+
 WB_EXPORT OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFURLRef *path);
 // look on the same volume than anURL
 WB_EXPORT OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path);
 
-// create temporary URL on the same volume than anURL (suitable for exchangedata)
-WB_EXPORT OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result);
+
+enum {
+  kWBFSTemporaryItemIsFolder = 1 << 0,
+  kWBFSTemporaryItemAutoDelete = 1 << 1,
+};
+WB_EXPORT OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptionFlags flags);
+
+// create temporary URL on the same volume than anURL (suitable for exchangedata).
+WB_EXPORT OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result, CFOptionFlags flags);
 
 WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) WB_OBSOLETE;
 // look on the same volume than anURL
 WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) WB_OBSOLETE;
-
-WB_EXPORT CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix, CFStringRef extension, CFURLPathStyle pathType) WB_OBSOLETE;
 
 /* Format a size and return buffer used length */
 WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length);
@@ -124,4 +133,6 @@ NSURL *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
 
 #endif /* __WB_OBJC__ */
 
-#endif /* __WBFS_FUNCTIONS_H */
+__END_DECLS
+
+#endif /* __WB_FS_FUNCTIONS_H */

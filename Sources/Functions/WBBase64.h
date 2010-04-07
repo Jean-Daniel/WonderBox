@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined (__WBBASE64_H)
-#define __WBBASE64_H 1
+#if !defined (__WB_BASE64_H)
+#define __WB_BASE64_H 1
+
+__BEGIN_DECLS
 
 // WBBase64
 //
@@ -179,4 +181,6 @@ CFStringRef WBWSBase64CreateStringByEncodingBytes(const void *bytes, CFIndex len
 WB_EXPORT
 CFDataRef WBWSBase64CreateDataByDecodingString(CFStringRef string);
 
-#endif /* __WBBASE64_H */
+__END_DECLS
+
+#endif /* __WB_BASE64_H */

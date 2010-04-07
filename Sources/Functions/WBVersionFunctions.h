@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined (__WBVERSION_FUNCTIONS_H)
-#define __WBVERSION_FUNCTIONS_H 1
+#if !defined (__WB_VERSION_FUNCTIONS_H)
+#define __WB_VERSION_FUNCTIONS_H 1
+
+__BEGIN_DECLS
 
 #pragma mark Versions
 enum {
@@ -78,5 +80,6 @@ UInt64 WBVersionComposeNumber(CFIndex major, CFIndex minor, CFIndex bug, WBVersi
 WB_EXPORT
 void WBVersionDecomposeNumber(UInt64 version, CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build);
 
+__END_DECLS
 
 #endif /* __WBVERSION_FUNCTIONS_H */
