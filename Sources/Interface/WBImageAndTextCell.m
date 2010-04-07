@@ -27,12 +27,7 @@
 - (id)copyWithZone:(NSZone *)zone {
   WBImageAndTextCell *copy = (WBImageAndTextCell *)[super copyWithZone:zone];
   copy->wb_image = [wb_image retain];
-  copy->wb_itcFlags = wb_itcFlags;
   return copy;
-}
-
-+ (id)cell {
-  return [[[self alloc] init] autorelease];
 }
 
 - (void)dealloc {
@@ -67,13 +62,6 @@
   WBSetterRetain(wb_image, anImage);
 }
 
-- (BOOL)drawsLineOver {
-  return wb_itcFlags.line;
-}
-- (void)setDrawsLineOver:(BOOL)flag {
-  WBFlagSet(wb_itcFlags.line, flag);
-}
-
 #pragma mark NSCell
 - (NSSize)cellSize {
   NSSize cellSize = [super cellSize];
@@ -91,11 +79,6 @@
   NSSize imageSize = [self wb_imageSize:cellRect.size];
   
   NSDivideRect(cellRect, &imageFrame, &cellRect, kWBImageMargin + imageSize.width, NSMinXEdge);
-  
-  /* Center Text Verticaly */
-//  CGFloat yOffset = floor((NSHeight(cellRect) - [[self attributedStringValue] size].height) / 2.0);
-//  cellRect.origin.y += yOffset;
-//  cellRect.size.height -= 2 * yOffset;
   
   return cellRect;
 }
@@ -123,7 +106,6 @@
   
   return [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
 }
-
 
 - (void)editWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject event:(NSEvent *)theEvent {
   [super editWithFrame:[self titleRectForBounds:aRect] inView:controlView editor:textObj delegate:anObject event:theEvent];
