@@ -30,6 +30,26 @@
   return copy;
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+  [super encodeWithCoder:aCoder];
+  if ([aCoder allowsKeyedCoding]) {
+    [aCoder encodeObject:wb_image forKey:@"wb.cell.image"];
+  } else {
+    [aCoder encodeObject:wb_image];
+  }
+}
+
+- (id)initWithCoder:(NSCoder *)aCoder {
+  if (self = [super initWithCoder:aCoder]) {
+    if ([aCoder allowsKeyedCoding]) {
+      wb_image = [[aCoder decodeObjectForKey:@"wb.cell.image"] retain];
+    } else {
+      wb_image = [[aCoder decodeObject] retain];
+    }
+  }
+  return self;
+}
+
 - (void)dealloc {
   [wb_image release];
   [super dealloc];
