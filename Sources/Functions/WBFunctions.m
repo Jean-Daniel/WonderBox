@@ -79,7 +79,7 @@ CFHashCode WBHashDouble(double d) {
 CFHashCode WBHashBytes(const uint8_t *bytes, size_t length) {
   /* The ELF hash algorithm, used in the ELF object file format */
   UInt32 H = 0, T1, T2;
-  SInt32 rem = length;
+  size_t rem = length;
   while (3 < rem) {
     ELF_STEP(bytes[length - rem]);
     ELF_STEP(bytes[length - rem + 1]);

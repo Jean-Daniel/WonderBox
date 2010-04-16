@@ -202,7 +202,7 @@
 - (void)wb_attachView:(NSView *)theView {
   WBAssert(![theView superview], @"why the item view is already in a view tree ?");
   // resizing mask
-  wb_civFlags.resizeMask = [theView autoresizingMask];
+  wb_civFlags.resizeMask = (uint32_t)[theView autoresizingMask];
   if (wb_civFlags.resizeMask != (NSViewWidthSizable | NSViewMaxYMargin))
     [theView setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
   
