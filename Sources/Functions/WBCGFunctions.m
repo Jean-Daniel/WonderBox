@@ -421,8 +421,8 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
                             WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                             [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                             nil];
-  CFDictionaryRef properties = (CFDictionaryRef)[NSDictionary dictionaryWithObject:tiffDict
-                                                                            forKey:(id)kCGImagePropertyTIFFDictionary];
+  CFDictionaryRef properties = WBNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
+                                                                              forKey:(id)kCGImagePropertyTIFFDictionary]);
   
   CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
   CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypeTIFF, 1, NULL);

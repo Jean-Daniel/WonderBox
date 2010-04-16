@@ -50,7 +50,7 @@ NSString *WBStringForOSType(OSType type) {
 }
 WB_INLINE
 OSType WBOSTypeFromString(NSString *type) {
-  return type ? WBGetOSTypeFromString((CFStringRef)type) : 0;
+  return type ? WBGetOSTypeFromString(WBNSToCFString(type)) : 0;
 }
 WB_INLINE 
 NSString *WBApplicationGetName(void) {

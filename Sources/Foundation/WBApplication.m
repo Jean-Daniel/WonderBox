@@ -202,7 +202,7 @@ bool __IsValidIdentifier(id identifier) {
   if (!wb_signature) {
     NSString *path = [self path];
     if (path) {
-      wb_signature = WBLSGetSignatureForPath((CFStringRef)path);
+      wb_signature = WBLSGetSignatureForPath(WBNSToCFString(path));
     }
     if (!wb_signature) wb_signature = kWBUndefinedSignature;
   }
@@ -262,13 +262,13 @@ bool __IsValidIdentifier(id identifier) {
   }
 
   Boolean isApp = false;
-  if (noErr != WBLSIsApplicationAtPath((CFStringRef)aPath, &isApp) || !isApp) {
+  if (noErr != WBLSIsApplicationAtPath(WBNSToCFString(aPath), &isApp) || !isApp) {
     return NO;
   }
   
-  CFStringRef bundle = WBLSCopyBundleIdentifierForPath((CFStringRef)aPath);
-  OSType signature = WBLSGetSignatureForPath((CFStringRef)aPath) ? : kWBUndefinedSignature;
-  [self setSignature:signature bundleIdentifier:(NSString *)bundle];
+  CFStringRef bundle = WBLSCopyBundleIdentifierForPath(WBNSToCFString(aPath));
+  OSType signature = WBLSGetSignatureForPath(WBNSToCFString(aPath)) ? : kWBUndefinedSignature;
+  [self setSignature:signature bundleIdentifier:WBCFToNSString(bundle)];
   WBRelease(bundle);
   
   return [self isValid];
@@ -279,7 +279,7 @@ bool __IsValidIdentifier(id identifier) {
   
   BOOL ok = NO;
   if (__IsValidIdentifier(wb_identifier))
-    ok = noErr == WBLSGetApplicationForBundleIdentifier((CFStringRef)wb_identifier, ref);
+    ok = noErr == WBLSGetApplicationForBundleIdentifier(WBNSToCFString(wb_identifier), ref);
   
   if (!ok && __IsValidSignature(wb_signature))
     ok = noErr == WBLSGetApplicationForSignature(wb_signature, ref);
@@ -291,7 +291,7 @@ bool __IsValidIdentifier(id identifier) {
   ProcessSerialNumber psn = {kNoProcess, kNoProcess};
   
   if (__IsValidIdentifier(wb_identifier))
-    psn = WBProcessGetProcessWithBundleIdentifier((CFStringRef)wb_identifier);
+    psn = WBProcessGetProcessWithBundleIdentifier(WBNSToCFString(wb_identifier));
   
   if (psn.lowLongOfPSN == kNoProcess && __IsValidSignature(wb_signature))
     psn = WBProcessGetProcessWithSignature(wb_signature);

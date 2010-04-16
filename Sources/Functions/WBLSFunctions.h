@@ -44,14 +44,14 @@ OSStatus WBLSLaunchApplicationWithSignature(OSType sign, LSLaunchFlags flags, Pr
 WB_EXPORT
 OSStatus WBLSLaunchApplicationWithBundleIdentifier(CFStringRef bundle, LSLaunchFlags flags, ProcessSerialNumber *psn);
 
-#if defined(__WB_OBJC__) 
+#if defined(__OBJC__) 
 
 WB_EXPORT
 NSString *WBLSFindApplicationForSignature(OSType signature);
 WB_EXPORT
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle);
 
-#endif /* __WB_OBJC__ */
+#endif /* __OBJC__ */
 
 __END_DECLS
 

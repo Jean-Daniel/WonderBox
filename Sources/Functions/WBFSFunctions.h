@@ -41,6 +41,7 @@ WB_EXPORT OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bo
 enum {
   kWBFSTemporaryItemIsFolder = 1 << 0,
   kWBFSTemporaryItemAutoDelete = 1 << 1,
+  kWBFSTemporaryItemUseSystemVolumeOnError = 1 << 2, // on error, instead of returning nil, will use the system volume
 };
 WB_EXPORT OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptionFlags flags);
 
@@ -103,7 +104,7 @@ OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator);
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_OBSOLETE;
 
-#if defined(__WB_OBJC__)
+#if defined(__OBJC__)
 
 @interface NSString (WBFileSystem)
 + (NSString *)stringFromFSRef:(const FSRef *)ref;
@@ -131,7 +132,7 @@ NSURL *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
   return nil;
 }
 
-#endif /* __WB_OBJC__ */
+#endif /* __OBJC__ */
 
 __END_DECLS
 

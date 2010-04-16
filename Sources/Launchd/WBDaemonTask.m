@@ -47,7 +47,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   if (self = [self init]) {
     self.name = aName;
     _unregister = YES; // by default, cleanup at exit
-    CFDictionaryRef properties = WBServiceCopyJob((CFStringRef)aName, NULL);
+    CFDictionaryRef properties = WBServiceCopyJob(WBNSToCFString(aName), NULL);
     if (properties) {
       _registred = YES;
       _properties = [(id)properties mutableCopy];
@@ -306,7 +306,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     [sDaemons removeObject:self];
   }
   CFErrorRef error;
-  if (_registred && (_unregister || force) && !WBServiceUnregisterJob((CFStringRef)self.name, &error)) {
+  if (_registred && (_unregister || force) && !WBServiceUnregisterJob(WBNSToCFString(self.name), &error)) {
     CFShow(error);
     CFRelease(error);
   } else {
@@ -329,7 +329,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     WBThrowException(NSInvalidArgumentException, @"already registred !");
   
   CFErrorRef error;
-  if (!WBServiceRegisterJob((CFDictionaryRef)_properties, &error)) {
+  if (!WBServiceRegisterJob(WBNSToCFDictionary(_properties), &error)) {
     if (outError)
       *outError = [NSMakeCollectable(error) autorelease];
     else

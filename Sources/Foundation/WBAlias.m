@@ -107,7 +107,7 @@
   if (self = [self init]) {
     FSRef ref;
     // First, try using FSRef
-    if (CFURLGetFSRef((CFURLRef)anURL, &ref)) {
+    if (CFURLGetFSRef(WBNSToCFURL(anURL), &ref)) {
       AliasHandle alias;
       if (noErr == FSNewAlias(NULL, &ref, &alias))
         return [self initFromAliasHandleNoCopy:alias];

@@ -17,9 +17,7 @@ OSType WBLSGetSignatureForPath(CFStringRef path) {
     CFURLRef url = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, path, kCFURLPOSIXPathStyle, FALSE);
     if (url) {
       LSItemInfoRecord info;
-      LSCopyItemInfoForURL((CFURLRef)url,
-                           kLSRequestTypeCreator,
-                           &info);
+      LSCopyItemInfoForURL(url, kLSRequestTypeCreator, &info);
       CFRelease(url);
       return (info.creator) ? info.creator : 0;
     }
@@ -149,7 +147,7 @@ NSString *WBLSFindApplicationForSignature(OSType signature) {
   NSString *path = nil;
   CFURLRef url = WBLSCopyApplicationURLForSignature(signature);
   if (url) {
-    path = (id)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    path = WBCFToNSString(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
   return path ? [path autorelease] : nil;
@@ -157,9 +155,9 @@ NSString *WBLSFindApplicationForSignature(OSType signature) {
 
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) {
   NSString *path = nil;
-  CFURLRef url = WBLSCopyApplicationURLForBundleIdentifier((CFStringRef)bundle);
+  CFURLRef url = WBLSCopyApplicationURLForBundleIdentifier(WBNSToCFString(bundle));
   if (url) {
-    path = (id)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    path = WBCFToNSString(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
   return path ? [path autorelease] : nil;

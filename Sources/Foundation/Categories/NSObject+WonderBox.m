@@ -56,7 +56,7 @@ void _WBCFRunLoopObserver(CFRunLoopObserverRef observer, CFRunLoopActivity activ
   };
   CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopAllActivities, 
                                                           false, 0, _WBCFRunLoopObserver, &ctxt);  
-  CFRunLoopAddObserver(CFRunLoopGetCurrent(), observer, (CFStringRef)aMode);
+  CFRunLoopAddObserver(CFRunLoopGetCurrent(), observer, WBNSToCFString(aMode));
   CFRelease(observer);
   [action release];
 }

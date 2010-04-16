@@ -750,7 +750,26 @@ bail:
 OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptionFlags flags) {
   CFURLRef folder;
   bool autoDelete = (flags & kWBFSTemporaryItemAutoDelete) != 0;
+  bool fallback = (flags & kWBFSTemporaryItemUseSystemVolumeOnError) != 0;
+  
   OSStatus err = WBFSCopyFolderURL(autoDelete ? kChewableItemsFolderType : kTemporaryFolderType, volume, true, &folder);
+  
+  if (noErr != err && fallback && volume != kLocalDomain)
+    err = WBFSCopyFolderURL(autoDelete ? kChewableItemsFolderType : kTemporaryFolderType, kLocalDomain, true, &folder);
+  
+  if (noErr != err && fallback) {
+    char stack[PATH_MAX];
+    size_t length = confstr(_CS_DARWIN_USER_TEMP_DIR, stack, PATH_MAX);
+    if (length > 0 && length < PATH_MAX) {
+      struct stat info;
+      if (stat(stack, &info) == 0 || mkdir(stack, 0700) == 0) {
+        err = noErr;
+        // FIXME: should rewrite that to avoid URL creation and then URL path extraction
+        folder = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)stack, length, true);
+      }
+    }
+  }
+    
   if (noErr != err) return err;  
   
   char stack[PATH_MAX];
@@ -775,7 +794,12 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
     return coreFoundationUnknownErr;
   
   char filename[32];
-  snprintf(filename, 32, "/%.14s.XXXXXXXX", getprogname());
+  size_t buflen = strlen(buffer);
+  if (buffer[buflen - 1] != '/') {
+    buffer[buflen - 1] = '/';
+    buffer[buflen] = '\0';
+  }
+  snprintf(filename, 32, "%.14s.XXXXXXXX", getprogname());  
   strncat(buffer, filename, 24);
 
   bool isDir = (flags & kWBFSTemporaryItemIsFolder) != 0;
