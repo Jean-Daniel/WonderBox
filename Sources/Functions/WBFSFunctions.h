@@ -58,6 +58,9 @@ WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *uni
 /* Make directory recursive. Use NSFileManager instead */
 WB_EXPORT OSStatus WBFSCreateFolder(CFStringRef path) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
 
+WB_EXPORT OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder);
+WB_EXPORT OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL);
+
 /*!
  @function 
  @param willDeleteObject return <code>false</code> to abort operation, <code>true</code> to continue.

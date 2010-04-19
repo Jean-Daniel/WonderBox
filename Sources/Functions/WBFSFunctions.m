@@ -503,6 +503,21 @@ OSStatus __WBFSForceDeleteObject(const FSRef *object) {
   return _WBFSRefGetPath(object, _WBFSForceDeletePath, NULL);
 }
 
+WB_INLINE
+OSStatus _WBFSForceDeleteObject(const FSRef *object) {
+  /* delete a busy file */
+  OSStatus err;
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+  if (!FSUnlinkObject) {
+    err = FSDeleteObject(object);
+    if (fBsyErr == err)
+      err = __WBFSForceDeleteObject(object);
+  } else
+#endif
+    err = FSUnlinkObject(object);
+  return err;
+}
+
 OSStatus WBFSForceDeleteObject(const FSRef *object) {
   if (!object) return paramErr;
   
@@ -514,9 +529,7 @@ OSStatus WBFSForceDeleteObject(const FSRef *object) {
       /* result can be safely ignored as the following delete operation will failed if an error occured */
       FSSetCatalogInfo(object, kFSCatInfoNodeFlags, &info);
     }
-    err = FSDeleteObject(object);
-    if (fBsyErr == err)
-      err = __WBFSForceDeleteObject(object);
+    err = _WBFSForceDeleteObject(object);
   }
   return err;
 }
@@ -548,8 +561,7 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
               err = userCanceledErr;
             
             if (noErr == err || errFSNoMoreItems == err) {
-              err = FSDeleteObject(&refs[count]);
-              if (fBsyErr == err) err = __WBFSForceDeleteObject(&refs[count]);
+              err = _WBFSForceDeleteObject(&refs[count]);
             }
           }
         }
@@ -567,8 +579,7 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
   if (noErr == err && willDeleteObject && !willDeleteObject(folder, ctxt))
     err = userCanceledErr;
   if (noErr == err) {
-    err = FSDeleteObject(folder);
-    if (fBsyErr == err) err = __WBFSForceDeleteObject(folder);
+    err = _WBFSForceDeleteObject(folder);
   }
   
   return err;
@@ -581,6 +592,38 @@ OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(con
   if (noErr == err)
     err = WBFSDeleteFolder(&fref, willDeleteObject, ctxt);
   return err;
+}
+
+OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder) {
+  if (!aFolder) return paramErr;
+  
+  Boolean isDir;
+  OSStatus err = WBFSRefIsFolder(aFolder, &isDir);
+  if (noErr == err) {
+    if (!isDir)
+      return errFSNotAFolder;
+    FSRef folder = *aFolder;
+    do {
+      FSRef parent;
+      err = FSGetCatalogInfo(&folder, kFSCatInfoNone, NULL, NULL, NULL, &parent);
+      if (noErr == err)
+        err = FSDeleteObject(&folder);
+      if (noErr == err)
+        folder = parent;
+    } while (noErr == err);
+    
+    if (fBsyErr == err) // non-empty dir, not an error
+      err = noErr;
+  }
+  return err;
+}
+
+OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL) {
+  if (!anURL) return paramErr;
+  FSRef folder;
+  if (!CFURLGetFSRef(anURL, &folder))
+    return coreFoundationUnknownErr;
+  return WBFSDeleteEmptyFolder(&folder);
 }
 
 /* MARK: Find Folder */
@@ -774,13 +817,13 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
   
   char stack[PATH_MAX];
   char *buffer = stack;
-  if (!CFURLGetFileSystemRepresentation(folder, true, (UInt8 *)buffer, PATH_MAX - 25)) {
+  if (!CFURLGetFileSystemRepresentation(folder, true, (UInt8 *)buffer, PATH_MAX - 27)) {
     buffer = NULL;
     // avoid stupid 1024 file path length limitation
     CFStringRef str = CFURLCopyFileSystemPath(folder, kCFURLPOSIXPathStyle);
     if (str) {
       CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
-      buffer = malloc(length + 25);
+      buffer = malloc(length + 27);
       if (!CFStringGetFileSystemRepresentation(str, buffer, length)) {
         free(buffer);
         buffer = NULL;
@@ -799,8 +842,8 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
     buffer[buflen + 1] = '\0';
     buffer[buflen] = '/';
   }
-  snprintf(filename, 32, "%.14s.XXXXXXXX", getprogname());  
-  strncat(buffer, filename, 24);
+  snprintf(filename, 32, "%.14s.XXXXXXXXXX", getprogname());  
+  strncat(buffer, filename, 26);
 
   bool isDir = (flags & kWBFSTemporaryItemIsFolder) != 0;
   if (isDir) {
