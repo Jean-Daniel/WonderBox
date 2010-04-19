@@ -146,7 +146,7 @@
       
     if ([self alignment] == NSCenterTextAlignment || [self alignment] == NSRightTextAlignment) {
       CGFloat twidth = textSize.width;
-      imageFrame.origin.x = AVG(NSWidth(cellFrame), - twidth); // - imageSize.width;
+      imageFrame.origin.x = (NSWidth(cellFrame) - twidth) / 2; // - imageSize.width;
       imageFrame.origin.x -= (5 + imageSize.width);
       imageFrame.origin.x = round(MAX(imageFrame.origin.x, 3));
     } else {

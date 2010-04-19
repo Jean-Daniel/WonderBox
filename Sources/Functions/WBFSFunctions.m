@@ -796,8 +796,8 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
   char filename[32];
   size_t buflen = strlen(buffer);
   if (buffer[buflen - 1] != '/') {
-    buffer[buflen - 1] = '/';
-    buffer[buflen] = '\0';
+    buffer[buflen + 1] = '\0';
+    buffer[buflen] = '/';
   }
   snprintf(filename, 32, "%.14s.XXXXXXXX", getprogname());  
   strncat(buffer, filename, 24);
