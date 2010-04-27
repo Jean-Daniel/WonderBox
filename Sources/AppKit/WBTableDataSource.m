@@ -79,7 +79,7 @@
   if (wb_compare) {
     @try { /* If Mutable Array sort it */
       [(NSMutableArray *)result sortUsingFunction:wb_compare context:self];
-    } @catch (id exception) { /* else return a sorted copy */
+    } @catch (id) { /* else return a sorted copy */
       result = [result sortedArrayUsingFunction:wb_compare context:self];
     }
   } else {

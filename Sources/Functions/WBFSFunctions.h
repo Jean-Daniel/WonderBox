@@ -115,6 +115,9 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length;
 
+// same as fileSystemRepresentation but returns nil instead of throwing an exception
+- (const char *)safeFileSystemRepresentation;
+
 /* traverse link by default */
 - (BOOL)getFSRef:(FSRef *)ref;
 - (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag;

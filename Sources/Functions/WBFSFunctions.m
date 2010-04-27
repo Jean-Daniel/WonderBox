@@ -48,6 +48,16 @@
   return noErr == FSPathMakeRefWithOptions((const UInt8 *)[self fileSystemRepresentation], opts, ref, NULL);
 }
 
+- (const char *)safeFileSystemRepresentation {
+  const char *fsrep = NULL;
+  @try {
+    fsrep = [self fileSystemRepresentation];
+  } @catch (NSException *exception) {
+    WBLogException(exception);
+  }
+  return fsrep;
+}
+
 @end
 
 #pragma mark NSFileManager Extension

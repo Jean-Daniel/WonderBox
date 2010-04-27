@@ -398,8 +398,18 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
   bool result = false;
   CGImageDestinationRef dest = CGImageDestinationCreateWithURL(url, type, 1, NULL);
   if (dest) {
-    CGImageDestinationAddImage(dest, image, NULL);
+    CFDictionaryRef properties = NULL;
+    if (CFEqual(type, kUTTypeTIFF)) {
+      NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                                [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
+                                nil];
+      properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&tiffDict, 1, 
+                                      &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    }
+    CGImageDestinationAddImage(dest, image, properties);
     result = CGImageDestinationFinalize(dest);
+    WBRelease(properties);
     CFRelease(dest);
   }
   return result;
