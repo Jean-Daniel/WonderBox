@@ -409,7 +409,7 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
     }
     CGImageDestinationAddImage(dest, image, properties);
     result = CGImageDestinationFinalize(dest);
-    WBRelease(properties);
+    WBCFRelease(properties);
     CFRelease(dest);
   }
   return result;
