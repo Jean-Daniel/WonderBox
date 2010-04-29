@@ -33,6 +33,7 @@ WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBit
 
 // same as FSGetHFSUniStrFromString, but convert ':' into '/'
 WB_EXPORT OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename);
+WB_EXPORT CFStringRef WBFSCreateStringFromHFSUniStr(CFAllocatorRef alloc, const HFSUniStr255 *uniStr);
 
 WB_EXPORT OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume);
 

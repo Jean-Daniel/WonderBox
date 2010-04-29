@@ -238,6 +238,15 @@ OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename) 
   return err;
 }
 
+CFStringRef WBFSCreateStringFromHFSUniStr(CFAllocatorRef alloc, const HFSUniStr255 *uniStr) {
+  if (!uniStr) return NULL;
+  HFSUniStr255 str = *uniStr;
+  for (CFIndex idx = 0; idx < str.length; idx++)
+    if (str.unicode[idx] == '/')
+      str.unicode[idx] = ':';
+  return FSCreateStringFromHFSUniStr(alloc, &str);
+}
+
 #pragma mark Folders
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders) {
   if (!size && !files && !folders) return paramErr;
