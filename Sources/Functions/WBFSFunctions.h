@@ -31,12 +31,14 @@ WB_EXPORT OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot);
 WB_EXPORT OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *path);
 WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory);
 
+// same as FSGetHFSUniStrFromString, but convert ':' into '/'
+WB_EXPORT OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename);
+
 WB_EXPORT OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume);
 
 WB_EXPORT OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFURLRef *path);
 // look on the same volume than anURL
 WB_EXPORT OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path);
-
 
 enum {
   kWBFSTemporaryItemIsFolder = 1 << 0,

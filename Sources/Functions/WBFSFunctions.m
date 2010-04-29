@@ -226,6 +226,18 @@ OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options,
   return err;
 }
 
+OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename) {
+  if (!string || !filename) return paramErr;
+  
+  OSStatus err = FSGetHFSUniStrFromString(string, filename);
+  if (noErr == err) {
+    for (CFIndex idx = 0; idx < filename->length; idx++)
+      if (filename->unicode[idx] == ':')
+        filename->unicode[idx] = '/';
+  }
+  return err;
+}
+
 #pragma mark Folders
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders) {
   if (!size && !files && !folders) return paramErr;
