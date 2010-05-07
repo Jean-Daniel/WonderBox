@@ -12,6 +12,12 @@
 
 @implementation NSTableView (WBExtensions)
 
+- (NSRange)visibleRows {
+  NSScrollView *scroll = [self enclosingScrollView];
+  if (!scroll) return NSMakeRange(0, 0);
+  return [self rowsInRect:[scroll documentVisibleRect]];
+}
+
 - (NSTableColumn *)columnAtIndex:(NSUInteger)idx {
   return [[self tableColumns] objectAtIndex:idx];
 }

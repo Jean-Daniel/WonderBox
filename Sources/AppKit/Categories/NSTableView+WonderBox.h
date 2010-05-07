@@ -11,6 +11,7 @@
 #pragma mark -
 @interface NSTableView (WBExtensions)
 
+- (NSRange)visibleRows;
 - (NSTableColumn *)columnAtIndex:(NSUInteger)idx;
 
 //- (void)handleSelectEvent:(NSEvent *)rightMouseEvent;
