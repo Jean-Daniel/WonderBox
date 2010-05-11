@@ -86,7 +86,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
   id delegate = [self delegate];
-  if ([theEvent clickCount] == 1) {
+  if (wb_tvFlags.editOnClick && [theEvent clickCount] == 1) {
     /* If is maybe editable */
     if (WBDelegateHandle(delegate, tableView:shouldEditTableColumn:row:)
         && [[self dataSource] respondsToSelector:@selector(tableView:setObjectValue:forTableColumn:row:)]) {
@@ -96,20 +96,35 @@
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
         
-        if (column != -1 && row != -1) {
-          // Check if already editing
-          if ([self editedRow] == row && [self editedColumn] == column) return;
-          
-          // Check if editing allows
-          if ([delegate tableView:self shouldEditTableColumn:[[self tableColumns] objectAtIndex:column] row:row]) {
-            // Select row if needed
-            if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
-              // [self selectRow:row byExtendingSelection:NO];
-              [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        if (column != -1 && row != -1) {    
+          NSTableColumn *col = [[self tableColumns] objectAtIndex:column];
+          if ([col isEditable]) {  
+            // Check if already editing
+            if ([self editedRow] == row && [self editedColumn] == column) return;
+            
+            // does it click in an editable text zone (10.5 only)
+            if ([self respondsToSelector:@selector(preparedCellAtColumn:row:)]) {
+              NSCell *cell = [self preparedCellAtColumn:column row:row];
+              NSUInteger test = [cell hitTestForEvent:theEvent 
+                                               inRect:[self frameOfCellAtColumn:column row:row] 
+                                               ofView:self];
+              if ((test & NSCellHitEditableTextArea) == 0) {
+                [super mouseDown:theEvent];
+                return;
+              }
             }
-            // Edit row
-            [self editColumn:column row:row withEvent:theEvent select:YES];
-            return;
+            
+            // Check if editing allowed
+            if ([delegate tableView:self shouldEditTableColumn:col row:row]) {
+              // Select row if needed
+              if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
+                // [self selectRow:row byExtendingSelection:NO];
+                [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+              }
+              // Edit row
+              [self editColumn:column row:row withEvent:theEvent select:YES];
+              return;
+            }
           }
         }
       }

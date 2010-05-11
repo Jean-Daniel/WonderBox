@@ -22,8 +22,9 @@ WB_CLASS_EXPORT
 @private
   struct _wb_ovFlags {
     unsigned int edit:1;
+    unsigned int editOnClick:1;
     unsigned int drawOutline:1;
-    unsigned int reserved:30;
+    unsigned int reserved:29;
   } wb_ovFlags;
   NSHashTable *wb_noPadding;
 }

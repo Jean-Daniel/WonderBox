@@ -94,7 +94,7 @@
 
 - (void)mouseDown:(NSEvent *)theEvent {
   id delegate = [self delegate];
-  if ([theEvent clickCount] == 1) {
+  if (wb_ovFlags.editOnClick && [theEvent clickCount] == 1) {
     /* If is maybe editable */
     if (WBDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) && 
         [[self dataSource] respondsToSelector:@selector(outlineView:setObjectValue:forTableColumn:byItem:)]) {
@@ -103,37 +103,50 @@
         NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
-        // Check if click on the expand / collapse marker
-        if (row != -1 && column != -1 && [[self tableColumns] objectAtIndex:column] == [self outlineTableColumn]) {
-          // find if click is on the button
-          CGFloat bias = 12;
-          CGFloat x = point.x - [self rectOfColumn:column].origin.x;
-          if ([self indentationMarkerFollowsCell]) {
-            bias = ([self levelForRow:row] + 1) * [self indentationPerLevel];
-          }
-          bias += 4; // left padding
-          if (x < (bias - 2) && x > (bias - 15)) {
-            [super mouseDown:theEvent];
-            return;
-          }
-        }
         
         if (column != -1 && row != -1) {
-          // Check if already editing
-          if ([self editedRow] == row && [self editedColumn] == column) return;
-          
-          // Check if editing allows
-          id item = [self itemAtRow:row];
-          if (item && 
-              [delegate outlineView:self shouldEditTableColumn:[[self tableColumns] objectAtIndex:column] item:item]) {
-            // Select row if needed
-            if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
-              // [self selectRow:row byExtendingSelection:NO];
-              [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+          NSTableColumn *col = [[self tableColumns] objectAtIndex:column];
+          if ([col isEditable]) {
+            // Check if already editing
+            if ([self editedRow] == row && [self editedColumn] == column) return;
+            
+            // Check if we click on editable text
+            if ([self respondsToSelector:@selector(preparedCellAtColumn:row:)]) {
+              NSCell *cell = [self preparedCellAtColumn:column row:row];
+              NSUInteger test = [cell hitTestForEvent:theEvent 
+                                               inRect:[self frameOfCellAtColumn:column row:row] 
+                                               ofView:self];
+              if ((test & NSCellHitEditableTextArea) == 0) {
+                [super mouseDown:theEvent];
+                return;
+              }
+            } else if (col == [self outlineTableColumn]) {
+              // On pre 10.5 system, we perform a basic test to make sure we don't click on outline button
+              CGFloat bias = 12;
+              CGFloat x = point.x - [self rectOfColumn:column].origin.x;
+              if ([self indentationMarkerFollowsCell]) {
+                bias = ([self levelForRow:row] + 1) * [self indentationPerLevel];
+              }
+              bias += 4; // left padding
+              if (x < (bias - 2) && x > (bias - 15)) {
+                [super mouseDown:theEvent];
+                return;
+              }
             }
-            // Edit row
-            [self editColumn:column row:row withEvent:theEvent select:YES];
-            return;
+            
+            // Check if editing allows
+            id item = [self itemAtRow:row];
+            
+            if (item && [delegate outlineView:self shouldEditTableColumn:col item:item]) {
+              // Select row if needed
+              if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
+                // [self selectRow:row byExtendingSelection:NO];
+                [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+              }
+              // Edit row
+              [self editColumn:column row:row withEvent:theEvent select:YES];
+              return;
+            }
           }
         }
       }

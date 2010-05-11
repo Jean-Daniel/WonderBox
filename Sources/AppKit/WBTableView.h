@@ -17,7 +17,8 @@ WB_CLASS_EXPORT
 @private
   struct _wb_tvFlags {
     unsigned int edit:1;
-    unsigned int reserved:31;
+    unsigned int editOnClick:1;
+    unsigned int reserved:29;
   } wb_tvFlags;
   NSHashTable *wb_noPadding;
 }
