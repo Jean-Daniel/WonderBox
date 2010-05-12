@@ -37,11 +37,7 @@ void _WBCFRunLoopObserver(CFRunLoopObserverRef observer, CFRunLoopActivity activ
   [action invalidate];
 }
 
-- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject {
-  [self performSelectorASAP:aSelector withObject:anObject inModes:NSDefaultRunLoopMode];
-}
-
-- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject inModes:(NSString *)aMode {
+- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject inMode:(NSString *)aMode {
   WBInternalClass(DelayedAction) *action = [[WBInternalClass(DelayedAction) alloc] init];
   action.target = self;
   action.action = aSelector;
@@ -55,10 +51,14 @@ void _WBCFRunLoopObserver(CFRunLoopObserverRef observer, CFRunLoopActivity activ
     .copyDescription = CFCopyDescription,
   };
   CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopAllActivities, 
-                                                          false, 0, _WBCFRunLoopObserver, &ctxt);  
+                                                          false, 0, _WBCFRunLoopObserver, &ctxt);
   CFRunLoopAddObserver(CFRunLoopGetCurrent(), observer, WBNSToCFString(aMode));
   CFRelease(observer);
   [action release];
+}
+
+- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject {
+  [self performSelectorASAP:aSelector withObject:anObject inMode:NSDefaultRunLoopMode];
 }
 
 @end

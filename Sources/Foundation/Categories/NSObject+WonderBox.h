@@ -11,6 +11,6 @@
 @interface NSObject (WonderBox)
 
 - (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject;
-- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject inModes:(NSString *)aMode;
+//- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject inModes:(NSArray *)aMode;
 
 @end
