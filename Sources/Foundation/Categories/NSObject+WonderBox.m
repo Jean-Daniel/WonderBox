@@ -19,7 +19,11 @@
   [[NSRunLoop currentRunLoop] cancelPerformSelector:aSelector target:self argument:anObject];
 }
 - (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject order:(NSInteger)anOrder inModes:(NSArray *)theModes {
-  [[NSRunLoop currentRunLoop] performSelector:aSelector target:self argument:anObject order:anOrder modes:theModes];
+  [[NSRunLoop currentRunLoop] performSelector:aSelector
+                                       target:self
+                                     argument:anObject 
+                                        order:anOrder
+                                        modes:theModes ? : [NSArray arrayWithObject:NSDefaultRunLoopMode]];
 }
 
 @end
