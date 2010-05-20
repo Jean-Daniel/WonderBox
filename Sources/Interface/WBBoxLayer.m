@@ -301,7 +301,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 - (void)setContentVerticalAlignment:(NSUInteger)theAlignment {
   NSParameterAssert(theAlignment <= kWBStringLayerAlignmentRight);
   if (theAlignment != wb_blFlags.cnt_valign) {
-    wb_blFlags.cnt_valign = theAlignment;
+    wb_blFlags.cnt_valign = (uint32_t)theAlignment;
     [self setNeedsUpdate:YES];
   }
 }
@@ -312,7 +312,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 - (void)setContentHorizontalAlignment:(NSUInteger)theAlignment {
   NSParameterAssert(theAlignment <= kWBStringLayerAlignmentBottom);
   if (theAlignment != wb_blFlags.cnt_halign) {
-    wb_blFlags.cnt_halign = theAlignment;
+    wb_blFlags.cnt_halign = (uint32_t)theAlignment;
     [self setNeedsUpdate:YES];
   }  
 }
