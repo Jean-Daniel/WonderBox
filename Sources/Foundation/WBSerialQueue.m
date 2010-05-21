@@ -16,6 +16,7 @@
 #warning GCD not available with 10.5 SDK
 #endif
 
+// FIXME: does not support too many operations.
 @interface _WBSerialOperationQueue : WBSerialQueue {
 @private
   NSOperation *wb_last;
