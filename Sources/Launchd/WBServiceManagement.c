@@ -185,7 +185,7 @@ launch_data_t _WBServiceNewDataFromArray(CFArrayRef value) {
   size_t oidx = 0; // out index
   bool error = false;
   launch_data_t array = launch_data_alloc(LAUNCH_DATA_ARRAY);
-  for (CFIndex idx = 0, count = CFArrayGetCount(value); !error && idx < count; idx++) {
+  for (CFIndex idx = 0, count = CFArrayGetCount(value); !error && idx < count; ++idx) {
     CFTypeRef item = CFArrayGetValueAtIndex(value, idx);
     launch_data_t data = _WBServiceNewDataFromObject(item);
     if (data) {
@@ -390,7 +390,7 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
 //  if (CFDictionaryGetTypeID() == type) {
 //    CFDictionaryApplyFunction(object, __WBServiceCleanupObject, NULL);
 //  } else if (CFArrayGetTypeID() == type) {
-//    for (CFIndex idx = 0, count = CFArrayGetCount(object); idx < count; idx++)
+//    for (CFIndex idx = 0, count = CFArrayGetCount(object); idx < count; ++idx)
 //      WBServiceCleanupObject(CFArrayGetValueAtIndex(object, idx));
 //  } else if (CFFileDescriptorGetTypeID() == type) {
 //    // close file descriptor (as we init it with 'do not close on invalidate')
@@ -405,7 +405,7 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
 
 CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) {
   CFMutableArrayRef array = CFArrayCreateMutable(kCFAllocatorDefault, launch_data_array_get_count(data), &kCFTypeArrayCallBacks);
-  for (size_t idx = 0, count = launch_data_array_get_count(data); idx < count; idx++) {
+  for (size_t idx = 0, count = launch_data_array_get_count(data); idx < count; ++idx) {
     CFTypeRef item = _WBServiceCreateObjectFromData(launch_data_array_get_index(data, idx));
     if (item) {
       CFArrayAppendValue(array, item);

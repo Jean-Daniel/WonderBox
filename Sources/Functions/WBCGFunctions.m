@@ -230,7 +230,7 @@ void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloa
   CGContextMoveToPoint(ctxt, center.x, center.y + r);
   omega -= delta;
   CGContextAddLineToPoint(ctxt, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
-  for (CFIndex idx = 0; idx < sides - 1; idx++) {
+  for (CFIndex idx = 0; idx < sides - 1; ++idx) {
     omega -= delta;
     CGContextAddLineToPoint(ctxt, r * cos(omega) + center.x, r * sin(omega) + center.y);
     omega -= delta;
@@ -253,7 +253,7 @@ void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, 
   CGPathMoveToPoint(path, transform, center.x, center.y + r);
   omega -= delta;
   CGPathAddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
-  for (CFIndex idx = 0; idx < sides - 1; idx++) {
+  for (CFIndex idx = 0; idx < sides - 1; ++idx) {
     omega -= delta;
     CGPathAddLineToPoint(path, transform, r * cos(omega) + center.x, r * sin(omega) + center.y);
     omega -= delta;
