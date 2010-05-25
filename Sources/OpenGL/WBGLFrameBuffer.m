@@ -11,6 +11,7 @@
 #import WBHEADER(WBGLFrameBuffer.h)
 
 #import <OpenGL/CGLMacro.h>
+#import <OpenGL/glu.h>
 
 @implementation WBGLFrameBuffer
 
@@ -20,6 +21,9 @@
     glGenFramebuffersEXT(1, &wb_fbo);
 //    wb_glctxt = CGLRetainContext(CGL_MACRO_CONTEXT);
     wb_attachements = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
+    
+    const GLubyte *strExt = glGetString(GL_EXTENSIONS);
+    aty_fbFlags.blit = gluCheckExtension((const GLubyte*)"GL_EXT_framebuffer_blit", strExt) ? 1 : 0;
   }
   return self;
 }
@@ -213,17 +217,17 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
   GLenum buffer;
-  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_READ_FRAMEBUFFER_EXT); // do not call unbind if not bind
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, aty_fbFlags.blit ? GL_READ_FRAMEBUFFER_EXT : GL_FRAMEBUFFER_EXT); // do not call unbind if not bind
   
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;
-  glReadBuffer(buffer);  
+  glReadBuffer(buffer);
 }
 
 - (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
   GLenum buffer;
-  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, GL_DRAW_FRAMEBUFFER_EXT); // do not call unbind if not bind
+  __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, aty_fbFlags.blit ? GL_DRAW_FRAMEBUFFER_EXT : GL_FRAMEBUFFER_EXT); // do not call unbind if not bind
   
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;

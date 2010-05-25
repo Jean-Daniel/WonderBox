@@ -69,6 +69,9 @@ WB_CLASS_EXPORT
   GLint wb_viewport[4];
   NSMapTable *wb_attachements;
   WBGLFrameBufferAttachement *wb_depth, *wb_stencil;
+  struct {
+    unsigned int blit:1;
+  } aty_fbFlags;
 }
 
 - (id)initWithContext:(CGLContextObj)aContext;
