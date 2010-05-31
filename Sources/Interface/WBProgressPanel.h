@@ -25,7 +25,7 @@ WB_CLASS_EXPORT
   CFAbsoluteTime wb_last;
   CFAbsoluteTime wb_start;
   id<WBProgressPanelDelegate> wb_delegate __weak;
-  
+
 //  struct _wb_PPFlags {
 //    unsigned int showtime:1;
 //    unsigned int reserved:31;

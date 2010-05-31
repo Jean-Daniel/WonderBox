@@ -52,13 +52,13 @@
   if (wb_child) {
     copy->wb_child = [wb_child copyWithZone:aZone];
     copy->wb_child->wb_parent = copy;
-    
+
     WBTreeNode *child = copy->wb_child;
     WBTreeNode *sibling = wb_child->wb_sibling;
     while (sibling) {
       child->wb_sibling = [sibling copyWithZone:aZone];
       child->wb_sibling->wb_parent = child->wb_parent;
-      
+
       child = child->wb_sibling;
       sibling = sibling->wb_sibling;
     }
@@ -73,7 +73,7 @@
 
 - (id)init {
   if (self = [super init]) {
-    
+
   }
   return self;
 }
@@ -131,7 +131,7 @@
 
 - (id)findRoot {
   WBTreeNode *tree = self;
-  while (tree->wb_parent) 
+  while (tree->wb_parent)
     tree = tree->wb_parent;
   return tree;
 }
@@ -158,7 +158,7 @@
   WBTreeNode *last = nil;
   if (wb_child) {
     last = wb_child;
-    while (last->wb_sibling) 
+    while (last->wb_sibling)
       last = last->wb_sibling;
   }
   return last;
@@ -243,7 +243,7 @@
   if (child && child->wb_parent) {
 		WBThrowException(NSInvalidArgumentException, @"Cannot append node with parent.");
   }
-  
+
   /* If child is a subtree, find last node and set parents */
   WBTreeNode *last = child;
   if (last) {
@@ -451,7 +451,7 @@
 
 - (NSArray *)allObjects {
   if (!wb_node) { return [NSArray array]; }
-  
+
   NSMutableArray *children = [NSMutableArray arrayWithObject:wb_node];
   WBTreeNode *node = wb_node;
   while (node = [node nextSibling]) {
@@ -470,13 +470,13 @@
 
 - (id)nextObject {
   WBTreeNode *node = wb_node;
-  
+
   /* End was reached */
   if (!node) {
     [wb_root release];
     wb_root = nil;
   }
-  
+
   /* On descend d'un niveau */
   WBTreeNode *child = [wb_node firstChild];
   if (!child) {
@@ -485,7 +485,7 @@
     /* Tant qu'on est pas remonte en haut de l'arbre, et qu'on a pas trouvé de voisin */
     while (wb_node && wb_node != wb_root && !(sibling = [wb_node nextSibling]))
       wb_node = [wb_node parent];
-    
+
     wb_node = sibling;
   } else
     wb_node = child;
@@ -495,7 +495,7 @@
 
 - (NSArray *)allObjects {
   if (!wb_node) { return [NSArray array]; }
-  
+
   WBTreeNode *node = nil;
   NSMutableArray *children = [NSMutableArray array];
   while (node = [self nextObject])

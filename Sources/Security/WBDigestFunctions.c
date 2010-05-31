@@ -91,7 +91,7 @@ size_t WBDigestGetLengthForAlgorithm(WBDigestAlgorithm algo) {
 
 uint32_t WBDigestCSSMAlgorithmForDigest(WBDigestAlgorithm algo) {
   const WBDigestInfo *digest = __WBDigestInfoForAlgoritm(algo);
-  return digest ? digest->cssm : 0;  
+  return digest ? digest->cssm : 0;
 }
 
 #pragma mark Digest
@@ -100,7 +100,7 @@ int WBDigestInit(WBDigestContext *c, WBDigestAlgorithm algo) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   ctxt->digest = __WBDigestInfoForAlgoritm(algo);
   if (!ctxt->digest) return 0; // error ?
-  
+
   return ctxt->digest->init(&ctxt->ctxt);
 }
 
@@ -115,7 +115,7 @@ int WBDigestFinal(unsigned char *md, WBDigestContext *c) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return 0; // error ?
   int err = ctxt->digest->final(md, &ctxt->ctxt);
-  return err > 0 ? ctxt->digest->length : 0; 
+  return err > 0 ? ctxt->digest->length : 0;
 }
 
 #pragma mark Context
@@ -150,7 +150,7 @@ int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsign
       memset(&ctxt, 0, sizeof(ctxt));
     }
   }
-  
+
   return err;
 }
 
@@ -159,7 +159,7 @@ int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
   if (fd <= 0) return -1;
   /* disable file system caching */
   fcntl(fd, F_NOCACHE, 0);
-  
+
   WBDigestContext ctxt;
   int err = WBDigestInit(&ctxt, algo);
   if (err > 0) {
@@ -176,7 +176,7 @@ int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
         err = -1; // CSSM_ERRCODE_FUNCTION_FAILED;
       free(buffer);
     }
-    
+
     if (err > 0) {
       err = WBDigestFinal(md, &ctxt);
     } else {
@@ -185,7 +185,7 @@ int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
     }
   }
   close(fd);
-  
+
   return err;
 }
 

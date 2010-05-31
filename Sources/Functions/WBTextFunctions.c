@@ -22,14 +22,14 @@ CFIndex WBTextGetCountOfLines(CFStringRef str) {
 
 CFIndex WBTextConvertLineEnding(CFMutableStringRef str, CFStringRef endOfLine) {
   CFIndex position = 0, idx = 0, count = 0;
-  
+
   CFIndex eol = CFStringGetLength(endOfLine);
   CFIndex length = CFStringGetLength(str);
-  
+
   UniChar ch;
   CFStringInlineBuffer buffer;
   CFStringInitInlineBuffer(str, &buffer, CFRangeMake(0, length));
-  
+
   while (ch = CFStringGetCharacterFromInlineBuffer(&buffer, idx)) {
     CFRange range = CFRangeMake(kCFNotFound, 0);
     if (kWBCarriageReturnCharacter == ch) {

@@ -16,9 +16,9 @@ static
 OSStatus _WBQDMakeQTGWorld(Rect *bounds, bool clear, GWorldPtr *gworld) {
   OSErr err = noErr;
 	GWorldPtr newGWorld = NULL;
-  
+
 	err = QTNewGWorld(&newGWorld, 0, bounds, NULL, NULL, kNativeEndianPixMap);
-  
+
 	if (err == noErr) {
     if (clear && LockPixels(GetGWorldPixMap(newGWorld))) {
       Rect portRect;
@@ -26,36 +26,36 @@ OSStatus _WBQDMakeQTGWorld(Rect *bounds, bool clear, GWorldPtr *gworld) {
       GDHandle savedDevice;
       RGBColor theBlackColor = { 0, 0, 0 };
       RGBColor theWhiteColor = { 65535, 65535, 65535 };
-      
+
       GetGWorld(&savedPort, &savedDevice);
       SetGWorld(newGWorld, NULL);
-      
+
       GetPortBounds(newGWorld, &portRect);
       RGBBackColor(&theBlackColor);
       RGBForeColor(&theWhiteColor);
       EraseRect(&portRect);
-      
+
       /* restore gworld */
       SetGWorld(savedPort, savedDevice);
-      
-      UnlockPixels(GetGWorldPixMap(newGWorld));  
+
+      UnlockPixels(GetGWorldPixMap(newGWorld));
     }
     *gworld = newGWorld;
   }
-  
-  return err;  
+
+  return err;
 }
 
 #pragma mark -
 @implementation WBStreamingMovie
 /* GWorld Code Path */
-static 
-void _WBQTICMDecompressionTrackingCallback(void *decompressionTrackingRefCon, OSStatus result, 
-                                           ICMDecompressionTrackingFlags flags, CVPixelBufferRef pixelBuffer, 
-                                           TimeValue64 displayTime, TimeValue64 displayDuration, ICMValidTimeFlags validTimeFlags, 
+static
+void _WBQTICMDecompressionTrackingCallback(void *decompressionTrackingRefCon, OSStatus result,
+                                           ICMDecompressionTrackingFlags flags, CVPixelBufferRef pixelBuffer,
+                                           TimeValue64 displayTime, TimeValue64 displayDuration, ICMValidTimeFlags validTimeFlags,
                                            void *reserved, void *sourceFrameRefCon) {
   //  if ((flags & kICMDecompressionTracking_EmittingFrame) && pixelBuffer) {
-  //    
+  //
   //  }
   if (flags & kICMDecompressionTracking_ReleaseSourceData) {
     // release buffer.
@@ -63,7 +63,7 @@ void _WBQTICMDecompressionTrackingCallback(void *decompressionTrackingRefCon, OS
   }
 }
 
-static 
+static
 OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
   Rect bounds;
   TimeRecord rec;
@@ -72,30 +72,30 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
   GetMovieTime(theMovie, &rec);
   Fixed rate = GetMovieRate(theMovie);
   WBStreamingMovie *self = (WBStreamingMovie *)refCon;
-  
+
   ICMDecompressionSessionRef session = ICMDecompressionSessionRetain(self->wb_icmSession);
   if (!session) return noErr;
-  
+
   GetMovieGWorld(theMovie, &gworld, NULL);
   pixmap = GetGWorldPixMap(gworld);
-  GetPortBounds(gworld, &bounds);  
-  
+  GetPortBounds(gworld, &bounds);
+
   if (LockPixels(pixmap)) {
     /* prepare time record */
     ICMFrameTimeRecord now;
     bzero(&now, sizeof(now));
     now.recordSize = sizeof(now);
-    
+
     now.rate = rate;
     now.frameNumber = 0;
     now.value = rec.value;
     now.scale = rec.scale;
     now.base = rate ? GetMovieTimeBase(theMovie) : NULL;
     now.flags = rate ? 0 : icmFrameTimeIsNonScheduledDisplayTime;
-    
+
     const UInt8 *data = (const UInt8 *)GetPixBaseAddr(pixmap);
     ByteCount length = GetPixRowBytes(pixmap) * (bounds.bottom - bounds.top);
-    
+
     CVPixelBufferRef buffer = NULL;
     if (rate) {
       /* In fact, we have to copy the buffer because the decompress session expect that the memory not change until
@@ -107,7 +107,7 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
         data = CVPixelBufferGetBaseAddress(buffer);
         CVPixelBufferUnlockBaseAddress(buffer, 0);
       }
-    } 
+    }
     verify_noerr(ICMDecompressionSessionDecodeFrame(session, data, length, NULL, &now, buffer));
     /* Force frame out */
     if (!rate) {
@@ -136,9 +136,9 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
       PixMapHandle hPixMap = GetGWorldPixMap(srcGWorld);
       ImageDescriptionHandle imageDesc = (ImageDescriptionHandle)NewHandle(0);
       verify_noerr(MakeImageDescriptionForPixMap(hPixMap, &imageDesc));
-      
+
       ICMDecompressionTrackingCallbackRecord cb = { _WBQTICMDecompressionTrackingCallback , self };
-      verify_noerr(ICMDecompressionSessionCreateForVisualContext(kCFAllocatorDefault, imageDesc, NULL, 
+      verify_noerr(ICMDecompressionSessionCreateForVisualContext(kCFAllocatorDefault, imageDesc, NULL,
                                                                  [[self visualContext] quickTimeContext], &cb, (ICMDecompressionSessionRef *)&wb_icmSession));
       DisposeHandle((Handle)imageDesc);
     }
@@ -152,7 +152,7 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
     wb_pool = NULL;
     CVPixelBufferPoolRelease(previous);
   }
-  
+
   if (aMovie) {
     GWorldPtr srcGWorld = NULL;
     GetMovieGWorld([aMovie quickTimeMovie], &srcGWorld, NULL);
@@ -161,33 +161,33 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
       Rect rect;
       GetPortBounds(srcGWorld, &rect);
       PixMapHandle hPixMap = GetGWorldPixMap(srcGWorld);
-      
+
       CFNumberRef value;
-      CFMutableDictionaryRef attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, 
+      CFMutableDictionaryRef attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
                                                                &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-      
+
       SInt32 integer = GETPIXMAPPIXELFORMAT(*hPixMap);
       value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       CFDictionarySetValue(attrs, kCVPixelBufferPixelFormatTypeKey, value);
       CFRelease(value);
-      
+
       /* we don't really care about the image structure. we just uses the buffer pool to store raw data */
       /* so we make sure this buffer will be large enough to store the pixmap */
       integer = ceil(GetPixRowBytes(hPixMap) / 4.0); //ABS(rect.right - rect.left);
       value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       CFDictionarySetValue(attrs, kCVPixelBufferWidthKey, value);
       CFRelease(value);
-      
+
       integer = ABS(rect.top - rect.bottom);
       value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       CFDictionarySetValue(attrs, kCVPixelBufferHeightKey, value);
       CFRelease(value);
-      
+
       //      integer = 16; //GetPixRowBytes(hPixMap);
       //      value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       //      CFDictionarySetValue(attrs, kCVPixelBufferBytesPerRowAlignmentKey, value);
       //      CFRelease(value);
-      
+
       verify_noerr(CVPixelBufferPoolCreate(kCFAllocatorDefault, NULL, attrs, &wb_pool));
       CFRelease(attrs);
     }
@@ -198,7 +198,7 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
   [super configureMovie:aMovie];
   SetMoviePlayHints([aMovie quickTimeMovie], hintsAllowDynamicResize, hintsAllowDynamicResize);
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_movieSizeDidChange:) name:QTMovieSizeDidChangeNotification object:aMovie];
-  
+
   Rect rect;
   GWorldPtr srcGWorld = NULL;
   GetMovieBox([aMovie quickTimeMovie], &rect);
@@ -206,20 +206,20 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
   verify_noerr(_WBQDMakeQTGWorld(&rect, false, &srcGWorld));
   /* set the graphics world for displaying the movie */
   SetMovieGWorld([aMovie quickTimeMovie], srcGWorld, NULL);
-  
+
   SetMovieDrawingCompleteProc([aMovie quickTimeMovie], movieDrawingCallWhenChanged, _WBMovieDrawingCompleteProcPtr, (long)self);
-  
-  [self wbs_updateStreamingContext:aMovie]; 
+
+  [self wbs_updateStreamingContext:aMovie];
 }
 
 /* unregister notification and cleanup session & pool */
 - (void)cleanupMovie:(QTMovie *)aMovie {
   [super cleanupMovie:aMovie];
   [[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieSizeDidChangeNotification object:aMovie];
-  
+
   SetMovieDrawingCompleteProc([aMovie quickTimeMovie], movieDrawingCallWhenChanged, NULL, 0);
   SetMovieGWorld([aMovie quickTimeMovie], NULL, NULL);
-  
+
   [self wbs_updateStreamingContext:nil];
 }
 
@@ -231,13 +231,13 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
 #pragma mark Notifications
 - (void)_movieSizeDidChange:(NSNotification *)aNotification {
   Movie myMovie = [[aNotification object] quickTimeMovie];
-  
+
   Rect bounds;
   GWorldPtr srcGWorld;
   GetMovieBox(myMovie, &bounds);
   verify_noerr(_WBQDMakeQTGWorld(&bounds, false, &srcGWorld));
   SetMovieGWorld(myMovie, srcGWorld, NULL);
-  
+
   [self wbs_updateStreamingContext:[aNotification object]];
 }
 

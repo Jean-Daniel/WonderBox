@@ -59,7 +59,7 @@ WB_EXPORT
 int WBDigestUpdate(WBDigestContext *ctxt, const void *data, size_t len);
 /*!
 @function
- @result Returns the digest length on success, 0 if an error occured 
+ @result Returns the digest length on success, 0 if an error occured
  */
 WB_EXPORT
 int WBDigestFinal(unsigned char *md, WBDigestContext *ctxt);

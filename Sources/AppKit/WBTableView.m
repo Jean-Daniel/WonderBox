@@ -95,25 +95,25 @@
         NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
-        
-        if (column != -1 && row != -1) {    
+
+        if (column != -1 && row != -1) {
           NSTableColumn *col = [[self tableColumns] objectAtIndex:column];
-          if ([col isEditable]) {  
+          if ([col isEditable]) {
             // Check if already editing
             if ([self editedRow] == row && [self editedColumn] == column) return;
-            
+
             // does it click in an editable text zone (10.5 only)
             if ([self respondsToSelector:@selector(preparedCellAtColumn:row:)]) {
               NSCell *cell = [self preparedCellAtColumn:column row:row];
-              NSUInteger test = [cell hitTestForEvent:theEvent 
-                                               inRect:[self frameOfCellAtColumn:column row:row] 
+              NSUInteger test = [cell hitTestForEvent:theEvent
+                                               inRect:[self frameOfCellAtColumn:column row:row]
                                                ofView:self];
               if ((test & NSCellHitEditableTextArea) == 0) {
                 [super mouseDown:theEvent];
                 return;
               }
             }
-            
+
             // Check if editing allowed
             if ([delegate tableView:self shouldEditTableColumn:col row:row]) {
               // Select row if needed

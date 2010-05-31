@@ -52,14 +52,14 @@ typedef struct {
     CGFloat start;
     WBShadingColor startColor;
     CGFloat end;
-    WBShadingColor endColor; 
+    WBShadingColor endColor;
     WBInterpolationDefinition fct; // set to kWBInterpolationDefault to use default function
   } steps[];
 } WBGradientDefinition;
 
 /*!
  @class WBGradientBuilder
- 
+
  */
 WB_CLASS_EXPORT
 @interface WBGradientBuilder : NSObject {
@@ -80,11 +80,11 @@ WB_CLASS_EXPORT
 - (id)init;
 - (id)initWithColorSpace:(NSColorSpace *)aColorSpace; // designated
 
-- (void)addStepFrom:(CGFloat)value components:(const CGFloat *)startColor 
+- (void)addStepFrom:(CGFloat)value components:(const CGFloat *)startColor
                  to:(CGFloat)value components:(const CGFloat *)endColor
       interpolation:(WBInterpolationFunction *)fct;
 
-- (void)addStepFrom:(CGFloat)value color:(NSColor *)aColor 
+- (void)addStepFrom:(CGFloat)value color:(NSColor *)aColor
                  to:(CGFloat)value color:(NSColor *)endColor
       interpolation:(WBInterpolationFunction  *)fct;
 

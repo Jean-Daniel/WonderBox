@@ -15,8 +15,8 @@
 /* According to “Runtime Configuration Guidelines”, we should use short version string */
 CFStringRef const WBVersionBundleKey = CFSTR("CFBundleShortVersionString");
 
-/* 
- Version number: 
+/*
+ Version number:
  major.minor.bug[status]build
  - Possible status:
  d: devel
@@ -41,7 +41,7 @@ bool WBVersionGetBundleVersion(CFBundleRef bundle, CFIndex *major, CFIndex *mino
 bool WBVersionDecompose(CFStringRef version, CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build) {
   if (!version || CFStringGetLength(version) > 64)
     return 0;
-  
+
   bool ok = true;
   char buffer[128];
   CFIndex vers[3] = {0, 0, 0};
@@ -62,7 +62,7 @@ bool WBVersionDecompose(CFStringRef version, CFIndex *major, CFIndex *minor, CFI
     if (major) *major = vers[0];
     if (minor) *minor = vers[1];
     if (bug) *bug = vers[2];
-    
+
     /* default values */
     if (stage) *stage = kWBVersionStageFinal;
     if (build) *build = 0;
@@ -118,7 +118,7 @@ CFStringRef WBVersionCreateString(CFIndex major, CFIndex minor, CFIndex bug, WBV
   CFStringAppendFormat(str, NULL, CFSTR("%lu.%lu"), (long)major, (long)minor);
   if (bug)
     CFStringAppendFormat(str, NULL, CFSTR(".%lu"), (long)bug);
-  
+
   if (build || kWBVersionStageFinal != stage) {
     const char *stg = nil;
     switch (stage) {
@@ -129,7 +129,7 @@ CFStringRef WBVersionCreateString(CFIndex major, CFIndex minor, CFIndex bug, WBV
       case kWBVersionStageBeta:
         stg = "b"; break;
       case kWBVersionStageCandidate:
-        stg = "rc"; break;        
+        stg = "rc"; break;
       case kWBVersionStageFinal:
         stg = "r"; break;
     }
@@ -148,7 +148,7 @@ UInt64 WBVersionGetCurrentNumber(void) {
 UInt64 WBVersionGetBundleNumber(CFBundleRef bundle) {
 	CFIndex build;
   WBVersionStage stage;
-  CFIndex major, minor, bug;  
+  CFIndex major, minor, bug;
   if (WBVersionGetBundleVersion(bundle, &major, &minor, &bug, &stage, &build))
     return WBVersionComposeNumber(major, minor, bug, stage, build);
   return kWBVersionInvalid;

@@ -24,24 +24,24 @@ WB_CLASS_EXPORT
   NSSize wb_size; // layer size.
   NSSize wb_csize; // canvas size.
   NSSize wb_content; // content size.
-  
+
   /* Box */
   NSRect wb_box;
   NSSize wb_padding;
-  
+
   CGFloat wb_bwidth; // border width
   CGFloat wb_radius; // corner radius
-  
+
   NSColor *wb_border; // default transparent or none
   NSColor *wb_background; // default transparent or none
-  
+
   struct _wb_slFlags {
     unsigned int dirty:1;
     /* box alignment */
     unsigned int box_right:1;
     unsigned int box_bottom:1;
     unsigned int box_content:1; // defined content size
-    
+
     unsigned int cnt_halign:2;
     unsigned int cnt_valign:2;
   } wb_blFlags;

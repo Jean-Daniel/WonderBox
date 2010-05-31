@@ -207,10 +207,10 @@ CFIndex GuessDecodedLength(CFIndex srcLen) {
 }
 
 static
-CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length, 
+CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length,
                                              const char *charset, bool padded);
 static
-CFDataRef _WBBase64CreateDataByDecodingBytes(const void *bytes, CFIndex length, 
+CFDataRef _WBBase64CreateDataByDecodingBytes(const void *bytes, CFIndex length,
                                              const char *charset, bool requirePadding);
 
 static
@@ -231,14 +231,14 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
 CFDataRef WBBase64CreateDataByEncodingData(CFDataRef data) {
   if (!data) return NULL;
   return _WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data),
-                                            CFDataGetLength(data), 
+                                            CFDataGetLength(data),
                                             kBase64EncodeChars, true);
 }
 
 CFDataRef WBBase64CreateDataByDecodingData(CFDataRef data) {
   if (!data) return NULL;
   return _WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(data),
-                                            CFDataGetLength(data), 
+                                            CFDataGetLength(data),
                                             kBase64DecodeChars, true);
 }
 
@@ -254,7 +254,7 @@ CFStringRef WBBase64CreateStringByEncodingData(CFDataRef data) {
   if (!data) return NULL;
   CFStringRef result = NULL;
   CFDataRef converted = _WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data),
-                                                           CFDataGetLength(data), 
+                                                           CFDataGetLength(data),
                                                            kBase64EncodeChars, true);
   if (converted) {
     result = CFStringCreateWithBytes(kCFAllocatorDefault, CFDataGetBytePtr(converted),
@@ -266,7 +266,7 @@ CFStringRef WBBase64CreateStringByEncodingData(CFDataRef data) {
 
 CFStringRef WBBase64CreateStringByEncodingBytes(const void *bytes, CFIndex length) {
   CFStringRef result = nil;
-  CFDataRef converted = _WBBase64CreateDataByEncodingBytes(bytes, length, 
+  CFDataRef converted = _WBBase64CreateDataByEncodingBytes(bytes, length,
                                                            kBase64EncodeChars, true);
   if (converted) {
     result = CFStringCreateWithBytes(kCFAllocatorDefault, CFDataGetBytePtr(converted),
@@ -279,7 +279,7 @@ CFStringRef WBBase64CreateStringByEncodingBytes(const void *bytes, CFIndex lengt
 CFDataRef WBBase64CreateDataByDecodingString(CFStringRef string) {
   if (!string) return NULL;
   CFDataRef result = NULL;
-  CFDataRef data = CFStringCreateExternalRepresentation(kCFAllocatorDefault, string, 
+  CFDataRef data = CFStringCreateExternalRepresentation(kCFAllocatorDefault, string,
                                                         kCFStringEncodingASCII, 0);
   if (data) {
     result = _WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(data),
@@ -302,14 +302,14 @@ CFDataRef WBBase64CreateDataByDecodingString(CFStringRef string) {
 CFDataRef WBWSBase64CreateDataByEncodingData(CFDataRef data, bool padded) {
   if (!data) return NULL;
   return _WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data),
-                                            CFDataGetLength(data), 
+                                            CFDataGetLength(data),
                                             kWebSafeBase64EncodeChars, padded);
 }
 
 CFDataRef WBWSBase64CreateDataByDecodingData(CFDataRef data) {
   if (!data) return NULL;
   return _WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(data),
-                                            CFDataGetLength(data), 
+                                            CFDataGetLength(data),
                                             kWebSafeBase64DecodeChars, false);
 }
 
@@ -325,7 +325,7 @@ CFStringRef WBWSBase64CreateStringByEncodingData(CFDataRef data, bool padded) {
   if (!data) return NULL;
   CFStringRef result = NULL;
   CFDataRef converted = _WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data),
-                                                           CFDataGetLength(data), 
+                                                           CFDataGetLength(data),
                                                            kWebSafeBase64EncodeChars, padded);
   if (converted) {
     result = CFStringCreateWithBytes(kCFAllocatorDefault, CFDataGetBytePtr(converted),
@@ -337,7 +337,7 @@ CFStringRef WBWSBase64CreateStringByEncodingData(CFDataRef data, bool padded) {
 
 CFStringRef WBWSBase64CreateStringByEncodingBytes(const void *bytes, CFIndex length, bool padded) {
   CFStringRef result = nil;
-  CFDataRef converted = _WBBase64CreateDataByEncodingBytes(bytes, length, 
+  CFDataRef converted = _WBBase64CreateDataByEncodingBytes(bytes, length,
                                                            kWebSafeBase64EncodeChars, padded);
   if (converted) {
     result = CFStringCreateWithBytes(kCFAllocatorDefault, CFDataGetBytePtr(converted),
@@ -350,7 +350,7 @@ CFStringRef WBWSBase64CreateStringByEncodingBytes(const void *bytes, CFIndex len
 CFDataRef WBWSBase64CreateDataByDecodingString(CFStringRef string) {
   if (!string) return NULL;
   CFDataRef result = NULL;
-  CFDataRef data = CFStringCreateExternalRepresentation(kCFAllocatorDefault, string, 
+  CFDataRef data = CFStringCreateExternalRepresentation(kCFAllocatorDefault, string,
                                                         kCFStringEncodingASCII, 0);
   if (data) {
     result = _WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(data),
@@ -374,7 +374,7 @@ CFDataRef WBWSBase64CreateDataByDecodingString(CFStringRef string) {
 // Returns:
 //   an autorelease NSData with the encoded data, nil if any error.
 //
-CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length, 
+CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length,
                                              const char *charset, bool padded) {
   // how big could it be?
   CFIndex maxLength = CalcEncodedLength(length, padded);
@@ -384,7 +384,7 @@ CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length,
   // do it
   CFIndex finalLength = _WBBase64EncodeBytes(bytes, length,
                                              CFDataGetMutableBytePtr(result),
-                                             CFDataGetLength(result), 
+                                             CFDataGetLength(result),
                                              charset, padded);
   if (finalLength) {
     WBCAssert(finalLength == maxLength, "how did we calc the length wrong?");
@@ -407,7 +407,7 @@ CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length,
 //   an autorelease NSData with the decoded data, nil if any error.
 //
 //
-CFDataRef _WBBase64CreateDataByDecodingBytes(const void *bytes, CFIndex length, 
+CFDataRef _WBBase64CreateDataByDecodingBytes(const void *bytes, CFIndex length,
                                              const char *charset, bool requirePadding) {
   // could try to calculate what it will end up as
   CFIndex maxLength = GuessDecodedLength(length);
@@ -449,10 +449,10 @@ CFIndex _WBBase64EncodeBytes(const char *srcBytes, CFIndex srcLen,
   if (!srcLen || !destLen || !srcBytes || !destBytes) {
     return 0;
   }
-  
+
   UInt8 *curDest = destBytes;
   const unsigned char *curSrc = (const unsigned char *)(srcBytes);
-  
+
   // Three bytes of data encodes to four characters of cyphertext.
   // So we can pump through three-byte chunks atomically.
   while (srcLen > 2) {
@@ -462,13 +462,13 @@ CFIndex _WBBase64EncodeBytes(const char *srcBytes, CFIndex srcLen,
     curDest[1] = charset[((curSrc[0] & 0x03) << 4) + (curSrc[1] >> 4)];
     curDest[2] = charset[((curSrc[1] & 0x0f) << 2) + (curSrc[2] >> 6)];
     curDest[3] = charset[curSrc[2] & 0x3f];
-    
+
     curDest += 4;
     curSrc += 3;
     srcLen -= 3;
     destLen -= 4;
   }
-  
+
   // now deal with the tail (<=2 bytes)
   switch (srcLen) {
     case 0:
@@ -527,7 +527,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
   if (!srcLen || !destLen || !srcBytes || !destBytes) {
     return 0;
   }
-  
+
   int decode;
   CFIndex destIndex = 0;
   int state = 0;
@@ -535,14 +535,14 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
   while (srcLen-- && (ch = *srcBytes++) != 0)  {
     if (IsSpace(ch))  // Skip whitespace
       continue;
-    
+
     if (ch == kBase64PaddingChar)
       break;
-    
+
     decode = charset[(unsigned int)ch];
     if (decode == kBase64InvalidChar)
       return 0;
-    
+
     // Four cyphertext characters decode to three bytes.
     // Therefore we can be in one of four states.
     switch (state) {
@@ -588,7 +588,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
         break;
     }
   }
-  
+
   // We are done decoding Base-64 chars.  Let's see if we ended
   //      on a byte boundary, and/or with erroneous trailing characters.
   if (ch == kBase64PaddingChar) {               // We got a pad char
@@ -619,7 +619,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
     }
   } else {
     // We ended by seeing the end of the string.
-    
+
     if (requirePadding) {
       // If we require padding, then anything but state 0 is an error.
       if (state != 0) {
@@ -633,7 +633,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
       }
     }
   }
-  
+
   // If then next piece of output was valid and got written to it means we got a
   // very carefully crafted input that appeared valid but contains some trailing
   // bits past the real length, so just toss the thing.
@@ -641,6 +641,6 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
       (destBytes[destIndex] != 0)) {
     return 0;
   }
-  
+
   return destIndex;
 }

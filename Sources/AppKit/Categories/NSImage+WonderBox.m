@@ -17,7 +17,7 @@ static NSMutableSet *sMissingImages = nil;
 
 + (id)imageNamed:(NSString *)name inBundleWithIdentifier:(NSBundle *)bundle {
   if (!name) return nil;
-  
+
   NSImage *image = nil;
   /* First check internal cache */
   if (sMissingImages && [sMissingImages containsObject:name])

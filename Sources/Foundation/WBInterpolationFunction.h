@@ -16,7 +16,7 @@ typedef struct _WBInterpolationCallBackContext {
   WBInterpolationEvaluateCallBack cb;
   WBInterpolationReleaseInfoCallBack releaseInfo;
 } WBInterpolationCallBack;
-  
+
 WB_EXPORT const WBInterpolationCallBack const WBInterpolationCallBackSin;
 WB_EXPORT const WBInterpolationCallBack const WBInterpolationCallBackCircular;
 
@@ -26,7 +26,7 @@ WB_EXPORT CGFloat WBInterpolationCircular(CGFloat factor, void *info);
 WB_CLASS_EXPORT
 @interface WBInterpolationFunction : NSObject {
 @private
-  
+
 }
 
 + (WBInterpolationFunction *)circularInterpolation;
@@ -52,7 +52,7 @@ typedef struct _WBBezierCurve {
   CGFloat dx, dy;
 } WBBezierCurve;
 
-WB_EXPORT 
+WB_EXPORT
 void WBBezierCurveInitialize(WBBezierCurve *curve, CGPoint p0, CGPoint c0, CGPoint c1, CGPoint p1);
 
 WB_EXPORT
@@ -66,7 +66,7 @@ CGFloat WBBezierCurveEvaluateY(const WBBezierCurve *curve, CGFloat t);
 WB_EXPORT
 CGFloat WBBezierCurveSolve(const WBBezierCurve *curve, CGFloat x, CGFloat epsilon);
 
-WB_INLINE 
+WB_INLINE
 CGFloat WBBezierCurveEpsilonForDuration(CGFloat duration) {
   return 1.0 / (200.0 * duration);
 }

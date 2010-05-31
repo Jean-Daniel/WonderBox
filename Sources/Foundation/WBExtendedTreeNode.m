@@ -7,14 +7,14 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
- 
+
 #import WBHEADER(WBExtendedTreeNode.h)
 
 @implementation WBExtendedTreeNode
 #pragma mark Protocol Implementation
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    
+
   }
   return self;
 }
@@ -35,7 +35,7 @@
 
 #pragma mark -
 #pragma mark Children Notifications
-/* Methods covered by -perfomOperation 
+/* Methods covered by -perfomOperation
 - (void)prependChild:(WBTreeNode *)child {
 }
 - (void)appendChild:(WBTreeNode *)child {
@@ -130,7 +130,7 @@
     /* Do not call self to avoid multiple notifications */
     [super removeAllChildren];
   }
-  
+
   if ([objects count] > 0) {
     id child;
     id children = [objects reverseObjectEnumerator];

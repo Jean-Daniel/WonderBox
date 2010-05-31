@@ -59,7 +59,7 @@ WB_CLASS_EXPORT
 */
 - (AliasHandle)aliasHandle;
 - (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
-// TODO: 
+// TODO:
 //- (OSStatus)setTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
 
 @end

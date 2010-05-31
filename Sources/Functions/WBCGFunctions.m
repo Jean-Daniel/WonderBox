@@ -16,8 +16,8 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
     DCLog("Negative or nil radius -> fall back to rect.");
     CGContextAddRect(context, rect);
     return;
-  } 
-  
+  }
+
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
   CGFloat maxRadius = MIN(width, height) / 2;
@@ -67,8 +67,8 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
     DCLog("Negative or nil radius -> fall back to rect.");
     CGPathAddRect(path, transform, rect);
     return;
-  } 
-  
+  }
+
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
   CGFloat maxRadius = MIN(width, height) / 2;
@@ -77,7 +77,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
     DCLog("radius to big -> adjust it.");
     radius = maxRadius;
   }
-  
+
   // In order to draw a rounded rectangle, we will take advantage of the fact that
 	// CGContextAddArcToPoint will draw straight lines past the start and end of the arc
 	// in order to create the path from the current position and the destination position.
@@ -122,7 +122,7 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
     WBCGPathAddRoundRect(path, transform, rect, radius.width);
     return;
   }
-  
+
   if (radius.width <= 0 || (radius.width * 2) > width) {
     DCLog("Invalid Radius Width.");
     radius.width = 0;
@@ -131,15 +131,15 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
     DCLog("Invalid Radius Height.");
     radius.height = 0;
   }
-  
+
   if (radius.width <= 0 && radius.height <= 0) {
     CGPathAddRect(path, transform, rect);
     return;
   }
-  
+
   CGFloat lx = KAPPA * radius.width;
   CGFloat ly = KAPPA * radius.height;
-  
+
   CGPathMoveToPoint(path, transform, x + radius.width, y);
   /* Bottom */
   CGPathAddLineToPoint(path, transform, CGRectGetMaxX(rect) - radius.width, y);
@@ -154,7 +154,7 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
   /* Top */
   CGPathAddLineToPoint(path, transform, x + radius.width, CGRectGetMaxY(rect));
   /* Top - Left */
-  CGPathAddCurveToPoint(path, transform, x + radius.width - lx, CGRectGetMaxY(rect), 
+  CGPathAddCurveToPoint(path, transform, x + radius.width - lx, CGRectGetMaxY(rect),
                         x, CGRectGetMaxY(rect) - radius.height + ly, x, CGRectGetMaxY(rect) - radius.height);
   /* Left */
   CGPathAddLineToPoint(path, transform, x, y + radius.height);
@@ -168,12 +168,12 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
   CGFloat y = CGRectGetMinY(rect);
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
-  
+
   if (fequal(radius.width, radius.height)) {
     WBCGContextAddRoundRect(context, rect, radius.width);
     return;
   }
-  
+
   if (radius.width <= 0 || (radius.width * 2) > width) {
     DCLog("Invalid Radius Width.");
     radius.width = 0;
@@ -182,15 +182,15 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
     DCLog("Invalid Radius Height.");
     radius.height = 0;
   }
-  
+
   if (radius.width <= 0 && radius.height <= 0) {
     CGContextAddRect(context, rect);
     return;
   }
-  
+
   CGFloat lx = KAPPA * radius.width;
   CGFloat ly = KAPPA * radius.height;
-  
+
   CGContextMoveToPoint(context, x + radius.width, y);
   /* Bottom */
   CGContextAddLineToPoint(context, CGRectGetMaxX(rect) - radius.width, y);
@@ -205,7 +205,7 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
   /* Top */
   CGContextAddLineToPoint(context, x + radius.width, CGRectGetMaxY(rect));
   /* Top - Left */
-  CGContextAddCurveToPoint(context, x + radius.width - lx, CGRectGetMaxY(rect), 
+  CGContextAddCurveToPoint(context, x + radius.width - lx, CGRectGetMaxY(rect),
                            x, CGRectGetMaxY(rect) - radius.height + ly,  x, CGRectGetMaxY(rect) - radius.height);
   /* Left */
   CGContextAddLineToPoint(context, x, y + radius.height);
@@ -218,15 +218,15 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
 void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
   check(sides >= 5);
   if (sides < 5) return;
-  
+
   /* angles */
   CGFloat omega = M_PI_2;
   CGFloat delta = M_PI / sides;
-  
+
   /* Internal rayon */
   if (ir <= 0)
     ir = r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta);
-  
+
   CGContextMoveToPoint(ctxt, center.x, center.y + r);
   omega -= delta;
   CGContextAddLineToPoint(ctxt, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
@@ -241,15 +241,15 @@ void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloa
 void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
   check(sides >= 5);
   if (sides < 5) return;
-  
+
   /* angles */
   CGFloat omega = M_PI_2;
   CGFloat delta = M_PI / sides;
-  
+
   /* Internal rayon */
   if (ir <= 0)
     ir = r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta);
-  
+
   CGPathMoveToPoint(path, transform, center.x, center.y + r);
   omega -= delta;
   CGPathAddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
@@ -265,13 +265,13 @@ void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, 
 void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   CGContextSaveGState(context);
   CGContextClipToRect(context,rect);
-  
+
   CGFloat width = CGRectGetMaxX(rect);
   CGFloat height = CGRectGetHeight(rect);
-  
+
   CGFloat step = pi * height / (2 * period);
   CGFloat delta = period * step;
-  
+
   CGFloat end, center, middle;
   middle = CGRectGetMidY(rect);
   end = CGRectGetMinX(rect) - 3 * step/2.;
@@ -279,7 +279,7 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   CGContextBeginPath(context);
   /* Move to x, mid y */
   CGContextMoveToPoint(context, end, middle);
-  
+
   while (end < width) {
     center = end + step;
     end = center + step;
@@ -288,7 +288,7 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
                               center, middle - delta,
                               end, middle);
   }
-  
+
   CGContextStrokePath(context);
   /* Clear path data */
   CGContextBeginPath(context);
@@ -383,7 +383,7 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
 #pragma mark Images
 CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options) {
   if (!url) return NULL;
-  
+
   CGImageRef img = NULL;
   CGImageSourceRef src = CGImageSourceCreateWithURL(url, options);
   if (src) {
@@ -404,7 +404,7 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
                                 WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                                 [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                                 nil];
-      properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&tiffDict, 1, 
+      properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&tiffDict, 1,
                                       &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // leak: WBCFRelease
     }
     CGImageDestinationAddImage(dest, image, properties);
@@ -433,7 +433,7 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
                             nil];
   CFDictionaryRef properties = WBNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
                                                                               forKey:(id)kCGImagePropertyTIFFDictionary]);
-  
+
   CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
   CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypeTIFF, 1, NULL);
   if (dest) {

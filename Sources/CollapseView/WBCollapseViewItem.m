@@ -23,7 +23,7 @@
   [aCoder encodeObject:wb_title forKey:@"item.title"];
   [aCoder encodeObject:wb_uid forKey:@"item.identifier"];
   [aCoder encodeConditionalObject:wb_owner forKey:@"item.owner"];
-  
+
   [aCoder encodeBool:wb_cviFlags.animates forKey:@"item.flags.animates"];
   [aCoder encodeBool:wb_cviFlags.expanded forKey:@"item.flags.expanded"];
 }
@@ -34,7 +34,7 @@
     wb_title = [[aCoder decodeObjectForKey:@"item.title"] retain];
     wb_uid = [[aCoder decodeObjectForKey:@"item.identifier"] retain];
     wb_owner = [aCoder decodeObjectForKey:@"item.owner"];
-    
+
     wb_cviFlags.animates = [aCoder decodeBoolForKey:@"item.flags.animates"];
     wb_cviFlags.expanded = [aCoder decodeBoolForKey:@"item.flags.expanded"];
   }
@@ -91,7 +91,7 @@
 - (void)setExpanded:(BOOL)expanded animate:(BOOL)flag {
   if (expanded && wb_cviFlags.expanded) return;
   if (!expanded && !wb_cviFlags.expanded) return;
-  
+
   if (wb_owner)
     [wb_owner _setExpanded:expanded forItem:self animate:flag];
   else

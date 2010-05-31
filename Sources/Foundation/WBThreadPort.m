@@ -30,7 +30,7 @@
 @private
   id wb_target;
   SEL wb_action;
-  
+
   id wb_argument; // argument and result
 }
 
@@ -115,7 +115,7 @@ mach_port_t _WBThreadGetSendPort(void) {
   return port;
 }
 
-static 
+static
 WBInternalClass(RecorderProxy) *_WBThreadGetRecorder(void) {
   WBInternalClass(RecorderProxy) *proxy = pthread_getspecific(sThreadRecorderKey);
   if (!proxy) {
@@ -156,10 +156,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     /* invalidate main thread */
     if (port == sMainThread)
       sMainThread = nil;
-    
+
     [port invalidate];
     [port release];
-    
+
     [pool drain];
   }
 }
@@ -199,8 +199,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     [self release];
     return current;
   }
-  
-  if (self = [super init]) {    
+
+  if (self = [super init]) {
     // register receive port.
     CFMachPortContext ctxt = { 0, self, NULL, NULL, NULL };
     wb_port = CFMachPortCreate(kCFAllocatorDefault, _WBTPMachMessageCallBack, &ctxt, NULL);
@@ -209,13 +209,13 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       [self release];
       return nil;
     }
-    
+
     CFRunLoopSourceRef src = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, wb_port, 0);
     if (src) {
       CFRunLoopAddSource(CFRunLoopGetCurrent(), src, kCFRunLoopCommonModes);
       CFRelease(src);
     }
-    
+
     wb_timeout = MACH_MSG_TIMEOUT_NONE;
     wb_thread = [[NSThread currentThread] retain];
   }
@@ -226,7 +226,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   WBThreadPort *current = (WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (!current) {
     current = [[WBThreadPort alloc] wb_init]; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
-    
+
     if (0 != pthread_setspecific(sThreadReceivePortKey, current)) {
       WBCLogWarning("pthread_setspecific failed");
       [current invalidate];
@@ -249,11 +249,11 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (void)invalidate {
   @synchronized(self) {
-    if (wb_port) {     
+    if (wb_port) {
       CFMachPortInvalidate(wb_port);
       CFRelease(wb_port);
       wb_port = nil;
-      
+
       [wb_thread autorelease];
       wb_thread = nil;
     }
@@ -275,23 +275,23 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (void)performInvocation:(NSInvocation *)anInvocation waitUntilDone:(NSInteger)shouldWait timeout:(uint32_t)timeout {
   if (![anInvocation target])
 		WBThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
-  
+
   if ([wb_thread isEqual:[NSThread currentThread]]) {
     WBLogWarning(@"caller thread is the target thread. You should not use 'thread port' to send intra-thread messages.");
     [anInvocation invoke];
     return;
   }
-  
+
   bool synch;
 	if (shouldWait < 0)
     synch = [[anInvocation methodSignature] methodReturnLength] > 0;
   else
     synch = shouldWait != 0;
-  
+
   /* for asynchronous call, we should retains arguments */
   if (!synch && anInvocation)
     [anInvocation retainArguments];
-  
+
   wbinvoke_msg msg;
   memset(&msg, 0, sizeof(msg));
   mach_msg_header_t *send_hdr = &msg.header;
@@ -300,21 +300,21 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   send_hdr->msgh_local_port = MACH_PORT_NULL;
   send_hdr->msgh_remote_port = CFMachPortGetPort(wb_port);
   send_hdr->msgh_id = OSAtomicIncrement32(&msg_uid);
-  
+
   if (synch) {
     send_hdr->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE);
     send_hdr->msgh_local_port = _WBThreadGetSendPort();
   }
   msg.async = !synch;
   msg.invocation = (intptr_t)[anInvocation retain];
-  
+
   /* Send invocation to target thread */
   mach_msg_option_t opts = MACH_SEND_MSG;
   if (timeout != MACH_MSG_TIMEOUT_NONE) opts |= MACH_SEND_TIMEOUT;
   mach_error_t err = mach_msg(send_hdr, opts, send_hdr->msgh_size, 0, MACH_PORT_NULL, timeout, MACH_PORT_NULL);
   /* handle result */
   if (MACH_MSG_SUCCESS != err) {
-    /* invocation is released by the target thread, 
+    /* invocation is released by the target thread,
      so if an error occured, it is not released */
     [anInvocation release];
     switch (err) {
@@ -330,7 +330,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     wbreply_msg reply;
     memset(&reply, 0, sizeof(reply));
     mach_msg_header_t *recv_hdr = &reply.header;
-    
+
     /* loop until you received the expected message */
     do {
       /* reconfigure message before each msg_send call */
@@ -345,11 +345,11 @@ void _WBThreadReceivePortDestructor(void *ptr) {
         WBCLogWarning("Unexpected message: id is %i and should be %i", recv_hdr->msgh_id, send_hdr->msgh_id);
       }
     } while (err == MACH_MSG_SUCCESS && recv_hdr->msgh_id != send_hdr->msgh_id);
-    
+
     /* handle result */
     switch (err) {
       case MACH_MSG_SUCCESS:
-        if (reply.exception) 
+        if (reply.exception)
           @throw [(id)reply.exception autorelease];
         break;
       case MACH_RCV_TIMED_OUT:
@@ -381,11 +381,11 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (id)wb_prepareWithInvocationTarget:(id)target waitUntilDone:(NSInteger)synch {
   if (!wb_thread)
 		WBThrowException(NSInvalidArgumentException, @"call method on invalid port");
-  
+
   // message come from the target thread, no need to forward, use fast path.
-  if ([wb_thread isEqual:[NSThread currentThread]]) 
+  if ([wb_thread isEqual:[NSThread currentThread]])
     return target;
-  
+
   WBInternalClass(RecorderProxy) *recorder = _WBThreadGetRecorder();
   [recorder setPort:self];
   [recorder setMode:synch];
@@ -404,7 +404,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 //- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
 //  if (!wb_target)
 //    [super methodSignatureForSelector:aSelector];
-//  
+//
 //  return [wb_target methodSignatureForSelector:aSelector];
 //}
 
@@ -412,10 +412,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 //  id target = wb_target;
 //  wb_target = nil;
 //  [wb_lock unlock];
-//  
-//  if (target && ![target respondsToSelector:[anInvocation selector]]) 
+//
+//  if (target && ![target respondsToSelector:[anInvocation selector]])
 //    [target doesNotRecognizeSelector:[anInvocation selector]];
-//  
+//
 //  if (!target) {
 //    [super forwardInvocation:anInvocation];
 //  } else {
@@ -427,7 +427,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark Message handler
 - (void)handleMachMessage:(void *)machMessage {
   wbinvoke_msg *msg = (wbinvoke_msg *)machMessage;
-  
+
   id error = nil;
   NSInvocation *invocation = (NSInvocation *)msg->invocation;
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -441,17 +441,17 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (!msg->async) {
     wbreply_msg reply_msg;
     memset(&reply_msg, 0, sizeof(reply_msg));
-    
+
     mach_msg_header_t *reply_hdr = &reply_msg.header;
-    
+
     reply_hdr->msgh_id = msg->header.msgh_id;
     reply_hdr->msgh_bits = MACH_MSGH_BITS_REMOTE(msg->header.msgh_bits);
     reply_hdr->msgh_size = (mach_msg_size_t)(sizeof(reply_msg) - sizeof(reply_msg.trailer));
     reply_hdr->msgh_local_port = MACH_PORT_NULL;
     reply_hdr->msgh_remote_port = msg->header.msgh_remote_port;
-    
+
     reply_msg.exception = (intptr_t)[error retain];
-    
+
     mach_msg_option_t opts = MACH_SEND_MSG;
     if (wb_timeout != MACH_MSG_TIMEOUT_NONE) opts |= MACH_SEND_TIMEOUT;
     /* send message */
@@ -460,7 +460,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       WBCLogWarning("mach_msg(reply) : %s", mach_error_string(err));
     }
   } else if (error) {
-    WBLogWarning(@"exception occured during asynchronous call to [%@ %@]: %@: %@", 
+    WBLogWarning(@"exception occured during asynchronous call to [%@ %@]: %@: %@",
                  [[invocation target] class], NSStringFromSelector([invocation selector]),
                  [error respondsToSelector:@selector(name)] ? [error name] : error,
                  [error respondsToSelector:@selector(reason)] ? [error reason] : @"undefined reason");
@@ -490,7 +490,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark -
 #pragma mark Detach Thread
 
-// MARK: Thread 
+// MARK: Thread
 @interface WBInternalClass(ThreadArgument) : NSObject {
 @private
   WBThreadPort *wb_port;
@@ -522,16 +522,16 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 + (void)wb_ThreadPortMain:(WBInternalClass(ThreadArgument) *)arg {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   [arg.condition lock];
-  arg.port = [WBThreadPort currentPort]; 
+  arg.port = [WBThreadPort currentPort];
   [arg.condition signal];
   [arg.condition unlock];
-  
+
   id target = arg.target;
   SEL action = arg.action;
   id argument = arg.argument;
-  
+
   [pool drain];
-  
+
   [target performSelector:action withObject:argument];
 }
 
@@ -548,21 +548,21 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 + (WBThreadPort *)detachThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument {
   WBInternalClass(ThreadArgument) *arg = [[WBInternalClass(ThreadArgument) alloc] init];
-  
+
   NSCondition *condition = [[NSCondition alloc] init];
   arg.condition = condition;
   arg.target = target;
   arg.action = selector;
   arg.argument = argument;
-  
-  [NSThread detachNewThreadSelector:@selector(wb_ThreadPortMain:) 
+
+  [NSThread detachNewThreadSelector:@selector(wb_ThreadPortMain:)
                            toTarget:WBInternalClass(ThreadArgument).class withObject:arg];
   // Wait thread initialization
   [condition lock];
-  while (!arg.port) 
+  while (!arg.port)
     [condition wait];
   [condition unlock];
-  
+
   WBThreadPort *port = arg.port;
   arg.condition = nil;
   [condition release];
@@ -599,9 +599,9 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark -
 - (id)forwardingTargetForSelector:(SEL)sel {
   // message come from the target thread, no need to forward, use fast path.
-  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]]) 
+  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]])
     return wb_target;
-  
+
 	return nil;
 }
 
@@ -613,7 +613,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (void)forwardInvocation:(NSInvocation *)anInvocation {
   if (wb_target) {
     [anInvocation setTarget:wb_target];
-    [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];    
+    [wb_port performInvocation:anInvocation waitUntilDone:wb_sync timeout:wb_timeout];
   }
 }
 
@@ -643,9 +643,9 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark -
 - (id)forwardingTargetForSelector:(SEL)sel {
   // message come from the target thread, no need to forward, use fast path.
-  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]]) 
+  if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]])
     return wb_target;
-  
+
 	return nil;
 }
 

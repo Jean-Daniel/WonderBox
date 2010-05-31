@@ -75,7 +75,7 @@
   } else {
     result = objects;
   }
-  
+
   if (wb_compare) {
     @try { /* If Mutable Array sort it */
       [(NSMutableArray *)result sortUsingFunction:wb_compare context:self];
@@ -103,13 +103,13 @@
 //}
 
 //#pragma mark Sorting Support
-//- (void)tableView:(NSTableView *)tableView sortDescriptorsDidChange:(NSArray *)oldDescriptors {  
+//- (void)tableView:(NSTableView *)tableView sortDescriptorsDidChange:(NSArray *)oldDescriptors {
 //}
 
 #pragma mark Drag & Drop Support
 - (BOOL)tableView:(NSTableView *)aTableView writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard*)pboard {
   id delegate = [aTableView delegate];
-  if (delegate && delegate != self && [delegate respondsToSelector:_cmd]) 
+  if (delegate && delegate != self && [delegate respondsToSelector:_cmd])
     return [delegate tableView:aTableView writeRowsWithIndexes:rowIndexes toPasteboard:pboard];
   return NO;
 }

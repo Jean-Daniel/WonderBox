@@ -26,7 +26,7 @@
   // if this line is not the only one selected
   if ([[self selectedRowIndexes] isEqualToIndexSet:rows])
     return;
-  
+
   SEL shouldSelect, selectionIndexes;
   bool outlineView = [self isKindOfClass:[NSOutlineView class]];
   if (outlineView) {
@@ -34,28 +34,28 @@
     selectionIndexes = @selector(outlineView:selectionIndexesForProposedSelection:);
   } else {
     shouldSelect = @selector(tableView:shouldSelectRow:);
-    selectionIndexes = @selector(tableView:selectionIndexesForProposedSelection:);    
+    selectionIndexes = @selector(tableView:selectionIndexesForProposedSelection:);
   }
-  
+
   if ([[self delegate] respondsToSelector:selectionIndexes]) {
-    rows = [[self delegate] performSelector:selectionIndexes 
+    rows = [[self delegate] performSelector:selectionIndexes
                                  withObject:self
                                  withObject:rows];
     if (rows)
       [self selectRowIndexes:rows byExtendingSelection:extends];
   } else if ([[self delegate] respondsToSelector:shouldSelect]) {
-    for (NSUInteger row = [rows firstIndex]; row != NSNotFound; 
+    for (NSUInteger row = [rows firstIndex]; row != NSNotFound;
          row = [rows indexGreaterThanIndex:row]) {
-      
+
       BOOL add;
       if (outlineView)
         add = [[(NSOutlineView *)self delegate] outlineView:(NSOutlineView *)self
                                            shouldSelectItem:[(NSOutlineView *)self itemAtRow:row]];
-      else 
+      else
         add = [[self delegate] tableView:self shouldSelectRow:row];
-      
+
       if (add) {
-        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:extends];  
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:extends];
         extends = true; // should append now
       }
     }
@@ -77,13 +77,13 @@
   // support only mouse down
   if ([theEvent type] != NSRightMouseDown &&
       [theEvent type] != NSLeftMouseDown) return;
-  
+
   NSInteger row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
   if (row < 0) return;
-  
+
   if ([theEvent modifierFlags] & NSCommandKeyMask) {
     // 1. cmd + click
-    // add row to selection if multi selection allowed, 
+    // add row to selection if multi selection allowed,
     // or change selection if not.
     if (![self allowsMultipleSelection] || 0 == [self numberOfSelectedRows]) {
       [self wb_selectSingleRow:row];
@@ -129,7 +129,7 @@
       //        return NO;
       //      } else
       if ([self numberOfSelectedRows] == 0 || [self allowsMultipleSelection]) {
-        //if (WBDelegateHandle([self delegate], 
+        //if (WBDelegateHandle([self delegate],
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:YES];
       }
       return NO;
@@ -155,7 +155,7 @@
         }
       }
     } else {
-      if (![self isRowSelected:row]) 
+      if (![self isRowSelected:row])
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
     }
   }

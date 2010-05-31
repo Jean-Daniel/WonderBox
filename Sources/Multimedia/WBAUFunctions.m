@@ -30,19 +30,19 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
   Boolean isWritable;
   UInt32 numberOfClasses;
   AudioUnitCocoaViewInfo * cocoaViewInfo = NULL;
-  
+
   OSStatus result = AudioUnitGetPropertyInfo(anUnit, kAudioUnitProperty_CocoaUI,
                                              kAudioUnitScope_Global, 0, &dataSize, &isWritable);
-  
+
   numberOfClasses = (dataSize - sizeof(CFURLRef)) / sizeof(CFStringRef);
-  
+
   NSURL *bundleURL = nil;
   NSString *factoryClassName = nil;
-  
+
 	// Does view have custom Cocoa UI?
   if ((result == noErr) && (numberOfClasses > 0) ) {
     cocoaViewInfo = (AudioUnitCocoaViewInfo *)malloc(dataSize);
-    if(AudioUnitGetProperty(anUnit, kAudioUnitProperty_CocoaUI, 
+    if(AudioUnitGetProperty(anUnit, kAudioUnitProperty_CocoaUI,
                             kAudioUnitScope_Global, 0, cocoaViewInfo, &dataSize) == noErr) {
       bundleURL	= (NSURL *)cocoaViewInfo->mCocoaAUViewBundleLocation;
 			// we only take the first view in this example.
@@ -75,16 +75,16 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
 			// make a view
 			AUView = [factoryInstance	uiViewForAudioUnit:anUnit withSize:aSize];
     }
-    
+
     // cleanup
     if (cocoaViewInfo) {
       if (cocoaViewInfo->mCocoaAUViewBundleLocation)
         CFRelease(cocoaViewInfo->mCocoaAUViewBundleLocation);
-      
+
       for (UInt32 i = 0; i < numberOfClasses; i++)
         if (cocoaViewInfo->mCocoaAUViewClass[i])
           CFRelease(cocoaViewInfo->mCocoaAUViewClass[i]);
-      
+
       free (cocoaViewInfo);
     }
   }

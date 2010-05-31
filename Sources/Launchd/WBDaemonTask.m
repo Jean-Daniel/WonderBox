@@ -107,7 +107,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 
 - (BOOL)isDisabled {
   return [[self valueForProperty:@LAUNCH_JOBKEY_DISABLED] boolValue];
-} 
+}
 - (void)setDisabled:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_DISABLED];
 }
@@ -121,14 +121,14 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 
 - (BOOL)debug {
   return [[self valueForProperty:@LAUNCH_JOBKEY_DEBUG] boolValue];
-} 
+}
 - (void)setDebug:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_DEBUG];
 }
 
 - (BOOL)waitForDebugger {
   return [[self valueForProperty:@LAUNCH_JOBKEY_WAITFORDEBUGGER] boolValue];
-} 
+}
 - (void)setWaitForDebugger:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_WAITFORDEBUGGER];
 }
@@ -136,35 +136,35 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 //@property(retain) id keepAlive;
 - (uint32_t)timeout {
   return [[self valueForProperty:@LAUNCH_JOBKEY_TIMEOUT] unsignedIntValue];
-} 
+}
 - (void)setTimeout:(uint32_t)aValue {
   [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_TIMEOUT];
 }
 
 - (uint32_t)exitTimeout {
   return [[self valueForProperty:@LAUNCH_JOBKEY_EXITTIMEOUT] unsignedIntValue];
-} 
+}
 - (void)setExitTimeout:(uint32_t)aValue {
   [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_EXITTIMEOUT];
 }
 
 - (uint32_t)throttleInterval {
-  return [[self valueForProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL] unsignedIntValue];  
+  return [[self valueForProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL] unsignedIntValue];
 }
 - (void)setThrottleInterval:(uint32_t)aValue {
-  [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL];  
+  [self setValue:[NSNumber numberWithUnsignedInteger:aValue] forProperty:@LAUNCH_JOBKEY_THROTTLEINTERVAL];
 }
 
 - (BOOL)startImmediatly {
   return [[self valueForProperty:@LAUNCH_JOBKEY_RUNATLOAD] boolValue];
-} 
+}
 - (void)setStartImmediatly:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_RUNATLOAD];
 }
 
 - (BOOL)launchOnlyOnce {
   return [[self valueForProperty:@LAUNCH_JOBKEY_LAUNCHONLYONCE] boolValue];
-} 
+}
 - (void)setLaunchOnlyOnce:(BOOL)flag {
   [self setValue:[NSNumber numberWithBool:flag] forProperty:@LAUNCH_JOBKEY_LAUNCHONLYONCE];
 }
@@ -220,9 +220,9 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return [_properties objectForKey:aProperty];
 }
 - (void)setValue:(id)anObject forProperty:(NSString *)aProperty {
-  if (_registred) 
+  if (_registred)
     @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"running !" userInfo:nil];
-  
+
   if (!_properties) _properties = [[NSMutableDictionary alloc] init];
   if (anObject)
     [_properties setValue:anObject forKey:aProperty];
@@ -232,7 +232,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 
 // MARK: Mach Services
 - (void)addMachService:(NSString *)portName {
-  [self _addMachService:portName properties:[NSNumber numberWithBool:YES]];  
+  [self _addMachService:portName properties:[NSNumber numberWithBool:YES]];
 }
 - (void)addMachService:(NSString *)portName properties:(NSDictionary *)properties {
   [self _addMachService:portName properties:properties];
@@ -272,7 +272,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     CFDictionaryRemoveValue(_ports, aName);
     cfport = NULL;
   }
-  
+
   mach_port_t port;
   kern_return_t kr = bootstrap_look_up(bootstrap_port, [aName UTF8String], &port);
   if (KERN_SUCCESS == kr) {
@@ -286,7 +286,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     };
     cfport = CFMachPortCreateWithPort(kCFAllocatorDefault, port, NULL, &ctxt, NULL);
     if (cfport) {
-      if (!_ports) _ports = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, 
+      if (!_ports) _ports = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
                                                       &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
       CFDictionarySetValue(_ports, aName, cfport);
       CFMachPortSetInvalidationCallBack(cfport, _CFMachPortInvalidation);
@@ -320,14 +320,14 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
       CFMachPortSetInvalidationCallBack(port, NULL);
     }
     CFRelease(_ports);
-    _ports = NULL;  
+    _ports = NULL;
   }
 }
 
 - (BOOL)registerDaemon:(NSError **)outError {
-  if (_registred) 
+  if (_registred)
     WBThrowException(NSInvalidArgumentException, @"already registred !");
-  
+
   CFErrorRef error;
   if (!WBServiceRegisterJob(WBNSToCFDictionary(_properties), &error)) {
     if (outError)
@@ -336,14 +336,14 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
       CFRelease(error);
     return NO;
   }
-  
+
   [self willChangeValueForKey:@"registred"];
   _registred = YES;
-  [self didChangeValueForKey:@"registred"];  
-  
+  [self didChangeValueForKey:@"registred"];
+
   if (_unregister)
     __WBDaemonUnregisterAtExit(self);
-  
+
   return YES;
 }
 

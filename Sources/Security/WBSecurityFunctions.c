@@ -19,13 +19,13 @@ OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght) {
   const CSSM_KEY *ckey;
   CSSM_CSP_HANDLE cspHandle;
   CSSM_KEY_SIZE keysize = {0, 0};
-  
+
   err = SecKeyGetCSSMKey(key, &ckey);
   require_noerr(err, bail);
-  
+
   err = SecKeyGetCSPHandle(key, &cspHandle);
   require_noerr(err, bail);
-  
+
   /* unimplemented */
   err = CSSM_QueryKeySizeInBits(cspHandle,
                                 CSSM_INVALID_HANDLE,
@@ -38,10 +38,10 @@ OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght) {
 
   err = SecKeyGetCSSMKey(key, &ckey);
   require_noerr(err, bail);
-  
+
   *strenght = ckey->KeyHeader.LogicalKeySizeInBits;
 #endif
-     
+
   /* unimplemented */
 //  const CSSM_X509_ALGORITHM_IDENTIFIER *algid;
 //  OSStatus err = SecKeyGetAlgorithmID(key, &algid);
@@ -59,22 +59,22 @@ static
 OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypts, CSSM_CC_HANDLE *ccHandle) {
   const CSSM_KEY *ckey;
   CSSM_CSP_HANDLE cspHandle;
-  
+
   OSStatus err = SecKeyGetCSSMKey(key, &ckey);
   require_noerr(err, bail);
-  
+
   err = SecKeyGetCSPHandle(key, &cspHandle);
   require_noerr(err, bail);
-  
+
   /* If sign or verify (~ crypts with private key, or decrypt with public key) */
   if ((crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PRIVATE_KEY) ||
       (!crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PUBLIC_KEY))
     err = CSSM_CSP_CreateSignatureContext(cspHandle, CSSM_ALGID_SHA1WithRSA, NULL, ckey, ccHandle);
   else
     err = WBCDSACreateCryptContext(cspHandle, ckey, NULL, ccHandle);
-  
+
   require_noerr(err, bail);
-  
+
 bail:
   return err;
 }
@@ -82,16 +82,16 @@ bail:
 OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) {
   CSSM_CC_HANDLE ccHandle;
   CSSM_QUERY_SIZE_DATA size = { inputSize, 0 };
-  
+
   OSStatus err = _WBKeyCreateDefaultContext(key, crypts, &ccHandle);
   require_noerr(err, bail);
-  
+
   err = CSSM_QuerySize(ccHandle, crypts, 1, &size);
   CSSM_DeleteContext(ccHandle);
   require_noerr(err, bail);
-  
+
   *outputSize = size.SizeOutputBlock;
-  
+
 bail:
   return err;
 }
@@ -112,12 +112,12 @@ OSStatus __WBGetUInt32Attr(const SecKeychainAttributeList *list, SecKeychainAttr
 OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
   if (!label) return paramErr;
   *label = NULL;
-  
+
   OSStatus err = noErr;
   UInt32 tags[1] = { kSecLabelItemAttr };
   UInt32 formats[1] = { CSSM_DB_ATTRIBUTE_FORMAT_BLOB };
   SecKeychainAttributeInfo info = { 1, tags, formats };
-  
+
   SecKeychainAttributeList *list = NULL;
   err = SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)cert, &info, NULL, &list, NULL, NULL);
   if (noErr == err) {
@@ -125,7 +125,7 @@ OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
     *label = CFStringCreateWithBytes(kCFAllocatorDefault, attr->data, attr->length, kCFStringEncodingUTF8, FALSE);
     if (!*label)
       err = -1;
-    
+
     SecKeychainItemFreeAttributesAndData(list, NULL); // ignore err
   }
   return err;
@@ -146,7 +146,7 @@ CFArrayRef WBSecurityCopyIdentities(CFTypeRef keychainOrArray, CSSM_KEYUSE usage
     CFArrayCallBacks acb = kCFTypeArrayCallBacks;
 //    acb.equal = _WBIdentitiesEqual;
     CFMutableArrayRef certs = CFArrayCreateMutable(kCFAllocatorDefault, 0, &acb);
-    
+
     SecIdentityRef ident = NULL;
     while (noErr == (err = SecIdentitySearchCopyNext(search, &ident))) {
       if (!CFArrayContainsValue(certs, CFRangeMake(0, CFArrayGetCount(certs)), ident)) {
@@ -172,7 +172,7 @@ CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *polic
   OSStatus err = SecPolicySearchCreate(certType, policyOID, value, &search);
   if (noErr == err) {
     policies = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-    
+
     SecPolicyRef policy = NULL;
     while (noErr == (err = SecPolicySearchCopyNext(search, &policy))) {
       CFArrayAppendValue(policies, policy);
@@ -197,7 +197,7 @@ OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, Sec
   //if (noErr == err) {
     //err = SecIdentityCopyFromPreferenceItem(pref, identity);
     //CFRelease(pref);
-  //} else 
+  //} else
 	if (errSecItemNotFound == err || !*identity) {
     SecIdentitySearchRef search = NULL;
     err = SecIdentitySearchCreate(keychainOrArray, 0, &search);
@@ -217,7 +217,7 @@ OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, Sec
           } else {
             WBCLogWarning("SecCertificateCopyEmailAddresses() return %ld", (long)err);
           }
-          
+
           CFRelease(cert);
         }
         if (found) {
@@ -238,7 +238,7 @@ OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType c
   CSSM_CSP_HANDLE cspHandle = 0;
   const CSSM_KEY *privkey = NULL;
   const CSSM_ACCESS_CREDENTIALS *credits = NULL;
-  
+
   /* retreive cssm objects */
   err = SecKeyGetCSSMKey(privKey, &privkey);
   require_noerr(err, bail);
@@ -246,11 +246,11 @@ OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType c
   require_noerr(err, bail);
   err = SecKeyGetCredentials(privKey, CSSM_ACL_AUTHORIZATION_SIGN, credentials, &credits);
   require_noerr(err, bail);
-  
+
   /* create cssm context */
   err = CSSM_CSP_CreateSignatureContext(cspHandle, algid, credits, privkey, ccHandle);
   require_noerr(err, bail);
-  
+
 bail:
     return err;
 }
@@ -259,17 +259,17 @@ OSStatus WBSecurityCreateVerifyContext(SecKeyRef pubKey, CSSM_ALGORITHMS algid, 
   OSStatus err = noErr;
   CSSM_CSP_HANDLE cspHandle = 0;
   const CSSM_KEY *pubkey = NULL;
-  
+
   /* retreive pubkey and csp */
   err = SecKeyGetCSSMKey(pubKey, &pubkey);
   require_noerr(err, bail);
   err = SecKeyGetCSPHandle(pubKey, &cspHandle);
   require_noerr(err, bail);
-  
+
   /* create cssm context */
   err = CSSM_CSP_CreateSignatureContext(cspHandle, algid, NULL, pubkey, ccHandle);
   require_noerr(err, bail);
-  
+
 bail:
     return err;
 }
@@ -277,27 +277,27 @@ bail:
 OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, const CSSM_DATA *data, CSSM_ALGORITHMS algid, CSSM_DATA *signature) {
   OSStatus err = noErr;
   CSSM_CC_HANDLE ccHandle = 0;
-  
+
   err = WBSecurityCreateSignatureContext(privKey, credentials, algid, &ccHandle);
   require_noerr(err, bail);
   err = CSSM_SignData(ccHandle, data, 1, CSSM_ALGID_NONE, signature);
   require_noerr(err, bail);
-  
+
 bail:
     /* cleanup */
     if (ccHandle) CSSM_DeleteContext(ccHandle);
-  
+
   return err;
 }
 
 OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *data, CSSM_ALGORITHMS algid, const CSSM_DATA *signature, Boolean *valid) {
   OSStatus err = noErr;
   CSSM_CC_HANDLE ccHandle = 0;
-  
+
   /* retreive pubkey and csp */
   err = WBSecurityCreateVerifyContext(pubKey, algid, &ccHandle);
   require_noerr(err, bail);
-  
+
   /* verify data */
   err = CSSM_VerifyData(ccHandle, data, 1, CSSM_ALGID_NONE, signature);
   if (CSSMERR_CSP_VERIFY_FAILED == err) {
@@ -307,28 +307,28 @@ OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *data, CSSM
     *valid = TRUE;
   }
   require_noerr(err, bail);
-  
+
 bail:
     /* cleanup */
     if (ccHandle) CSSM_DeleteContext(ccHandle);
-  
+
   return err;
 }
 
 // MARK: File Signature
 CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature) {
   if (!path || !pkey || !signature) return CSSMERR_CSSM_INVALID_POINTER;
-  
+
   int fd = open(path, O_RDONLY);
   if (fd <= 0) return CSSMERR_CSSM_FUNCTION_FAILED;
   /* disable file system caching */
   fcntl(fd, F_NOCACHE, 0);
-  
+
   CSSM_CC_HANDLE ctxt;
   CSSM_RETURN err = WBSecurityCreateSignatureContext(pkey, credentials, algid, &ctxt);
   if (CSSM_OK == err) {
     err = CSSM_SignDataInit(ctxt);
-    
+
     if (CSSM_OK == err) {
       const size_t blen = 64 * 1024;
       /* must be 4k align because caching is disabled */
@@ -346,31 +346,31 @@ CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialTy
         free(buffer);
       }
     }
-    
-    if (CSSM_OK == err) 
+
+    if (CSSM_OK == err)
       err = CSSM_SignDataFinal(ctxt, signature);
-    
+
     CSSM_DeleteContext(ctxt);
   }
-  
-  close(fd);  
+
+  close(fd);
   return err;
 }
 
 CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *signature, SecKeyRef pkey, CSSM_ALGORITHMS algid, bool *outValid) {
   if (!path || !signature || !pkey || !outValid) return CSSMERR_CSSM_INVALID_POINTER;
-  
+
   int fd = open(path, O_RDONLY);
   if (fd <= 0) return CSSMERR_CSSM_FUNCTION_FAILED;
   /* disable file system caching */
   fcntl(fd, F_NOCACHE, 0);
-  
+
   *outValid = false;
   CSSM_CC_HANDLE ctxt;
   CSSM_RETURN err = WBSecurityCreateVerifyContext(pkey, algid, &ctxt);
   if (CSSM_OK == err) {
     err = CSSM_VerifyDataInit(ctxt);
-    
+
     if (CSSM_OK == err) {
       const size_t blen = 64 * 1024;
       /* must be 4k align because caching is disabled */
@@ -388,7 +388,7 @@ CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *sig
         free(buffer);
       }
     }
-    
+
     if (CSSM_OK == err) {
       err = CSSM_VerifyDataFinal(ctxt, signature);
       if (CSSM_OK == err)
@@ -396,11 +396,11 @@ CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *sig
       else if (CSSMERR_CSP_VERIFY_FAILED == err)
         err = CSSM_OK; // just means that the signature is not valid
     }
-    
+
     CSSM_DeleteContext(ctxt);
   }
   close(fd);
-  
+
   return err;
 }
 
@@ -520,18 +520,18 @@ void __WBAttributeInfoPrint(SecKeychainAttributeInfo *info) {
 OSStatus WBSecurityPrintAttributeInfo(SecItemClass itemClass) {
   SecKeychainRef keychain = NULL;
   SecKeychainAttributeInfo *info = NULL;
-  
+
   OSStatus err = SecKeychainCopyDefault(&keychain);
   require_noerr(err, bail);
   err = SecKeychainAttributeInfoForItemID(keychain, itemClass, &info);
   require_noerr(err, bail);
-  
+
   __WBAttributeInfoPrint(info);
-  
+
 bail:
   if (info) SecKeychainFreeAttributeInfo(info);
   if (keychain) CFRelease(keychain);
-  
+
   return err;
 }
 
@@ -539,21 +539,21 @@ OSStatus WBSecurityPrintItemAttributeInfo(SecKeychainItemRef item) {
   SecItemClass cls = 0;
   SecKeychainRef keychain = NULL;
   SecKeychainAttributeInfo *info = NULL;
-  
+
   OSStatus err = SecKeychainItemCopyAttributesAndData(item, NULL, &cls, NULL, NULL, NULL);
   require_noerr(err, bail);
-  
+
   err = SecKeychainItemCopyKeychain(item, &keychain);
   require_noerr(err, bail);
-  
+
   err = SecKeychainAttributeInfoForItemID(keychain, cls, &info);
   require_noerr(err, bail);
-  
+
   __WBAttributeInfoPrint(info);
-  
+
 bail:
     if (info) SecKeychainFreeAttributeInfo(info);
   if (keychain) CFRelease(keychain);
-  
+
   return err;
 }

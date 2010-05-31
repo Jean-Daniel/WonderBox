@@ -56,8 +56,8 @@ CSSM_BOOL cssmStartup(void) {
 	
 	if(cssmInitd) {
 		return CSSM_TRUE;
-	}  
-	crtn = CSSM_Init (&vers, 
+	}
+	crtn = CSSM_Init (&vers,
                     CSSM_PRIVILEGE_SCOPE_NONE,
                     &testGuid,
                     CSSM_KEY_HIERARCHY_NONE,
@@ -78,7 +78,7 @@ CSSM_BOOL cssmStartup(void) {
 CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service, CSSM_MODULE_HANDLE *handle) {
 	CSSM_RETURN crtn;
 	if (!handle) return paramErr;
-  
+
 	if(cssmStartup() == CSSM_FALSE) {
 		return -1;
 	}
@@ -106,10 +106,10 @@ CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service
 CSSM_RETURN WBCDSAShutdownModule(CSSM_MODULE_HANDLE handle) {
 	CSSM_GUID guid;
 	CSSM_RETURN crtn = CSSM_GetModuleGUIDFromHandle(handle, &guid);
-  
+
   if (CSSM_OK != crtn)
     return crtn;
-  
+
 	crtn = CSSM_ModuleDetach(handle);
 	if(CSSM_OK != crtn) {
 		return crtn;
@@ -195,8 +195,8 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
   CSSM_CC_HANDLE ccHand = 0;
   CSSM_ACCESS_CREDENTIALS creds;
   CSSM_BOOL isSymmetric = CSSM_TRUE;
-  
-  /* 
+
+  /*
     * Infer algorithm - ususally it's the same as in the key itself
    */
   switch(keyAlg) {
@@ -207,7 +207,7 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
       encrAlg = keyAlg;
       break;
   }
-  
+
   /* infer mode and padding */
   switch(encrAlg) {
     /* 8-byte block ciphers */
@@ -218,20 +218,20 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
       encrMode = CSSM_ALGMODE_CBCPadIV8;
       encrPad = CSSM_PADDING_PKCS5;
       break;
-      
+
       /* 16-byte block ciphers */
     case CSSM_ALGID_AES:
       encrMode = CSSM_ALGMODE_CBCPadIV8;
       encrPad = CSSM_PADDING_PKCS7;
       break;
-      
+
       /* stream ciphers */
     case CSSM_ALGID_ASC:
     case CSSM_ALGID_RC4:
       encrMode = CSSM_ALGMODE_NONE;
       encrPad = CSSM_PADDING_NONE;
       break;
-      
+
       /* RSA asymmetric */
     case CSSM_ALGID_RSA:
       /* encrMode not used */
@@ -246,7 +246,7 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
   if (key->KeyHeader.KeyClass == CSSM_KEYCLASS_PUBLIC_KEY ||
       key->KeyHeader.KeyClass == CSSM_KEYCLASS_PRIVATE_KEY)
     isSymmetric = CSSM_FALSE;
-  
+
   memset(&creds, 0, sizeof(CSSM_ACCESS_CREDENTIALS));
   if(isSymmetric) {
     crtn = CSSM_CSP_CreateSymmetricContext(cspHandle,
@@ -265,7 +265,7 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
                                             key,
                                             encrPad,
                                             &ccHand);
-    
+
   }
   if(crtn) {
     return crtn;

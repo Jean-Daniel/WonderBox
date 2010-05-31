@@ -10,7 +10,7 @@
 
 @interface NSFileWrapper (WBExtensions)
 
-- (id)propertyListForFilename:(NSString *)filename; // NSPropertyListImmutable 
+- (id)propertyListForFilename:(NSString *)filename; // NSPropertyListImmutable
 - (id)propertyListForFilename:(NSString *)filename mutabilityOption:(NSPropertyListMutabilityOptions)opt;
 
 @end

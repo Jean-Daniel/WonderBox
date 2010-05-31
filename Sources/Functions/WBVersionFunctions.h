@@ -30,8 +30,8 @@ enum  {
 
 WB_EXPORT CFStringRef const WBVersionBundleKey;
 
-/* 
-Version number: 
+/*
+Version number:
  major.minor.bug[status]build
  - Possible status:
  d: devel
@@ -39,7 +39,7 @@ Version number:
  b: beta
 rc: release candidate
  f: final ~ r: release
- 
+
  - example: 1.2.3b5, 1.0, 1.2r1
  */
 WB_EXPORT

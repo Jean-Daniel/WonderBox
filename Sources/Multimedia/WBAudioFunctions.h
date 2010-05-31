@@ -14,7 +14,7 @@
 #define __WBAUDIO_FUNCTIONS_H 1
 
 WB_EXPORT
-void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame, 
+void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame,
                                             UInt32 inValidBitsPerChannel, UInt32 inTotalBitsPerChannel, bool inIsFloat,
                                             bool inIsBigEndian, bool inIsNonInterleaved);
 

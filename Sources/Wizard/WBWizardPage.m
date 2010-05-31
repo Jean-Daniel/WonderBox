@@ -22,7 +22,7 @@
 
 - (id)init {
   if (self = [super initWithNibName:[[self class] pageNibName] bundle:WBCurrentBundle()]) {
-    
+
   }
   return self;
 }

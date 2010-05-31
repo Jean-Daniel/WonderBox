@@ -27,8 +27,8 @@
             message, NSLocalizedFailureReasonErrorKey, nil];
   else if (message)
     info = [NSDictionary dictionaryWithObjectsAndKeys:
-            message, NSLocalizedFailureReasonErrorKey, nil];    
-  return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];  
+            message, NSLocalizedFailureReasonErrorKey, nil];
+  return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL {
@@ -48,7 +48,7 @@
 
 + (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message {
   NSDictionary *info = message ? [NSDictionary dictionaryWithObject:message forKey:NSLocalizedFailureReasonErrorKey] : nil;
-  return [NSError errorWithDomain:aDomain code:code userInfo:info];  
+  return [NSError errorWithDomain:aDomain code:code userInfo:info];
 }
 + (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... {
   va_list args;

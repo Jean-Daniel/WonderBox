@@ -19,7 +19,7 @@
   QTTime wb_time;
   QTMovie *wb_movie;
   __weak id<WBMovieDrawer> wb_drawer;
-  
+
   CVImageBufferRef wb_frame;
   CVImageBufferRef wb_locked;
   WBQTVisualContext *wb_context;
@@ -59,7 +59,7 @@
 
 @end
 
-@protocol WBMovieDrawer 
+@protocol WBMovieDrawer
 - (void)frameDidChange:(WBMovieTexture *)aTexture;
 @end
 

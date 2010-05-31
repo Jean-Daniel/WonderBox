@@ -52,7 +52,7 @@ WB_INLINE
 OSType WBOSTypeFromString(NSString *type) {
   return type ? WBGetOSTypeFromString(WBNSToCFString(type)) : 0;
 }
-WB_INLINE 
+WB_INLINE
 NSString *WBApplicationGetName(void) {
 	return [[NSBundle mainBundle] objectForInfoDictionaryKey:(id)kCFBundleNameKey] ? :
 	[[NSProcessInfo processInfo] processName];

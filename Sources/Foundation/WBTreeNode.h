@@ -59,7 +59,7 @@ WB_CLASS_EXPORT
 	@method
  @abstract   Check if receiver contains child or not.
  @discussion This method search only in the first level.
- @param      aChild 
+ @param      aChild
  @result     Returns YES of contains <code>aChild</code>.
  */
 - (BOOL)containsChild:(WBTreeNode *)aChild;
@@ -72,7 +72,7 @@ WB_CLASS_EXPORT
 - (BOOL)hasChildren;
 
 /*!
-  @method     
+  @method
  @abstract   Returns the number of children in a tree.
  @result     The number of children.
  */
@@ -122,7 +122,7 @@ WB_CLASS_EXPORT
 
 
 /*!
-  @method     
+  @method
  @abstract   Returns the count of sibling. Use with care (see discussion).
  @discussion If this node has a parent, it returns parent child count, else it returns receiver sibling count including self.
  @result     The receiver sibling count (including the receiver).
@@ -137,7 +137,7 @@ WB_CLASS_EXPORT
 - (id)parent;
 
 /*!
-  @method     
+  @method
  @abstract   (brief description)
  @discussion (comprehensive description)
  @param      parent (description)

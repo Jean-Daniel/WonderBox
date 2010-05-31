@@ -93,7 +93,7 @@
     [notify addObserver:self selector:@selector(didUpdateChildren:)
                    name:WBUITreeNodeDidReplaceChildNotification
                  object:nil];
-    
+
     [notify addObserver:self selector:@selector(didUpdateChildren:)
                    name:WBUITreeNodeDidSetChildrenNotification
                  object:nil];
@@ -190,13 +190,13 @@
 #pragma mark Notifications
 - (void)didChangeNodeName:(NSNotification *)aNotification {
   id item = [aNotification object];
-  if (_ContainsNode(item)) 
+  if (_ContainsNode(item))
     [wb_outline reloadItem:item];
 }
 
 - (void)willSetChildren:(NSNotification *)aNotification {
   id item = [aNotification object];
-  
+
   if (_ContainsNode(item)) {
     /* If remove all children (~ "Set Children" with nil user info) ... */
     BOOL collapse = ![aNotification userInfo];
@@ -217,7 +217,7 @@
       [wb_outline reloadItem:nil reloadChildren:YES];
     else
       [wb_outline reloadItem:item reloadChildren:[wb_outline isItemExpanded:item]];
-    
+
     WBBaseUITreeNode *child = [[aNotification userInfo] objectForKey:WBInsertedChild];
     if (child) {
       if (![child isCollapsable])
@@ -283,7 +283,7 @@
 - (BOOL)dropObject:(id)anObject item:(id)item childIndex:(NSInteger)anIndex operation:(NSDragOperation)op {
   NSParameterAssert(item);
   NSParameterAssert(anObject);
-  
+
   /* Only accept copy if not owner */
   if (!_ContainsNode(anObject)) {
     if (op & NSDragOperationCopy) {
@@ -292,7 +292,7 @@
       return NO;
     }
   }
-  
+
   /* If move, check parent, and avoid nop */
   if (op != NSDragOperationCopy) {
     /* Check parents */
@@ -302,7 +302,7 @@
         return NO;
       }
     } while (parent = [parent parent]);
-    
+
     /* If move and same parent ... */
     if ([anObject parent] == item) {
       /* ... and anIndex -1 (drop on parent) ... */
@@ -316,8 +316,8 @@
       }
     }
   }
-  
-  
+
+
   id insert = nil;
   NSInteger srcIdx = [anObject index];
   /* If move allowed */

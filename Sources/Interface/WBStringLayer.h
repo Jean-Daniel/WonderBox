@@ -14,11 +14,11 @@ WB_CLASS_EXPORT
 @interface WBStringLayer : WBBoxLayer {
 @private
   NSTextStorage *wb_storage;
-  
+
   /* convenient */
   NSLayoutManager *wb_manager;
   NSTextContainer *wb_container;
-  
+
   struct {
     unsigned int clip:1;
     unsigned int reserved:7;

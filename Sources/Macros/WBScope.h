@@ -13,7 +13,7 @@
 #define WBScopeReleased __attribute__((cleanup($wb_scopeReleaseObject)))
 
 // Hack to workaround the compiler strictness in type checking.
-// passing something else than a CFTypeRef (like an CFStringRef for example) 
+// passing something else than a CFTypeRef (like an CFStringRef for example)
 // to the cleanup function will result in a compilation error.
 // We perform a stack var dereference to correctly handle case where we affect a new value
 // to 'var' afterward
@@ -36,7 +36,7 @@ void $wb_scopeReleaseObject(id *scopeReleasedObject) {
 
 static __inline__
 void $wb_scopeCFReleaseObject(CFTypeRef **scopeReleasedObject) {
-  if (*scopeReleasedObject && **scopeReleasedObject) 
+  if (*scopeReleasedObject && **scopeReleasedObject)
     CFRelease(**scopeReleasedObject);
 }
 

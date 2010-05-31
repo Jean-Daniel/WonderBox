@@ -63,7 +63,7 @@
     [self setImage:[anObject icon]];
   } else if ([anObject isKindOfClass:[NSDictionary class]]) {
     [self setTitle:[anObject objectForKey:@"name"] ? : @""];
-    [self setImage:[anObject objectForKey:@"icon"]];    
+    [self setImage:[anObject objectForKey:@"icon"]];
   } else if ((keys = [anObject exposedBindings]) &&
              ([keys containsObject:@"name"] && [keys containsObject:@"icon"])) {
     [self setTitle:[anObject valueForKey:@"name"] ? : @""];
@@ -85,21 +85,21 @@
 #pragma mark NSCell
 - (NSSize)cellSize {
   NSSize cellSize = [super cellSize];
-  if (wb_image) 
+  if (wb_image)
     cellSize.width += [self wb_imageSize:cellSize].width + kWBImageMargin;
-  
+
   return cellSize;
 }
 
 - (NSRect)titleRectForBounds:(NSRect)cellRect {
   if (!wb_image)
     return [super titleRectForBounds:cellRect];
-  
+
   NSRect imageFrame;
   NSSize imageSize = [self wb_imageSize:cellRect.size];
-  
+
   NSDivideRect(cellRect, &imageFrame, &cellRect, kWBImageMargin + imageSize.width, NSMinXEdge);
-  
+
   return cellRect;
 }
 
@@ -115,15 +115,15 @@
 // -------------------------------------------------------------------------------
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
   if (!wb_image) return [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
-  
+
   NSPoint point = [controlView convertPoint:[event locationInWindow] fromView:nil];
-  
+
   NSRect textFrame, imageFrame;
   NSSize imageSize = [self wb_imageSize:cellFrame.size];
   NSDivideRect(cellFrame, &imageFrame, &textFrame, kWBImageMargin + imageSize.width, NSMinXEdge);
   if (NSMouseInRect(point, imageFrame, [controlView isFlipped]))
     return NSCellHitContentArea;
-  
+
   return [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
 }
 
@@ -133,17 +133,17 @@
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj
                delegate:(id)anObject start:(NSInteger)selStart length:(NSInteger)selLength {
-  [super selectWithFrame:[self titleRectForBounds:aRect] inView:controlView editor:textObj 
+  [super selectWithFrame:[self titleRectForBounds:aRect] inView:controlView editor:textObj
                 delegate:anObject start:selStart length:selLength];
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
   NSSize textSize = [[self attributedStringValue] size];
-  
+
   if (wb_image) {
     NSRect imageFrame = cellFrame;
     NSSize imageSize = [self wb_imageSize:cellFrame.size];
-      
+
     if ([self alignment] == NSCenterTextAlignment || [self alignment] == NSRightTextAlignment) {
       CGFloat twidth = textSize.width;
       imageFrame.origin.x = (NSWidth(cellFrame) - twidth) / 2; // - imageSize.width;
@@ -156,19 +156,19 @@
       imageFrame.origin.x = round(imageFrame.origin.x + 3);
     }
     imageFrame.size = imageSize;
-    
+
     if ([self drawsBackground] && ![self isHighlighted]) {
       [[self backgroundColor] setFill];
       [NSBezierPath fillRect:cellFrame];
     }
-    
+
     /* valign => middle */
     if ([controlView isFlipped]) {
       imageFrame.origin.y += floor((NSHeight(cellFrame) + NSHeight(imageFrame)) / 2);
     } else {
       imageFrame.origin.y += ceil((NSHeight(cellFrame) - NSHeight(imageFrame)) / 2);
     }
-    
+
     CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
     CGContextSaveGState(ctxt);
     /* Flip if needed */
@@ -178,9 +178,9 @@
       /* Adjust origin */
       imageFrame.origin.y = NSHeight([controlView frame]) - imageFrame.origin.y;
     }
-    
+
     //NSIntegralRect(imageFrame);
-    
+
     NSRect source = NSZeroRect;
     source.size = [wb_image size];
     CGContextSetShouldAntialias(ctxt, true);
@@ -204,7 +204,7 @@
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
   [super drawInteriorWithFrame:cellFrame inView:controlView];
-  
+
   if ([self drawsLineOver]) {
     CGFloat twidth = [[self attributedStringValue] size].width;
     // FIXME: userspace scale factor
@@ -218,7 +218,7 @@
 - (NSSize)wb_imageSize:(NSSize)cellSize {
   if (!wb_image) return NSZeroSize;
   /* Scale if needed */
-  return NSSizeFromCGSize(WBSizeScaleToSize(NSSizeToCGSize([wb_image size]), 
+  return NSSizeFromCGSize(WBSizeScaleToSize(NSSizeToCGSize([wb_image size]),
                                             NSSizeToCGSize(cellSize),
                                             kWBScalingModeProportionallyFitDown));
 }

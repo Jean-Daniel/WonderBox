@@ -21,7 +21,7 @@
 - (id)copyWithZone:(NSZone *)zone {
   WBAlias *copy = NSAllocateObject([self class], 0, zone);
   copy->wb_path = [wb_path copyWithZone:zone];
-  
+
   if (wb_alias) {
     /* Copy Handler */
     copy->wb_alias = wb_alias;
@@ -30,12 +30,12 @@
       copy = nil;
     }
   }
-  
+
   return copy;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-  if (wb_path) 
+  if (wb_path)
     [coder encodeObject:wb_path forKey:@"WBAliasPath"];
   if (wb_alias)
     [coder encodeObject:[self data] forKey:@"WBAliasHandle"];
@@ -57,7 +57,7 @@
   return [[[self alloc] initFromData:data] autorelease];
 }
 + (id)aliasFromAliasHandle:(AliasHandle)handle {
-  return [[[self alloc] initFromAliasHandle:handle] autorelease];  
+  return [[[self alloc] initFromAliasHandle:handle] autorelease];
 }
 
 + (id)aliasWithURL:(NSURL *)anURL {
@@ -74,27 +74,27 @@
     wb_alias = anHandle;
     [self update];
   }
-  return self;  
+  return self;
 }
 
 - (id)initFromData:(NSData *)data {
   NSParameterAssert(data && [data length] > 0);
-  
+
   AliasHandle alias;
   if (noErr == PtrToHand([data bytes], (Handle *)&alias, [data length]))
     return [self initFromAliasHandleNoCopy:alias];
-  
+
   [self release];
   return nil;
 }
 
 - (id)initFromAliasHandle:(AliasHandle)handle {
   NSParameterAssert(handle);
-  
+
   AliasHandle alias;
   if (noErr == HandToHand((Handle *)&alias))
     return [self initFromAliasHandleNoCopy:alias];
-  
+
   [self release];
   return nil;
 }
@@ -165,16 +165,16 @@
 - (void)setPath:(NSString *)path {
   if (!path)
     WBThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
-  
+
   if (wb_path != path) {
     [wb_path release];
     wb_path = [path copy];
-    
+
     if (wb_alias) {
       DisposeHandle((Handle)wb_alias);
       wb_alias = nil;
     }
-    
+
     [self update];
   }
 }
@@ -189,7 +189,7 @@
 - (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged {
   NSParameterAssert(target);
   if (outChanged) *outChanged = NO;
-  
+
   if (wb_alias) {
     Boolean wasChanged;
     OSStatus err = FSResolveAliasWithMountFlags(nil, wb_alias,
@@ -204,7 +204,7 @@
       if (!wb_path) {
         wb_path = [[NSString stringFromFSRef:target] retain];
         WBAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
-        if (outChanged) *outChanged = YES;  
+        if (outChanged) *outChanged = YES;
       }
       return noErr;
     } else if (wb_path) {
@@ -214,16 +214,16 @@
     }
     return err;
   }
-  
+
   // wb_alias is not valid. Try to use path.
   if (!wb_path)
-    WBThrowException(NSInternalInconsistencyException, 
+    WBThrowException(NSInternalInconsistencyException,
                      @"Both alias and path are null");
   // try to create alias
   OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path fileSystemRepresentation], target, NULL);
   if (noErr == err) {
     // return noErr even if alias creation fail to indicate that the FSRef is valid
-    if (noErr == FSNewAlias(nil, target, &wb_alias) && outChanged) 
+    if (noErr == FSNewAlias(nil, target, &wb_alias) && outChanged)
       *outChanged = YES;
   }
   return err;

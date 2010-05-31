@@ -10,13 +10,13 @@
 
 #import WBHEADER(WBStringLayer.h)
 
-@interface WBStringLayer () 
+@interface WBStringLayer ()
 - (NSLayoutManager *)layoutManager;
 - (NSTextContainer *)textContainer;
 - (id)initWithSize:(NSSize)aSize textStorage:(NSTextStorage *)aStorage;
 @end
 
-@implementation WBStringLayer 
+@implementation WBStringLayer
 
 - (id)initWithSize:(NSSize)aSize {
   return [self initWithSize:aSize textStorage:nil];
@@ -28,11 +28,11 @@
     wb_container = [[NSTextContainer alloc] initWithContainerSize:aSize];
     [wb_manager addTextContainer:wb_container];
     [wb_container release];
-    
+
     NSTextStorage *storage = aStorage ? [aStorage retain] : [[NSTextStorage alloc] init];
     [storage addLayoutManager:wb_manager];
     [wb_manager release];
-    
+
     [self setTextStorage:storage];
     [storage release];
   }
@@ -44,7 +44,7 @@
 }
 
 - (id)initWithSize:(NSSize)aSize string:(NSString *)aString attributes:(NSDictionary *)attributes {
-  return [self initWithSize:aSize textStorage:aString ? [[[NSTextStorage alloc] initWithString:aString 
+  return [self initWithSize:aSize textStorage:aString ? [[[NSTextStorage alloc] initWithString:aString
                                                                                     attributes:attributes] autorelease] : nil];
 }
 
@@ -55,12 +55,12 @@
 
 #pragma mark -
 - (BOOL)wraps {
-  return !wb_slFlags.clip; 
+  return !wb_slFlags.clip;
 }
 - (void)setWraps:(BOOL)wrap {
   BOOL previous = WBFlagTestAndSet(wb_slFlags.clip, !wrap);
   if (wb_slFlags.clip != previous) {
-    if (wb_slFlags.clip) 
+    if (wb_slFlags.clip)
       [[self textContainer] setContainerSize:NSMakeSize(64000, 64000)];
     [self setNeedsUpdate:YES];
   }
@@ -109,12 +109,12 @@ return [wb_manager backgroundLayoutEnabled];
   else
     [layout boundingRectForGlyphRange:[layout glyphRangeForTextContainer:container]
                       inTextContainer:container];
-  
+
   /* returns used size */
-  return [layout usedRectForTextContainer:container];  
+  return [layout usedRectForTextContainer:container];
 }
 - (NSSize)drawingSizeForSize:(NSSize)aSize {
-  if (!wb_slFlags.clip) 
+  if (!wb_slFlags.clip)
   	[[self textContainer] setContainerSize:aSize];
   return [self wb_textBounds].size;
 }
@@ -122,7 +122,7 @@ return [wb_manager backgroundLayoutEnabled];
 - (void)drawContentInRect:(NSRect)aRect {
   NSLayoutManager *layout = [self layoutManager];
   NSTextContainer *container = [self textContainer];
-  
+
   NSRect tbounds = [self wb_textBounds];
   NSPoint orig = NSMakePoint(aRect.origin.x - tbounds.origin.x, aRect.origin.y - tbounds.origin.y);
   //[layout drawBackgroundForGlyphRange:[layout glyphRangeForTextContainer:container] atPoint:orig];

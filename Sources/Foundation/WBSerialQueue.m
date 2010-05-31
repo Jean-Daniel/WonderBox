@@ -50,7 +50,7 @@
     if (dispatch_sync_f)
       return [_WBGCDSerialQueue allocWithZone:zone];
 #endif
-    return [_WBSerialOperationQueue allocWithZone:zone];    
+    return [_WBSerialOperationQueue allocWithZone:zone];
   }
   return [super allocWithZone:zone];
 }
@@ -71,7 +71,7 @@
   if (self = [super init]) {
     if (![NSOperation instancesRespondToSelector:@selector(waitUntilFinished)])
       wb_event = [[NSCondition alloc] init];
-    
+
     wb_queue = [[NSOperationQueue alloc] init];
     [wb_queue setMaxConcurrentOperationCount:1];
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
@@ -93,7 +93,7 @@
   @synchronized(self) {
     if (wb_last)
       [op addDependency:wb_last];
-    
+
     WBSetterRetain(wb_last, op);
     [op addObserver:self forKeyPath:@"isFinished" options:0 context:_WBSerialOperationQueue.class];
   }
@@ -118,14 +118,14 @@
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
   NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:target selector:sel object:arg];
   [self addOperation:op waitUntilFinished:shouldWait];
-  [op release];  
+  [op release];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
   if (context == _WBSerialOperationQueue.class) {
     @synchronized(self) {
       [object removeObserver:self forKeyPath:@"isFinished"];
-      if (wb_last == object) 
+      if (wb_last == object)
         WBSetterRetain(wb_last, nil);
     }
     // an op is finished, tell it to all 'synchronous op' waiter.
@@ -174,7 +174,7 @@ static
 void wb_dispatch_execute(void *ctxt) {
   _WBSerialQueueBlock *block = (_WBSerialQueueBlock *)ctxt;
   @try {
-    [block.target performSelector:block.action withObject:block.argument];  
+    [block.target performSelector:block.action withObject:block.argument];
   } @catch (id exception) {
     WBLogException(exception);
   }

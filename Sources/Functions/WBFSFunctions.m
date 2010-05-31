@@ -25,14 +25,14 @@
 }
 
 - (NSString *)initFromFSRef:(const FSRef *)ref {
-  /* 
+  /*
   Is it safe to release the string cluster placeholder ?
-   [self release]; 
+   [self release];
    */
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
     return (id)str;
-  return nil;  
+  return nil;
 }
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length {
@@ -95,13 +95,13 @@
 
 #pragma mark -
 #pragma mark File System
-static 
+static
 OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path, void *ctxt), void *ctxt) {
   /* facility to get a path from a fsref */
   UInt8 buffer[2048];
   UInt8 *path = buffer;
   UInt32 length = 4096;
-  
+
   OSStatus err = FSRefMakePath(ref, path, 2048);
   /* If path is too long */
   while (pathTooLongErr == err) {
@@ -119,14 +119,14 @@ OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path
   /* Free if needed */
   if (buffer != path)
     free(path);
-  
+
   return err;
 }
 
 
 OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder) {
   if (!isFolder) return paramErr;
-  
+
   OSStatus err;
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
@@ -143,7 +143,7 @@ OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible) {
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
   require_noerr_string(err, bail, "Error while getting catalog info.");
-  
+
   if ((catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0) {
     FolderInfo *folInfo = (FolderInfo *)catalogInfo.finderInfo;
     *isVisible = (folInfo->finderFlags & kIsInvisible) == 0;
@@ -151,7 +151,7 @@ OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible) {
     FileInfo *finInfo = (FileInfo *)catalogInfo.finderInfo;
     *isVisible = (finInfo->finderFlags & kIsInvisible) == 0;
   }
-  
+
 bail:
   return err;
 }
@@ -162,7 +162,7 @@ OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon) {
   OSStatus err;
   Boolean isFolder;
   FSCatalogInfo catInfo;
-  
+
   err = FSGetCatalogInfo(objRef, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &catInfo , NULL, NULL, NULL);
   if (noErr == err) {
     isFolder = (catInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0;
@@ -179,13 +179,13 @@ OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon) {
 
 OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot) {
   if (!isRoot) return paramErr;
-  
+
   OSStatus err;
   FSCatalogInfo catalogInfo;
   err = FSGetCatalogInfo(objRef, kFSCatInfoNodeID, &catalogInfo, NULL, NULL, NULL);
-  if (noErr == err) 
+  if (noErr == err)
     *isRoot = (catalogInfo.nodeID == fsRtDirID);
-  
+
   return err;
 }
 
@@ -198,13 +198,13 @@ OSStatus _WBFSRefCopyFileSystemPath(const char *path, void *ctxt) {
 
 OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *string) {
   if (!string || *string != NULL) return paramErr;
-  
+
   return _WBFSRefGetPath(ref, _WBFSRefCopyFileSystemPath, string);
 }
 
 OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory) {
   if (!string || !ref) return paramErr;
-  
+
   char buffer[2048];
   char *path = buffer;
   OSStatus err = noErr;
@@ -213,22 +213,22 @@ OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options,
   if (maximum > 2048) {
     path = malloc(maximum * sizeof(char));
   }
-  
+
   if (!CFStringGetFileSystemRepresentation(string, path, maximum))
     err = coreFoundationUnknownErr;
-  
+
   if (noErr == err)
     err = FSPathMakeRefWithOptions((UInt8 *)path, options, ref, isDirectory);
-  
+
   if (path != buffer)
     free(path);
-  
+
   return err;
 }
 
 OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename) {
   if (!string || !filename) return paramErr;
-  
+
   OSStatus err = FSGetHFSUniStrFromString(string, filename);
   if (noErr == err) {
     for (CFIndex idx = 0; idx < filename->length; idx++)
@@ -250,15 +250,15 @@ CFStringRef WBFSCreateStringFromHFSUniStr(CFAllocatorRef alloc, const HFSUniStr2
 #pragma mark Folders
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders) {
   if (!size && !files && !folders) return paramErr;
-  
+
   FSVolumeInfo info;
   OSStatus err = FSGetVolumeInfo(volume, 0, NULL, kFSVolInfoSizes | kFSVolInfoDirCount | kFSVolInfoFileCount, &info, NULL, NULL);
   require_noerr(err, bail);
-  
+
   if (size) *size = info.totalBytes - info.freeBytes;
   if (files) *files = info.fileCount;
   if (folders) *folders = info.folderCount;
-  
+
 bail:
     return err;
 }
@@ -295,21 +295,21 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex
     free(refs);
   }
   /* cleanup expected error */
-  if (errFSNoMoreItems == err) 
+  if (errFSNoMoreItems == err)
     err = noErr;
   return err;
 }
 
 OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders) {
   if (!lsize && !psize && !files && !folders) return paramErr;
-  
+
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(folder, kFSCatInfoNodeFlags | kFSCatInfoNodeID | kFSCatInfoVolume, &info, NULL, NULL, NULL);
   require_noerr(err, bail);
-  
+
   if (!(info.nodeFlags & kFSNodeIsDirectoryMask))
     return errFSNotAFolder;
-  
+
   if (fsRtDirID == info.nodeID) {
     UInt64 size = 0;
     err = WBFSGetVolumeSize(info.volume, &size, files, folders);
@@ -324,22 +324,22 @@ OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex 
     if (folders) *folders = 0;
     err = _WBFSGetFolderSize(folder, lsize, psize, files, folders);
   }
-  
+
 bail:
     return err;
 }
 
-OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume, 
+OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
                            FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory) {
   if (!object) return paramErr;
-  
+
   FSCatalogInfo fsinfo;
   OSStatus err = FSGetCatalogInfo(object, kFSCatInfoVolume, &fsinfo, NULL, NULL, NULL);
   require_noerr(err, bail);
-  
+
   err = FSGetVolumeInfo(fsinfo.volume, 0, actualVolume, whichInfo, info, volumeName, rootDirectory);
   require_noerr(err, bail);
-  
+
 bail:
     return err;
 }
@@ -436,10 +436,10 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 #pragma mark Misc
 ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length) {
   if (!unit || !buffer) return paramErr;
-  
+
   if (size < ((UInt64)1 << 10))
     return snprintf(buffer, length, "%qu %s", size, unit);
-  
+
   /* Kilo */
   if (size < ((UInt64)1 << 20))
     return snprintf(buffer, length, "%.*f K%s", (int)precision, (double)size / ((UInt64)1 << 10), unit);
@@ -456,24 +456,24 @@ ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *b
   if (size < ((UInt64)1 << 60))
     return snprintf(buffer, length, "%.*f P%s", (int)precision, (double)size / ((UInt64)1 << 50), unit);
   /* Exa */
-  return snprintf(buffer, length, "%.*f E%s", (int)precision, (double)size / ((UInt64)1 << 60), unit);    
+  return snprintf(buffer, length, "%.*f E%s", (int)precision, (double)size / ((UInt64)1 << 60), unit);
 }
 
 OSStatus WBFSCreateFolder(CFStringRef path) {
   if (!path || !CFStringGetLength(path)) return paramErr;
-  
+
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  
+
   BOOL isDirectory;
   NSFileManager *manager = [NSFileManager defaultManager];
-  
+
   if ([manager fileExistsAtPath:(id)path isDirectory:&isDirectory]) {
     WBAutoreleasePoolDrain(pool);
     return isDirectory ? noErr : errFSNotAFolder;
   }
-  
+
   NSMutableArray *components = [[NSMutableArray alloc] init];
-  
+
   /* Replace . and .. in path, and convert it into c string */
   const char *characters = [(id)path fileSystemRepresentation];
   NSString *subpath = [NSString stringWithFileSystemRepresentation:characters length:strlen(characters)];
@@ -481,14 +481,14 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
     [components addObject:subpath];
     subpath = [subpath stringByDeletingLastPathComponent];
   }
-  
+
   OSStatus err = noErr;
   /* If a subpath component is not a directory */
   if ([subpath length] && !isDirectory) {
     err = dupFNErr;
   }
   require_noerr(err, dispose);
-  
+
   NSUInteger count = [components count];
   while (noErr == err && count-- > 0) {
     subpath = [components objectAtIndex:count];
@@ -498,11 +498,11 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
 dispose:
   [components release];
   WBAutoreleasePoolDrain(pool);
-  
+
   return err;
 }
 
-static 
+static
 OSStatus _WBFSForceDeletePath(const char *path, void *ctxt) {
   struct stat info;
   memset(&info, 0, sizeof(info));
@@ -551,7 +551,7 @@ OSStatus _WBFSForceDeleteObject(const FSRef *object) {
 
 OSStatus WBFSForceDeleteObject(const FSRef *object) {
   if (!object) return paramErr;
-  
+
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(object, kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
   if (noErr == err) {
@@ -567,7 +567,7 @@ OSStatus WBFSForceDeleteObject(const FSRef *object) {
 
 OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) {
   if (!folder) return paramErr;
-  
+
   FSIterator iter;
   OSStatus err = FSOpenIterator(folder, kFSIterateFlat | kFSIterateDelete, &iter);
   if (noErr == err) {
@@ -584,13 +584,13 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
             /* result can be safely ignored as the following delete operation will failed if an error occured */
             FSSetCatalogInfo(&refs[count], kFSCatInfoNodeFlags, &infos[count]);
           }
-          
+
           if (infos[count].nodeFlags & kFSNodeIsDirectoryMask) {
             err = WBFSDeleteFolder(&refs[count], willDeleteObject, ctxt);
           } else {
             if (willDeleteObject && !willDeleteObject(&refs[count], ctxt))
               err = userCanceledErr;
-            
+
             if (noErr == err || errFSNoMoreItems == err) {
               err = _WBFSForceDeleteObject(&refs[count]);
             }
@@ -605,19 +605,19 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
   /* reset expected error */
   if (errFSNoMoreItems == err)
     err = noErr;
-  
+
   /* finaly, delete the folder */
   if (noErr == err && willDeleteObject && !willDeleteObject(folder, ctxt))
     err = userCanceledErr;
   if (noErr == err) {
     err = _WBFSForceDeleteObject(folder);
   }
-  
+
   return err;
 }
 OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) {
   if (!fspath) return paramErr;
-  
+
   FSRef fref;
   OSStatus err = WBFSRefCreateFromFileSystemPath(fspath, kFSPathMakeRefDoNotFollowLeafSymlink, &fref, NULL);
   if (noErr == err)
@@ -627,7 +627,7 @@ OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(con
 
 OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder) {
   if (!aFolder) return paramErr;
-  
+
   Boolean isDir;
   OSStatus err = WBFSRefIsFolder(aFolder, &isDir);
   if (noErr == err) {
@@ -642,7 +642,7 @@ OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder) {
       if (noErr == err)
         folder = parent;
     } while (noErr == err);
-    
+
     if (fBsyErr == err) // non-empty dir, not an error
       err = noErr;
   }
@@ -660,7 +660,7 @@ OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL) {
 /* MARK: Find Folder */
 OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFURLRef *path) {
   if (!path) return paramErr;
-  
+
   FSRef folder;
   OSStatus err = FSFindFolder(domain,
                               folderType,
@@ -676,7 +676,7 @@ OSStatus WBFSCopyFolderURL(OSType folderType, FSVolumeRefNum domain, bool create
 
 OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume) {
   if (!anURL || !volume) return paramErr;
-  
+
   FSRef ref;
   Boolean ok = CFURLGetFSRef(anURL, &ref);
   if (!ok) {
@@ -694,94 +694,94 @@ OSStatus WBFSGetVolumeForURL(CFURLRef anURL, FSVolumeRefNum *volume) {
     if (parent)
       CFRelease(parent);
   }
-  
-  if (!ok) 
+
+  if (!ok)
     return coreFoundationUnknownErr;
-  
+
   FSCatalogInfo catalog;
   OSStatus err = FSGetCatalogInfo(&ref, kFSCatInfoVolume, &catalog, NULL, NULL, NULL);
-  if (noErr == err) 
+  if (noErr == err)
     *volume = catalog.volume;
-  
+
   return err;
 }
 
 // look on the same volume than anURL
 OSStatus WBFSCopyFolderURLForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFURLRef *path) {
   if (!anURL || !path) return paramErr;
-  
+
   FSVolumeRefNum volume;
   OSStatus err = WBFSGetVolumeForURL(anURL, &volume);
-  
+
   if (noErr == err)
     err = WBFSCopyFolderURL(folderType, volume, createFolder, path);
-  
+
   return err;
 }
 
 // MARK: Deprecated
 OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) {
   if (!path) return paramErr;
-  
+
   CFURLRef url;
   OSStatus err = WBFSCopyFolderURL(folderType, domain, createFolder, &url);
   if (noErr == err) {
     *path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     if (!*path)
       err = coreFoundationUnknownErr;
-    CFRelease(url);    
+    CFRelease(url);
   }
   return err;
 }
 
 OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) {
   if (!anURL || !path) return paramErr;
-  
+
   CFURLRef url;
   OSStatus err = WBFSCopyFolderURLForURL(folderType, anURL, createFolder, &url);
   if (noErr == err) {
     *path = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
     if (!*path)
       err = coreFoundationUnknownErr;
-    CFRelease(url);    
+    CFRelease(url);
   }
   return err;
 }
 
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFStringRef target) {
   if (!folder || !aliasName || !target) return paramErr;
-  
+
   FSRef src;
   FSRef parent;
   OSStatus err = noErr;
   Boolean isDir = false;
   Boolean pIsDir = false;
   AliasHandle alias = NULL;
-  
+
   err = WBFSRefCreateFromFileSystemPath(target, kFSPathMakeRefDefaultOptions, &src, &isDir);
   require_noerr(err, bail);
-  
+
   err = FSNewAlias(NULL, &src, &alias);
   require_noerr(err, bail);
-  
+
   err = WBFSRefCreateFromFileSystemPath(folder, kFSPathMakeRefDefaultOptions, &parent, &pIsDir);
   require_noerr(err, bail);
-  
+
   if (!pIsDir)
     return errFSNotAFolder;
-  
+
   FSRef rsrc;
   HFSUniStr255 rsrcStr;
   /* Get rsrc fork name */
   err = FSGetResourceForkName(&rsrcStr);
   require_noerr(err, bail);
-  
+
   {
     /* Get destination file name */
     HFSUniStr255 aliasStr;
     err = FSGetHFSUniStrFromString(aliasName, &aliasStr);
     require_noerr(err, bail);
-    
+
     /* set type, creator, and flags */
     FSCatalogInfo info;
     memset(&info, 0, sizeof(info));
@@ -789,35 +789,35 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
     finfo->fileType = kContainerFolderAliasType;
     finfo->fileCreator = 'MACS';
     finfo->finderFlags = kIsAlias;
-    
+
     err = FSCreateResourceFile(&parent, aliasStr.length, aliasStr.unicode,
-                               kFSCatInfoFinderInfo, &info, 
+                               kFSCatInfoFinderInfo, &info,
                                rsrcStr.length, rsrcStr.unicode, &rsrc, NULL);
     require_noerr(err, bail);
   }
-  
+
   /* rsrc point on the new resource file, we have to fill it */
   ResFileRefNum rsrcRef = 0;
   err = FSOpenResourceFile(&rsrc, rsrcStr.length, rsrcStr.unicode, fsWrPerm, &rsrcRef);
   require_noerr(err, delete);
-  
+
   AddResource((Handle)alias, 'alis', 0, "\p");
   err = ResError();
   require_noerr(err, close);
   /* Resource Manager will free alias when needed */
   alias = NULL;
-  
+
 close:
     CloseResFile(rsrcRef);
 
 delete:
     if (noErr != err)
       FSDeleteFork(&rsrc, rsrcStr.length, rsrcStr.unicode);
-    
+
 bail:
     if (alias)
       DisposeHandle((Handle)alias);
-  
+
     return err;
 }
 
@@ -825,12 +825,12 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
   CFURLRef folder;
   bool autoDelete = (flags & kWBFSTemporaryItemAutoDelete) != 0;
   bool fallback = (flags & kWBFSTemporaryItemUseSystemVolumeOnError) != 0;
-  
+
   OSStatus err = WBFSCopyFolderURL(autoDelete ? kChewableItemsFolderType : kTemporaryFolderType, volume, true, &folder);
-  
+
   if (noErr != err && fallback && volume != kLocalDomain)
     err = WBFSCopyFolderURL(autoDelete ? kChewableItemsFolderType : kTemporaryFolderType, kLocalDomain, true, &folder);
-  
+
   if (noErr != err && fallback) {
     char stack[PATH_MAX];
     size_t length = confstr(_CS_DARWIN_USER_TEMP_DIR, stack, PATH_MAX);
@@ -843,9 +843,9 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
       }
     }
   }
-    
-  if (noErr != err) return err;  
-  
+
+  if (noErr != err) return err;
+
   char stack[PATH_MAX];
   char *buffer = stack;
   if (!CFURLGetFileSystemRepresentation(folder, true, (UInt8 *)buffer, PATH_MAX - 27)) {
@@ -863,17 +863,17 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
     }
   }
   CFRelease(folder);
-  
+
   if (!buffer)
     return coreFoundationUnknownErr;
-  
+
   char filename[32];
   size_t buflen = strlen(buffer);
   if (buffer[buflen - 1] != '/') {
     buffer[buflen + 1] = '\0';
     buffer[buflen] = '/';
   }
-  snprintf(filename, 32, "%.14s.XXXXXXXXXX", getprogname());  
+  snprintf(filename, 32, "%.14s.XXXXXXXXXX", getprogname());
   strncat(buffer, filename, 26);
 
   bool isDir = (flags & kWBFSTemporaryItemIsFolder) != 0;
@@ -886,19 +886,19 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
     if (fd < 0)
       err = kPOSIXErrorBase + errno;
     else
-      close(fd);    
+      close(fd);
   }
-  
+
   if (noErr == err) {
     *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), isDir);
     if (!*result)
-      err = coreFoundationUnknownErr;    
+      err = coreFoundationUnknownErr;
   }
-  
+
   if (buffer != stack)
     free(buffer);
-  
-  return err;  
+
+  return err;
 }
 
 OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result, CFOptionFlags flags) {
@@ -906,7 +906,7 @@ OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result, CFOption
   OSStatus err = WBFSGetVolumeForURL(anURL, &volume);
   if (noErr == err)
     err = WBFSCreateTemporaryURL(volume, result, flags);
-  
+
   return err;
 }
 
@@ -940,7 +940,7 @@ CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix,
       name.length++;
     }
     CFRelease(prefix);
-    
+
     /* Create Unique file name */
     FSRef fileRef;
     char suffix[16];
@@ -950,7 +950,7 @@ CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix,
     UniChar extension[16];
     CFIndex extLen = (ext) ? CFStringGetLength(ext) : 0;
     CFStringGetCharacters(ext, CFRangeMake(0, extLen), extension);
-    
+
     do {
       sprintf(suffix, "%lu", (long)uid++);
       for (NSUInteger idx = 0; idx < strlen(suffix); idx++) {
@@ -971,7 +971,7 @@ CFStringRef WBFSCopyTemporaryFilePath(FSVolumeRefNum domain, CFStringRef prefix,
     } while (fnfErr != FSMakeFSRefUnicode(&folder, name.length + suffixLen, name.unicode, kTextEncodingUnknown, &fileRef));
     /* Maybe need check if length < 255 */
     name.length += suffixLen;
-    
+
     CFURLRef url = NULL;
     CFURLRef full = NULL;
     CFStringRef file = CFStringCreateWithCharacters(kCFAllocatorDefault, name.unicode, name.length);

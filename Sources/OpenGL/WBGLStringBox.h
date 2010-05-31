@@ -18,9 +18,9 @@ WB_CLASS_EXPORT
   GLuint wb_texName;
   CGRect wb_texBounds;
   CGFloat wb_userScale;
-  
+
 	CGLContextObj wb_glctxt; // current context at time of texture creation
-  
+
   /* cache */
   void *wb_buffer;
   NSUInteger wb_blength;

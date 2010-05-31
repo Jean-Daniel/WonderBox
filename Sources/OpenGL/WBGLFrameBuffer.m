@@ -21,7 +21,7 @@
     glGenFramebuffersEXT(1, &wb_fbo);
 //    wb_glctxt = CGLRetainContext(CGL_MACRO_CONTEXT);
     wb_attachements = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
-    
+
     const GLubyte *strExt = glGetString(GL_EXTENSIONS);
     aty_fbFlags.blit = gluCheckExtension((const GLubyte*)"GL_EXT_framebuffer_blit", strExt) ? 1 : 0;
   }
@@ -45,7 +45,7 @@
 }
 
 - (void)dealloc {
-  if (wb_fbo) 
+  if (wb_fbo)
     WBCLogError("Release undeleted FBO. Leaks OpenGL objects !");
   [super dealloc];
 }
@@ -74,7 +74,7 @@ void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum 
   GLuint save;
   glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
   WBAssert(GL_ZERO == glGetError(), @"error while getting actual FBO");
-  
+
   if (save != fbo)
     WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
 }
@@ -82,8 +82,8 @@ void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum 
 #define __WBGLFrameBufferCheck(ctxt, fbo, mode)
 #endif
 
-WB_INLINE 
-void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, 
+WB_INLINE
+void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
                              GLenum slot, WBGLFrameBufferAttachement *buffer) {
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, fbo, GL_FRAMEBUFFER_EXT);
   switch ([buffer type]) {
@@ -91,23 +91,23 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
       glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, slot, 0, 0);
       break;
     case kWBGLAttachementTypeBuffer:
-      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, slot, 
+      glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, slot,
                                    [buffer target], [buffer name]);
       break;
     case kWBGLAttachementTypeTexture:
       switch ([buffer target]) {
         case GL_TEXTURE_1D:
-          glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT, slot, 
+          glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT, slot,
                                     [buffer target], [buffer name], [buffer level]);
           break;
         case GL_TEXTURE_3D:
-          glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, slot, 
-                                    [buffer target], [buffer name], 
+          glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, slot,
+                                    [buffer target], [buffer name],
                                     [buffer level], [buffer zOffset]);
           break;
         default:
-          glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, slot, 
-                                    [buffer target], [buffer name], [buffer level]);          
+          glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, slot,
+                                    [buffer target], [buffer name], [buffer level]);
           break;
       }
       break;
@@ -120,7 +120,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (WBSetterRetain(wb_depth, aBuffer)) {
-    __WBGLFrameBufferAttach(aContext, wb_fbo, 
+    __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_DEPTH_ATTACHMENT_EXT, aBuffer);
   }
 }
@@ -131,9 +131,9 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (WBSetterRetain(wb_stencil, aBuffer)) {
-    __WBGLFrameBufferAttach(aContext, wb_fbo, 
+    __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_STENCIL_ATTACHMENT_EXT, aBuffer);
-  }  
+  }
 }
 
 - (NSArray *)colorBuffers {
@@ -145,14 +145,14 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   NSMapInsert(wb_attachements, (const void *)anIndex, aBuffer);
-  __WBGLFrameBufferAttach(aContext, wb_fbo, 
+  __WBGLFrameBufferAttach(aContext, wb_fbo,
                           GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIndex, aBuffer);
 }
 
 - (GLenum)status:(GLenum)mode context:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, mode);
-  
+
   GLenum status = glCheckFramebufferStatusEXT(mode);
   return GL_FRAMEBUFFER_COMPLETE_EXT == status ? 0 : status;
 }
@@ -167,12 +167,12 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 
 - (void)resetViewPort:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
-  
+
   // All buffers must have the same size, so just try to find the size of one attachement.
   CGSize size = CGSizeMake(0, 0);
-  if (wb_depth) 
+  if (wb_depth)
     size = [wb_depth size];
-  else if (wb_stencil) 
+  else if (wb_stencil)
     size = [wb_stencil size];
   else {
     // infer size from the first attached color
@@ -182,7 +182,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
       size = [buffer size];
     NSEndMapTableEnumeration(&iter);
   }
-  
+
   // Set the viewport to the dimensions of our texture	
   glViewport(0, 0, (GLuint)size.width, (GLuint)size.height);
 }
@@ -190,25 +190,25 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 // mode can be READ_FRAMEBUFFER_EXT or DRAW_FRAMEBUFFER_EXT
 - (void)bindMode:(GLenum)mode context:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
-  
+
   glBindFramebufferEXT(mode, wb_fbo);
   WBAssert(GL_ZERO == glGetError(), @"Error while binding FBO");
-  
+
   // When binding to draw, setup the view port.
   if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
     glGetIntegerv(GL_VIEWPORT, wb_viewport);			// Retrieves The Viewport Values (X, Y, Width, Height)
-    
+
     [self resetViewPort:CGL_MACRO_CONTEXT];
   }
 }
 
 - (void)unbindMode:(GLenum)mode context:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
-  
+
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, mode); // do not call unbind if not bind
-  
+
   // restore view port
-  if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) 
+  if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT)
     glViewport(wb_viewport[0], wb_viewport[1], wb_viewport[2], wb_viewport[3]);
 
   glBindFramebufferEXT(mode, 0);
@@ -218,7 +218,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   NSParameterAssert(CGL_MACRO_CONTEXT);
   GLenum buffer;
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, aty_fbFlags.blit ? GL_READ_FRAMEBUFFER_EXT : GL_FRAMEBUFFER_EXT); // do not call unbind if not bind
-  
+
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;
   glReadBuffer(buffer);
@@ -228,7 +228,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   NSParameterAssert(CGL_MACRO_CONTEXT);
   GLenum buffer;
   __WBGLFrameBufferCheck(CGL_MACRO_CONTEXT, wb_fbo, aty_fbFlags.blit ? GL_DRAW_FRAMEBUFFER_EXT : GL_FRAMEBUFFER_EXT); // do not call unbind if not bind
-  
+
   if (anIdx < 0) buffer = GL_NONE;
   else buffer = GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIdx;
   glDrawBuffer(buffer);
@@ -326,7 +326,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return [self initWithTexture:aTexture target:aTarget level:0 zOffset:0 width:w height:h];
 }
 - (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel width:(GLuint)w height:(GLuint)h {
-  return [self initWithTexture:aTexture target:aTarget level:aLevel zOffset:0 width:w height:h];  
+  return [self initWithTexture:aTexture target:aTarget level:aLevel zOffset:0 width:w height:h];
 }
 - (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel zOffset:(GLint)offset width:(GLuint)w height:(GLuint)h {
   if (self = [self initWithName:aTexture target:aTarget width:w height:h]) {
@@ -334,7 +334,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     wb_fbaFlags.zoff = offset;
     wb_fbaFlags.level = aLevel;
   }
-  return self;  
+  return self;
 }
 
 - (id)initRendererBufferWithFormat:(GLenum)format width:(GLuint)w height:(GLuint)h context:(CGLContextObj)CGL_MACRO_CONTEXT {
@@ -344,7 +344,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, name);
   glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, format, w, h);
   glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, save);
-  
+
   return [self initWithRendererBuffer:name width:w height:h];
 }
 

@@ -31,7 +31,7 @@ OSType WBProcessGetSignature(ProcessSerialNumber *psn) {
   OSStatus err = _WBProcessGetInformation(psn, &info);
   if (noErr == err)
     return info.processSignature;
-  
+
   return 0;
 }
 CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn) {
@@ -51,7 +51,7 @@ bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn) {
   OSStatus err = _WBProcessGetInformation(psn, &info);
   if (noErr == err)
     return (info.processMode & modeOnlyBackground) != 0;
-  
+
   return 0;
 }
 
@@ -81,7 +81,7 @@ ProcessSerialNumber WBProcessGetProcessWithSignature(OSType type) {
       }
     }
   }
-  return serialNumber; 
+  return serialNumber;
 }
 
 ProcessSerialNumber WBProcessGetProcessWithBundleIdentifier(CFStringRef bundleId) {
@@ -92,7 +92,7 @@ ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFProp
   ProcessSerialNumber serialNumber = {kNoProcess, kNoProcess};
   if (!value)
     return serialNumber;
-  
+
   while (procNotFound != GetNextProcess(&serialNumber))  {
     CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
     if (info) {
@@ -104,7 +104,7 @@ ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFProp
       CFRelease(info);
     }
   }
-  return serialNumber; 
+  return serialNumber;
 }
 
 #pragma mark BSD
@@ -135,10 +135,10 @@ OSStatus sysctlbyname_with_pid(const char *name, pid_t pid,  void *oldp, size_t 
 Boolean WBProcessIsNative(pid_t pid) {
   int ret = FALSE;
   size_t sz = sizeof(ret);
-  
+
   if (sysctlbyname_with_pid("sysctl.proc_native", pid, &ret, &sz, NULL, 0) == -1) {
     if (errno == ENOENT) {
-      // sysctl doesn't exist, which means that this version of Mac OS 
+      // sysctl doesn't exist, which means that this version of Mac OS
       // pre-dates Rosetta, so the application must be native.
       return TRUE;
     }
@@ -160,7 +160,7 @@ CFStringRef WBProcessCopyNameForPID(pid_t pid) {
     if (noErr == CopyProcessName(&psn, &name))
       return name;
   }
-  
+
   CFStringRef name = NULL;
   /* fall back: use sysctl */
   size_t len = 0;

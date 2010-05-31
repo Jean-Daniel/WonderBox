@@ -31,7 +31,7 @@ WBClassCluster(WBMovieTexture)
 - (id)initWithMovie:(QTMovie *)aMovie {
   NSArray *streams = [aMovie tracksOfMediaType:QTMediaTypeStream];
   if ([streams count] == 0) {
-    return [[WBFileMovie alloc] initWithMovie:aMovie]; 
+    return [[WBFileMovie alloc] initWithMovie:aMovie];
   } else if (NSClassFromString(@"WBStreamingMovie")) {
     return [[NSClassFromString(@"WBStreamingMovie") alloc] initWithMovie:aMovie];
   }
@@ -123,17 +123,17 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   if (qtctxt && [qtctxt isNewImageAvailableForTime:aTimestamp]) {
     OSStatus error = noErr;
     CVImageBufferRef frame = [qtctxt copyImageForTime:aTimestamp allocator:kCFAllocatorDefault error:&error];
-    
+
     // In general this shouldn't happen, but just in case...
     if(error == noErr && frame) {
       [self setCurrentFrame:frame];
       CVBufferRelease(frame);
       [qtctxt release];
-      return YES;      
+      return YES;
     } else {
       WBLogWarning(@"QTVisualContextCopyImageForTime: %s (%d)\n", GetMacOSStatusErrorString(error), error);
     }
-  } 
+  }
   [qtctxt release];
   return NO;
 }
@@ -143,7 +143,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   [self setCurrentFrame:NULL];
   [self setVisualContext:nil];
   if (!aContext || !aFormat) return;
-  
+
   // creates a new OpenGL texture context for a specified OpenGL context and pixel format (with default attributes)
   WBQTVisualContext *ctxt = [[WBQTVisualContext alloc] initWithOpenGLContext:aContext pixelFormat:aFormat attributes:nil];
   if ([self shouldNotifyDrawer]) [ctxt setDelegate:self];
@@ -165,18 +165,18 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   if (aMovie == [self movie]) return;
   if (wb_movie) {
     //[[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieRateDidChangeNotification object:wb_movie];
-    [wb_movie stop]; // make sure the movie is stopped 
-    
+    [wb_movie stop]; // make sure the movie is stopped
+
     [self cleanupMovie:wb_movie];
-    
+
     [wb_movie release];
   }
   wb_movie = [aMovie retain];
   if (wb_movie) {
-    CGFloat rate = [wb_movie rate]; 
+    CGFloat rate = [wb_movie rate];
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wb_movieRateDidChange:) name:QTMovieRateDidChangeNotification object:wb_movie];
     SetMoviePlayHints([wb_movie quickTimeMovie], hintsHighQuality, hintsHighQuality);
-    
+
     [self configureMovie:wb_movie];
     if (fiszero(rate)) {
       MoviesTask([wb_movie quickTimeMovie], 0);	// QTKit is not doing this automatically
@@ -231,7 +231,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
 - (void)wb_setMovie:(QTMovie *)aMovie visualContext:(WBQTVisualContext *)ctxt {
   CGFloat rate = ctxt ? [aMovie rate] : 0;
   if (fnonzero(rate)) [aMovie stop];
-  // WARNING: QTMovie uses its own qt context, and so, when calling 
+  // WARNING: QTMovie uses its own qt context, and so, when calling
   // setVisualContext: it does not replace it, but just register it and transfert
   // message from its internal context to our own context (like image ready).
   // If formats are not compatible it may involved time consuming conversion.
@@ -239,7 +239,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   SetMovieVisualContext([aMovie quickTimeMovie], [ctxt quickTimeContext]);
   if (wb_backup) QTVisualContextTask(wb_backup);
   //[aMovie setVisualContext:[ctxt quickTimeContext]];
-  if (fnonzero(rate)) [aMovie setRate:rate];  
+  if (fnonzero(rate)) [aMovie setRate:rate];
 }
 
 - (id)initWithMovie:(QTMovie *)aMovie {

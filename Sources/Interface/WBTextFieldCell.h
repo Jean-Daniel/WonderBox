@@ -15,7 +15,7 @@ WB_CLASS_EXPORT
     unsigned int line:1;
     unsigned int middle:1;
     unsigned int reserved:30;
-  } wb_tfFlags;  
+  } wb_tfFlags;
 }
 
 + (id)cell;

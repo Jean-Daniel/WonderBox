@@ -34,11 +34,11 @@
 @interface _WBCollapseItemView : NSView {
 @private
   WBCollapseViewItem *wb_item;
-  
+
   /* Components */
   NSView *wb_body;
   _WBCollapseItemHeaderView *wb_header;
-  
+
   struct _wb_civFlags {
     unsigned int posts:1;
     unsigned int resizing:1;

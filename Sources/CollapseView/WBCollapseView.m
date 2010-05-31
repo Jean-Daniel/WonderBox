@@ -68,9 +68,9 @@
   mask &= ~(NSViewMaxYMargin | NSViewMinYMargin | NSViewHeightSizable);
   mask |= [newSuperview isFlipped] ? NSViewMaxYMargin : NSViewMinYMargin;
   [self setAutoresizingMask:mask];
-  
+
   // adjust height
-  
+
 }
 
 - (void)expandAllItems { [self doesNotRecognizeSelector:_cmd]; }
@@ -115,7 +115,7 @@
 // MARK: Hit Testing
 - (WBCollapseViewItem *)itemAtPoint:(NSPoint)point {
   if (point.y < 0) return nil;
-  
+
   CGFloat height = 0;
   for (_WBCollapseItemView *view in wb_views) {
     height += NSHeight([view frame]);
@@ -141,12 +141,12 @@
 
 - (void)_insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex resize:(BOOL)resize {
   WBAssert(![anItem collapseView] || [anItem collapseView] == self, @"%@ already part of an other collapse view", anItem);
-  
+
   // Search position for this new item
   CGFloat height = 0;
   for (NSUInteger idx = 0; idx < anIndex; idx++)
     height += NSHeight([[wb_views objectAtIndex:idx] frame]);
-  
+
   // MUST set collapse view before creating item's view.
   [anItem setCollapseView:self];
   // create item's view
@@ -157,30 +157,30 @@
   frame.origin = NSMakePoint(0, height);
   frame.size.width = NSWidth([self frame]); // useless but cost nothing
   [view setFrame:frame];
-  
+
   // compute delta
   CGFloat delta = NSHeight(frame);
   // update self height
   if (resize)
     [self _incrementHeightBy:delta animate:NO];
-  
+
   // Move view that are after the new one.
   if (anIndex < [wb_views count])
     [self _moveItemsInRange:NSMakeRange(anIndex, [wb_views count] - anIndex) delta:delta];
-  
+
   // add new view
   [wb_views insertObject:view atIndex:anIndex];
   [wb_items insertObject:anItem atIndex:anIndex];
   [self addSubview:view];
   [view release];
-  
+
   if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
 - (void)removeAllItems {
   if (0 == [wb_views count]) return;
-  
+
   for (_WBCollapseItemView *view in wb_views) {
     // remove view
     [view removeFromSuperview];
@@ -189,7 +189,7 @@
   }
   // Set height to 0
   [self _incrementHeightBy:- [self frame].size.height animate:NO];
-  
+
   // update collection
   [wb_views removeAllObjects];
   [wb_items removeAllObjects];
@@ -202,25 +202,25 @@
   NSUInteger idx = [self indexOfItem:anItem];
   if (NSNotFound == idx)
     WBThrowException(NSInvalidArgumentException, @"%@ is not an item of this view", anItem);
-  
+
   [self removeItemAtIndex:idx];
 }
 - (void)removeItemAtIndex:(NSUInteger)anIndex {
   _WBCollapseItemView *view = [wb_views objectAtIndex:anIndex];
-  
+
   // remove view
   [view removeFromSuperview];
   [view.item setCollapseView:nil];
-  
+
   CGFloat delta = NSHeight([view frame]);
   // Move view that are after the one we remove.
-  
+
   if (anIndex < [wb_views count] - 1) // if not last item
     [self _moveItemsInRange:NSMakeRange(anIndex + 1, [wb_views count] - (anIndex + 1)) delta:delta];
-  
+
   // update self height
   [self _incrementHeightBy:-delta animate:NO];
-  
+
   // update collection
   [view invalidate];
   [wb_views removeObjectAtIndex:anIndex];
@@ -238,7 +238,7 @@
 // MARK: Internal
 - (void)_setResizingMask:(NSUInteger)mask range:(NSRange)aRange {
   if (0 == aRange.length) return;
-  for (NSUInteger idx = aRange.location, count = NSMaxRange(aRange); idx < count; idx++) 
+  for (NSUInteger idx = aRange.location, count = NSMaxRange(aRange); idx < count; idx++)
     [(NSView *)[wb_views objectAtIndex:idx] setAutoresizingMask:mask];
 }
 
@@ -247,7 +247,7 @@
     NSView *view = [wb_views objectAtIndex:idx];
     NSPoint origin = [view frame].origin;
     origin.y += delta;
-    [view setFrameOrigin:origin];    
+    [view setFrameOrigin:origin];
   }
 }
 
@@ -256,9 +256,9 @@
   // update origin if superview is not flipped
   if (![[self superview] isFlipped])
     frame.origin.y -= delta;
-  
+
   frame.size.height += delta;
-  
+
   if (animate) {
     // Prepare animation
     NSViewAnimation *animation = [[NSViewAnimation alloc] init];
@@ -271,9 +271,9 @@
       duration = MIN(1.8, ABS(delta / 100));
     else
       duration = MIN(.50, ABS(delta / 350)); //  350px per seconds, but 0.60s maxi.
-    
+
     [animation setDuration:duration];
-    
+
     NSDictionary *props = [NSDictionary dictionaryWithObjectsAndKeys:
                            self, NSViewAnimationTargetKey,
                            [NSValue valueWithRect:frame], NSViewAnimationEndFrameKey,
@@ -292,7 +292,7 @@ struct _WBCollapseViewCompare {
   NSComparisonResult (*compare)(id, id, void *);
 };
 
-static 
+static
 NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
   struct _WBCollapseViewCompare *fct = (struct _WBCollapseViewCompare *)ctxt;
   return fct->compare([v1 item], [v2 item], fct->ctxt);
@@ -301,7 +301,7 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
 - (void)sortItemsUsingFunction:(NSComparisonResult (*)(id, id, void *))compare context:(void *)context {
   struct _WBCollapseViewCompare ctxt = { context, compare };
   [wb_views sortUsingFunction:_WBCollapseViewCompare context:&ctxt];
-  
+
   // rearrange view and resync wb_items
   CGFloat height = 0;
   [wb_items removeAllObjects];
@@ -342,7 +342,7 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
     [self _setResizingMask:NSViewWidthSizable | NSViewMinYMargin range:NSMakeRange(idx + 1, count - (idx + 1))];
   // now we are ready to resize self.
   [self _incrementHeightBy:delta animate:animate];
-  
+
   // reset sizing mask to a good default (not required)
   [self _setResizingMask:NSViewWidthSizable | NSViewMaxYMargin range:NSMakeRange(0, count)];
 }
@@ -350,32 +350,32 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
 - (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate {
   _WBCollapseItemView *view = [self _viewForItem:anItem];
   WBAssert(view, @"%@ is not an item of this view", anItem);
-  
-  WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]), 
+
+  WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]),
            @"invalid operation for this item state");
-  
+
   // Let the delegate cancel the action
   if (WBDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
     if (![wb_delegate collapseView:self shouldSetExpanded:expands forItem:anItem])
       return;
-  
+
   // tell the delegate…
   if (WBDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
     [wb_delegate collapseView:self willSetExpanded:expands forItem:anItem];
-  
+
   // Then compute delta. It let a chance to the delegate to adjust item size before display
   CGFloat delta = [view expandHeight];
   if (delta <= 0) return;
-  
+
   // if collapse: delta should be negative
   if (!expands) delta = -delta;
-  
+
   [view willSetExpanded:expands];
-  
+
   [self _resizeItemView:view delta:delta animate:animate];
 
   [view didSetExpanded:expands];
-  
+
   if (WBDelegateHandle(wb_delegate, collapseView:didSetExpanded:forItem:))
     [wb_delegate collapseView:self didSetExpanded:expands forItem:anItem];
 }

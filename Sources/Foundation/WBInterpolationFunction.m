@@ -131,7 +131,7 @@ const WBInterpolationCallBack WBInterpolationCallBackCircular = {
     wb_epsilon = WBBezierCurveEpsilonForDuration(lengthHint > 0 ? lengthHint : 10);
     WBBezierCurveInitialize(&wb_curve, CGPointZero, CGPointMake(c1x, c1y), CGPointMake(c2x, c2y), CGPointMake(1, 1));
   }
-  return [super init];  
+  return [super init];
 }
 
 - (CGFloat)valueForInput:(CGFloat)input {
@@ -149,13 +149,13 @@ const WBInterpolationCallBack WBInterpolationCallBackCircular = {
 void WBBezierCurveInitialize(WBBezierCurve *curve, CGPoint p0, CGPoint c0, CGPoint c1, CGPoint p1) {
   curve->ax = p1.x - p0.x + 3 * c0.x - 3 * c1.x;
   curve->ay = p1.y - p0.y + 3 * c0.y - 3 * c1.y;
-  
+
   curve->bx = 3 * p0.x - 6 * c0.x + 3 * c1.x;
   curve->by = 3 * p0.y - 6 * c0.y + 3 * c1.y;
-  
+
   curve->cx = 3 * c0.x - 3 * p0.x;
   curve->cy = 3 * c0.y - 3 * p0.y;
-  
+
   curve->dx = p0.x;
   curve->dy = p0.y;
 }
@@ -181,7 +181,7 @@ CGFloat _WBBezierCurveSolveT(const WBBezierCurve *curve, CGFloat x, CGFloat epsi
   CGFloat t0, t1, t2;
   CGFloat x2;
   CGFloat d2;
-  
+
   int i;
   // First try a few iterations of Newton's method -- normally very fast.
   for (t2 = x, i = 0; i < 8; i++) {
@@ -193,17 +193,17 @@ CGFloat _WBBezierCurveSolveT(const WBBezierCurve *curve, CGFloat x, CGFloat epsi
       break;
     t2 = t2 - x2 / d2;
   }
-  
+
   // Fall back to the bisection method for reliability.
   t0 = 0.0;
   t1 = 1.0;
   t2 = x;
-  
+
   if (t2 < t0)
     return t0;
   if (t2 > t1)
     return t1;
-  
+
   while (t0 < t1) {
     x2 = __WBBezierCurveEvaluateX(curve, t2);
     if (fabs(x2 - x) < epsilon)
@@ -214,7 +214,7 @@ CGFloat _WBBezierCurveSolveT(const WBBezierCurve *curve, CGFloat x, CGFloat epsi
       t1 = t2;
     t2 = (t1 - t0) * .5 + t0;
   }
-  
+
   // Failure.
   return t2;
 }

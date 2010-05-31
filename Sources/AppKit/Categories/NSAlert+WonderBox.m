@@ -14,7 +14,7 @@
 
 - (NSButton *)addUserDefaultCheckBoxWithTitle:(NSString *)title andKey:(NSString *)key {
   NSParameterAssert(nil != title);
-  
+
   NSButton *box = [[NSButton alloc] initWithFrame:NSMakeRect(20, 22, 16, 150)];
   /* Set Small Size */
   [[box cell] setControlSize:NSSmallControlSize];
@@ -23,10 +23,10 @@
   [box setButtonType:NSSwitchButton];
   [box setTitle:title];
   [box sizeToFit];
-  
+
   /* Bind CheckBox value to User Defaults */
   if (key) {
-    [box bind:@"value"    
+    [box bind:@"value"
      toObject:[NSUserDefaultsController sharedUserDefaultsController]
   withKeyPath:[@"values." stringByAppendingString:key]
       options:nil];

@@ -65,7 +65,7 @@ WB_EXPORT OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder);
 WB_EXPORT OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL);
 
 /*!
- @function 
+ @function
  @param willDeleteObject return <code>false</code> to abort operation, <code>true</code> to continue.
  */
 WB_EXPORT OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt);
@@ -88,7 +88,7 @@ WB_EXPORT
 OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders);
 
 WB_EXPORT
-OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume, 
+OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
                            FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory);
 
 /* OSTypes */

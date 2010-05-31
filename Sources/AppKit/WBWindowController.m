@@ -78,7 +78,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 }
 - (IBAction)cancel:(id)sender {
   [self setModalResultCode:NSCancelButton];
-  [self close:sender];  
+  [self close:sender];
 }
 
 - (BOOL)isReleasedWhenClosed {
@@ -89,7 +89,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 #if (__OBJC_GC__)
   if (WBFlagTestAndSet(wb_wcFlags.autorelease, release) != wb_wcFlags.autorelease) {
     // the object retains itself, so we have to tell the GC it should not collect it.
-    if (wb_wcFlags.autorelease) 
+    if (wb_wcFlags.autorelease)
       [[NSGarbageCollector defaultCollector] disableCollectorForPointer:self];
     else
       [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
@@ -102,7 +102,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 - (NSInteger)runModal:(BOOL)processRunLoop {
   NSInteger result = 0;
   if (processRunLoop) {
-    /* Create a modal session, and in each loop, 
+    /* Create a modal session, and in each loop,
     we process the default runloop event sources (url download, network connections, etc.) */
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     for (;;) {
@@ -133,7 +133,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 
 - (void)wb_windowWillClose:(NSNotification *)aNotification {
   /* Check for safety. The window may be closed without a call to close: */
-  if ([NSApp modalWindow] == [self window]) 
+  if ([NSApp modalWindow] == [self window])
     [NSApp stopModalWithCode:wb_modalStatus];
 
   /* notify after setting modal status */

@@ -13,7 +13,7 @@
 enum {
   kWBAppleRemoteButtonMenu = 0,
   kWBAppleRemoteButtonSelect,
-  
+
   kWBAppleRemoteButtonUp,
   kWBAppleRemoteButtonDown,
   kWBAppleRemoteButtonLeft,
@@ -31,7 +31,7 @@ WB_CLASS_EXPORT
 @interface WBAppleRemote : NSObject {
 @private
   NSMutableArray *wb_listeners;
-  
+
 @protected
   IOHIDElementCookie wb_cookies[kWBAppleRemoteButtonCount];
 }

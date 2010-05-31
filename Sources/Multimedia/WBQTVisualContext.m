@@ -35,7 +35,7 @@ void _WBImageAvailableCallBack(QTVisualContextRef visualContext, const CVTimeSta
     [self release];
     self = nil;
   }
-  return self;  
+  return self;
 }
 
 - (id)initWithOpenGLContext:(CGLContextObj)aContext {

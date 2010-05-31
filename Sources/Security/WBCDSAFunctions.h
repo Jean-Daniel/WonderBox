@@ -19,7 +19,7 @@ WB_EXPORT const char *WBCDSAGetErrorString(CSSM_RETURN error);
 WB_EXPORT CFStringRef WBCDSACopyErrorMessageString(OSStatus status) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
 WB_EXPORT void WBCDSAPrintError(const char *op, CSSM_RETURN err);
 
-WB_EXPORT 
+WB_EXPORT
 CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service, CSSM_MODULE_HANDLE *handle);
 WB_EXPORT
 CSSM_RETURN WBCDSAShutdownModule(CSSM_MODULE_HANDLE handle);

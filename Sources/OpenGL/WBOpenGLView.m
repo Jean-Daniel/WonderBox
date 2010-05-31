@@ -50,10 +50,10 @@
 
 #pragma mark Live resizing
 - (void)viewWillStartLiveResize {
-  // during live resize, the frame rate should be greater than 
+  // during live resize, the frame rate should be greater than
   // the screen refresh rate to avoid glitch.
   if(wb_glvFlags.drawResize) {
-    // save context settings  
+    // save context settings
     GLint swap = 0;
     CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
     CGLLockContext(glctxt);
@@ -117,8 +117,8 @@
   CGLLockContext(CGL_MACRO_CONTEXT);
   [super reshape];
   wb_glvFlags.reshape = 1;
-  CGLUnlockContext(CGL_MACRO_CONTEXT);  
-  
+  CGLUnlockContext(CGL_MACRO_CONTEXT);
+
   if(wb_glvFlags.drawResize)
     [self drawRect:[self bounds]]; // reduce glitch
   else
@@ -134,10 +134,10 @@
   } else {
     glViewport(0, 0, (GLuint)NSWidth(theBounds), (GLuint)NSHeight(theBounds));  // set the viewport
   }
-  
+
   glMatrixMode(GL_PROJECTION);   // select the projection matrix
   glLoadIdentity();              // reset it
-  
+
   theBounds = [self convertRectToOpenGLSpace:theBounds];
   if(NSIsEmptyRect(theBounds)) {
     glOrtho(0, 1, 0, 1, -1, 1);
@@ -155,7 +155,7 @@
     CGLPixelFormatObj format = CGLGetPixelFormat(ctxt);
     if (kCGLNoError == CGLDescribePixelFormat(format, 0, kCGLPFADoubleBuffer, &value))
       wb_glvFlags.doublebuf = value ? 1 : 0;
-    
+
     CGLUnlockContext(ctxt);
   }
 }
@@ -163,7 +163,7 @@
 - (void)drawRect:(NSRect)aRect {
   if (wb_glvFlags.subview) // must be transparent, so clear the Quartz Context.
     CGContextClearRect([NSGraphicsContext currentGraphicsPort], NSRectToCGRect(aRect));
-  
+
   [self refresh];
 }
 
@@ -177,9 +177,9 @@
       [self reshape:bounds];
       wb_glvFlags.reshape = 0;
     }
-    
+
     [self glDraw:bounds];
-    
+
     [self flushBuffer];
     CGLUnlockContext([ctxt CGLContextObj]);
   }

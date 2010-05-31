@@ -38,7 +38,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 @end
 
 @interface WBAppleRemoteLeopard : WBAppleRemote {
-  IOHIDDeviceRef wb_device;  
+  IOHIDDeviceRef wb_device;
 }
 
 @end
@@ -57,7 +57,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
   return NSAllocateObject([WBAppleRemoteLeopard class], 0, aZone);
 #else
-  if (!IOHIDDeviceCreate) 
+  if (!IOHIDDeviceCreate)
     return NSAllocateObject([WBAppleRemoteLeopard class], 0, aZone);
   return NSAllocateObject([WBAppleRemoteTiger class], 0, aZone);
 #endif
@@ -71,7 +71,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
     result = YES;
     IOObjectRelease(hidService);
   }
-  
+
   return result;
 }
 
@@ -83,7 +83,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
     [self release];
     return nil;
   }
-  
+
   if (self = [self initWithService:hidService options:isExclusive ? kIOHIDOptionsTypeSeizeDevice : 0]) {
     wb_listeners = [[NSMutableArray alloc] init];
   }
@@ -139,14 +139,14 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 static
 void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *sender, IOHIDValueRef value) {
   IOHIDElementRef element = IOHIDValueGetElement(value);
-  [(WBAppleRemoteLeopard *)context handleEvent:IOHIDElementGetCookie(element) 
+  [(WBAppleRemoteLeopard *)context handleEvent:IOHIDElementGetCookie(element)
                                          value:IOHIDValueGetIntegerValue(value)];
 }
 
 @implementation WBAppleRemoteLeopard
 
 - (id)initWithService:(io_service_t)service options:(IOOptionBits)options {
-  if (self = [super initWithService:service options:(IOOptionBits)options]) {  
+  if (self = [super initWithService:service options:(IOOptionBits)options]) {
     wb_device = IOHIDDeviceCreate(kCFAllocatorDefault, service);
     if (!wb_device) {
       WBCLogWarning("Failed to create Apple Remote device");
@@ -161,15 +161,15 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
       [self release];
       return nil;
     }
-    
+
     //    CFTypeRef keys[] = { CFSTR(kIOHIDElementUsagePageKey), CFSTR(kIOHIDElementTypeKey) };
     //    CFTypeRef values[] = {WBInteger(kHIDPage_GenericDesktop), WBInteger(kIOHIDElementTypeInput_Button)};
     //    CFDictionaryRef filter = CFDictionaryCreate(kCFAllocatorDefault, keys, values, 2, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     //    IOHIDDeviceSetInputValueMatching(wb_device, filter);
     //    CFRelease(filter);
-    
+
     IOHIDDeviceRegisterInputValueCallback(wb_device, _WBAppleRemoteInputValueCallback, self);
-    
+
     CFArrayRef elements = IOHIDDeviceCopyMatchingElements(wb_device, NULL, 0);
     if (elements) {
       for (CFIndex i = 0; i < CFArrayGetCount(elements); i++) {
@@ -205,7 +205,7 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
               break;
               //          case kHIDUsage_Csmr_Menu:
               //            wb_cookies[kWBAppleRemoteButtonApplicationMenu] = IOHIDElementGetCookie(element);
-              break;            
+              break;
               //          default:
               //            DLog(@"ignore consumer: %lx, %lx", IOHIDElementGetCookie(element), IOHIDElementGetUsage(element));
           }
@@ -247,23 +247,23 @@ void _WBAppleRemoteTigerCallback(void *target, IOReturn result, void *refcon, vo
   IOHIDEventStruct event;
   IOHIDQueueInterface **hqi;
   AbsoluteTime zeroTime = {0,0};
-  
+
   while (!ret) {
     hqi = (IOHIDQueueInterface **)sender;
     ret = (*hqi)->getNextEvent(hqi, &event, zeroTime, 0);
-    if (!ret) 
+    if (!ret)
       [(WBAppleRemote *)refcon handleEvent:event.elementCookie value:event.value];
   }
 }
 
 @implementation WBAppleRemoteTiger
 
-static 
+static
 bool _WBAppleRemoteTigerCreateInterface(io_object_t hidDevice, IOHIDDeviceInterface ***hdi) {
   SInt32 score = 0;
   io_name_t className;
   IOCFPlugInInterface **plugInInterface = NULL;
-  
+
   IOReturn err = IOObjectGetClass(hidDevice, className);
   if (kIOReturnSuccess == err) {
     err = IOCreatePlugInInterfaceForService(hidDevice,
@@ -274,20 +274,20 @@ bool _WBAppleRemoteTigerCreateInterface(io_object_t hidDevice, IOHIDDeviceInterf
   if (kIOReturnSuccess == err) {
     err = (*plugInInterface)->QueryInterface(plugInInterface,
                                              CFUUIDGetUUIDBytes(kIOHIDDeviceInterfaceID),
-                                             (LPVOID)hdi);    
+                                             (LPVOID)hdi);
     (*plugInInterface)->Release(plugInInterface);
   }
-  
+
   return err == 0;
 }
 
-static 
+static
 bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCookie cookies[kWBAppleRemoteButtonCount]) {
   CFArrayRef elements;
-  
+
   if ((*hdi)->copyMatchingElements(hdi, NULL, &elements) != kIOReturnSuccess)
     return false;
-  
+
   for (CFIndex i = 0; i < CFArrayGetCount(elements); i++) {
     long number = 0;
     CFDictionaryRef element = CFArrayGetValueAtIndex(elements, i);
@@ -297,21 +297,21 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
     if(!CFNumberGetValue((CFNumberRef) object, kCFNumberLongType, &number))
       continue;
     IOHIDElementCookie cookie = (IOHIDElementCookie)number;
-    
+
     object = CFDictionaryGetValue(element, CFSTR(kIOHIDElementUsageKey));
     if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
       continue;
     if (!CFNumberGetValue((CFNumberRef)object, kCFNumberLongType, &number))
       continue;
     long usage = number;
-    
+
     object = CFDictionaryGetValue(element,CFSTR(kIOHIDElementUsagePageKey));
     if (object == 0 || CFGetTypeID(object) != CFNumberGetTypeID())
       continue;
     if (!CFNumberGetValue((CFNumberRef)object, kCFNumberLongType, &number))
       continue;
     long usagePage = number;
-    
+
     if (usagePage == kHIDPage_GenericDesktop) {
       switch (usage) {
         case kHIDUsage_GD_SystemAppMenu:
@@ -349,23 +349,23 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
 
 
 - (id)initWithService:(io_service_t)service options:(IOOptionBits)options {
-  if (self = [super initWithService:service options:(IOOptionBits)options]) { 
-    
+  if (self = [super initWithService:service options:(IOOptionBits)options]) {
+
     if (!_WBAppleRemoteTigerCreateInterface(service, &wb_plugin)) {
       [self release];
       return nil;
     }
-    
+
     if (!_WBAppleRemoteTigerGetCookies((IOHIDDeviceInterface122 **)wb_plugin, wb_cookies)) {
       [self release];
       return nil;
     }
-    
+
     if (kIOReturnSuccess != (*wb_plugin)->open(wb_plugin, options)) {
       [self release];
       return nil;
     }
-    
+
     /* prepare queue */
     HRESULT err = S_OK;
     wb_queue = (*wb_plugin)->allocQueue(wb_plugin);
@@ -377,7 +377,7 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
       }
       if (S_OK == err)
         err = (*wb_queue)->setEventCallout(wb_queue, _WBAppleRemoteTigerCallback, NULL, self);
-    } 
+    }
     if (S_OK != err) {
       [self release];
       return nil;
@@ -405,12 +405,12 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop {
   if (wb_src) return;
   HRESULT err = (*wb_queue)->createAsyncEventSource(wb_queue, &wb_src);
-  
+
   if (S_OK == err) {
     CFRunLoopAddSource([aRunLoop getCFRunLoop], wb_src, kCFRunLoopCommonModes);
     err = (*wb_queue)->start(wb_queue);
   }
-  
+
   if (S_OK != err) {
     WBCLogWarning("Error while starting remote event listener.");
     [self removeFromRunLoop:aRunLoop];

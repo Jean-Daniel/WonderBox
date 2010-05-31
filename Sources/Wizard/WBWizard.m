@@ -56,7 +56,7 @@
   NSButton *bClose = [[self window] standardWindowButton:NSWindowCloseButton];
   [bClose setTarget:self];
   [bClose setAction:@selector(cancel:)];
-  
+
   [[self page] wizard:self willChangePage:WBWizardLoadNextPage];
   [self setPage:[self page]];
   [[self page] wizard:self didChangePage:WBWizardLoadNextPage];
@@ -73,10 +73,10 @@
 
   NSString *title = [aPage title];
   [wizardTitle setStringValue:title ? : [self defaultTitle]];
-  
+
   NSView *view = [aPage pageView];
   WBAssert(view != nil, @"Warning: %@ return nil view", aPage);
-  
+
   [view setFrameOrigin:NSZeroPoint];
   [view setFrameSize:[pageView frame].size];
   [[pageView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -149,7 +149,7 @@
 		/* Check if next page is always the same and if not, flush all pages following the current page */
 		if (wb_idx < [wb_pages count] && [wb_pages objectAtIndex:wb_idx] != nextPage) {
 			[wb_pages removeObjectsInRange:NSMakeRange(wb_idx, [wb_pages count] - wb_idx)];
-		} 
+		}
 		if (wb_idx >= [wb_pages count]) {
 			[self loadPage:nextPage];
 		}
@@ -180,7 +180,7 @@
 		
 		[previousPage wizard:self didChangePage:WBWizardLoadPreviousPage];
 		[current wizard:self didChangePage:WBWizardLeaveToPreviousPage];
-	} 
+	}
 }
 
 - (IBAction)finish:(id)sender {
@@ -208,7 +208,7 @@
   return [wb_pages objectAtIndex:wb_idx];
 }
 - (NSObject<WBWizardPage> *)firstPage {
-  return [wb_pages objectAtIndex:0];  
+  return [wb_pages objectAtIndex:0];
 }
 
 - (BOOL)hasNext {

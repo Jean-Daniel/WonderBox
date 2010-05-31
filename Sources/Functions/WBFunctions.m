@@ -47,12 +47,12 @@ CFComparisonResult WBUTCDateTimeCompare(UTCDateTime *t1, UTCDateTime *t2) {
 
   if (t1->fraction < t2->fraction) return kCFCompareLessThan;
   else if (t1->fraction > t2->fraction) return kCFCompareGreaterThan;
-  
+
   return kCFCompareEqualTo;
 }
 
 /* From CoreFoundation sources
- 
+
  Hashing algorithm for CFNumber:
  M = Max CFHashCode (assumed to be unsigned)
  For positive integral values: (N * HASHFACTOR) mod M
@@ -113,11 +113,11 @@ CFDataRef WBCFDataCreateFromHexString(CFStringRef str) {
   /* String length MUST be even */
   if (length % 2)
     return NULL;
-  
+
   CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, length / 2);
   CFDataSetLength(data, length / 2);
   UInt8 *bytes = CFDataGetMutableBytePtr(data);
-  
+
   bool isValid = true;
   CFStringInlineBuffer buffer;
   CFStringInitInlineBuffer(str, &buffer, CFRangeMake(0, length));

@@ -40,7 +40,7 @@ size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length) {
 		}
 	}
 	
-	return done;  
+	return done;
 }
 
 size_t WBIOUtilsWrite(int fd, UInt8 *buffer, size_t length) {
@@ -137,10 +137,10 @@ ssize_t WBIOUtilsSendFileDescriptor(int sockfd, int fd) {
   struct iovec           iovec[1];
   struct cmsghdr        *cmsghdrp;
   cmsghdr_msg_control_t  cmsghdr_msg_control;
-  
+
   iovec[0].iov_base = (char *)"";
   iovec[0].iov_len = 1;
-  
+
   msg.msg_name = (caddr_t)0; // address (optional)
   msg.msg_namelen = 0;       // size of address
   msg.msg_iov = iovec;       // scatter/gather array
@@ -149,24 +149,24 @@ ssize_t WBIOUtilsSendFileDescriptor(int sockfd, int fd) {
   // ancillary data buffer length
   msg.msg_controllen = sizeof(cmsghdr_msg_control.msg_control);
   msg.msg_flags = 0;          // flags on received message
-  
+
   // CMSG_FIRSTHDR() returns a pointer to the first cmsghdr structure in
   // the ancillary data associated with the given msghdr structure
   cmsghdrp = CMSG_FIRSTHDR(&msg);
-  
+
   cmsghdrp->cmsg_len = CMSG_LEN(sizeof(int)); // data byte count
   cmsghdrp->cmsg_level = SOL_SOCKET;          // originating protocol
   cmsghdrp->cmsg_type = SCM_RIGHTS;           // protocol-specified type
-  
+
   // CMSG_DATA() returns a pointer to the data array associated with
   // the cmsghdr structure pointed to by cmsghdrp
   *((int *)CMSG_DATA(cmsghdrp)) = fd;
-  
+
   if ((ret = sendmsg(sockfd, &msg, 0)) < 0) {
     DCLog("sendmsg: %s", strerror(errno));
     return ret;
   }
-  
+
   return 0;
 }
 
@@ -178,10 +178,10 @@ ssize_t WBIOUtilsReceiveFileDescriptor(int sockfd, int *fd) {
   struct msghdr          msg;
   struct cmsghdr        *cmsghdrp;
   cmsghdr_msg_control_t  cmsghdr_msg_control;
-  
+
   iovec[0].iov_base = &c;
   iovec[0].iov_len = 1;
-  
+
   msg.msg_name = (caddr_t)0;
   msg.msg_namelen = 0;
   msg.msg_iov = iovec;
@@ -189,34 +189,34 @@ ssize_t WBIOUtilsReceiveFileDescriptor(int sockfd, int *fd) {
   msg.msg_control = cmsghdr_msg_control.msg_control;
   msg.msg_controllen = sizeof(cmsghdr_msg_control.msg_control);
   msg.msg_flags = 0;
-  
+
   if ((ret = recvmsg(sockfd, &msg, 0)) <= 0) {
     DCLog("recvmsg: %s", strerror(errno));
     return ret;
   }
-  
+
   cmsghdrp = CMSG_FIRSTHDR(&msg);
-  
+
   if (cmsghdrp == NULL) {
     *fd = -1;
     return ret;
   }
-  
+
   if (cmsghdrp->cmsg_len != CMSG_LEN(sizeof(int)))
     errcond++;
-  
+
   if (cmsghdrp->cmsg_level != SOL_SOCKET)
     errcond++;
-  
+
   if (cmsghdrp->cmsg_type != SCM_RIGHTS)
     errcond++;
-  
+
   if (errcond) {
     DCLog("%d errors in received message\n", errcond);
     *fd = -1;
   } else
     *fd = *((int *)CMSG_DATA(cmsghdrp));
-  
+
   return ret;
 }
 

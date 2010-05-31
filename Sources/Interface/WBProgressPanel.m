@@ -29,14 +29,14 @@
 //    CFAbsoluteTime remaining = (elapsed / progress) - elapsed;
     /* timeStr = 'format time:remaining' */
 //  }
-  
+
   NSString *msg = nil;
   if (WBDelegateHandle(wb_delegate, progressPanel:messageForValue:))
     msg = [wb_delegate progressPanel:self messageForValue:value];
-  
+
   if (!msg) msg = timeStr;
   else if (timeStr) msg = [NSString stringWithFormat:@"%@ - %@", msg, timeStr];
-  
+
   [self setMessage:msg ? : @""];
 }
 

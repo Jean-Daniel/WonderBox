@@ -24,7 +24,7 @@ CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn);
 WB_EXPORT
 bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn);
 
-WB_EXPORT 
+WB_EXPORT
 OSType WBProcessGetFrontProcessSignature(void);
 WB_EXPORT
 CFStringRef WBProcessCopyFrontProcessBundleIdentifier(void);

@@ -14,7 +14,7 @@
 
 + (NSArray *)componentsWithComponentDescription:(const ComponentDescription *)desc {
   if (!desc) return nil;
-  
+
   ComponentDescription search = *desc;
   NSMutableArray *cmps = [NSMutableArray array];
   Component comp = FindNextComponent(NULL, &search);
@@ -50,16 +50,16 @@
 #pragma mark Protocols
 - (id)copyWithZone:(NSZone *)aZone {
   WBComponent *copy = NSAllocateObject([self class], 0, aZone);
-  
+
   copy->_comp =_comp;
   copy->_desc =_desc;
-  
+
   copy->_icon = [_icon retain];
   copy->_name = [_name retain];
   copy->_manu = [_manu retain];
   copy->_info = [_info retain];
   copy->_cname = [_cname retain];
-  
+
   return copy;
 }
 
@@ -109,7 +109,7 @@
 - (NSString *)description {
   OSType type = OSSwapHostToBigInt32(_desc.componentType);
   OSType subtype = OSSwapHostToBigInt32(_desc.componentSubType);
-  return [NSString stringWithFormat:@"<%@ %p> { name: %@ ('%4.4s'/'%4.4s'), manufacturer: %@, info: %@ }", 
+  return [NSString stringWithFormat:@"<%@ %p> { name: %@ ('%4.4s'/'%4.4s'), manufacturer: %@, info: %@ }",
           [self class], self,
           [self name], &type, &subtype,
           [self manufacturer], [self informations]
@@ -121,36 +121,36 @@
   if (!_name) {
     Handle h1 = NewHandle(0);
     Handle h2 = NewHandle(0);
-    
+
 		ComponentDescription desc;
 		OSStatus err = GetComponentInfo(_comp, &desc, h1, h2, 0);
-    
+
     if (noErr == err) {
       if (GetHandleSize(h1) > 1) {
         char* ptr1 = *h1 + 1;
         size_t len = GetHandleSize(h1) - 1;
         // Get the manufacturer's name... look for the ':' character convention
-        _cname = [[NSString alloc] initWithBytes:ptr1 
-                                          length:MIN(StrLength(*h1), len) 
+        _cname = [[NSString alloc] initWithBytes:ptr1
+                                          length:MIN(StrLength(*h1), len)
                                         encoding:NSMacOSRomanStringEncoding]; // pascal string
-        
+
         char* end = NULL;
-        
+
         end = memchr(ptr1, ':', len);
         size_t strLength = end ? end - ptr1 : 0;
         // if ':' is the last char or the name contains more than one ':' (common in codec name like 4:2:2 decoder)
         if (end && (strLength + 1 < len || memchr(end + 1, ':', len - strLength - 1)))
           end = NULL;
-        
+
         if (end) {
-          _manu = [[NSString alloc] initWithBytes:ptr1 
+          _manu = [[NSString alloc] initWithBytes:ptr1
                                            length:strLength
                                          encoding:NSMacOSRomanStringEncoding];
           ptr1 = end + 1; // skip ':'
           len = len - strLength - 1;
           // skip white spaces
           while (len > 0 && *ptr1 == ' ') {
-            ptr1++; 
+            ptr1++;
             len--;
           }
         } else {
@@ -164,13 +164,13 @@
             case 'appl':
             case 'appx':
               _manu = @"Apple";
-              break;            
+              break;
           }
         }
-        
+
         if (len > 0)
           _name = [[NSString alloc] initWithBytes:ptr1 length:len encoding:NSMacOSRomanStringEncoding];
-        else 
+        else
           _name = @"";
       }
       if (GetHandleSize(h2) > 1) {
@@ -178,7 +178,7 @@
         size_t len = GetHandleSize(h2);
         _info = [[NSString alloc] initWithBytes:ptr2
                                          length:MIN(StrLength(*h2), len)
-                                       encoding:NSMacOSRomanStringEncoding];        
+                                       encoding:NSMacOSRomanStringEncoding];
       }
     }
     DisposeHandle(h2);
@@ -252,14 +252,14 @@
 	require_noerr (result = componentResFileID <= 0, home);
 	
 	UseResFile(componentResFileID);
-  
+
 	thngResourceCount = Count1Resources(kComponentResourceType);
 	
 	require_noerr (result = ResError(), home);
   // only go on if we successfully found at least 1 thng resource
 	require_noerr (thngResourceCount <= 0 ? -1 : 0, home);
-  
-	// loop through all of the Component thng resources trying to 
+
+	// loop through all of the Component thng resources trying to
 	// find one that matches this Component description
 	for (short i = 0; i < thngResourceCount && (!versionFound); i++)
 	{
@@ -270,11 +270,11 @@
 			if ((UInt32)GetHandleSize(thngResourceHandle) >= sizeof(ExtComponentResource))
 			{
 				ExtComponentResource * componentThng = (ExtComponentResource*) (*thngResourceHandle);
-        
+
 				// check to see if this is the thng resource for the particular Component that we are looking at
 				// (there often is more than one Component described in the resource)
-				if ((componentThng->cd.componentType == _desc.componentType) 
-						&& (componentThng->cd.componentSubType == _desc.componentSubType) 
+				if ((componentThng->cd.componentType == _desc.componentType)
+						&& (componentThng->cd.componentSubType == _desc.componentSubType)
 						&& (componentThng->cd.componentManufacturer == _desc.componentManufacturer))
 				{
 					version = componentThng->componentVersion;
@@ -287,12 +287,12 @@
 
 	if (!versionFound)
 		result = resNotFound;
-  
+
 	UseResFile(curRes);	// revert
 	
 	if ( componentResFileID != kResFileNotOpened )
 		CloseComponentResFile(componentResFileID);
-  
+
 home:
   if (error) *error = result;
   if (result == noErr) return version;

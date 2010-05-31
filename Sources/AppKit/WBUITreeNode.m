@@ -351,7 +351,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
       [[self undoManager] registerUndoWithTarget:self selector:@selector(setChildren:) object:[self children]];
     }
     if (wb_utFlags.notify) {
-      [[self notificationCenter] postNotificationName:WBUITreeNodeWillSetChildrenNotification 
+      [[self notificationCenter] postNotificationName:WBUITreeNodeWillSetChildrenNotification
                                                object:self
                                              userInfo:nil];
     }
@@ -369,7 +369,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   if (wb_utFlags.undo) {
     [[[self undoManager] prepareWithInvocationTarget:sibling] remove];
   }
-  NSDictionary *info = nil; 
+  NSDictionary *info = nil;
   WBBaseUITreeNode *parent = [self parent];
   if (parent && wb_utFlags.notify) {
     info = [NSDictionary dictionaryWithObject:sibling forKey:WBInsertedChild];

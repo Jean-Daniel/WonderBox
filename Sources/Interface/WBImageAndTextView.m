@@ -95,9 +95,9 @@ static const CGFloat kAVImageRightMargin = 6;
     /* Cache informations */
     [wb_title release];
     wb_title = [title copy];
-    
+
     wb_width = wb_title ? [wb_title sizeWithAttributes:nil].width : 0;
-    
+
     NSRect frame = [self frame];
     NSRect dirty = frame;
     if (wb_width > 0) {
@@ -114,13 +114,13 @@ static const CGFloat kAVImageRightMargin = 6;
           break;
         case 2: /* right */
           x = NSWidth([self bounds]) - (wb_width + kAVImageSize + kAVImageRightMargin);
-          
+
           break;
       }
-      
+
       frame.origin.x = x;
       frame.size.width = wb_width + kAVImageSize + kAVImageRightMargin + 2 * kAVMargin + 1;
-      
+
       if (NSWidth(frame) > NSWidth([self bounds])) {
         dirty = frame;
       }
@@ -147,14 +147,14 @@ static const CGFloat kAVImageRightMargin = 6;
 - (void)drawRect:(NSRect)rect {
   if ([self title] || [self icon]) {
     CGContextRef ctxt = WBCGContextGetCurrent();
-    
+
     CGContextSetShouldAntialias(ctxt, true);
     CGContextSetInterpolationQuality(ctxt, kCGInterpolationHigh);
     // FIXME: userspace scale factor
     CGRect cgrect = CGRectMake(.5, .5, NSWidth([self bounds]) - 1, NSHeight([self bounds]) - 1);
     CGMutablePathRef path = CGPathCreateMutable();
     WBCGPathAddRoundRect(path, NULL, cgrect, 5);
-    
+
     if (wb_saFlags.dark) {
       CGContextSetGrayStrokeColor(ctxt, 0.50, 0.60);
       CGContextSetGrayFillColor(ctxt, 0.65f, wb_saFlags.highlight ? .40f : .25f);
@@ -162,7 +162,7 @@ static const CGFloat kAVImageRightMargin = 6;
       CGContextSetGrayStrokeColor(ctxt, 0.5, 1);
       CGContextSetGrayFillColor(ctxt, 0, wb_saFlags.highlight ? .15f : .08f);
     }
-    
+
     /* Draw focus ring if needed */
     BOOL isFirst = wb_action && [[self window] firstResponder] == self;
     if (isFirst) {
@@ -174,16 +174,16 @@ static const CGFloat kAVImageRightMargin = 6;
       CGContextFillPath(ctxt);
       CGContextRestoreGState(ctxt);
     }
-    
+
     CGContextAddPath(ctxt, path);
     CGContextStrokePath(ctxt);
-    
+
     /* Draw before image if not highlight */
     if (!wb_saFlags.highlight) {
       CGContextAddPath(ctxt, path);
       CGContextFillPath(ctxt);
     }
-    
+
     /* Draw icon */
     NSImage *icon = [self icon];
     if (icon) {
@@ -196,17 +196,17 @@ static const CGFloat kAVImageRightMargin = 6;
              operation:NSCompositeSourceOver
               fraction:1];
     }
-    
+
     if (wb_saFlags.highlight) {
       CGContextAddPath(ctxt, path);
       CGContextFillPath(ctxt);
     }
     CGPathRelease(path);
-    
+
     /* Draw string */
     if (!wb_saFlags.dark)
       CGContextSetShadowWithColor(ctxt, CGSizeMake(0, -1), 1, sShadowColor);
-    
+
     CGFloat y = round((NSHeight([self bounds]) - kAVImageSize + 10) / 2);
     [[self title] drawAtPoint:NSMakePoint(kAVMargin + kAVImageSize + kAVImageRightMargin, y) withAttributes:nil];
   }
@@ -232,20 +232,20 @@ static const CGFloat kAVImageRightMargin = 6;
   /* No action, so don't need to handle event */
   if (!wb_action)
     return;
-  
+
   BOOL keepOn = YES;
-  
+
   NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
   BOOL isInside = [self mouse:mouseLoc inRect:[self bounds]];
-  
+
   if (isInside) {
     [self highlight:YES];
-    
+
     while (keepOn) {
       theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
       mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
       isInside = [self mouse:mouseLoc inRect:[self bounds]];
-      
+
       switch ([theEvent type]) {
         case NSLeftMouseDragged:
           [self highlight:isInside];
@@ -266,7 +266,7 @@ static const CGFloat kAVImageRightMargin = 6;
 - (void)keyDown:(NSEvent *)theEvent {
   if (!wb_action)
     return;
-  
+
   NSString *chr = [theEvent characters];
   if ([chr length]) {
     switch ([chr characterAtIndex:0]) {

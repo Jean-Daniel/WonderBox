@@ -30,7 +30,7 @@
 @end
 
 @interface WBStreamingMovie : WBMovieTexture {
-@private  
+@private
   CVPixelBufferPoolRef wb_pool; // per movie (thread safety)
   ICMDecompressionSessionRef wb_icmSession; // per movie (thread safety)
 }

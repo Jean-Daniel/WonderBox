@@ -13,7 +13,7 @@
 @implementation NSTabView (WBExtensions)
 
 - (NSInteger)indexOfSelectedTabViewItem {
-  return [self indexOfTabViewItem:[self selectedTabViewItem]]; 
+  return [self indexOfTabViewItem:[self selectedTabViewItem]];
 }
 
 @end

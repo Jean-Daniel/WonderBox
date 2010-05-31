@@ -73,7 +73,7 @@ WB_EXPORT
 bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type);
 WB_EXPORT
 bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type);
-WB_EXPORT 
+WB_EXPORT
 CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options);
 
 WB_EXPORT

@@ -46,7 +46,7 @@ WB_CLASS_EXPORT
 
 /*!
 @method
- @abstract Create a proxy object for the calling thread 
+ @abstract Create a proxy object for the calling thread
  */
 + (NSProxy *)proxyWithTarget:(id)target sync:(NSUInteger)sync;
 + (NSProxy *)proxyWithTarget:(id)target sync:(NSUInteger)sync timeout:(uint32_t)timeout;

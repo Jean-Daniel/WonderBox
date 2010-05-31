@@ -89,14 +89,14 @@ enum {
     [self release];
     return nil;
   }
-  
+
   if (self = [super init]) {
     if (![self setPath:path]) {
       [self release];
       self = nil;
     }
   }
-  
+
   return self;
 }
 
@@ -106,11 +106,11 @@ enum {
     /* Get name */
     CFStringRef name = CFDictionaryGetValue(info, kCFBundleNameKey);
     CFStringRef bundle = CFDictionaryGetValue(info, kCFBundleIdentifierKey);
-    
+
     CFStringRef creator = CFDictionaryGetValue(info, CFSTR("FileCreator"));
     OSType signature = creator ? WBGetOSTypeFromString(creator) : kWBUndefinedSignature;
     self = [self initWithName:(NSString *)name signature:signature bundleIdentifier:(NSString *)bundle];
-    
+
     CFRelease(info);
   } else {
     [self release];
@@ -151,11 +151,11 @@ enum {
     wb_name, WBStringForOSType(wb_signature), wb_identifier];
 }
 
-WB_INLINE 
+WB_INLINE
 bool __IsValidSignature(OSType signature) {
   return signature && signature != kWBUndefinedSignature;
 }
-WB_INLINE 
+WB_INLINE
 bool __IsValidIdentifier(id identifier) {
   return identifier && ![identifier isKindOfClass:[NSNull class]];
 }
@@ -168,17 +168,17 @@ bool __IsValidIdentifier(id identifier) {
 
 - (BOOL)isEqual:(id)object {
   if (self == object) return YES;
-  
+
   if (![object isKindOfClass:[WBApplication class]]) return NO;
-  
+
   if ([self signature]) {
     if (![object signature] || [object signature] != wb_signature) return NO;
   } else if ([object signature]) return NO;
-  
+
   if ([self bundleIdentifier]) {
     if (![object bundleIdentifier] || ![wb_identifier isEqualToString:[object bundleIdentifier]]) return NO;
   } else if ([object bundleIdentifier]) return NO;
-  
+
   return YES;
 }
 
@@ -246,16 +246,16 @@ bool __IsValidIdentifier(id identifier) {
   NSString *path = nil;
   if (__IsValidIdentifier(wb_identifier))
     path = WBLSFindApplicationForBundleIdentifier(wb_identifier);
-  
+
   if (!path && __IsValidSignature(wb_signature))
     path = WBLSFindApplicationForSignature(wb_signature);
-  
+
   return path;
 }
 - (BOOL)setPath:(NSString *)aPath {
   /* Reset name */
   [self setName:nil];
-  
+
   if (!aPath) {
     [self setSignature:kLSUnknownCreator bundleIdentifier:nil];
     return YES;
@@ -265,37 +265,37 @@ bool __IsValidIdentifier(id identifier) {
   if (noErr != WBLSIsApplicationAtPath(WBNSToCFString(aPath), &isApp) || !isApp) {
     return NO;
   }
-  
+
   CFStringRef bundle = WBLSCopyBundleIdentifierForPath(WBNSToCFString(aPath));
   OSType signature = WBLSGetSignatureForPath(WBNSToCFString(aPath)) ? : kWBUndefinedSignature;
   [self setSignature:signature bundleIdentifier:WBCFToNSString(bundle)];
   WBRelease(bundle);
-  
+
   return [self isValid];
 }
 
 - (BOOL)getFSRef:(FSRef *)ref {
   NSParameterAssert(ref);
-  
+
   BOOL ok = NO;
   if (__IsValidIdentifier(wb_identifier))
     ok = noErr == WBLSGetApplicationForBundleIdentifier(WBNSToCFString(wb_identifier), ref);
-  
+
   if (!ok && __IsValidSignature(wb_signature))
     ok = noErr == WBLSGetApplicationForSignature(wb_signature, ref);
-  
+
   return ok;
 }
 
 - (ProcessSerialNumber)process {
   ProcessSerialNumber psn = {kNoProcess, kNoProcess};
-  
+
   if (__IsValidIdentifier(wb_identifier))
     psn = WBProcessGetProcessWithBundleIdentifier(WBNSToCFString(wb_identifier));
-  
+
   if (psn.lowLongOfPSN == kNoProcess && __IsValidSignature(wb_signature))
     psn = WBProcessGetProcessWithSignature(wb_signature);
-  
+
   return psn;
 }
 

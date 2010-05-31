@@ -21,7 +21,7 @@ enum {
 @interface WBQTMovieTimecode : NSObject {
 @private
   QTMovie *wb_movie;
-  
+
   struct _wb_tcFlags {
     unsigned int hdMode:2;
     unsigned int tcTrack:1;

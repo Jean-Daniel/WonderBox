@@ -60,23 +60,23 @@ CFURLRef WBAEFinderCopyCurrentFolderURL(void);
  @function
  @abstract	Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
  */
-WB_EXPORT 
+WB_EXPORT
 CFStringRef WBAEFinderCopyCurrentFolderPath(void);
 
 #pragma mark Sync
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderSyncItem(const AEDesc *item);
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderSyncFSRef(const FSRef *aRef);
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderSyncItemAtURL(CFURLRef url);
 
 #pragma mark Reveal Item
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate);
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate);
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate);
 
 #pragma mark Coerce

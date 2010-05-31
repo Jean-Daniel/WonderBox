@@ -17,11 +17,11 @@ enum {
 
 WB_CLASS_EXPORT
 @interface WBGLFrameBufferAttachement : NSObject {
-@private  
+@private
   GLuint wb_name;
   GLenum wb_target;
   GLuint wb_width, wb_height;
-  
+
   struct {
     unsigned int type:2;
     unsigned int zoff:7;

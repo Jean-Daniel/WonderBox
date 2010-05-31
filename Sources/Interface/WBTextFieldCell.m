@@ -24,14 +24,14 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
   [super encodeWithCoder:aCoder];
-  // TODO: 
+  // TODO:
 }
 - (id)initWithCoder:(NSCoder *)aDecoder {
   if (self = [super initWithCoder:aDecoder]) {
     if ([aDecoder allowsKeyedCoding]) {
       //wb_tfFlags.middle = [aDecoder decodeBoolForKey:@"middle"];
     } else {
-      
+
     }
   }
   return self;
@@ -56,7 +56,7 @@ WB_INLINE
 NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
 	// super would normally draw text at the top of the cell
   if (!self->wb_tfFlags.middle) return frame;
-  
+
   NSFont *font = [self font];
 	NSInteger offset = floor((NSHeight(frame) - ([font ascender] - [font descender])) / 2);
 	return NSInsetRect(frame, 0.0, offset);

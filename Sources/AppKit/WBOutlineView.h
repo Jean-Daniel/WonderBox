@@ -37,7 +37,7 @@ WB_CLASS_EXPORT
 - (IBAction)delete:(id)sender;
 /*!
  @method		keyDown:
- @abstract	informe the delegate if delete backward or forward is pressed 
+ @abstract	informe the delegate if delete backward or forward is pressed
  and send target doubleAction message if Enter is pressed.
  @param 		theEvent	
  */

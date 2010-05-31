@@ -14,7 +14,7 @@ WB_CLASS_EXPORT
   CGFloat wb_width;
   NSImage *wb_icon;
   NSString *wb_title;
-  
+
   id wb_target;
   SEL wb_action;
   struct _wb_saFlags {

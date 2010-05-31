@@ -272,9 +272,9 @@ OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRe
 
 WB_INLINE
 OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, CFDataRef data) {
-  if (data) 
+  if (data)
     return WBAEAddParameter(theEvent, keyword, type ? : typeData, CFDataGetBytePtr(data), CFDataGetLength(data));
-  else 
+  else
     return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
 }
 
@@ -343,8 +343,8 @@ OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, Des
  @param     sendMode
  @param     timeoutms
  @param     theEvent On return, contains the result descriptor if function returns noErr or {typeNull, NULL}.
- 
- @result    A result code. If reply contains an error code, returns this code. 
+
+ @result    A result code. If reply contains an error code, returns this code.
  */
 WB_EXPORT
 OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply);
@@ -355,7 +355,7 @@ OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 time
  	@param      theEvent A pointer to the Apple event to be sent.
  	@result     A result code.
  */
-WB_EXPORT 
+WB_EXPORT
 OSStatus WBAESendEventNoReply(AppleEvent* theEvent);
 
 /*!
@@ -492,7 +492,7 @@ OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType,
 WB_EXPORT
 OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* string);
 
-/*! 
+/*!
     @function
     @abstract   Send a simple AppleEvent to an application.
     @discussion This methode is a convenient methode to send an AppleEvent to an Application, without param nor return value.
@@ -509,20 +509,20 @@ WB_EXPORT OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEven
 #pragma mark -
 #pragma mark Retreive AEDesc Data
 WB_EXPORT
-OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc, 
-                                   DescType desiredType, DescType* typeCode, 
+OSStatus WBAEGetDataFromDescriptor(const AEDesc* pAEDesc,
+                                   DescType desiredType, DescType* typeCode,
                                    void* dataPtr, Size maximumSize, Size *pActualSize);
 
 WB_INLINE
-OSStatus WBAEGetDataFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, 
-                                   DescType desiredType, DescType* typeCode, 
+OSStatus WBAEGetDataFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey,
+                                   DescType desiredType, DescType* typeCode,
                                    void* dataPtr, Size maximumSize, Size *pActualSize) {
   return AEGetParamPtr(anEvent, aKey, desiredType, typeCode, dataPtr, maximumSize, pActualSize);
 }
 
 WB_INLINE
-OSStatus WBAEGetNthDataFromDescList(const AEDescList *aList, CFIndex idx, 
-                                    DescType desiredType, AEKeyword *theAEKeyword, DescType* typeCode, 
+OSStatus WBAEGetNthDataFromDescList(const AEDescList *aList, CFIndex idx,
+                                    DescType desiredType, AEKeyword *theAEKeyword, DescType* typeCode,
                                     void* dataPtr, Size maximumSize, Size *pActualSize) {
   return AEGetNthPtr(aList, idx, desiredType, theAEKeyword, typeCode, dataPtr, maximumSize, pActualSize);
 }

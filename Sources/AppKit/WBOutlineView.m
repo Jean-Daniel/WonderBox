@@ -7,7 +7,7 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
- 
+
 #import WBHEADER(WBOutlineView.h)
 
 @implementation WBOutlineView
@@ -46,7 +46,7 @@
   } else if ([anItem action] == @selector(selectAll:)) {
     return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
   }
-  
+
   return YES;
 }
 
@@ -96,25 +96,25 @@
   id delegate = [self delegate];
   if (wb_ovFlags.editOnClick && [theEvent clickCount] == 1) {
     /* If is maybe editable */
-    if (WBDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) && 
+    if (WBDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) &&
         [[self dataSource] respondsToSelector:@selector(outlineView:setObjectValue:forTableColumn:byItem:)]) {
       // If option key down when click => edit clicked cell
       if ([self shouldEditCellForEvent:theEvent]) {
         NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
-        
+
         if (column != -1 && row != -1) {
           NSTableColumn *col = [[self tableColumns] objectAtIndex:column];
           if ([col isEditable]) {
             // Check if already editing
             if ([self editedRow] == row && [self editedColumn] == column) return;
-            
+
             // Check if we click on editable text
             if ([self respondsToSelector:@selector(preparedCellAtColumn:row:)]) {
               NSCell *cell = [self preparedCellAtColumn:column row:row];
-              NSUInteger test = [cell hitTestForEvent:theEvent 
-                                               inRect:[self frameOfCellAtColumn:column row:row] 
+              NSUInteger test = [cell hitTestForEvent:theEvent
+                                               inRect:[self frameOfCellAtColumn:column row:row]
                                                ofView:self];
               if ((test & NSCellHitEditableTextArea) == 0) {
                 [super mouseDown:theEvent];
@@ -133,10 +133,10 @@
                 return;
               }
             }
-            
+
             // Check if editing allows
             id item = [self itemAtRow:row];
-            
+
             if (item && [delegate outlineView:self shouldEditTableColumn:col item:item]) {
               // Select row if needed
               if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
@@ -204,7 +204,7 @@
 - (NSRect)frameOfOutlineCellAtRow:(NSInteger)row {
   if (!wb_ovFlags.drawOutline || [[self delegate] outlineView:self shouldDrawOutlineCellAtRow:row])
     return [super frameOfOutlineCellAtRow:row];
-  
+
   return NSZeroRect;
 }
 

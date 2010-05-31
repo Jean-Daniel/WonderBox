@@ -26,15 +26,15 @@ void WBMediaPrintAtomContainer(QTAtomContainer atoms) {
 
 void WBMediaPrintAtoms(QTAtomContainer atoms, QTAtom parentAtom, CFIndex level) {
   if (level > 32) return;
-  
+
   fprintf(stderr, "%.*s", (int)level, sBlank);
   QTAtomType type;
   QTGetAtomTypeAndID(atoms, parentAtom, &type, NULL);
   type = OSSwapHostToBigInt32(type);
   fprintf(stderr, "'%4.4s': ", (char *)&type);
-  
+
   fprintf(stderr, "\n");
-  
+
   QTAtom atom = 0;
   OSStatus err = QTNextChildAnyType(atoms, parentAtom, atom, &atom);
   while (noErr == err && atom) {
@@ -46,25 +46,25 @@ void WBMediaPrintAtoms(QTAtomContainer atoms, QTAtom parentAtom, CFIndex level) 
 
 CFStringRef WBMediaCopyStringForPixelFormat(OSType format) {
   switch (format) {
-    default: 
+    default:
       return UTCreateStringForOSType(format) ? : CFSTR("????");
     case 0: return CFSTR("Undefined format !");
     case kCVPixelFormatType_1Monochrome: return CFSTR("Monochrome");
     case kCVPixelFormatType_2Indexed:    return CFSTR("2 bits indexed");
     case kCVPixelFormatType_4Indexed:    return CFSTR("4 bits indexed");
     case kCVPixelFormatType_8Indexed:    return CFSTR("8 bits indexed");
-      
+
     case kCVPixelFormatType_1IndexedGray_WhiteIsZero: return CFSTR("1 bit indexed gray, white is zero");
     case kCVPixelFormatType_2IndexedGray_WhiteIsZero: return CFSTR("2 bits indexed gray, white is zero");
     case kCVPixelFormatType_4IndexedGray_WhiteIsZero: return CFSTR("4 bits indexed gray, white is zero");
     case kCVPixelFormatType_8IndexedGray_WhiteIsZero: return CFSTR("8 bits indexed gray, white is zero");
-      
+
     case kCVPixelFormatType_16BE555:  return CFSTR("16 bits BE RGB 555");
     case kCVPixelFormatType_16LE555:  return CFSTR("16 bits LE RGB 555");
     case kCVPixelFormatType_16LE5551: return CFSTR("16 bits LE RGB 5551");
     case kCVPixelFormatType_16BE565:  return CFSTR("16 bits BE RGB 565");
     case kCVPixelFormatType_16LE565:  return CFSTR("16 bits LE RGB 565");
-      
+
     case kCVPixelFormatType_24RGB:  return CFSTR("24 bits RGB");
     case kCVPixelFormatType_24BGR:  return CFSTR("24 bits BGR");
     case kCVPixelFormatType_32ARGB: return CFSTR("32 bits ARGB");
@@ -73,7 +73,7 @@ CFStringRef WBMediaCopyStringForPixelFormat(OSType format) {
     case kCVPixelFormatType_32RGBA: return CFSTR("32 bits RGBA");
     case kCVPixelFormatType_64ARGB: return CFSTR("64 bits ARGB, 16-bit big-endian samples");
     case kCVPixelFormatType_48RGB:  return CFSTR("48 bits RGB, 16-bit big-endian samples");
-      
+
     case kCVPixelFormatType_32AlphaGray: return CFSTR("32 bits AlphaGray, 16-bit big-endian samples, black is zero");
     case kCVPixelFormatType_16Gray:     return CFSTR("16 bits Grayscale, 16-bit big-endian samples, black is zero");
 
@@ -85,7 +85,7 @@ CFStringRef WBMediaCopyStringForPixelFormat(OSType format) {
     case kCVPixelFormatType_422YpCbCr10:      return CFSTR("Y'CbCr 10-bits 4:2:2");
     case kCVPixelFormatType_444YpCbCr10:      return CFSTR("Y'CbCr 10-bits 4:4:4");
     case kCVPixelFormatType_420YpCbCr8Planar: return CFSTR("Planar Y'CbCr 8-bits 4:2:0.");
-      
+
     case kYUVSPixelFormat:    return CFSTR("YUV 4:2:2 byte ordering 16-unsigned = 'YUY2'");
     case kYUVUPixelFormat:    return CFSTR("YUV 4:2:2 byte ordering 16-signed");
     case kYVU9PixelFormat:    return CFSTR("YVU9 Planar 9");
@@ -140,9 +140,9 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie, Media *, MediaHandler *);
 void WBQTMovieGetStaticFrameRate(QTMovie *inMovie, double *outStaticFrameRate) {
   assert(inMovie != NULL);
   assert(outStaticFrameRate != NULL);
-  
+
   *outStaticFrameRate = 0;
-  
+
   Media movieMedia;
   MediaHandler movieMediaHandler;
   /* get the media identifier for the media that contains the first
@@ -184,16 +184,16 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie inMovie, Media *outMedia, MediaH
   assert(inMovie != NULL);
   assert(outMedia != NULL);
   assert(outMediaHandler != NULL);
-  
+
   *outMedia = NULL;
   *outMediaHandler = NULL;
-  
+
   /* get first video track */
   Track videoTrack = GetMovieIndTrackType(inMovie, 1, kCharacteristicHasVideoFrameRate, movieTrackCharacteristic | movieTrackEnabledOnly);
-  
+
   if (!videoTrack)
     videoTrack = GetMovieIndTrackType(inMovie, 1, VideoMediaType, movieTrackMediaType | movieTrackEnabledOnly);
-  
+
   if (videoTrack != NULL) {
     /* get media ref. for track's sample data */
     *outMedia = GetTrackMedia(videoTrack);
@@ -210,13 +210,13 @@ void _WBMovieGetVideoMediaAndMediaHandler(Movie inMovie, Media *outMedia, MediaH
  */
 OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
   if (!outFPS || !inMovieMedia) return paramErr;
-  
+
   *outFPS = 0;
-  
+
   /* get the number of samples in the media */
   long sampleCount = GetMediaSampleCount(inMovieMedia);
   OSErr err = GetMoviesError();
-  
+
   if (sampleCount && err == noErr)
   {
     /* find the media duration */
@@ -236,7 +236,7 @@ OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
       }
     }
   }
-  
+
   return err;
 }
 
@@ -247,7 +247,7 @@ OSStatus _WBMediaGetStaticFrameRate(Media inMovieMedia, double *outFPS) {
 OSStatus _WBMediaHandlerIsMPEG(MediaHandler inMediaHandler, Boolean *outIsMPEG) {
   assert(outIsMPEG != NULL);
   assert(inMediaHandler != NULL);
-  
+
   /* is this the MPEG-1/MPEG-2 media handler? */
   return MediaHasCharacteristic(inMediaHandler, kCharacteristicIsAnMpegTrack, outIsMPEG);
 }
@@ -258,12 +258,12 @@ OSStatus _WBMediaHandlerIsMPEG(MediaHandler inMediaHandler, Boolean *outIsMPEG) 
  */
 ComponentResult _WBMPEGMediaGetStaticFrameRate(MediaHandler inMPEGMediaHandler, Fixed *outStaticFrameRate) {
   if (!inMPEGMediaHandler || !outStaticFrameRate) return paramErr;
-  
+
   *outStaticFrameRate = 0;
-  
+
   MHInfoEncodedFrameRateRecord encodedFrameRate;
   Size encodedFrameRateSize = sizeof(encodedFrameRate);
-  
+
   /* get the static frame rate */
   ComponentResult err = MediaGetPublicInfo(inMPEGMediaHandler,
                                            kMHInfoEncodedFrameRate,
@@ -273,7 +273,7 @@ ComponentResult _WBMPEGMediaGetStaticFrameRate(MediaHandler inMPEGMediaHandler, 
     /* return frame rate at which the track was encoded */
     *outStaticFrameRate = encodedFrameRate.encodedFrameRate;
   }
-  
+
   return err;
 }
 
@@ -283,9 +283,9 @@ static
 void _WBMovieGetVideoMedia(QTMovie *inMovie, QTMedia **outMedia) {
   assert(inMovie != NULL);
   assert(outMedia != NULL);
-  
+
   *outMedia = NULL;
-  
+
   /* get first video track */
   QTTrack *videoTrack = nil;
   // search enabled track with frame rate
@@ -298,7 +298,7 @@ void _WBMovieGetVideoMedia(QTMovie *inMovie, QTMedia **outMedia) {
       }
     }
   }
-  
+
   // else search first video track
   if (!videoTrack) {
     for (QTTrack *track in [inMovie tracksOfMediaType:QTMediaTypeVideo]) {
@@ -308,7 +308,7 @@ void _WBMovieGetVideoMedia(QTMovie *inMovie, QTMedia **outMedia) {
       }
     }
   }
-  
+
   if (videoTrack) // get media ref. for track's sample data
     *outMedia = [videoTrack media];
 }
@@ -316,13 +316,13 @@ void _WBMovieGetVideoMedia(QTMovie *inMovie, QTMedia **outMedia) {
 void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate) {
   assert(aMovie != NULL);
   assert(outStaticFrameRate != NULL);
-  
+
   *outStaticFrameRate = 0;
-  
+
   QTMedia *movieMedia;
   _WBMovieGetVideoMedia(aMovie, &movieMedia);
   if (movieMedia) {
-    NSUInteger scount = [[movieMedia attributeForKey:QTMediaSampleCountAttribute] integerValue]; 
+    NSUInteger scount = [[movieMedia attributeForKey:QTMediaSampleCountAttribute] integerValue];
     if (scount > 0) {
       /* find the media duration */
       QTTime t = [[movieMedia attributeForKey:QTMediaDurationAttribute] QTTimeValue];

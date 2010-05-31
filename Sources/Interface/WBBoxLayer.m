@@ -13,14 +13,14 @@
 #import WBHEADER(WBCGFunctions.h)
 
 #pragma mark -
-@implementation WBBoxLayer 
+@implementation WBBoxLayer
 
 - (id)init {
   return [self initWithSize:NSZeroSize];
 }
 
 - (id)initWithSize:(NSSize)aSize {
-  if (self = [super init]) {    
+  if (self = [super init]) {
     wb_bwidth = 1;
     wb_radius = 4;
     [self setSize:aSize];
@@ -56,7 +56,7 @@
   return wb_background;
 }
 - (void)setBackgroundColor:(NSColor *)color {
-  WBSetterRetain(wb_background, color);  
+  WBSetterRetain(wb_background, color);
 }
 
 #pragma mark Sizing
@@ -83,7 +83,7 @@
 #pragma mark -
 - (NSSize)wb_boxSizeForContentSize:(NSSize)cntSize {
   NSSize size = NSZeroSize;
-  
+
   /* width */
   if (fiszero(wb_box.size.width)) { // fit to content
     size.width = cntSize.width + 2 * (wb_bwidth + wb_padding.width);
@@ -93,7 +93,7 @@
     } else if (wb_box.size.width > 0) { // fixed point size
       size.width = wb_box.size.width;
     }
-    /* 
+    /*
      if wb_box describe the box content size, add border + padding
      else make sure the size is at least border + padding.
      */
@@ -102,7 +102,7 @@
     else
       size.width = MAX(size.width, 2 * (wb_bwidth + wb_padding.width));
   }
-  
+
   /* height */
   if (fiszero(wb_box.size.height)) { // fit to content
     size.height = cntSize.height + 2 * (wb_bwidth + wb_padding.height);
@@ -112,7 +112,7 @@
     } else if (wb_box.size.height > 0) { // fixed point size
       size.height = wb_box.size.height;
     }
-    /* 
+    /*
      if wb_box describe the box content size, add border + padding
      else make sure the size is at least border + padding.
      */
@@ -121,7 +121,7 @@
     else
       size.height = MAX(size.height, 2 * (wb_bwidth + wb_padding.height));
   }
-  
+
   return size;
 }
 
@@ -133,37 +133,37 @@ WB_INLINE
 NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   // content size = box size - (borders + paddings) */
   return NSMakeSize(box.width - 2 * (layer->wb_bwidth + layer->wb_padding.width),
-                    box.height - 2 * (layer->wb_bwidth + layer->wb_padding.height));  
+                    box.height - 2 * (layer->wb_bwidth + layer->wb_padding.height));
 }
 
 - (void)update {
   if ([self needsUpdate]) {
     /* max content size: container size - (border + padding) */
     NSSize content = __WBBoxContentSizeForBoxSize(self, wb_size);
-    
+
     NSSize box = NSZeroSize;
     // if fit to content, we ignore container size and choose an arbitrary big value
     if (fiszero(wb_box.size.width)) content.width = 64e3;
     if (fiszero(wb_box.size.height)) content.height = 64e3;
-    
-    /* if box size is absolute or relative to container => box actual size, 
+
+    /* if box size is absolute or relative to container => box actual size,
      if box size is fit to container => box max size */
     box = [self wb_boxSizeForContentSize:content];
-    
+
     /* adjust content according to the computed box size */
     content = __WBBoxContentSizeForBoxSize(self, box);
-    
+
     /* cache requested content size */
     wb_content = [self drawingSizeForSize:content];
-    
-    if (wb_content.width >= 64e3 || wb_content.height >= 64e3) 
+
+    if (wb_content.width >= 64e3 || wb_content.height >= 64e3)
       WBThrowException(NSInternalInconsistencyException, @"request fit to content, but content does not has a valid size");
-    
+
     // compute real content size (may be smaller than requested)
     // this size is used to compute the real box size, and to clip the content.
     wb_csize.width = MIN(content.width, wb_content.width);
     wb_csize.height = MIN(content.height, wb_content.height);
-    
+
     [self setNeedsUpdate:NO];
     [self didUpdate];
   }
@@ -171,11 +171,11 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 
 - (NSRect)bounds:(BOOL)isFlipped {
   if ([self needsUpdate]) [self update];
-  
+
   NSRect bounds = NSZeroRect;
-  
+
   bounds.size = [self wb_boxSize];
-  
+
   if (wb_box.origin.x < 0) {
     /* relative position */
     bounds.origin.x = (-wb_box.origin.x / 100) * (wb_size.width - bounds.size.width);
@@ -186,7 +186,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   /* inverse if needed */
   if (wb_blFlags.box_right)
     bounds.origin.x = wb_size.width - bounds.size.width - bounds.origin.x;
-  
+
   if (wb_box.origin.y < 0) {
     /* relative position */
     bounds.origin.y = (-wb_box.origin.y / 100) * (wb_size.height - bounds.size.height);
@@ -198,7 +198,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   isFlipped = isFlipped ? 1 : 0;
   if (wb_blFlags.box_bottom == isFlipped)
     bounds.origin.y = wb_size.height - bounds.size.height - bounds.origin.y;
-  
+
   return bounds;
 }
 
@@ -227,7 +227,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 - (NSSize)boxSize {
   if (!wb_blFlags.box_content)
     return wb_box.size;
-  
+
   NSSize size = wb_box.size;
   size.width += 2 * (wb_bwidth + wb_padding.width);
   size.height += 2 * (wb_bwidth + wb_padding.height);
@@ -281,7 +281,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 - (NSSize)contentSize {
   if (wb_blFlags.box_content)
     return wb_box.size;
-  
+
   NSSize size = wb_box.size;
   size.width = MAX(0, size.width - 2 * (wb_bwidth + wb_padding.width));
   size.height = MAX(0, size.height - 2 * (wb_bwidth + wb_padding.height));
@@ -314,7 +314,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   if (theAlignment != wb_blFlags.cnt_halign) {
     wb_blFlags.cnt_halign = (uint32_t)theAlignment;
     [self setNeedsUpdate:YES];
-  }  
+  }
 }
 
 #pragma mark -
@@ -322,35 +322,35 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   NSGraphicsContext *gctx = [NSGraphicsContext currentContext];
   CGRect bounds = NSRectToCGRect([self bounds:[gctx isFlipped]]);
   CGContextRef ctxt = [gctx graphicsPort];
-  
+
   bounds.origin.x += aPoint.x;
   bounds.origin.y += aPoint.y;
-  
+
   CGFloat radius = wb_radius;
   bool stroke = false, fill = false;
   CGRect box = WBCGContextIntegralPixelRect(ctxt, bounds);
-  
+
   if (wb_border && wb_bwidth > 0) {
     stroke = true;
     [wb_border setStroke];
     radius -= wb_bwidth / 2;
     CGContextSetLineWidth(ctxt, wb_bwidth);
-    box = CGRectInset(box, wb_bwidth / 2, wb_bwidth / 2);  
+    box = CGRectInset(box, wb_bwidth / 2, wb_bwidth / 2);
   }
   if (wb_background) {
     fill = true;
     [wb_background setFill];
   }
-  
+
   if (stroke || fill) {
     if (radius > 0) WBCGContextAddRoundRect(ctxt, box, radius);
     else CGContextAddRect(ctxt, box);
   }
-  
+
   if (stroke && fill) CGContextDrawPath(ctxt, kCGPathFillStroke);
   else if (stroke) CGContextDrawPath(ctxt, kCGPathStroke);
   else if (fill) CGContextDrawPath(ctxt, kCGPathFill);
-  
+
   bounds = WBCGContextIntegralPixelRect(ctxt, CGRectInset(bounds, wb_bwidth + wb_padding.width, wb_bwidth + wb_padding.height));
 
 
@@ -372,7 +372,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   }
   content.origin.x += shift;
   if (shift > 0) clip.origin.x += shift;
-  
+
   switch (wb_blFlags.cnt_valign) {
     default:
     case kWBStringLayerAlignmentTop:
@@ -389,7 +389,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   }
   content.origin.y += shift;
   if (shift > 0) clip.origin.y += shift;
-  
+
   CGContextSaveGState(ctxt);
   /* clip to content */
   CGContextClipToRect(ctxt, clip);

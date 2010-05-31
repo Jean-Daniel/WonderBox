@@ -11,13 +11,13 @@
 /*
  Class initializer must be implemented in a categorie of WBClusterPlaceholder(classname).
  For example, if you have MyClass class, you should declare:
- 
- @interface MyClass 
+
+ @interface MyClass
  - (id)initWithType:(OSType)type;
  @end
- 
+
  WBClassCluster(MyClass)
- 
+
  @implementation WBClusterPlaceholder(MyClass) (SomeCategorie)
  - (id)initWithType:(OSType)type {
    switch (type) {

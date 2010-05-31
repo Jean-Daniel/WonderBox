@@ -72,7 +72,7 @@ xmlOutputBufferPtr _WBXMLCreateNSDataOutputBuffer(NSMutableData *data, xmlCharEn
 
 #pragma mark -
 - (NSInteger)flush {
-	if (wb_pwriter) 
+	if (wb_pwriter)
 		return xmlTextWriterFlush(wb_writer);
 	return 0;
 }

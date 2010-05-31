@@ -31,7 +31,7 @@ boolean_t _WBServiceDemuxer(mach_msg_header_t *msg, mach_msg_header_t *reply) {
   if (msg->msgh_local_port == sServiceContext.service) {
     if (sServiceContext.timer) // reset timer
       mk_timer_arm(sServiceContext.timer, mach_absolute_time() + sServiceContext.idle);
-    
+
     WBServiceDispatch dispatch = sServiceContext.dispatch;
     // FIXME: barrier
     if (dispatch) return dispatch(msg, reply);
@@ -41,11 +41,11 @@ boolean_t _WBServiceDemuxer(mach_msg_header_t *msg, mach_msg_header_t *reply) {
   return false;
 }
 
-static 
+static
 int _WBServiceSendMessage(const char *msg, launch_data_t *outResponse) {
   launch_data_t request = launch_data_new_string(msg);
   if (!request) return errno;
-  
+
   int err = 0;
   launch_data_t response;
   if ((response = launch_msg(request)) == NULL) {
@@ -56,9 +56,9 @@ int _WBServiceSendMessage(const char *msg, launch_data_t *outResponse) {
       case LAUNCH_DATA_ERRNO:
         err = launch_data_get_errno(response);
         launch_data_free(response);
-        break;        
+        break;
       default:
-        if (outResponse) 
+        if (outResponse)
           *outResponse = response;
         else
           launch_data_free(response);
@@ -73,7 +73,7 @@ static mach_port_t _WBServiceCheckIn(const char *name, CFErrorRef *outError) {
   launch_data_t service;
   if (_WBServiceSendMessage(LAUNCH_KEY_CHECKIN, &service) != 0)
     return MACH_PORT_NULL;
-  
+
   mach_port_t result = MACH_PORT_NULL;
   launch_data_t ports = launch_data_dict_lookup(service, LAUNCH_JOBKEY_MACHSERVICES);
   if (ports) {
@@ -89,26 +89,26 @@ static mach_port_t _WBServiceCheckIn(const char *name, CFErrorRef *outError) {
 
 bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t msgMaxSize, CFTimeInterval idle, CFErrorRef *outError) {
   assert(!sServiceContext.ports && "Service already running");
-  
+
   // checkin
   sServiceContext.idle = idle;
   sServiceContext.dispatch = dispatch;
   sServiceContext.service = _WBServiceCheckIn(name, outError);
   if (!sServiceContext.service) return false;
-  
+
   kern_return_t kr = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_PORT_SET, &sServiceContext.ports);
-  if (KERN_SUCCESS == kr) 
+  if (KERN_SUCCESS == kr)
     kr = mach_port_move_member(mach_task_self(), sServiceContext.service, sServiceContext.ports);
-  
-  if (KERN_SUCCESS == kr) 
+
+  if (KERN_SUCCESS == kr)
     kr = WBServiceSetTimeout(idle);
-  
+
   if (KERN_SUCCESS != kr) {
     if (outError)
       *outError = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainMach, kr, NULL);
     return false;
   }
-    
+
   kr = mach_msg_server(_WBServiceDemuxer, msgMaxSize > 0 ? msgMaxSize : 512, sServiceContext.ports, MACH_RCV_LARGE);
   DCLog("mach_msg_server: %s", mach_error_string(kr));
   return true;
@@ -116,11 +116,11 @@ bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t 
 
 kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
   if (!sServiceContext.ports) return KERN_INVALID_TASK;
-  
+
   kern_return_t kr = KERN_SUCCESS;
   if (idle > 0) {
     struct mach_timebase_info info;
-    mach_timebase_info(&info);    
+    mach_timebase_info(&info);
     sServiceContext.idle = llround((idle * 1.0e9 / (double)info.numer) * (double)info.denom);
     // Create the time if needed
     if (!sServiceContext.timer) {
@@ -137,7 +137,7 @@ kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
       uint64_t fire;
       kr = mk_timer_cancel(sServiceContext.timer, &fire);
     }
-    
+
     if (KERN_SUCCESS == kr) // Arm the timer
       kr = mk_timer_arm(sServiceContext.timer, mach_absolute_time() + sServiceContext.idle);
   } else if (sServiceContext.timer) { // idle < 0, disable timer (if it is enabled)
