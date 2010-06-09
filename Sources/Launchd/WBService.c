@@ -19,6 +19,9 @@ static struct _WBServiceContext {
   mach_port_t timer;
   mach_port_t service;
   WBServiceDispatch dispatch;
+  /* timeout callback */
+  void *timeout_ctxt;
+  void (*timeout)(void *ctxt);
 } sServiceContext;
 
 extern mach_port_name_t mk_timer_create(void);
@@ -36,7 +39,10 @@ boolean_t _WBServiceDemuxer(mach_msg_header_t *msg, mach_msg_header_t *reply) {
     // FIXME: barrier
     if (dispatch) return dispatch(msg, reply);
   } else { // assume this is the timer
-    WBServiceStop();
+    if (sServiceContext.timeout)
+      sServiceContext.timeout(sServiceContext.timeout_ctxt);
+    else
+      WBServiceStop();
   }
   return false;
 }
@@ -148,6 +154,12 @@ kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
   return kr;
 }
 
+kern_return_t WBServiceSetTimeoutCallBack(void (*callback)(void *), void *ctxt) {
+  sServiceContext.timeout = callback;
+  sServiceContext.timeout_ctxt = ctxt;
+  return KERN_SUCCESS;
+}
+
 void WBServiceStop(void) {
   if (sServiceContext.ports) {
     mach_port_destroy(mach_task_self(), sServiceContext.ports);
@@ -159,3 +171,4 @@ void WBServiceStop(void) {
   }
   memset(&sServiceContext, 0, sizeof(sServiceContext));
 }
+
