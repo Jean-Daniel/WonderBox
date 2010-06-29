@@ -60,8 +60,8 @@ IMP __WBRuntimeSetMethodImplementation(Method method, IMP addr) {
 }
 
 WB_INLINE
-Class __WBRuntimeGetMetaClass(Class cls) {
-	return object_getClass(cls);
+Class __WBRuntimeGetClass(id obj) {
+	return object_getClass(obj);
 }
 
 Class WBRuntimeSetObjectClass(id anObject, Class newClass) {
@@ -113,8 +113,8 @@ IMP __WBRuntimeSetMethodImplementation(Method method, IMP addr) {
 }
 
 WB_INLINE
-Class __WBRuntimeGetMetaClass(Class cls) {
-	return object_getClass ? object_getClass(cls) : cls->isa;
+Class __WBRuntimeGetClass(id obj) {
+	return object_getClass ? object_getClass(obj) : obj->isa;
 }
 
 Class WBRuntimeSetObjectClass(id anObject, Class newClass) {
@@ -148,6 +148,11 @@ BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL method) {
 }
 
 #endif
+
+WB_INLINE
+Class __WBRuntimeGetMetaClass(Class cls) {
+	return __WBRuntimeGetClass(cls);
+}
 
 NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict) {
 	int numClasses;
@@ -214,4 +219,16 @@ BOOL WBRuntimeObjectImplementsSelector(id object, SEL method) {
 
 BOOL WBRuntimeClassImplementsSelector(Class cls, SEL method) {
 	return WBRuntimeInstanceImplementsSelector(__WBRuntimeGetMetaClass(cls), method);
+}
+
+bool WBRuntimeObjectIsKindOfClass(id obj, Class parent) {
+  return __WBRuntimeIsSubclass(__WBRuntimeGetClass(obj), parent);
+}
+
+bool WBRuntimeObjectIsMemberOfClass(id obj, Class parent) {
+  return __WBRuntimeGetClass(obj) == parent;
+}
+
+bool WBRuntimeClassIsSubclassOfClass(Class cls, Class parent) {
+  return __WBRuntimeIsSubclass(cls, parent);
 }

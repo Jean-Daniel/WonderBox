@@ -202,17 +202,18 @@
   [super drawWithFrame:cellFrame inView:controlView];
 }
 
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-  [super drawInteriorWithFrame:cellFrame inView:controlView];
-
-  if ([self drawsLineOver]) {
-    CGFloat twidth = [[self attributedStringValue] size].width;
-    // FIXME: userspace scale factor
-    CGFloat y = NSMinY(cellFrame) + 7.5f;
-    twidth = MIN(NSWidth(cellFrame) - 4, twidth + 2);
-    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame) + 2, y) toPoint:NSMakePoint(NSMinX(cellFrame) + twidth, y)];
-  }
-}
+// See super implementation
+//- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+//  [super drawInteriorWithFrame:cellFrame inView:controlView];
+//
+//  if ([self drawsLineOver]) {
+//    CGFloat twidth = [[self attributedStringValue] size].width;
+//    // FIXME: userspace scale factor
+//    CGFloat y = NSMinY(cellFrame) + 7.5f;
+//    twidth = MIN(NSWidth(cellFrame) - 4, twidth + 2);
+//    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame) + 2, y) toPoint:NSMakePoint(NSMinX(cellFrame) + twidth, y)];
+//  }
+//}
 
 #pragma mark -
 - (NSSize)wb_imageSize:(NSSize)cellSize {

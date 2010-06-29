@@ -51,9 +51,16 @@
   WBFlagSet(wb_tfFlags.middle, flag);
 }
 
+- (BOOL)isHighlightingEnabled {
+  return !wb_tfFlags.noHighlight;
+}
+- (void)setHighlightingEnabled:(BOOL)flag {
+  WBFlagSet(wb_tfFlags.noHighlight, !flag);
+}
+
 #pragma mark -
 WB_INLINE
-NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
+NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 	// super would normally draw text at the top of the cell
   if (!self->wb_tfFlags.middle) return frame;
 
@@ -63,11 +70,11 @@ NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
 }
 
 - (NSRect)titleRectForBounds:(NSRect)theRect {
-  return [super titleRectForBounds:_adjustFrame(self, theRect)];
+  return [super titleRectForBounds:_adjustTextFrame(self, theRect)];
 }
 
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
-  return [super hitTestForEvent:event inRect:_adjustFrame(self, cellFrame) ofView:controlView];
+  return [super hitTestForEvent:event inRect:_adjustTextFrame(self, cellFrame) ofView:controlView];
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +86,7 @@ NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
                editor:(NSText *)editor
              delegate:(id)delegate
                 event:(NSEvent *)event {
-	[super editWithFrame:_adjustFrame(self, aRect)
+	[super editWithFrame:_adjustTextFrame(self, aRect)
                 inView:controlView
                 editor:editor
               delegate:delegate
@@ -97,7 +104,7 @@ NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
                delegate:(id)delegate
                   start:(NSInteger)start
                  length:(NSInteger)length {
-	[super selectWithFrame:_adjustFrame(self, aRect)
+	[super selectWithFrame:_adjustTextFrame(self, aRect)
                   inView:controlView
                   editor:editor
                  delegate:delegate
@@ -111,7 +118,19 @@ NSRect _adjustFrame(WBTextFieldCell *self, NSRect frame) {
 //-----------------------------------------------------------------------------
 
 - (void)drawInteriorWithFrame:(NSRect)frame inView:(NSView *)view {
-	[super drawInteriorWithFrame:_adjustFrame(self, frame) inView:view];
+	[super drawInteriorWithFrame:_adjustTextFrame(self, frame) inView:view];
+  if ([self drawsLineOver]) {
+    NSRect title = [self titleRectForBounds:frame];
+    // FIXME: userspace scale factor
+    CGFloat y = NSMidY(title);
+    CGFloat twidth = MIN(NSWidth(frame) - NSMinX(title) - 2, NSWidth(title));
+    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(title), y) toPoint:NSMakePoint(NSMinX(title) + twidth, y)];
+  }
+}
+
+- (NSColor *)highlightColorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+  if (wb_tfFlags.noHighlight) return nil;
+  return [super highlightColorWithFrame:cellFrame inView:controlView];
 }
 
 @end

@@ -18,6 +18,14 @@ Class WBRuntimeSetObjectClass(id anObject, Class newClass);
 WB_EXPORT
 NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict);
 
+WB_EXPORT
+bool WBRuntimeObjectIsKindOfClass(id obj, Class parent);
+WB_EXPORT
+bool WBRuntimeObjectIsMemberOfClass(id obj, Class parent);
+
+WB_EXPORT
+bool WBRuntimeClassIsSubclassOfClass(Class cls, Class parent);
+
 /* Method Swizzling */
 WB_EXPORT
 void WBRuntimeExchangeClassMethods(Class cls, SEL orig, SEL replace);

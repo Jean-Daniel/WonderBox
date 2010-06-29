@@ -14,7 +14,8 @@ WB_CLASS_EXPORT
   struct {
     unsigned int line:1;
     unsigned int middle:1;
-    unsigned int reserved:30;
+    unsigned int noHighlight:1;
+    unsigned int reserved:29;
   } wb_tfFlags;
 }
 
@@ -25,5 +26,8 @@ WB_CLASS_EXPORT
 
 - (BOOL)centersVertically;
 - (void)setCentersVertically:(BOOL)flag;
+
+- (BOOL)isHighlightingEnabled;
+- (void)setHighlightingEnabled:(BOOL)flag;
 
 @end
