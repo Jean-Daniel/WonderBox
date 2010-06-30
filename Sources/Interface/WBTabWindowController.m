@@ -1,9 +1,11 @@
 /*
  *  WBTabWindowController.m
- *  Emerald
+ *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
- *  Copyright © 2009 - 2010 Ninsight. All rights reserved.
+ *  Copyright (c) 2004 - 2010 Jean-Daniel Dupas. All rights reserved.
+ *
+ *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 #import WBHEADER(WBTabWindowController.h)
