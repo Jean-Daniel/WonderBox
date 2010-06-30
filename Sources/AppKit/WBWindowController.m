@@ -29,6 +29,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 + (NSString *)nibName {
   return NSStringFromClass(self);
 }
++ (NSBundle *)nibBundle { return nil; }
 
 + (NSString *)frameAutoSaveName {
   return NSStringFromClass(self);
@@ -46,6 +47,11 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 }
 
 - (id)init {
+  NSBundle *bundle = [[self class] nibBundle];
+  if (bundle) {
+    NSString *nib =[bundle pathForResource:[[self class] nibName] ofType:@"nib"];
+    return [self initWithWindowNibPath:nib owner:self];
+  }
   return [self initWithWindowNibName:[[self class] nibName]];
 }
 

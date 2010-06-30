@@ -19,6 +19,7 @@ WB_CLASS_EXPORT
 }
 
 + (NSString *)nibName;
++ (NSBundle *)nibBundle;
 + (NSString *)frameAutoSaveName;
 
 - (void)windowDidLoad;
