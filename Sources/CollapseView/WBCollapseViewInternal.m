@@ -58,9 +58,11 @@
 @end
 
 @interface _WBCollapseItemBodyView : NSView {
-
+@private
+  unsigned int wb_flipped:1;
 }
 
+- (void)setFlipped:(BOOL)flag;
 
 @end
 
@@ -279,7 +281,7 @@
   if (fnotequal(NSWidth([self frame]), NSWidth(frame)))
     WBLogWarning(@"Changing item view width. This is not a good idea !");
 
-  if (fnonzero(frame.origin.x) || fnotequal(frame.origin.y, ITEM_BOTTOM_MARGIN))
+  if (fnonzero(frame.origin.x)/* || fnotequal(frame.origin.y, ITEM_BOTTOM_MARGIN) */)
     WBLogWarning(@"Changing item origin. This is not a good idea !");
 
   // theorical item view height is body size - bottom margin (as the body origin is (0; 0))
@@ -287,9 +289,21 @@
   CGFloat delta = NSHeight(frame) - height;
 
   if (fnonzero(delta)) {// item height did change.
-    wb_civFlags.resizing = 1;
+    /* Note about flipping .hack
+     When resizing the item, it looks better when the top of the view is fixed.
+     To do that with a non flipped view, we would have to adjust the view origin at each size change.
+     By flipping the body view, we got the expected result automatically. There is a drawback though, 
+     as the content view origin is not (0, 0), but (0, ITEM_BOTTOM_MARGIN), we have to adjust it, as the flipped origin 
+     should be (0, ITEM_TOP_MARGIN), which is (0, 0).
+     */
+    wb_civFlags.resizing = 1; // must be set before we change the view origin
+    [(_WBCollapseItemBodyView *)wb_body setFlipped:YES];
+    [view setFrameOrigin:NSZeroPoint];
     [self.collapseView _resizeItemView:self delta:delta animate:[wb_item animates]];
-    wb_civFlags.resizing = 0;
+    /* unflippe and restore origin */
+    [(_WBCollapseItemBodyView *)wb_body setFlipped:NO];
+    [view setFrameOrigin:NSMakePoint(0, ITEM_BOTTOM_MARGIN)];
+    wb_civFlags.resizing = 0; // must be set after we change the view origin
   }
 }
 
@@ -462,6 +476,9 @@
 
 @implementation _WBCollapseItemBodyView
 
+- (BOOL)isFlipped { return wb_flipped; }
+- (void)setFlipped:(BOOL)flag { WBFlagSet(wb_flipped, flag); }
+
 - (void)drawRect:(NSRect)aRect {
   CGPoint line[2];
   NSRect bounds = [self bounds];
@@ -469,8 +486,9 @@
     CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
     CGContextSetLineWidth(ctxt, 1);
 
-    line[0] = CGPointMake(NSMinX(bounds), NSMinY(bounds) + .5);
-    line[1] = CGPointMake(NSMaxX(bounds), NSMinY(bounds) + .5);
+    CGFloat y = [self isFlipped] ? NSMaxY(bounds) - .5 : NSMinY(bounds) + .5;
+    line[0] = CGPointMake(NSMinX(bounds), y);
+    line[1] = CGPointMake(NSMaxX(bounds), y);
 
     CGContextSetGrayStrokeColor(ctxt, .33, 1);
     CGContextStrokeLineSegments(ctxt, line, 2);
