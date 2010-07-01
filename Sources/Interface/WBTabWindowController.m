@@ -151,7 +151,9 @@
   [window setContentMaxSize:smax];
   
   // view must only be width and height sizable. 
+  [window setShowsResizeIndicator:(mask & (NSViewWidthSizable | NSViewHeightSizable)) != 0];
   [itemView setAutoresizingMask:mask & (NSViewWidthSizable | NSViewHeightSizable)];
+  
   
   /* Fixup responder chain */
   if (current)
