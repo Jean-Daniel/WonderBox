@@ -17,15 +17,26 @@
 
 @end
 
+@interface WBTabWindowItem ()
+  
+@property(copy) NSString *identifier;
+
+@end
+
 @implementation WBTabWindowController
 
 + (NSString *)nibName { return @"WBTabWindow"; }
-// Force nib search in this bundle
+// Force nib search in this bundle, even for subclasses
 + (NSBundle *)nibBundle { return [NSBundle bundleForClass:WBTabWindowController.class]; }
 
 - (void)dealloc {
+  // nullify weak reference
+  for (WBTabWindowItem *item in [wb_items allValues])
+    item.tabWindow = nil;
+  
   [wb_identifiers release];
   [wb_classes release];
+  [wb_current release];
   [wb_items release];
   [super dealloc];
 }
@@ -34,6 +45,9 @@
 - (NSArray *)classes { WBClusterException(); }
 - (NSArray *)identifiers { WBClusterException(); }
 
+- (NSString *)toolbarIdentifier {
+  return [NSString stringWithFormat:@"%@.toolbar", [self class]];
+}
 - (NSString *)defaultTabWindowItem {
   return [wb_identifiers count] > 0 ? [wb_identifiers objectAtIndex:0] : nil;
 }
@@ -44,99 +58,149 @@
   NSArray *classes = [self classes];
   WBAssert([classes count] == [wb_identifiers count], @"inconsistent values");
   NSMutableDictionary *cache = [[NSMutableDictionary alloc] initWithCapacity:[wb_identifiers count]];
-  for (NSUInteger idx = 0, count = [classes count]; idx < count; ++idx) 
-    [cache setObject:[classes objectAtIndex:idx] forKey:[wb_identifiers objectAtIndex:idx]];
+  for (NSUInteger idx = 0, count = [classes count]; idx < count; ++idx) {
+    Class cls = [classes objectAtIndex:idx];
+    WBAssert([cls isSubclassOfClass:WBTabWindowItem.class], @"Invalid Item Class: %@", cls);
+    [cache setObject:cls forKey:[wb_identifiers objectAtIndex:idx]];
+  }
   wb_classes = cache;
 }
 
 - (void)windowDidLoad {
-  WBAssert(uiMainView, @"broken binding");
-  
   [self wb_setup];
   
   wb_items = [[NSMutableDictionary alloc] init];
   
-  // FIXME: identifier should be exposed
-  NSToolbar *tb = [[NSToolbar alloc] initWithIdentifier:@"preferences.toolbar"];
+  NSToolbar *tb = [[NSToolbar alloc] initWithIdentifier:[self toolbarIdentifier]];
   [tb setDisplayMode:NSToolbarDisplayModeIconAndLabel];
   [tb setSizeMode:NSToolbarSizeModeRegular];
   [tb setAllowsUserCustomization:NO];
   [tb setShowsBaselineSeparator:YES];
+  [tb setAutosavesConfiguration:NO];
   [tb setDelegate:self];
   [tb setVisible:YES];
   
   [[self window] setToolbar:tb];
   [tb release];
   
-  [self setSelectedItem:[self defaultTabWindowItem]];
-}
-
-- (void)setDocument:(NSDocument *)document {
-  [super setDocument:document];
-  for (WBTabWindowItem *pane in [wb_items allValues])
-    [pane setDocument:document];
+  [self setSelectedItemIdentifier:[self defaultTabWindowItem]];
 }
 
 - (IBAction)selectPanel:(NSToolbarItem *)sender {
-  [self setSelectedItem:[sender itemIdentifier]];
+  [self setSelectedItemIdentifier:[sender itemIdentifier]];
 }
 
-- (NSString *)selectedItem {
-  return [uiMainView selectedTabViewItem].identifier;
+- (NSString *)selectedItemIdentifier { return wb_current; }
+
+- (void)selectItem:(WBTabWindowItem *)anItem {
+  /* Setup view and insert it in the window */
+  WBTabWindowItem *current = [self selectedItem];
+  if (anItem == current) return; //noop
+  
+  [self willSelectItem:anItem];
+  
+  if (current) // remove current view from the window
+    [[current view] removeFromSuperview];
+  
+  NSWindow *window = [self window]; // load window
+  
+  NSSize smin = [anItem minSize];
+  NSSize smax = [anItem maxSize];
+  
+  NSView *itemView = [anItem view];
+  NSSize s = [itemView frame].size; // get current size
+  
+  NSUInteger mask = [itemView autoresizingMask];
+  if (0 == (mask & NSViewWidthSizable)) // fixed width
+    smin.width = smax.width = s.width;
+  
+  if (0 == (mask & NSViewHeightSizable)) // fixed height
+    smin.height = smax.height = s.height;
+  
+  // clamp current size
+  if (s.width > smax.width)
+    s.width = smax.width;
+  else if (s.width < smin.width)
+    s.width = smin.width;
+  
+  if (s.height > smax.height)
+    s.height = smax.height;
+  else if (s.height < smin.height)
+    s.height = smin.height;
+  
+  // fixup size (if needed) and position
+  [itemView setFrame:NSMakeRect(0, 0, s.width, s.height)];
+  
+  // We don't want to be constraint while resizing
+  [window setContentMinSize:NSZeroSize];
+  [window setContentMaxSize:NSMakeSize(10000, 10000)];
+  
+  [itemView setAutoresizingMask:0]; // fixed size until we finish resizing
+  [[window contentView] addSubview:itemView];
+  
+  // Resize The Window to fit the target view
+  NSRect frame = [window frame];
+  NSRect wrect = [window frameRectForContentRect:NSMakeRect(0, 0, s.width, s.height)];
+  
+  frame.origin.y -= wrect.size.height - NSHeight(frame);
+  frame.size = wrect.size;
+  [window setFrame:frame display:YES animate:YES];
+  
+  // Fix windows size.
+  [window setContentMinSize:smin];
+  [window setContentMaxSize:smax];
+  
+  // view must only be width and height sizable. 
+  [itemView setAutoresizingMask:mask & (NSViewWidthSizable | NSViewHeightSizable)];
+  
+  /* Fixup responder chain */
+  if (current)
+    [anItem setNextResponder:[current nextResponder]];
+  else
+    [anItem setNextResponder:[self nextResponder]];
+  [self setNextResponder:anItem];
+  
+  [[window toolbar] setSelectedItemIdentifier:anItem.identifier];
+  [wb_current release];
+  wb_current = [anItem.identifier retain];
+  [self didSelectItem:anItem];
 }
 
-- (WBTabWindowItem *)selectedWindowPanel {
-  NSString *uid = [self selectedItem];
-  return uid ? [wb_items objectForKey:uid] : nil;
-}
-
-- (void)setSelectedItem:(NSString *)aPanel {
-  // tb first, so it force load window
-  NSToolbar *tb = [[self window] toolbar];
+- (void)setSelectedItemIdentifier:(NSString *)aPanel {
+  if (wb_current && [aPanel isEqual:wb_current]) return; // already selected
+  
   Class cls = [wb_classes objectForKey:aPanel];
   if (!cls)
     WBThrowException(NSInvalidArgumentException, @"invalid panel identifier: %@", aPanel);
   
-  NSUInteger idx = [uiMainView indexOfTabViewItemWithIdentifier:aPanel];
-  if (NSNotFound == idx) {
+  WBTabWindowItem *item = [wb_items objectForKey:aPanel];
+  if (!item) {
     // The panel was not loaded yet
-    WBTabWindowItem *pane = [[cls alloc] init];
-    WBAssert(pane, @"fail to create panel with identifier: %@", aPanel);
-    NSTabViewItem *item = [[NSTabViewItem alloc] initWithIdentifier:aPanel];
-    [item setView:[pane view]];
-    
-    [wb_items setObject:pane forKey:aPanel];
-    [pane setDocument:self.document];
-    [uiMainView addTabViewItem:item];
-    
+    item = [[cls alloc] init];
+    WBAssert(item, @"fail to create panel with identifier: %@", aPanel);
+    [wb_items setObject:item forKey:aPanel];
+    item.identifier = aPanel;
+    item.tabWindow = self;
     [item release];
-    [pane release];
-    
-    // refresh idx
-    idx = [uiMainView indexOfTabViewItemWithIdentifier:aPanel];
   }
-  
-  WBTabWindowItem *current = [self selectedWindowPanel];
-  WBTabWindowItem *target = [wb_items objectForKey:aPanel];
-  if (current)
-    [target setNextResponder:[current nextResponder]];
-  else
-    [target setNextResponder:[self nextResponder]];
-  
-  // Insert view controller in the responder chain
-  [self setNextResponder:target];
-  
-  [tb setSelectedItemIdentifier:aPanel];
-  [uiMainView selectTabViewItemAtIndex:idx];
+  [self selectItem:item];
 }
 
 - (void)setNextResponder:(NSResponder *)aResponder {
-  WBTabWindowItem *panel = [self selectedWindowPanel];
+  WBTabWindowItem *panel = [self selectedItem];
   if (panel)
     [panel setNextResponder:aResponder];
   else
     [super setNextResponder:aResponder];
 }
+
+- (WBTabWindowItem *)selectedItem { 
+  NSString *current = [self selectedItemIdentifier];
+  return current ? [wb_items objectForKey:current] : nil; 
+}
+
+- (void)willSelectItem:(WBTabWindowItem *)anItem {}
+- (void)didSelectItem:(WBTabWindowItem *)anItem {}
 
 @end
 
@@ -174,16 +238,27 @@
 
 @implementation WBTabWindowItem
 
+@synthesize tabWindow = wb_ctrl;
+@synthesize identifier = wb_identifier;
+
 + (NSImage *)image { WBClusterException(); }
 + (NSString *)label { WBClusterException(); }
 
 + (NSString *)nibName { return NSStringFromClass(self); }
+
+- (NSSize)minSize { return NSZeroSize; }
+- (NSSize)maxSize { return NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX); }
 
 - (id)init {
   if (self = [super initWithNibName:[[self class] nibName] bundle:nil]) {
     
   }
   return self;
+}
+
+- (void)dealloc {
+  [wb_identifier release];
+  [super dealloc];
 }
 
 - (void)loadView {
