@@ -292,8 +292,8 @@
     /* Note about flipping .hack
      When resizing the item, it looks better when the top of the view is fixed.
      To do that with a non flipped view, we would have to adjust the view origin at each size change.
-     By flipping the body view, we got the expected result automatically. There is a drawback though, 
-     as the content view origin is not (0, 0), but (0, ITEM_BOTTOM_MARGIN), we have to adjust it, as the flipped origin 
+     By flipping the body view, we got the expected result automatically. There is a drawback though,
+     as the content view origin is not (0, 0), but (0, ITEM_BOTTOM_MARGIN), we have to adjust it, as the flipped origin
      should be (0, ITEM_TOP_MARGIN), which is (0, 0).
      */
     wb_civFlags.resizing = 1; // must be set before we change the view origin

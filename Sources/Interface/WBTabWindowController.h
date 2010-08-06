@@ -16,7 +16,7 @@
   /* Toolbar configuration */
   NSArray *wb_identifiers;
   NSDictionary *wb_classes;
-  
+
   NSString *wb_current;
   NSMutableDictionary *wb_items;
 }

@@ -18,7 +18,7 @@
 @end
 
 @interface WBTabWindowItem ()
-  
+
 @property(copy) NSString *identifier;
 
 @end
@@ -33,7 +33,7 @@
   // nullify weak reference
   for (WBTabWindowItem *item in [wb_items allValues])
     item.tabWindow = nil;
-  
+
   [wb_identifiers release];
   [wb_classes release];
   [wb_current release];
@@ -68,9 +68,9 @@
 
 - (void)windowDidLoad {
   [self wb_setup];
-  
+
   wb_items = [[NSMutableDictionary alloc] init];
-  
+
   NSToolbar *tb = [[NSToolbar alloc] initWithIdentifier:[self toolbarIdentifier]];
   [tb setDisplayMode:NSToolbarDisplayModeIconAndLabel];
   [tb setSizeMode:NSToolbarSizeModeRegular];
@@ -79,10 +79,10 @@
   [tb setAutosavesConfiguration:NO];
   [tb setDelegate:self];
   [tb setVisible:YES];
-  
+
   [[self window] setToolbar:tb];
   [tb release];
-  
+
   [self setSelectedItemIdentifier:[self defaultTabWindowItem]];
 }
 
@@ -96,72 +96,72 @@
   /* Setup view and insert it in the window */
   WBTabWindowItem *current = [self selectedItem];
   if (anItem == current) return; //noop
-  
+
   [self willSelectItem:anItem];
-  
+
   if (current) // remove current view from the window
     [[current view] removeFromSuperview];
-  
+
   NSWindow *window = [self window]; // load window
-  
+
   NSSize smin = [anItem minSize];
   NSSize smax = [anItem maxSize];
-  
+
   NSView *itemView = [anItem view];
   NSSize s = [itemView frame].size; // get current size
-  
+
   NSUInteger mask = [itemView autoresizingMask];
   if (0 == (mask & NSViewWidthSizable)) // fixed width
     smin.width = smax.width = s.width;
-  
+
   if (0 == (mask & NSViewHeightSizable)) // fixed height
     smin.height = smax.height = s.height;
-  
+
   // clamp current size
   if (s.width > smax.width)
     s.width = smax.width;
   else if (s.width < smin.width)
     s.width = smin.width;
-  
+
   if (s.height > smax.height)
     s.height = smax.height;
   else if (s.height < smin.height)
     s.height = smin.height;
-  
+
   // fixup size (if needed) and position
   [itemView setFrame:NSMakeRect(0, 0, s.width, s.height)];
-  
+
   // We don't want to be constraint while resizing
   [window setContentMinSize:NSZeroSize];
   [window setContentMaxSize:NSMakeSize(10000, 10000)];
-  
+
   [itemView setAutoresizingMask:0]; // fixed size until we finish resizing
   [[window contentView] addSubview:itemView];
-  
+
   // Resize The Window to fit the target view
   NSRect frame = [window frame];
   NSRect wrect = [window frameRectForContentRect:NSMakeRect(0, 0, s.width, s.height)];
-  
+
   frame.origin.y -= wrect.size.height - NSHeight(frame);
   frame.size = wrect.size;
   [window setFrame:frame display:YES animate:YES];
-  
+
   // Fix windows size.
   [window setContentMinSize:smin];
   [window setContentMaxSize:smax];
-  
-  // view must only be width and height sizable. 
+
+  // view must only be width and height sizable.
   [window setShowsResizeIndicator:(mask & (NSViewWidthSizable | NSViewHeightSizable)) != 0];
   [itemView setAutoresizingMask:mask & (NSViewWidthSizable | NSViewHeightSizable)];
-  
-  
+
+
   /* Fixup responder chain */
   if (current)
     [anItem setNextResponder:[current nextResponder]];
   else
     [anItem setNextResponder:[self nextResponder]];
   [self setNextResponder:anItem];
-  
+
   [[window toolbar] setSelectedItemIdentifier:anItem.identifier];
   [wb_current release];
   wb_current = [anItem.identifier retain];
@@ -170,11 +170,11 @@
 
 - (void)setSelectedItemIdentifier:(NSString *)aPanel {
   if (wb_current && [aPanel isEqual:wb_current]) return; // already selected
-  
+
   Class cls = [wb_classes objectForKey:aPanel];
   if (!cls)
     WBThrowException(NSInvalidArgumentException, @"invalid panel identifier: %@", aPanel);
-  
+
   WBTabWindowItem *item = [wb_items objectForKey:aPanel];
   if (!item) {
     // The panel was not loaded yet
@@ -196,9 +196,9 @@
     [super setNextResponder:aResponder];
 }
 
-- (WBTabWindowItem *)selectedItem { 
+- (WBTabWindowItem *)selectedItem {
   NSString *current = [self selectedItemIdentifier];
-  return current ? [wb_items objectForKey:current] : nil; 
+  return current ? [wb_items objectForKey:current] : nil;
 }
 
 - (void)willSelectItem:(WBTabWindowItem *)anItem {}
@@ -223,7 +223,7 @@
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
   NSToolbarItem *item = nil;
   Class cls = [wb_classes objectForKey:itemIdentifier];
-  
+
   if (cls) {
     item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     [item setAction:@selector(selectPanel:)];
@@ -232,7 +232,7 @@
     [item setTarget:self];
     [item autorelease];
   }
-  
+
   return item;
 }
 
@@ -253,7 +253,7 @@
 
 - (id)init {
   if (self = [super initWithNibName:[[self class] nibName] bundle:nil]) {
-    
+
   }
   return self;
 }
