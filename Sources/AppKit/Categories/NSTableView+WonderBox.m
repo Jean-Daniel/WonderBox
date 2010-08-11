@@ -28,7 +28,7 @@
     return;
 
   SEL shouldSelect, selectionIndexes;
-  bool outlineView = [self isKindOfClass:[NSOutlineView class]];
+  bool outlineView = [self isKindOfClass:NSOutlineView.class];
   if (outlineView) {
     shouldSelect = @selector(outlineView:shouldSelectItem:);
     selectionIndexes = @selector(outlineView:selectionIndexesForProposedSelection:);

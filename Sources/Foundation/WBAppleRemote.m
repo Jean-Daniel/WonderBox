@@ -55,11 +55,11 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 
 + (id)allocWithZone:(NSZone *)aZone {
 #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
-  return NSAllocateObject([WBAppleRemoteLeopard class], 0, aZone);
+  return NSAllocateObject(WBAppleRemoteLeopard.class, 0, aZone);
 #else
   if (!IOHIDDeviceCreate)
-    return NSAllocateObject([WBAppleRemoteLeopard class], 0, aZone);
-  return NSAllocateObject([WBAppleRemoteTiger class], 0, aZone);
+    return NSAllocateObject(WBAppleRemoteLeopard.class, 0, aZone);
+  return NSAllocateObject(WBAppleRemoteTiger.class, 0, aZone);
 #endif
 }
 

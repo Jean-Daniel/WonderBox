@@ -85,7 +85,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 @implementation WBBaseUITreeNode
 
 + (void)initialize {
-  if (self == [WBUITreeNode class]) {
+  if (self == WBUITreeNode.class) {
     [self exposeBinding:@"icon"];
     [self exposeBinding:@"name"];
   }
