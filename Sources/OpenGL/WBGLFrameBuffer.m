@@ -19,6 +19,7 @@
   NSParameterAssert(CGL_MACRO_CONTEXT);
   if (self = [super init]) {
     glGenFramebuffersEXT(1, &wb_fbo);
+    check_noerr_string(glGetError(), "glGenFramebuffersEXT");
 //    wb_glctxt = CGLRetainContext(CGL_MACRO_CONTEXT);
     wb_attachements = NSCreateMapTable(NSIntegerMapKeyCallBacks, NSObjectMapValueCallBacks, 0);
 
@@ -51,9 +52,7 @@
 }
 
 #pragma mark -
-- (GLint)frameBufferObject {
-  return wb_fbo;
-}
+- (GLint)frameBufferObject { return wb_fbo; }
 
 #if DEBUG
 WB_INLINE
@@ -114,9 +113,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
 }
 
-- (WBGLFrameBufferAttachement *)depthBuffer {
-  return wb_depth;
-}
+- (WBGLFrameBufferAttachement *)depthBuffer { return wb_depth; }
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (WBSetterRetain(wb_depth, aBuffer)) {
@@ -125,9 +122,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
 }
 
-- (WBGLFrameBufferAttachement *)stencilBuffer {
-  return wb_stencil;
-}
+- (WBGLFrameBufferAttachement *)stencilBuffer { return wb_stencil; }
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (WBSetterRetain(wb_stencil, aBuffer)) {
@@ -192,7 +187,10 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   NSParameterAssert(CGL_MACRO_CONTEXT);
 
   glBindFramebufferEXT(mode, wb_fbo);
-  WBAssert(GL_ZERO == glGetError(), @"Error while binding FBO");
+#if !defined(NS_BLOCK_ASSERTIONS)
+  GLenum err = glGetError();
+  WBAssert(err == glGetError(), @"glBindFramebufferEXT(%u, %u): %ld", mode, wb_fbo, err);
+#endif /* NS_BLOCK_ASSERTIONS */
 
   // When binding to draw, setup the view port.
   if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
