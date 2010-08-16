@@ -8,15 +8,18 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+@protocol WBDaemonTaskDelegate;
 @interface WBDaemonTask : NSObject {
 @private
   BOOL _registred;
   BOOL _unregister;
   CFMutableDictionaryRef _ports;
   NSMutableDictionary *_properties;
+  id<WBDaemonTaskDelegate> wb_delegate __weak;
 }
 
 @property BOOL unregisterAtExit;
+@property(assign) id<WBDaemonTaskDelegate> delegate;
 @property(getter=isRegistred, readonly) BOOL registred;
 
 - (id)initWithName:(NSString *)aName;
@@ -67,6 +70,12 @@
 //- (int)socketForKey:(id)aKey;
 
 @end
+
+@protocol WBDaemonTaskDelegate <NSObject>
+@optional
+- (void)task:(WBDaemonTask *)aTask didTerminateService:(NSString *)aService;
+@end
+
 
 //#define LAUNCH_JOBKEY_MACHSERVICELOOKUPPOLICIES		"MachServiceLookupPolicies"
 //#define LAUNCH_JOBKEY_LIMITLOADTOHOSTS				"LimitLoadToHosts"

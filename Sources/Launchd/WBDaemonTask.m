@@ -43,6 +43,8 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 
 @implementation WBDaemonTask
 
+@synthesize delegate = wb_delegate;
+
 - (id)initWithName:(NSString *)aName {
   if (self = [self init]) {
     self.name = aName;
@@ -251,26 +253,40 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 static
 void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   WBDaemonTask *self = (WBDaemonTask *)info;
-  if (self->_ports) {
-    for (NSString *key in (NSDictionary *)self->_ports) {
-      CFMachPortRef value = (CFMachPortRef)CFDictionaryGetValue(self->_ports, key);
-      if (value == port) {
-        NSLog(@"death of port %@", key);
-        CFDictionaryRemoveValue(self->_ports, key);
-        break;
+  NSString *service = nil;
+  @synchronized(self) {
+    if (self->_ports) {
+      // Not very efficient but good enough for this task.
+      for (NSString *key in (NSDictionary *)self->_ports) {
+        CFMachPortRef value = (CFMachPortRef)CFDictionaryGetValue(self->_ports, key);
+        if (value == port) {
+          service = [key retain];
+          DLog(@"death of port %@", key);
+          CFDictionaryRemoveValue(self->_ports, key);
+          break;
+        }
       }
     }
+  }
+  // Notify outside of the lock to avoid dead lock.
+  if (service) {
+    if (self->wb_delegate && [self->wb_delegate respondsToSelector:@selector(task:didTerminateService:)])
+      [self->wb_delegate task:self didTerminateService:service];
+    [service release];
   }
 }
 
 - (mach_port_t)serviceForName:(NSString *)aName {
-  CFMachPortRef cfport = _ports ? (CFMachPortRef)CFDictionaryGetValue(_ports, aName) : NULL;
-  if (cfport) {
-    if (CFMachPortIsValid(cfport)) // cache hit
-      return CFMachPortGetPort(cfport);
-    // invalid port
-    CFDictionaryRemoveValue(_ports, aName);
-    cfport = NULL;
+  CFMachPortRef cfport;
+  @synchronized(self) {
+    cfport = _ports ? (CFMachPortRef)CFDictionaryGetValue(_ports, aName) : NULL;
+    if (cfport) {
+      if (CFMachPortIsValid(cfport)) // cache hit
+        return CFMachPortGetPort(cfport);
+      // invalid port
+      CFDictionaryRemoveValue(_ports, aName);
+      cfport = NULL;
+    }
   }
 
   mach_port_t port;
@@ -286,9 +302,12 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     };
     cfport = CFMachPortCreateWithPort(kCFAllocatorDefault, port, NULL, &ctxt, NULL);
     if (cfport) {
-      if (!_ports) _ports = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
-                                                      &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-      CFDictionarySetValue(_ports, aName, cfport);
+      @synchronized(self) {
+        if (!_ports)
+          _ports = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                                             &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionarySetValue(_ports, aName, cfport);
+      }
       CFMachPortSetInvalidationCallBack(cfport, _CFMachPortInvalidation);
       CFRelease(cfport);
     }
@@ -305,22 +324,35 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   @synchronized(WBDaemonTask.class) {
     [sDaemons removeObject:self];
   }
-  CFErrorRef error;
-  if (_registred && (_unregister || force) && !WBServiceUnregisterJob(WBNSToCFString(self.name), &error)) {
-    CFShow(error);
-    CFRelease(error);
-  } else {
-    [self willChangeValueForKey:@"registred"];
-    _registred = NO;
-    [self didChangeValueForKey:@"registred"];
-  }
-  if (_ports) {
-    for (NSString *key in (NSDictionary *)_ports) {
-      CFMachPortRef port = (CFMachPortRef)CFDictionaryGetValue(_ports, key);
-      CFMachPortSetInvalidationCallBack(port, NULL);
+  if (_registred && (_unregister || force)) {
+    CFErrorRef error;
+    bool unregistred = WBServiceUnregisterJob(WBNSToCFString(self.name), &error);
+    if (!unregistred) {
+      if ((CFErrorGetDomain(error) == kCFErrorDomainPOSIX && CFErrorGetCode(error) == ESRCH) ||
+          (CFErrorGetDomain(error) == kCFErrorDomainOSStatus && CFErrorGetCode(error) == kPOSIXErrorESRCH)) {
+        // No such process mean the service is not registred:
+        unregistred = true;
+      } else {
+        WBLogWarning(@"Error while unregistring daemon: %s, %u", error);
+      }
+      CFRelease(error);
     }
-    CFRelease(_ports);
-    _ports = NULL;
+    if (unregistred) {
+      [self willChangeValueForKey:@"registred"];
+      _registred = NO;
+      [self didChangeValueForKey:@"registred"];
+    }
+  }
+
+  @synchronized(self) {
+    if (_ports) {
+      for (NSString *key in (NSDictionary *)_ports) {
+        CFMachPortRef port = (CFMachPortRef)CFDictionaryGetValue(_ports, key);
+        CFMachPortSetInvalidationCallBack(port, NULL);
+      }
+      CFRelease(_ports);
+      _ports = NULL;
+    }
   }
 }
 
