@@ -11,6 +11,7 @@
 #if !defined(__WB_AE_FUNCTIONS_H)
 #define __WB_AE_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
 #include <ApplicationServices/ApplicationServices.h>
 
 __BEGIN_DECLS

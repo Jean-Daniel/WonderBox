@@ -11,6 +11,8 @@
 #if !defined (__WB_VERSION_FUNCTIONS_H)
 #define __WB_VERSION_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+
 __BEGIN_DECLS
 
 #pragma mark Versions

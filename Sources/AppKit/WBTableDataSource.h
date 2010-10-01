@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 typedef NSComparisonResult (*WBCompareFunction)(id, id, void *);
 typedef BOOL (*WBFilterFunction)(NSString *, id, void *);
 

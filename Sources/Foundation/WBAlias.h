@@ -13,6 +13,8 @@
     @discussion (description)
 */
 
+#include WBHEADER(WBBase.h)
+
 /*!
     @class WBAlias
     @abstract WBAlias class is a wrapper on Carbon AliasHandle.

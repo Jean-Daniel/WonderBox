@@ -7,11 +7,8 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
-/*!
- @header WBOutlineView
- @abstract   (description)
- @discussion (description)
- */
+
+#import WBHEADER(WBBase.h)
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @protocol WBOutlineViewDelegate;

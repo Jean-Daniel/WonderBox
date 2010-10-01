@@ -11,6 +11,7 @@
 #import WBHEADER(WBProcessFunctions.h)
 
 #include <unistd.h>
+#include <sys/sysctl.h>
 #include <ApplicationServices/ApplicationServices.h>
 
 #pragma mark Process Utilities

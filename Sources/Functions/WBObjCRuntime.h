@@ -11,6 +11,8 @@
 #if !defined (__WB_RUNTIME_FUNCTIONS_H)
 #define __WB_RUNTIME_FUNCTIONS_H 1
 
+#import WBHEADER(WBBase.h)
+
 __BEGIN_DECLS
 
 WB_EXPORT

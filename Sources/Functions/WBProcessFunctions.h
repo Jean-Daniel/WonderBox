@@ -11,7 +11,7 @@
 #if !defined(__WB_PROCESS_FUNCTIONS_H)
 #define __WB_PROCESS_FUNCTIONS_H
 
-#include <sys/sysctl.h>
+#include WBHEADER(WBBase.h)
 
 __BEGIN_DECLS
 

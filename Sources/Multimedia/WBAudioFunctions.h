@@ -10,8 +10,10 @@
 
 #import <CoreAudio/CoreAudio.h>
 
-#if !defined(__WBAUDIO_FUNCTIONS_H)
-#define __WBAUDIO_FUNCTIONS_H 1
+#if !defined(__WB_AUDIO_FUNCTIONS_H)
+#define __WB_AUDIO_FUNCTIONS_H 1
+
+#include WBHEADER(WBBase.h)
 
 WB_EXPORT
 void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame,
@@ -33,4 +35,4 @@ UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout);
 WB_EXPORT
 UInt32 WBAudioChannelLayoutGetNumberOfChannels(const AudioChannelLayout *inLayout);
 
-#endif /* __WBAUDIO_FUNCTIONS_H */
+#endif /* __WB_AUDIO_FUNCTIONS_H */

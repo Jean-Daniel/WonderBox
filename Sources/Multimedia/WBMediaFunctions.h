@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBMEDIA_FUNCTIONS_H)
-#define __WBMEDIA_FUNCTIONS_H 1
+#if !defined(__WB_MEDIA_FUNCTIONS_H)
+#define __WB_MEDIA_FUNCTIONS_H 1
+
+#import WBHEADER(WBBase.h)
 
 #import <QTKit/QTKit.h>
 
@@ -36,4 +38,4 @@ WB_EXPORT
 void WBMediaPrintAtoms(QTAtomContainer atoms, QTAtom parentAtom, CFIndex level);
 #endif
 
-#endif /* __WBMEDIA_FUNCTIONS_H */
+#endif /* __WB_MEDIA_FUNCTIONS_H */

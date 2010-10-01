@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#include WBHEADER(WBBase.h)
+
 @class WBCollapseViewItem;
 @protocol WBCollapseViewDelegate;
 WB_CLASS_EXPORT

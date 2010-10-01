@@ -11,6 +11,8 @@
 #if !defined(__WB_LS_FUNCTIONS_H)
 #define __WB_LS_FUNCTIONS_H
 
+#import WBHEADER(WBBase.h)
+
 __BEGIN_DECLS
 
 WB_EXPORT

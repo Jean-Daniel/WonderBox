@@ -11,6 +11,8 @@
 #if !defined(__WB_FS_FUNCTIONS_H)
 #define __WB_FS_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+
 #include <fcntl.h>
 
 __BEGIN_DECLS

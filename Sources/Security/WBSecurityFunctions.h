@@ -13,6 +13,8 @@
 #if !defined(__WBSECURITY_FUNCTIONS_H)
 #define __WBSECURITY_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+
 #pragma mark Keys
 WB_EXPORT
 OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght);

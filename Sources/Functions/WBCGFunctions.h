@@ -11,8 +11,10 @@
 #if !defined(__WB_CG_FUNCTIONS_H)
 #define __WB_CG_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+#include WBHEADER(WBGeometry.h)
+
 #include <ApplicationServices/ApplicationServices.h>
-#import WBHEADER(WBGeometry.h)
 
 __BEGIN_DECLS
 

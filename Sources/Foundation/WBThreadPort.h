@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 enum {
   kWBThreadPortWait = 1,
   kWBThreadPortDontWait = 0,

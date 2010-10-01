@@ -102,6 +102,8 @@
 		1B158EF91255244D00584D8E /* WBBoxLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AC812551FE300584D8E /* WBBoxLayer.m */; };
 		1B158EFA1255245500584D8E /* WBStringLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B158AD112551FE300584D8E /* WBStringLayer.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1B158EFB1255245500584D8E /* WBStringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AD212551FE300584D8E /* WBStringLayer.m */; };
+		1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B4C14E31255E65D00C82DE3 /* WBDateTableColumn.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4C14E41255E65D00C82DE3 /* WBDateTableColumn.m */; };
 		1B5634900F5AF9C400BD119C /* WBBase64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B63B9710EE2C57F000ED041 /* WBBase64Test.m */; };
 		1B5634910F5AF9C400BD119C /* WBEnumeratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */; };
 		1B5634920F5AF9C400BD119C /* WBFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */; };
@@ -112,6 +114,7 @@
 		1B5634980F5AF9D700BD119C /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5634970F5AF9D700BD119C /* GHUnit.framework */; };
 		1B5634A90F5AFA6000BD119C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		1B5634C50F5AFA8D00BD119C /* WonderBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* WonderBox.framework */; };
+		1B8B08841255D1420028DAD4 /* WBBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B8B08831255D1420028DAD4 /* WBBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -310,6 +313,8 @@
 		1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBPointerTest.m; sourceTree = "<group>"; };
 		1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBScopeTest.m; sourceTree = "<group>"; };
+		1B4C14E31255E65D00C82DE3 /* WBDateTableColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDateTableColumn.h; sourceTree = "<group>"; };
+		1B4C14E41255E65D00C82DE3 /* WBDateTableColumn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBDateTableColumn.m; sourceTree = "<group>"; };
 		1B4F54E10F53E9080091CADB /* WBMacroTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMacroTests.m; sourceTree = "<group>"; };
 		1B5634820F5AF9AD00BD119C /* GHTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GHTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B5634970F5AF9D700BD119C /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnit.framework; path = Library/Frameworks/GHUnit.framework; sourceTree = SDKROOT; };
@@ -323,6 +328,7 @@
 		1B7FED410ED3362B00B5780B /* WonderBoxDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = WonderBoxDebug.xcconfig; sourceTree = "<group>"; };
 		1B7FED420ED3362B00B5780B /* WonderBoxRelease.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = WonderBoxRelease.xcconfig; sourceTree = "<group>"; };
 		1B877D150D37E4B5007A59B5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
+		1B8B08831255D1420028DAD4 /* WBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase.h; sourceTree = "<group>"; };
 		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1BB0E2620D62F7580041C166 /* WBLicenseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLicenseTest.m; sourceTree = "<group>"; };
 		1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBEnumeratorTest.m; sourceTree = "<group>"; };
@@ -412,6 +418,7 @@
 		08FB77AEFE84172EC02AAC07 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1B8B08831255D1420028DAD4 /* WBBase.h */,
 				1B158A6012551FE300584D8E /* AppKit */,
 				1B158A8612551FE300584D8E /* CollapseView */,
 				1B158A8D12551FE300584D8E /* Foundation */,
@@ -473,6 +480,8 @@
 				1B158A8112551FE300584D8E /* WBUITreeNode.m */,
 				1B158A8212551FE300584D8E /* WBViewController.h */,
 				1B158A8312551FE300584D8E /* WBViewController.m */,
+				1B4C14E31255E65D00C82DE3 /* WBDateTableColumn.h */,
+				1B4C14E41255E65D00C82DE3 /* WBDateTableColumn.m */,
 				1B158A8412551FE300584D8E /* WBWindowController.h */,
 				1B158A8512551FE300584D8E /* WBWindowController.m */,
 			);
@@ -803,6 +812,8 @@
 				1B158EF61255244300584D8E /* WBGLStringBox.h in Headers */,
 				1B158EF81255244D00584D8E /* WBBoxLayer.h in Headers */,
 				1B158EFA1255245500584D8E /* WBStringLayer.h in Headers */,
+				1B8B08841255D1420028DAD4 /* WBBase.h in Headers */,
+				1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -956,6 +967,7 @@
 				1B158EF71255244400584D8E /* WBGLStringBox.m in Sources */,
 				1B158EF91255244D00584D8E /* WBBoxLayer.m in Sources */,
 				1B158EFB1255245500584D8E /* WBStringLayer.m in Sources */,
+				1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

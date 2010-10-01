@@ -8,8 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#if !defined(__WBCDSA_FUNCTIONS_H)
-#define __WBCDSA_FUNCTIONS_H 1
+#if !defined(__WB_CDSA_FUNCTIONS_H)
+#define __WB_CDSA_FUNCTIONS_H 1
+
+#include WBHEADER(WBBase.h)
 
 #include <Security/cssmtype.h>
 
@@ -38,4 +40,4 @@ void *WBCDSARealloc(CSSM_MODULE_HANDLE handle, void *ptr, CSSM_SIZE length);
 WB_EXPORT
 void WBCDSAFree(CSSM_MODULE_HANDLE handle, void *ptr);
 
-#endif	/* __WBCDSA_FUNCTIONS_H */
+#endif	/* __WB_CDSA_FUNCTIONS_H */
