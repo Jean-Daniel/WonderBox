@@ -49,18 +49,16 @@
 #ifndef _OPENGL_TEAPOT_LIST_H_
 #define _OPENGL_TEAPOT_LIST_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#import WBHEADER(WBBase.h)
 
+__BEGIN_DECLS
+  
 #include <OpenGL/OpenGL.h>
 
 // Returns the number of vertices sent to GL.
 WB_EXPORT
 GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount, const GLdouble theTeapotScale, const GLenum theTeapotType);
 
-#ifdef __cplusplus
-}
-#endif
+__END_DECLS
 
 #endif

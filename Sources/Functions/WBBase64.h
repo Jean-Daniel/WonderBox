@@ -11,6 +11,8 @@
 #if !defined (__WB_BASE64_H)
 #define __WB_BASE64_H 1
 
+#include WBHEADER(WBBase.h)
+
 __BEGIN_DECLS
 
 // WBBase64

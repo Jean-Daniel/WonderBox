@@ -8,12 +8,15 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 #import <QTKit/QTKit.h>
 #import <CoreVideo/CoreVideo.h>
 
 @class QTMovie;
 @protocol WBMovieDrawer;
 @class WBQTVisualContext;
+WB_CLASS_EXPORT
 @interface WBMovieTexture : NSObject {
 @private
   QTTime wb_time;

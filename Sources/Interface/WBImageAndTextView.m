@@ -104,7 +104,7 @@ static const CGFloat kAVImageRightMargin = 6;
       CGFloat x = 0;
       switch (wb_saFlags.align) {
         case 0: /* center */
-          x = AVG(NSWidth([[self superview] bounds]), - (wb_width + kAVImageSize + kAVImageRightMargin));
+          x = (NSWidth([[self superview] bounds]) - (wb_width + kAVImageSize + kAVImageRightMargin)) / 2;
           x -= kAVMargin;
           /* Make sure x is an integer value */
           x = floor(x);
@@ -146,7 +146,7 @@ static const CGFloat kAVImageRightMargin = 6;
 
 - (void)drawRect:(NSRect)rect {
   if ([self title] || [self icon]) {
-    CGContextRef ctxt = WBCGContextGetCurrent();
+    CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
 
     CGContextSetShouldAntialias(ctxt, true);
     CGContextSetInterpolationQuality(ctxt, kCGInterpolationHigh);

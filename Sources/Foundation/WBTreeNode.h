@@ -9,9 +9,9 @@
  */
 /*!
     @header WBTreeNode
-    @abstract   (description)
-    @discussion (description)
 */
+
+#import WBHEADER(WBBase.h)
 
 /*!
     @class

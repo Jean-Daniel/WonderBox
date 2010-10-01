@@ -10,6 +10,8 @@
 #if !defined(__WB_MACH_MESSAGE_SERVER_H)
 #define __WB_MACH_MESSAGE_SERVER_H 1
 
+#include WBHEADER(WBBase.h)
+
 #include <mach/mach.h>
 
 WB_EXPORT

@@ -30,7 +30,7 @@ CFIndex WBTextConvertLineEnding(CFMutableStringRef str, CFStringRef endOfLine) {
   CFStringInlineBuffer buffer;
   CFStringInitInlineBuffer(str, &buffer, CFRangeMake(0, length));
 
-  while (ch = CFStringGetCharacterFromInlineBuffer(&buffer, idx)) {
+  while ((ch = CFStringGetCharacterFromInlineBuffer(&buffer, idx))) {
     CFRange range = CFRangeMake(kCFNotFound, 0);
     if (kWBCarriageReturnCharacter == ch) {
       range.length = 1;

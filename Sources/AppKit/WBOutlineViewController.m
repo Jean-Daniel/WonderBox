@@ -301,7 +301,7 @@
       if (anObject == parent) {
         return NO;
       }
-    } while (parent = [parent parent]);
+    } while ((parent = [parent parent]));
 
     /* If move and same parent ... */
     if ([anObject parent] == item) {

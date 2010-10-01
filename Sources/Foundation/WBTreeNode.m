@@ -104,7 +104,7 @@
   do {
     if (ancestor == parent)
       return YES;
-  } while (ancestor = ancestor->wb_parent);
+  } while ((ancestor = ancestor->wb_parent));
   return NO;
 }
 
@@ -120,7 +120,7 @@
     NSUInteger count = 0;
     do {
       count++;
-    } while (node = node->wb_sibling);
+    } while ((node = node->wb_sibling));
     return count;
   }
 }
@@ -196,7 +196,7 @@
         return idx;
       }
       idx++;
-    } while (child = child->wb_sibling);
+    } while ((child = child->wb_sibling));
   }
   return NSNotFound;
 }
@@ -454,7 +454,7 @@
 
   NSMutableArray *children = [NSMutableArray arrayWithObject:wb_node];
   WBTreeNode *node = wb_node;
-  while (node = [node nextSibling]) {
+  while ((node = [node nextSibling])) {
     [children addObject:node];
   }
   wb_node = nil;

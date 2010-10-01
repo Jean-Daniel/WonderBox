@@ -10,6 +10,8 @@
 
 #if !defined(__LP64__) || !__LP64__
 
+#import WBHEADER(WBBase.h)
+
 #include <QuickTime/QuickTime.h>
 
 enum {

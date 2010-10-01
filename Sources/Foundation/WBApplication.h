@@ -13,6 +13,8 @@
     @discussion (description)
 */
 
+#import WBHEADER(WBBase.h)
+
 #pragma mark -
 
 /*!

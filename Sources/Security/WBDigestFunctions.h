@@ -15,6 +15,10 @@
 #if !defined(__WBDIGEST_FUNCTIONS_H)
 #define __WBDIGEST_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+
+__BEGIN_DECLS
+
 typedef struct _WBDigestContext {
   char opaque[240];
 } WBDigestContext;
@@ -77,5 +81,7 @@ WB_EXPORT
 int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md);
 WB_EXPORT
 int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsigned char *md);
+
+__END_DECLS
 
 #endif /* __WBDIGEST_FUNCTIONS_H */

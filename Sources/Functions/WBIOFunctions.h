@@ -11,6 +11,8 @@
 #if !defined(__WB_IO_FUNCTIONS_H)
 #define __WB_IO_FUNCTIONS_H 1
 
+#include WBHEADER(WBBase.h)
+
 __BEGIN_DECLS
 
 /* Low level functions */

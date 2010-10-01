@@ -155,7 +155,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   return wb_context;
 }
 - (void)setVisualContext:(WBQTVisualContext *)ctxt {
-  WBSetterRetain(&wb_context, ctxt);
+  WBSetterRetain(wb_context, ctxt);
 }
 
 - (void)configureMovie:(QTMovie *)aMovie {}

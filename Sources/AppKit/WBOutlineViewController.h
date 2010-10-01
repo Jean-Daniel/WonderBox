@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 @class WBBaseUITreeNode;
 WB_CLASS_EXPORT
 @interface WBOutlineViewController : NSObject {
