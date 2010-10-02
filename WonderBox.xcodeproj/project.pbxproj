@@ -115,6 +115,10 @@
 		1B5634A90F5AFA6000BD119C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		1B5634C50F5AFA8D00BD119C /* WonderBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* WonderBox.framework */; };
 		1B8B08841255D1420028DAD4 /* WBBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B8B08831255D1420028DAD4 /* WBBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1BD8EF431257F5F600F359B0 /* RSEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */; };
+		1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD8EF401257F5F600F359B0 /* RSEditorView.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8EF411257F5F600F359B0 /* RSEditorView.m */; };
+		1BD8EF461257F5F600F359B0 /* TOutline.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BD8EF421257F5F600F359B0 /* TOutline.png */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -331,6 +335,10 @@
 		1B8B08831255D1420028DAD4 /* WBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase.h; sourceTree = "<group>"; };
 		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1BB0E2620D62F7580041C166 /* WBLicenseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLicenseTest.m; sourceTree = "<group>"; };
+		1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RSEditor.xib; sourceTree = "<group>"; };
+		1BD8EF401257F5F600F359B0 /* RSEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSEditorView.h; sourceTree = "<group>"; };
+		1BD8EF411257F5F600F359B0 /* RSEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSEditorView.m; sourceTree = "<group>"; };
+		1BD8EF421257F5F600F359B0 /* TOutline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOutline.png; sourceTree = "<group>"; };
 		1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBEnumeratorTest.m; sourceTree = "<group>"; };
 		1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctionsTest.m; sourceTree = "<group>"; };
 		1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctionsTest.m; sourceTree = "<group>"; };
@@ -428,6 +436,7 @@
 				1B158AE012551FE300584D8E /* Macros */,
 				1B158AE612551FE300584D8E /* Multimedia */,
 				1B158AF712551FE300584D8E /* OpenGL */,
+				1BD8EF3E1257F5F600F359B0 /* RSEditor */,
 				1B158B0012551FE300584D8E /* Security */,
 				1B158B0712551FE300584D8E /* Wizard */,
 			);
@@ -745,6 +754,17 @@
 			path = /Users/jddupas/Desktop/Emerald/subprojs/xcconfigs;
 			sourceTree = "<absolute>";
 		};
+		1BD8EF3E1257F5F600F359B0 /* RSEditor */ = {
+			isa = PBXGroup;
+			children = (
+				1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */,
+				1BD8EF421257F5F600F359B0 /* TOutline.png */,
+				1BD8EF401257F5F600F359B0 /* RSEditorView.h */,
+				1BD8EF411257F5F600F359B0 /* RSEditorView.m */,
+			);
+			path = RSEditor;
+			sourceTree = "<group>";
+		};
 		1BF76C800D367DF100A8758E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -814,6 +834,7 @@
 				1B158EFA1255245500584D8E /* WBStringLayer.h in Headers */,
 				1B8B08841255D1420028DAD4 /* WBBase.h in Headers */,
 				1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */,
+				1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -900,6 +921,8 @@
 				1B158C35125520E200584D8E /* WBTabWindow.xib in Resources */,
 				1B158B6F12551FE400584D8E /* WBProgress.strings in Resources */,
 				1B158C28125520CF00584D8E /* WBProgressPanel.xib in Resources */,
+				1BD8EF431257F5F600F359B0 /* RSEditor.xib in Resources */,
+				1BD8EF461257F5F600F359B0 /* TOutline.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -968,6 +991,7 @@
 				1B158EF91255244D00584D8E /* WBBoxLayer.m in Sources */,
 				1B158EFB1255245500584D8E /* WBStringLayer.m in Sources */,
 				1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */,
+				1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
