@@ -15,7 +15,7 @@ WB_CLASS_EXPORT
 @private
   Component _comp;
 	ComponentDescription _desc;
-	
+
   NSImage *_icon;
 	NSString *_manu, *_name, *_info, *_cname;
 }

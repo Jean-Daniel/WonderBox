@@ -14,7 +14,7 @@
 
 WB_CLASS_EXPORT
 @interface WBGLStringLayer : WBStringLayer {
-@private	
+@private
   GLuint wb_texName;
   CGRect wb_texBounds;
   CGFloat wb_userScale;

@@ -349,7 +349,7 @@ bail:
 OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) {
   if (!ref) return paramErr;
   if (!type && !creator) return paramErr;
-	
+
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(ref, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
   if (noErr == err) {
@@ -367,7 +367,7 @@ OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) 
 OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator) {
   if (!url) return paramErr;
   if (!type && !creator) return paramErr;
-	
+
 	FSRef ref;
 	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
 	return WBFSGetTypeAndCreator(&ref, type, creator);
@@ -376,7 +376,7 @@ OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator)
 OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) {
 	if (!path) return paramErr;
   if (!type && !creator) return paramErr;
-	
+
   FSRef ref;
   Boolean isDir;
   OSStatus err = WBFSRefCreateFromFileSystemPath(path, kFSPathMakeRefDoNotFollowLeafSymlink, &ref, &isDir);
@@ -392,7 +392,7 @@ OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *cre
 OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) {
 	if (!ref) return paramErr;
 	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
-	
+
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(ref, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
 	if (noErr == err) {
@@ -411,16 +411,16 @@ OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) {
 OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator) {
 	if (!url) return paramErr;
 	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
-	
+
 	FSRef ref;
 	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
-	return WBFSSetTypeAndCreator(&ref, type, creator);	
+	return WBFSSetTypeAndCreator(&ref, type, creator);
 }
 
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) {
 	if (!path) return paramErr;
 	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
-	
+
 	FSRef ref;
   Boolean isDir;
   OSStatus err = WBFSRefCreateFromFileSystemPath(path, kFSPathMakeRefDoNotFollowLeafSymlink, &ref, &isDir);

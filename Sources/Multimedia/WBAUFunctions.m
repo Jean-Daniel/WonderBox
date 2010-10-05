@@ -54,7 +54,7 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
 			}
     }
   }
-	
+
 	NSView *AUView = nil;
 	// Show custom UI if view has it
 	if (bundleURL && factoryClassName) {
@@ -64,11 +64,11 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
 		} else {
 			Class factoryClass = [viewBundle classNamed:factoryClassName];
 			WBAssert(factoryClass != nil, @"Error getting AU view's factory class from bundle");
-			
+
 			// make sure 'factoryClass' implements the AUCocoaUIBase protocol
 			WBAssert(_WBAUCocoaViewIsValid(factoryClass),
                 @"AU view's factory class does not properly implement the AUCocoaUIBase protocol");
-			
+
 			// make a factory
 			id<AUCocoaUIBase> factoryInstance = [[[factoryClass alloc] init] autorelease];
 			WBAssert (factoryInstance != nil, @"Could not create an instance of the AU view factory");
@@ -88,11 +88,11 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
       free (cocoaViewInfo);
     }
   }
-	
+
 	if (!AUView) { // No custom view (or failed to load), show generic Cocoa view
 		AUView = [[[AUGenericView alloc] initWithAudioUnit:anUnit] autorelease];
 		[(AUGenericView *)AUView setShowsExpertParameters:NO];
   }
-	
+
   return AUView;
 }

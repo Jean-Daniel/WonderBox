@@ -20,13 +20,13 @@ size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length) {
   check(fd > 0);
 	check(length > 0);
 	check(buffer != NULL);
-	
+
 	UInt8 *cursor;
 	bool ok = true;
 	size_t done = 0;
 	size_t	bytesLeft;
 	size_t bytesThisTime;
-	
+
 	cursor = buffer;
 	bytesLeft = length;
 	while ( ok && (bytesLeft != 0) ) {
@@ -39,7 +39,7 @@ size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length) {
 			ok = false;
 		}
 	}
-	
+
 	return done;
 }
 
@@ -47,13 +47,13 @@ size_t WBIOUtilsWrite(int fd, UInt8 *buffer, size_t length) {
   check(fd > 0);
   check(length > 0);
 	check(buffer != NULL);
-	
+
 	UInt8 *cursor;
 	bool ok = true;
 	size_t done = 0;
 	size_t bytesLeft;
 	size_t bytesThisTime;
-	
+
 	cursor = buffer;
 	bytesLeft = length;
 	while ( ok && (bytesLeft != 0) ) {
@@ -66,7 +66,7 @@ size_t WBIOUtilsWrite(int fd, UInt8 *buffer, size_t length) {
 			ok = false;
 		}
 	}
-	
+
 	return done;
 }
 
@@ -74,13 +74,13 @@ CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length) {
 	check(length > 0);
 	check(stream != NULL);
 	check(buffer != NULL);
-	
+
 	UInt8 *cursor;
 	bool ok = true;
 	CFIndex done = 0;
 	CFIndex	bytesLeft;
 	CFIndex bytesThisTime;
-	
+
 	cursor = buffer;
 	bytesLeft = length;
 	while ( ok && (bytesLeft != 0) ) {
@@ -93,7 +93,7 @@ CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length) {
 			ok = false;
 		}
 	}
-	
+
 	return done;
 }
 
@@ -101,13 +101,13 @@ CFIndex WBCFStreamWrite(CFWriteStreamRef stream, UInt8 *buffer, CFIndex length) 
 	check(length > 0);
 	check(stream != NULL);
 	check(buffer != NULL);
-	
+
 	UInt8 *cursor;
 	bool ok = true;
 	CFIndex done = 0;
 	CFIndex	bytesLeft;
 	CFIndex bytesThisTime;
-	
+
 	cursor = buffer;
 	bytesLeft = length;
 	while ( ok && (bytesLeft != 0) ) {
@@ -120,7 +120,7 @@ CFIndex WBCFStreamWrite(CFWriteStreamRef stream, UInt8 *buffer, CFIndex length) 
 			ok = false;
 		}
 	}
-	
+
 	return done;
 }
 

@@ -26,16 +26,16 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
     DCLog("radius to big -> adjust it.");
     radius = maxRadius;
   }
-	
+
 	// In order to draw a rounded rectangle, we will take advantage of the fact that
 	// CGContextAddArcToPoint will draw straight lines past the start and end of the arc
 	// in order to create the path from the current position and the destination position.
-	
+
 	// In order to create the 4 arcs correctly, we need to know the min, mid and max positions
 	// on the x and y lengths of the given rectangle.
 	CGFloat minx = CGRectGetMinX(rect), midx = CGRectGetMidX(rect), maxx = CGRectGetMaxX(rect);
 	CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect), maxy = CGRectGetMaxY(rect);
-	
+
 	// Next, we will go around the rectangle in the order given by the figure below.
 	//       minx    midx    maxx
 	// miny    2       3       4
@@ -45,7 +45,7 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
 	// form a closed path, so we still need to close the path to connect the ends correctly.
 	// Thus we start by moving to point 1, then adding arcs through each pair of points that follows.
 	// You could use a similar tecgnique to create any shape with rounded corners.
-	
+
 	// Start at 1
 	CGContextMoveToPoint(context, minx, midy);
 	// Add an arc through 2 to 3
@@ -81,12 +81,12 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
   // In order to draw a rounded rectangle, we will take advantage of the fact that
 	// CGContextAddArcToPoint will draw straight lines past the start and end of the arc
 	// in order to create the path from the current position and the destination position.
-	
+
 	// In order to create the 4 arcs correctly, we need to know the min, mid and max positions
 	// on the x and y lengths of the given rectangle.
 	CGFloat minx = CGRectGetMinX(rect), midx = CGRectGetMidX(rect), maxx = CGRectGetMaxX(rect);
 	CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect), maxy = CGRectGetMaxY(rect);
-	
+
 	// Next, we will go around the rectangle in the order given by the figure below.
 	//       minx    midx    maxx
 	// miny    2       3       4
@@ -96,7 +96,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
 	// form a closed path, so we still need to close the path to connect the ends correctly.
 	// Thus we start by moving to point 1, then adding arcs through each pair of points that follows.
 	// You could use a similar tecgnique to create any shape with rounded corners.
-	
+
 	// Start at 1
 	CGPathMoveToPoint(path, transform, minx, midy);
 	// Add an arc through 2 to 3

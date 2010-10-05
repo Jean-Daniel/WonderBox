@@ -57,7 +57,7 @@ WBMachMessageServer(boolean_t (*demux)(mach_msg_header_t *, mach_msg_header_t *,
 				return kr;
 			}
 		}
-		
+
 		mr = mach_msg(&bufRequest->Head, MACH_RCV_MSG|options,
                   0, request_size, rcv_name,
                   MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
@@ -116,7 +116,7 @@ WBMachMessageServer(boolean_t (*demux)(mach_msg_header_t *, mach_msg_header_t *,
                                   MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL,
                                   &bufRequest->Head, 0);
 				}
-				
+
 				if ((mr != MACH_SEND_INVALID_DEST) &&
             (mr != MACH_SEND_TIMED_OUT))
 					continue;
@@ -129,7 +129,7 @@ WBMachMessageServer(boolean_t (*demux)(mach_msg_header_t *, mach_msg_header_t *,
                     MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
 
 		} /* while (mr == MACH_MSG_SUCCESS) */
-		
+
 		if ((mr == MACH_RCV_TOO_LARGE) && (options & MACH_RCV_LARGE)) {
 			new_request_alloc = round_page(bufRequest->Head.msgh_size +
                                      trailer_alloc);

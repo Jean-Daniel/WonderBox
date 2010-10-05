@@ -40,7 +40,7 @@
   if (!view) {
 		if (![self nibName])
 			WBThrowException(NSInvalidArgumentException, @"view controller cannot load a view when name is nil.");
-		
+
     NSNib *nib = [[NSNib alloc] initWithNibNamed:[self nibName] bundle:[self nibBundle]];
     if ([nib instantiateNibWithOwner:self topLevelObjects:&wb_root]) {
       [wb_root retain];

@@ -140,10 +140,10 @@
   }
   WBAssert([self hasNext], @"Cannot call next: on last page.");
   NSObject<WBWizardPage> *current = [self page];
-	
+
 	if ([current wizard:self shouldChangePage:WBWizardLeaveToNextPage]) {
 		NSObject<WBWizardPage> *nextPage = [current nextPage];
-		
+
 		WBAssert(nextPage != nil, @"Invalid Next page.");
 		wb_idx++;
 		/* Check if next page is always the same and if not, flush all pages following the current page */
@@ -154,12 +154,12 @@
 			[self loadPage:nextPage];
 		}
 		nextPage = [wb_pages objectAtIndex:wb_idx];
-		
+
 		[current wizard:self willChangePage:WBWizardLeaveToNextPage];
 		[nextPage wizard:self willChangePage:WBWizardLoadNextPage];
-		
+
 		[self setPage:nextPage];
-		
+
 		[nextPage wizard:self didChangePage:WBWizardLoadNextPage];
 		[current wizard:self didChangePage:WBWizardLeaveToNextPage];
 	}
@@ -172,12 +172,12 @@
 		/* Should decrement after getting current page because we use idx in -page method. */
 		wb_idx--;
 		NSObject<WBWizardPage> *previousPage = [wb_pages objectAtIndex:wb_idx];
-		
+
 		[current wizard:self willChangePage:WBWizardLeaveToPreviousPage];
 		[previousPage wizard:self willChangePage:WBWizardLoadPreviousPage];
-		
+
 		[self setPage:previousPage];
-		
+
 		[previousPage wizard:self didChangePage:WBWizardLoadPreviousPage];
 		[current wizard:self didChangePage:WBWizardLeaveToPreviousPage];
 	}

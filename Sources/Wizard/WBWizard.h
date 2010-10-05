@@ -51,7 +51,7 @@ WB_CLASS_EXPORT
 
   @private
   NSUInteger wb_idx;
-	
+
   id wb_object;
 	id wb_delegate;
   NSImage *wb_image;

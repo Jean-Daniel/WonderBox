@@ -202,7 +202,7 @@
 
   glPopAttrib();
   CGLUnlockContext(wb_glctxt);
-	
+
   [self setNeedsUpdateTexture:NO];
 }
 
@@ -238,9 +238,9 @@
 	if (wb_texName) {
     CGLContextObj CGL_MACRO_CONTEXT = theContext ? : wb_glctxt;
 		glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
-		
-		glEnable(GL_TEXTURE_RECTANGLE_ARB);	
-		
+
+		glEnable(GL_TEXTURE_RECTANGLE_ARB);
+
     /* adjust bounds */
     aPoint.x += wb_texBounds.origin.x;
     aPoint.y += wb_texBounds.origin.y;
@@ -269,7 +269,7 @@
     glTexCoord2d(wb_texBounds.size.width, wb_texBounds.size.height); // draw upper right in world coordinates
     glVertex2d(aPoint.x + imgSize.width, aPoint.y);
 		glEnd();
-		
+
 		glPopAttrib();
 	}
 }

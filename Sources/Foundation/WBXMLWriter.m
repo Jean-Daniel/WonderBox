@@ -97,7 +97,7 @@ xmlOutputBufferPtr _WBXMLCreateNSDataOutputBuffer(NSMutableData *data, xmlCharEn
 
 #pragma mark Document
 - (NSInteger)startDocument:(NSString *)version encoding:(NSString *)encoding standalone:(NSString *)standalone {
-	return xmlTextWriterStartDocument(wb_writer, [version UTF8String], [encoding UTF8String], [standalone UTF8String]);	
+	return xmlTextWriterStartDocument(wb_writer, [version UTF8String], [encoding UTF8String], [standalone UTF8String]);
 }
 
 - (NSInteger)endDocument {
@@ -258,7 +258,7 @@ xmlOutputBufferPtr _WBXMLCreateNSDataOutputBuffer(NSMutableData *data, xmlCharEn
 - (NSInteger)startCDATA {
 	return xmlTextWriterStartCDATA(wb_writer);
 }
-- (NSInteger)endCDATA {	
+- (NSInteger)endCDATA {
 	return xmlTextWriterEndCDATA(wb_writer);
 }
 

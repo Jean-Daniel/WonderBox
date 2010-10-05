@@ -37,7 +37,7 @@
 
 - (id)init {
 	if (self = [super init]) {
-		[NSBundle loadNibNamed:@"RSEditor" owner:self];		
+		[NSBundle loadNibNamed:@"RSEditor" owner:self];
 	}
 	return self;
 }

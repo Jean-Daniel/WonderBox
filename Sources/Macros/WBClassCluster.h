@@ -44,7 +44,7 @@
 
 #define WBClassClusterNoClassForCoder(classname)		\
 	WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-	WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)	
+	WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)
 
 
 // Details

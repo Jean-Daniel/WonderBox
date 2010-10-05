@@ -11,7 +11,7 @@
 #include WBHEADER(WBCDSAFunctions.h)
 
 #include <Security/cssm.h>
-#include <Security/cssmapple.h>	
+#include <Security/cssmapple.h>
 
 /*
  * Standard app-level memory functions required by CDSA.
@@ -53,7 +53,7 @@ CSSM_BOOL cssmStartup(void) {
   static CSSM_BOOL cssmInitd = CSSM_FALSE;
 	CSSM_RETURN  crtn;
   CSSM_PVC_MODE pvcPolicy = CSSM_PVC_NONE;
-	
+
 	if(cssmInitd) {
 		return CSSM_TRUE;
 	}
@@ -175,7 +175,7 @@ CSSM_BOOL WBCDSADataEqual(const CSSM_DATA *d1, const CSSM_DATA *d2) {
   if(memcmp(d1->Data, d2->Data, d1->Length)) {
     return CSSM_FALSE;
   }
-  return CSSM_TRUE;	
+  return CSSM_TRUE;
 }
 
 #pragma mark -

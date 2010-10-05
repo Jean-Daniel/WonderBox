@@ -178,7 +178,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     NSEndMapTableEnumeration(&iter);
   }
 
-  // Set the viewport to the dimensions of our texture	
+  // Set the viewport to the dimensions of our texture
   glViewport(0, 0, (GLuint)size.width, (GLuint)size.height);
 }
 

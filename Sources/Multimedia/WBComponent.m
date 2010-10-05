@@ -243,18 +243,18 @@
   bool versionFound = false;
   ResFileRefNum curRes = CurResFile();
 	ResFileRefNum componentResFileID = kResFileNotOpened;
-	
+
 	OSStatus result;
   UInt32 version = 0;
 	short thngResourceCount;
-	
+
 	require_noerr (result = OpenAComponentResFile(_comp, &componentResFileID), home);
 	require_noerr (result = componentResFileID <= 0, home);
-	
+
 	UseResFile(componentResFileID);
 
 	thngResourceCount = Count1Resources(kComponentResourceType);
-	
+
 	require_noerr (result = ResError(), home);
   // only go on if we successfully found at least 1 thng resource
 	require_noerr (thngResourceCount <= 0 ? -1 : 0, home);
@@ -289,7 +289,7 @@
 		result = resNotFound;
 
 	UseResFile(curRes);	// revert
-	
+
 	if ( componentResFileID != kResFileNotOpened )
 		CloseComponentResFile(componentResFileID);
 

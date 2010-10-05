@@ -3,7 +3,7 @@
 //	File: OpenGLTeapotList.h
 //
 //  Abstract: Draw an OpenGL teapot.
-// 			
+//
 //  Disclaimer: IMPORTANT:  This Apple software is supplied to you by
 //  Apple Inc. ("Apple") in consideration of your agreement to the
 //  following terms, and your use, installation, modification or
@@ -52,7 +52,7 @@
 #import WBHEADER(WBBase.h)
 
 __BEGIN_DECLS
-  
+
 #include <OpenGL/OpenGL.h>
 
 // Returns the number of vertices sent to GL.

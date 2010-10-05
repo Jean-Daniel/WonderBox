@@ -106,7 +106,7 @@ WB_INLINE
 IMP __WBRuntimeSetMethodImplementation(Method method, IMP addr) {
 	if (method_setImplementation)
 		return method_setImplementation(method, addr);
-	
+
 	IMP previous = method->method_imp;
 	method->method_imp = addr;
 	return previous;
@@ -120,7 +120,7 @@ Class __WBRuntimeGetClass(id obj) {
 Class WBRuntimeSetObjectClass(id anObject, Class newClass) {
 	if (object_setClass)
 		return object_setClass(anObject, newClass);
-	
+
 	/* manual isa swizzling */
 	Class previous = anObject->isa;
 	anObject->isa = newClass;
@@ -131,7 +131,7 @@ BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL method) {
 	/* if leopard runtime available */
 	if (class_copyMethodList)
 		return _WBRuntimeInstanceImplementsSelector(cls, method);
-	
+
 	void *iterator = 0;
 	struct objc_method_list *methodList;
 	//
@@ -169,7 +169,7 @@ NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict) {
 					[result addObject:cls];
 			} else if (parent != cls && __WBRuntimeIsSubclass(cls, parent)) {
 				[result addObject:cls];
-			}				
+			}
 		}
     free(classes);
 	}
@@ -210,7 +210,7 @@ IMP WBRuntimeSetClassMethodImplementation(Class base, SEL selector, IMP placehol
 	return _WBRuntimeSetMethodImplementation(base, selector, placeholder, false);
 }
 IMP WBRuntimeSetInstanceMethodImplementation(Class base, SEL selector, IMP placeholder) {
-	return _WBRuntimeSetMethodImplementation(base, selector, placeholder, true);	
+	return _WBRuntimeSetMethodImplementation(base, selector, placeholder, true);
 }
 
 BOOL WBRuntimeObjectImplementsSelector(id object, SEL method) {

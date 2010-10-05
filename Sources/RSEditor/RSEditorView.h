@@ -29,7 +29,7 @@ WB_CLASS_EXPORT
 WB_CLASS_EXPORT
 @interface RSTextView : NSTextView {
 @private
-	
+
 }
 
 @end

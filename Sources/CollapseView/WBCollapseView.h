@@ -38,7 +38,7 @@ WB_CLASS_EXPORT
 - (NSArray *)items; // safe to mutate items while iteratign the returned collection
 - (NSUInteger)numberOfItems;
 
-- (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;			// May raise an NSRangeException	
+- (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;			// May raise an NSRangeException
 - (WBCollapseViewItem *)itemWithIdentifier:(id)identifier;
 
 - (NSUInteger)indexOfItem:(WBCollapseViewItem *)tabViewItem; // NSNotFound if not found

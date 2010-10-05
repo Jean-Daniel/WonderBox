@@ -56,7 +56,7 @@
 //	File: OpenGLTeapotList.c
 //
 //  Abstract: Draw an OpenGL teapot.
-// 			
+//
 //  Disclaimer: IMPORTANT:  This Apple software is supplied to you by
 //  Apple Inc. ("Apple") in consideration of your agreement to the
 //  following terms, and your use, installation, modification or
@@ -257,7 +257,7 @@ static GLfloat cpdata[][3] =
 	{1.3f, -0.728f, 2.55f},
 	{0.728f, -1.3f, 2.55f},
 	{0, -1.3f, 2.55f},
-	
+
 	// bottom edge of lid
 	{1.4f, 0, 2.4f},
 	{1.4f, -0.728f, 2.4f},
@@ -326,27 +326,27 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 	GLfloat   q[4][4][3];
 	GLfloat   r[4][4][3];
 	GLfloat   s[4][4][3];
-		
+
 	register GLint  i;
 	register GLint  j;
 	register GLint  k;
 	register GLint  l;
-	
+
 	register GLint vertexCount = 0;
 
 	// Make polygons wind CCW by scaling by -1.
-	
+
 	scale *= -1;
 
 	glPushAttrib(GL_ENABLE_BIT | GL_EVAL_BIT);
-	
+
 		glEnable(GL_AUTO_NORMAL);
 		glEnable(GL_NORMALIZE);
 		glEnable(GL_MAP2_VERTEX_3);
 		glEnable(GL_MAP2_TEXTURE_COORD_2);
-		
+
 		glPushMatrix();
-		
+
 			glRotatef(90, 1, 0, 0);
 			glScaled(0.5 * scale, 0.5 * scale, 0.5 * scale);
 			glTranslated(0, 0, -1.5);
@@ -361,28 +361,28 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 						{
 							p[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
 							q[j][k][l] = cpdata[patchdata[i][j * 4 + (3 - k)]][l];
-							
+
 							if (l == 1)
 							{
 								q[j][k][l] *= -1;
 							} // if
-							
+
 							if (i < 6)
 							{
 								r[j][k][l] = cpdata[patchdata[i][j * 4 + (3 - k)]][l];
-								
+
 								if (l == 0)
 								{
 									r[j][k][l] *= -1;
 								} // if
-								
+
 								s[j][k][l] = cpdata[patchdata[i][j * 4 + k]][l];
-								
+
 								if (l == 0)
 								{
 									s[j][k][l] *= -1;
 								} // if
-								
+
 								if (l == 1)
 								{
 									s[j][k][l] *= -1;
@@ -391,37 +391,37 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 						} // for l
 					} // for k
 				} // for j
-				
+
 				glMap2f(GL_MAP2_TEXTURE_COORD_2, 0, 1, 2, 2, 1, 0, 4, 2, &tex[0][0][0]);
 				glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &p[0][0][0]);
 				glMapGrid2f(grid, 0, 1, grid, 0, 1);
 				glEvalMesh2(theTeapotType, 0, grid, 0, grid);
-				
+
 				vertexCount += grid * grid;
-				
+
 				glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &q[0][0][0]);
 				glEvalMesh2(theTeapotType, 0, grid, 0, grid);
-				
+
 				vertexCount += grid * grid;
-				
+
 				if (i < 6)
 				{
 					glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &r[0][0][0]);
 					glEvalMesh2(theTeapotType, 0, grid, 0, grid);
-					
+
 					vertexCount += grid * grid;
-					
+
 					glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &s[0][0][0]);
 					glEvalMesh2(theTeapotType, 0, grid, 0, grid);
-					
+
 					vertexCount += grid * grid;
 				} // if
 			} // for i
 
 			// Draw the tiny quads at the top and bottom.
-			
+
 			glBegin(GL_QUADS);
-			
+
 				glTexCoord2f(.025f,.025f);
 
 				glNormal3f(0, 0, 1);
@@ -448,13 +448,13 @@ GLint WBOpenGLTeapotGenerate(CGLContextObj theContext, const GLint theGridCount,
 			glEnd();
 
 		glPopMatrix();
-		
+
 		glDisable(GL_MAP2_TEXTURE_COORD_2);
 		glDisable(GL_MAP2_VERTEX_3);
 		glDisable(GL_NORMALIZE);
 		glDisable(GL_AUTO_NORMAL);
 
 	glPopAttrib();
-	
+
 	return vertexCount;
 } // DrawTeapot

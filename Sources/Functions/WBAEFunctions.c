@@ -1053,7 +1053,7 @@ OSStatus WBAECopyErrorStringFromReply(const AppleEvent *reply, CFStringRef *str)
 // functionality a lot.
 OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType, Handle* descData) {
   if (!pDesc || !descData) return paramErr;
-	
+
   OSStatus err = noErr;
 	const AEDesc *desc = pDesc;
 	AEDesc stackdesc = WBAEEmptyDesc();
@@ -1061,7 +1061,7 @@ OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType,
 		desc = &stackdesc;
 		err = AECoerceDesc(pDesc, desiredType, &stackdesc);
 	}
-	
+
 	if (noErr == err) {
 		Size size = AEGetDescDataSize(desc);
 		*descData = NewHandle(size);
@@ -1070,13 +1070,13 @@ OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType,
 			err = AEGetDescData(desc, **descData, size);
 	}
 	WBAEDisposeDesc(&stackdesc);
-	
+
 	return err;
 }
 
 OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, DescType desiredType, Handle *aHandle) {
   if (!anEvent || !aHandle) return paramErr;
-	
+
 	AEDesc desc = WBAEEmptyDesc();
 	OSStatus err = AEGetParamDesc(anEvent, aKey, desiredType, &desc);
 	if (noErr == err) {
