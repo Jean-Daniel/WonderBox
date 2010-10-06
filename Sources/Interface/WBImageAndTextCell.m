@@ -56,18 +56,19 @@
 }
 
 #pragma mark -
-- (void)setObjectValue:(id)anObject {
+- (void)setObjectValue:(id<NSCopying>)anObject {
   NSArray *keys = nil;
-  if ([anObject respondsToSelector:@selector(name)] && [anObject respondsToSelector:@selector(icon)]) {
-    [self setTitle:[anObject name] ? : @""];
-    [self setImage:[anObject icon]];
-  } else if ([anObject isKindOfClass:NSDictionary.class]) {
-    [self setTitle:[anObject objectForKey:@"name"] ? : @""];
-    [self setImage:[anObject objectForKey:@"icon"]];
-  } else if ((keys = [anObject exposedBindings]) &&
+  id obj = (NSObject *)anObject;
+  if ([obj respondsToSelector:@selector(name)] && [obj respondsToSelector:@selector(icon)]) {
+    [self setTitle:[obj name] ? : @""];
+    [self setImage:[obj icon]];
+  } else if ([obj isKindOfClass:NSDictionary.class]) {
+    [self setTitle:[obj objectForKey:@"name"] ? : @""];
+    [self setImage:[obj objectForKey:@"icon"]];
+  } else if ((keys = [obj exposedBindings]) &&
              ([keys containsObject:@"name"] && [keys containsObject:@"icon"])) {
-    [self setTitle:[anObject valueForKey:@"name"] ? : @""];
-    [self setImage:[anObject valueForKey:@"icon"]];
+    [self setTitle:[obj valueForKey:@"name"] ? : @""];
+    [self setImage:[obj valueForKey:@"icon"]];
   } else {
     [self setImage:nil];
     [super setObjectValue:anObject];
