@@ -8,7 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 @protocol WBDaemonTaskDelegate;
+WB_CLASS_EXPORT
 @interface WBDaemonTask : NSObject {
 @private
   BOOL _registred;

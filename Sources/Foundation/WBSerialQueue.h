@@ -8,6 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
+WB_CLASS_EXPORT
 @interface WBSerialQueue : NSObject {
 @private
 

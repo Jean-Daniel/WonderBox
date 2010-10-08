@@ -11,6 +11,7 @@
 #import WBHEADER(WBWindowController.h)
 
 @class WBTabWindowItem;
+WB_CLASS_EXPORT
 @interface WBTabWindowController : WBWindowController {
 @private
   /* Toolbar configuration */
@@ -36,6 +37,7 @@
 
 @end
 
+WB_CLASS_EXPORT
 @interface WBTabWindowItem : NSViewController {
 @private
   NSString *wb_identifier;
