@@ -147,7 +147,7 @@
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		1B158A6212551FE300584D8E /* NSAlert+WonderBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAlert+WonderBox.h"; sourceTree = "<group>"; };
 		1B158A6312551FE300584D8E /* NSAlert+WonderBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAlert+WonderBox.m"; sourceTree = "<group>"; };
@@ -239,8 +239,8 @@
 		1B158ABD12551FE300584D8E /* WBTextFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTextFunctions.h; sourceTree = "<group>"; };
 		1B158ABE12551FE300584D8E /* WBVersionFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBVersionFunctions.h; sourceTree = "<group>"; };
 		1B158ABF12551FE300584D8E /* WBVersionFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBVersionFunctions.m; sourceTree = "<group>"; };
-		1B158AC312551FE300584D8E /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/WBProgress.strings; sourceTree = "<group>"; };
-		1B158AC412551FE300584D8E /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/WBProgress.strings; sourceTree = "<group>"; };
+		1B158AC312551FE300584D8E /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = en.lproj/WBProgress.strings; sourceTree = "<group>"; };
+		1B158AC412551FE300584D8E /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = fr.lproj/WBProgress.strings; sourceTree = "<group>"; };
 		1B158AC512551FE300584D8E /* WBProgressPanel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WBProgressPanel.xib; sourceTree = "<group>"; };
 		1B158AC612551FE300584D8E /* WBTabWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WBTabWindow.xib; sourceTree = "<group>"; };
 		1B158AC712551FE300584D8E /* WBBoxLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBoxLayer.h; sourceTree = "<group>"; };
@@ -303,10 +303,10 @@
 		1B158B0512551FE300584D8E /* WBSecurityFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBSecurityFunctions.c; sourceTree = "<group>"; };
 		1B158B0612551FE300584D8E /* WBSecurityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSecurityFunctions.h; sourceTree = "<group>"; };
 		1B158B0912551FE300584D8E /* Assistant.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Assistant.icns; sourceTree = "<group>"; };
-		1B158B0B12551FE300584D8E /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/WBWizard.strings; sourceTree = "<group>"; };
-		1B158B0D12551FE300584D8E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/WBWizard.xib; sourceTree = "<group>"; };
-		1B158B0E12551FE300584D8E /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/WBWizard.strings; sourceTree = "<group>"; };
-		1B158B0F12551FE300584D8E /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = French.lproj/WBWizard.xib; sourceTree = "<group>"; };
+		1B158B0B12551FE300584D8E /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = en.lproj/WBWizard.strings; sourceTree = "<group>"; };
+		1B158B0D12551FE300584D8E /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = en.lproj/WBWizard.xib; sourceTree = "<group>"; };
+		1B158B0E12551FE300584D8E /* French */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = French; path = fr.lproj/WBWizard.strings; sourceTree = "<group>"; };
+		1B158B0F12551FE300584D8E /* French */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = French; path = fr.lproj/WBWizard.xib; sourceTree = "<group>"; };
 		1B158B1012551FE300584D8E /* WBWizard.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WBWizard.tiff; sourceTree = "<group>"; };
 		1B158B1112551FE300584D8E /* WBWizard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWizard.h; sourceTree = "<group>"; };
 		1B158B1212551FE300584D8E /* WBWizard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWizard.m; sourceTree = "<group>"; };
@@ -886,13 +886,11 @@
 			isa = PBXProject;
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "WonderBox" */;
 			compatibilityVersion = "Xcode 3.1";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				en,
+				fr,
 			);
 			mainGroup = 0867D691FE84028FC02AAC07 /* OmniTools */;
 			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
