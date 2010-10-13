@@ -18,110 +18,110 @@
 /* Low level functions */
 size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length) {
   check(fd > 0);
-	check(length > 0);
-	check(buffer != NULL);
+  check(length > 0);
+  check(buffer != NULL);
 
-	UInt8 *cursor;
-	bool ok = true;
-	size_t done = 0;
-	size_t	bytesLeft;
-	size_t bytesThisTime;
+  UInt8 *cursor;
+  bool ok = true;
+  size_t done = 0;
+  size_t bytesLeft;
+  size_t bytesThisTime;
 
-	cursor = buffer;
-	bytesLeft = length;
-	while ( ok && (bytesLeft != 0) ) {
-		bytesThisTime = read(fd, cursor, bytesLeft);
-		if (bytesThisTime > 0) {
-			done      += bytesThisTime;
-			cursor    += bytesThisTime;
-			bytesLeft -= bytesThisTime;
-		} else {
-			ok = false;
-		}
-	}
+  cursor = buffer;
+  bytesLeft = length;
+  while ( ok && (bytesLeft != 0) ) {
+    bytesThisTime = read(fd, cursor, bytesLeft);
+    if (bytesThisTime > 0) {
+      done      += bytesThisTime;
+      cursor    += bytesThisTime;
+      bytesLeft -= bytesThisTime;
+    } else {
+      ok = false;
+    }
+  }
 
-	return done;
+  return done;
 }
 
 size_t WBIOUtilsWrite(int fd, UInt8 *buffer, size_t length) {
   check(fd > 0);
   check(length > 0);
-	check(buffer != NULL);
+  check(buffer != NULL);
 
-	UInt8 *cursor;
-	bool ok = true;
-	size_t done = 0;
-	size_t bytesLeft;
-	size_t bytesThisTime;
+  UInt8 *cursor;
+  bool ok = true;
+  size_t done = 0;
+  size_t bytesLeft;
+  size_t bytesThisTime;
 
-	cursor = buffer;
-	bytesLeft = length;
-	while ( ok && (bytesLeft != 0) ) {
-		bytesThisTime = write(fd, cursor, bytesLeft);
-		if (bytesThisTime > 0) {
-			done      += bytesThisTime;
-			cursor    += bytesThisTime;
-			bytesLeft -= bytesThisTime;
-		} else {
-			ok = false;
-		}
-	}
+  cursor = buffer;
+  bytesLeft = length;
+  while ( ok && (bytesLeft != 0) ) {
+    bytesThisTime = write(fd, cursor, bytesLeft);
+    if (bytesThisTime > 0) {
+      done      += bytesThisTime;
+      cursor    += bytesThisTime;
+      bytesLeft -= bytesThisTime;
+    } else {
+      ok = false;
+    }
+  }
 
-	return done;
+  return done;
 }
 
 CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length) {
-	check(length > 0);
-	check(stream != NULL);
-	check(buffer != NULL);
+  check(length > 0);
+  check(stream != NULL);
+  check(buffer != NULL);
 
-	UInt8 *cursor;
-	bool ok = true;
-	CFIndex done = 0;
-	CFIndex	bytesLeft;
-	CFIndex bytesThisTime;
+  UInt8 *cursor;
+  bool ok = true;
+  CFIndex done = 0;
+  CFIndex bytesLeft;
+  CFIndex bytesThisTime;
 
-	cursor = buffer;
-	bytesLeft = length;
-	while ( ok && (bytesLeft != 0) ) {
-		bytesThisTime = CFReadStreamRead(stream, cursor, bytesLeft);
-		if (bytesThisTime > 0) {
-			done      += bytesThisTime;
-			cursor    += bytesThisTime;
-			bytesLeft -= bytesThisTime;
-		} else {
-			ok = false;
-		}
-	}
+  cursor = buffer;
+  bytesLeft = length;
+  while ( ok && (bytesLeft != 0) ) {
+    bytesThisTime = CFReadStreamRead(stream, cursor, bytesLeft);
+    if (bytesThisTime > 0) {
+      done      += bytesThisTime;
+      cursor    += bytesThisTime;
+      bytesLeft -= bytesThisTime;
+    } else {
+      ok = false;
+    }
+  }
 
-	return done;
+  return done;
 }
 
 CFIndex WBCFStreamWrite(CFWriteStreamRef stream, UInt8 *buffer, CFIndex length) {
-	check(length > 0);
-	check(stream != NULL);
-	check(buffer != NULL);
+  check(length > 0);
+  check(stream != NULL);
+  check(buffer != NULL);
 
-	UInt8 *cursor;
-	bool ok = true;
-	CFIndex done = 0;
-	CFIndex	bytesLeft;
-	CFIndex bytesThisTime;
+  UInt8 *cursor;
+  bool ok = true;
+  CFIndex done = 0;
+  CFIndex bytesLeft;
+  CFIndex bytesThisTime;
 
-	cursor = buffer;
-	bytesLeft = length;
-	while ( ok && (bytesLeft != 0) ) {
-		bytesThisTime = CFWriteStreamWrite(stream, cursor, bytesLeft);
-		if (bytesThisTime > 0) {
-			done      += bytesThisTime;
-			cursor    += bytesThisTime;
-			bytesLeft -= bytesThisTime;
-		} else {
-			ok = false;
-		}
-	}
+  cursor = buffer;
+  bytesLeft = length;
+  while ( ok && (bytesLeft != 0) ) {
+    bytesThisTime = CFWriteStreamWrite(stream, cursor, bytesLeft);
+    if (bytesThisTime > 0) {
+      done      += bytesThisTime;
+      cursor    += bytesThisTime;
+      bytesLeft -= bytesThisTime;
+    } else {
+      ok = false;
+    }
+  }
 
-	return done;
+  return done;
 }
 
 #pragma mark File Descriptoe Passing

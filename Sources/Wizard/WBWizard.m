@@ -23,18 +23,18 @@
 }
 
 - (id)init {
-	return [self initWithPage:nil title:nil];
+  return [self initWithPage:nil title:nil];
 }
 
 - (id)initWithPage:(NSObject<WBWizardPage> *)aPage {
-	return [self initWithPage:aPage title:nil];
+  return [self initWithPage:aPage title:nil];
 }
 
 - (id)initWithPage:(NSObject<WBWizardPage> *)aPage title:(NSString *)windowTitle {
   if (self = [super init]) {
-		wb_pages = [[NSMutableArray alloc] init];
-		wb_wTitle = [windowTitle copy];
-		if (aPage) [self loadPage:aPage];
+    wb_pages = [[NSMutableArray alloc] init];
+    wb_wTitle = [windowTitle copy];
+    if (aPage) [self loadPage:aPage];
   }
   return self;
 }
@@ -42,9 +42,9 @@
 - (void)dealloc {
   [wb_pages release];
   [wb_image release];
-	[wb_object release];
-	[wb_wTitle release];
-	[wb_pageTitle release];
+  [wb_object release];
+  [wb_wTitle release];
+  [wb_pageTitle release];
   [super dealloc];
 }
 
@@ -52,7 +52,7 @@
 #pragma mark Page Loading
 - (void)windowDidLoad {
   [super windowDidLoad];
-	if (wb_wTitle) [[self window] setTitle:wb_wTitle];
+  if (wb_wTitle) [[self window] setTitle:wb_wTitle];
   NSButton *bClose = [[self window] standardWindowButton:NSWindowCloseButton];
   [bClose setTarget:self];
   [bClose setAction:@selector(cancel:)];
@@ -93,7 +93,7 @@
 
   [previous setTitle:NSLocalizedStringFromTableInBundle(@"Go Back", @"WBWizard", WBCurrentBundle(), @"Go Back - Button")];
   [previous setEnabled:[self hasPrevious]];
-	[previous setHidden:![self hasPrevious]];
+  [previous setHidden:![self hasPrevious]];
 }
 
 - (void)pageDidChangeCompleteStatus {
@@ -125,10 +125,10 @@
 }
 
 - (id)delegate {
-	return wb_delegate;
+  return wb_delegate;
 }
 - (void)setDelegate:(id)aDelegate {
-	wb_delegate = aDelegate;
+  wb_delegate = aDelegate;
 }
 
 #pragma mark -
@@ -141,66 +141,66 @@
   WBAssert([self hasNext], @"Cannot call next: on last page.");
   NSObject<WBWizardPage> *current = [self page];
 
-	if ([current wizard:self shouldChangePage:WBWizardLeaveToNextPage]) {
-		NSObject<WBWizardPage> *nextPage = [current nextPage];
+  if ([current wizard:self shouldChangePage:WBWizardLeaveToNextPage]) {
+    NSObject<WBWizardPage> *nextPage = [current nextPage];
 
-		WBAssert(nextPage != nil, @"Invalid Next page.");
-		wb_idx++;
-		/* Check if next page is always the same and if not, flush all pages following the current page */
-		if (wb_idx < [wb_pages count] && [wb_pages objectAtIndex:wb_idx] != nextPage) {
-			[wb_pages removeObjectsInRange:NSMakeRange(wb_idx, [wb_pages count] - wb_idx)];
-		}
-		if (wb_idx >= [wb_pages count]) {
-			[self loadPage:nextPage];
-		}
-		nextPage = [wb_pages objectAtIndex:wb_idx];
+    WBAssert(nextPage != nil, @"Invalid Next page.");
+    wb_idx++;
+    /* Check if next page is always the same and if not, flush all pages following the current page */
+    if (wb_idx < [wb_pages count] && [wb_pages objectAtIndex:wb_idx] != nextPage) {
+      [wb_pages removeObjectsInRange:NSMakeRange(wb_idx, [wb_pages count] - wb_idx)];
+    }
+    if (wb_idx >= [wb_pages count]) {
+      [self loadPage:nextPage];
+    }
+    nextPage = [wb_pages objectAtIndex:wb_idx];
 
-		[current wizard:self willChangePage:WBWizardLeaveToNextPage];
-		[nextPage wizard:self willChangePage:WBWizardLoadNextPage];
+    [current wizard:self willChangePage:WBWizardLeaveToNextPage];
+    [nextPage wizard:self willChangePage:WBWizardLoadNextPage];
 
-		[self setPage:nextPage];
+    [self setPage:nextPage];
 
-		[nextPage wizard:self didChangePage:WBWizardLoadNextPage];
-		[current wizard:self didChangePage:WBWizardLeaveToNextPage];
-	}
+    [nextPage wizard:self didChangePage:WBWizardLoadNextPage];
+    [current wizard:self didChangePage:WBWizardLeaveToNextPage];
+  }
 }
 
 - (IBAction)previous:(id)sender {
   WBAssert(wb_idx > 0, @"Cannot call previous when first page is loaded");
   NSObject<WBWizardPage> *current = [self page];
-	if ([current wizard:self shouldChangePage:WBWizardLeaveToPreviousPage]) {
-		/* Should decrement after getting current page because we use idx in -page method. */
-		wb_idx--;
-		NSObject<WBWizardPage> *previousPage = [wb_pages objectAtIndex:wb_idx];
+  if ([current wizard:self shouldChangePage:WBWizardLeaveToPreviousPage]) {
+    /* Should decrement after getting current page because we use idx in -page method. */
+    wb_idx--;
+    NSObject<WBWizardPage> *previousPage = [wb_pages objectAtIndex:wb_idx];
 
-		[current wizard:self willChangePage:WBWizardLeaveToPreviousPage];
-		[previousPage wizard:self willChangePage:WBWizardLoadPreviousPage];
+    [current wizard:self willChangePage:WBWizardLeaveToPreviousPage];
+    [previousPage wizard:self willChangePage:WBWizardLoadPreviousPage];
 
-		[self setPage:previousPage];
+    [self setPage:previousPage];
 
-		[previousPage wizard:self didChangePage:WBWizardLoadPreviousPage];
-		[current wizard:self didChangePage:WBWizardLeaveToPreviousPage];
-	}
+    [previousPage wizard:self didChangePage:WBWizardLoadPreviousPage];
+    [current wizard:self didChangePage:WBWizardLeaveToPreviousPage];
+  }
 }
 
 - (IBAction)finish:(id)sender {
-	if ([[self page] wizard:self shouldChangePage:WBWizardFinish]) {
-		[[self page] wizard:self willChangePage:WBWizardFinish];
-		[self setModalResultCode:NSOKButton];
-		if (WBDelegateHandle(wb_delegate, wizard:willClose:))
-			[wb_delegate wizard:self willClose:WBWizardFinish];
-		[self close:sender];
-	}
+  if ([[self page] wizard:self shouldChangePage:WBWizardFinish]) {
+    [[self page] wizard:self willChangePage:WBWizardFinish];
+    [self setModalResultCode:NSOKButton];
+    if (WBDelegateHandle(wb_delegate, wizard:willClose:))
+      [wb_delegate wizard:self willClose:WBWizardFinish];
+    [self close:sender];
+  }
 }
 
 - (IBAction)cancel:(id)sender {
-	if ([[self page] wizard:self shouldChangePage:WBWizardCancel]) {
-		[[self page] wizard:self willChangePage:WBWizardCancel];
-		[self setModalResultCode:NSCancelButton];
-		if (WBDelegateHandle(wb_delegate, wizard:willClose:))
-			[wb_delegate wizard:self willClose:WBWizardCancel];
-		[self close:sender];
-	}
+  if ([[self page] wizard:self shouldChangePage:WBWizardCancel]) {
+    [[self page] wizard:self willChangePage:WBWizardCancel];
+    [self setModalResultCode:NSCancelButton];
+    if (WBDelegateHandle(wb_delegate, wizard:willClose:))
+      [wb_delegate wizard:self willClose:WBWizardCancel];
+    [self close:sender];
+  }
 }
 
 #pragma mark -

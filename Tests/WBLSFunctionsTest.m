@@ -12,7 +12,7 @@
 #import WBHEADER(WBLSFunctions.h)
 
 @interface WBLSFunctionsTest : GHTestCase {
-  
+
 }
 
 @end

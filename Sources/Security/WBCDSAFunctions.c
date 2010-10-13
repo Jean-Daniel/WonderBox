@@ -1,5 +1,5 @@
 /*
- *	WBCDSAFunctions.c
+ *  WBCDSAFunctions.c
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
@@ -18,29 +18,29 @@
  */
 static
 void * appMalloc (CSSM_SIZE size, void *allocRef) {
-	return( malloc(size) );
+  return( malloc(size) );
 }
 static
 void appFree (void *mem_ptr, void *allocRef) {
-	free(mem_ptr);
- 	return;
+  free(mem_ptr);
+  return;
 }
 static
 void * appRealloc (void *ptr, CSSM_SIZE size, void *allocRef) {
-	return( realloc( ptr, size ) );
+  return( realloc( ptr, size ) );
 }
 static
 void * appCalloc (uint32 num, CSSM_SIZE size, void *allocRef) {
-	return( calloc( num, size ) );
+  return( calloc( num, size ) );
 }
 
 static CSSM_API_MEMORY_FUNCS memFuncs = {
-	appMalloc,
-	appFree,
-	appRealloc,
- 	appCalloc,
- 	NULL
- };
+  appMalloc,
+  appFree,
+  appRealloc,
+  appCalloc,
+  NULL
+};
 
 static CSSM_VERSION vers = {2, 0};
 static const CSSM_GUID testGuid = { 0xFADE, 0, 0, { 1,2,3,4,5,6,7,0 }};
@@ -51,71 +51,71 @@ static const CSSM_GUID testGuid = { 0xFADE, 0, 0, { 1,2,3,4,5,6,7,0 }};
 static
 CSSM_BOOL cssmStartup(void) {
   static CSSM_BOOL cssmInitd = CSSM_FALSE;
-	CSSM_RETURN  crtn;
+  CSSM_RETURN  crtn;
   CSSM_PVC_MODE pvcPolicy = CSSM_PVC_NONE;
 
-	if(cssmInitd) {
-		return CSSM_TRUE;
-	}
-	crtn = CSSM_Init (&vers,
+  if(cssmInitd) {
+    return CSSM_TRUE;
+  }
+  crtn = CSSM_Init (&vers,
                     CSSM_PRIVILEGE_SCOPE_NONE,
                     &testGuid,
                     CSSM_KEY_HIERARCHY_NONE,
                     &pvcPolicy,
                     NULL /* reserved */);
-	if(crtn != CSSM_OK) {
-		WBCDSAPrintError("CSSM_Init", crtn);
-		return CSSM_FALSE;
-	}	else {
-		cssmInitd = CSSM_TRUE;
-		return CSSM_TRUE;
-	}
+  if(crtn != CSSM_OK) {
+    WBCDSAPrintError("CSSM_Init", crtn);
+    return CSSM_FALSE;
+  } else {
+    cssmInitd = CSSM_TRUE;
+    return CSSM_TRUE;
+  }
 }
 
 /*
  * Init CSSM and establish a session with the Apple TP.
  */
 CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service, CSSM_MODULE_HANDLE *handle) {
-	CSSM_RETURN crtn;
-	if (!handle) return paramErr;
+  CSSM_RETURN crtn;
+  if (!handle) return paramErr;
 
-	if(cssmStartup() == CSSM_FALSE) {
-		return -1;
-	}
-	crtn = CSSM_ModuleLoad(guid,
+  if(cssmStartup() == CSSM_FALSE) {
+    return -1;
+  }
+  crtn = CSSM_ModuleLoad(guid,
                          CSSM_KEY_HIERARCHY_NONE,
-                         NULL,			// eventHandler
-                         NULL);			// AppNotifyCallbackCtx
-	if(crtn) {
-		return crtn;
-	}
-	crtn = CSSM_ModuleAttach(guid,
+                         NULL,      // eventHandler
+                         NULL);     // AppNotifyCallbackCtx
+  if(crtn) {
+    return crtn;
+  }
+  crtn = CSSM_ModuleAttach(guid,
                            &vers,
-                           &memFuncs,		// memFuncs
-                           0,						// SubserviceID
-                           service,  		// SubserviceFlags
-                           0,						// AttachFlags
+                           &memFuncs,    // memFuncs
+                           0,            // SubserviceID
+                           service,      // SubserviceFlags
+                           0,            // AttachFlags
                            CSSM_KEY_HIERARCHY_NONE,
-                           NULL,				// FunctionTable
-                           0,						// NumFuncTable
-                           NULL,				// reserved
+                           NULL,         // FunctionTable
+                           0,            // NumFuncTable
+                           NULL,         // reserved
                            handle);
   return crtn;
 }
 
 CSSM_RETURN WBCDSAShutdownModule(CSSM_MODULE_HANDLE handle) {
-	CSSM_GUID guid;
-	CSSM_RETURN crtn = CSSM_GetModuleGUIDFromHandle(handle, &guid);
+  CSSM_GUID guid;
+  CSSM_RETURN crtn = CSSM_GetModuleGUIDFromHandle(handle, &guid);
 
   if (CSSM_OK != crtn)
     return crtn;
 
-	crtn = CSSM_ModuleDetach(handle);
-	if(CSSM_OK != crtn) {
-		return crtn;
-	}
-	crtn = CSSM_ModuleUnload(&guid, NULL, NULL);
-	return crtn;
+  crtn = CSSM_ModuleDetach(handle);
+  if(CSSM_OK != crtn) {
+    return crtn;
+  }
+  crtn = CSSM_ModuleUnload(&guid, NULL, NULL);
+  return crtn;
 }
 
 #pragma mark Memory
@@ -189,7 +189,7 @@ CSSM_BOOL WBCDSADataEqual(const CSSM_DATA *d1, const CSSM_DATA *d2) {
 CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *key, const CSSM_DATA *ivPtr, CSSM_CC_HANDLE *ccHandle) {
   CSSM_ALGORITHMS keyAlg = key->KeyHeader.AlgorithmId;
   CSSM_ALGORITHMS encrAlg;
-  CSSM_ENCRYPT_MODE	encrMode = CSSM_ALGMODE_NONE;
+  CSSM_ENCRYPT_MODE encrMode = CSSM_ALGMODE_NONE;
   CSSM_PADDING encrPad = CSSM_PADDING_NONE;
   CSSM_RETURN crtn;
   CSSM_CC_HANDLE ccHand = 0;
@@ -252,16 +252,16 @@ CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *
     crtn = CSSM_CSP_CreateSymmetricContext(cspHandle,
                                            encrAlg,
                                            encrMode,
-                                           NULL,			// access cred
+                                           NULL,      // access cred
                                            key,
-                                           ivPtr,			// InitVector
+                                           ivPtr,     // InitVector
                                            encrPad,
-                                           NULL,			// Params
+                                           NULL,      // Params
                                            &ccHand);
   } else {
     crtn = CSSM_CSP_CreateAsymmetricContext(cspHandle,
                                             encrAlg,
-                                            &creds,			// access
+                                            &creds,    // access
                                             key,
                                             encrPad,
                                             &ccHand);

@@ -14,10 +14,10 @@ WB_CLASS_EXPORT
 @interface WBComponent : NSObject <NSCopying> {
 @private
   Component _comp;
-	ComponentDescription _desc;
+  ComponentDescription _desc;
 
   NSImage *_icon;
-	NSString *_manu, *_name, *_info, *_cname;
+  NSString *_manu, *_name, *_info, *_cname;
 }
 
 #if OBJC_NEW_PROPERTIES

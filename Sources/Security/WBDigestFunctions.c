@@ -40,7 +40,7 @@ typedef struct _WBPrivateDigestContext {
 #define DEFINE_DIGEST_INFO(str, algorithm) { \
   .algo = kWBDigest##algorithm, \
   .length = CC_##algorithm##_DIGEST_LENGTH, \
-	.cssm = CSSM_ALGID_##algorithm, \
+  .cssm = CSSM_ALGID_##algorithm, \
   .name = str, \
   .init = (int (*)(void *))CC_##algorithm##_Init, \
   .update = (int (*)(void *, const void *, CC_LONG))CC_##algorithm##_Update, \

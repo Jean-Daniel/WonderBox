@@ -20,7 +20,7 @@
    Usefull if you want made a "Do not Show Again" check box.
    @param      title The title of the checkbox.
    @param      key The UserDefault Value. If nil, the binding is not created.
-   @result		Returns the check box.
+   @result    Returns the check box.
    */
 - (NSButton *)addUserDefaultCheckBoxWithTitle:(NSString *)title andKey:(NSString *)key;
 @end

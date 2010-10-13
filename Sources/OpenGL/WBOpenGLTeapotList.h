@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------
 //
-//	File: OpenGLTeapotList.h
+//  File: OpenGLTeapotList.h
 //
 //  Abstract: Draw an OpenGL teapot.
 //

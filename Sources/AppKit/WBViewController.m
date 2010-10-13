@@ -27,19 +27,19 @@
 }
 
 - (void)dealloc {
-	[wb_representedObject release];
-	[wb_bundle release];
-	[wb_title release];
+  [wb_representedObject release];
+  [wb_bundle release];
+  [wb_title release];
   [wb_root release];
-	[wb_name release];
+  [wb_name release];
   [view release];
   [super dealloc];
 }
 
 - (void)loadView {
   if (!view) {
-		if (![self nibName])
-			WBThrowException(NSInvalidArgumentException, @"view controller cannot load a view when name is nil.");
+    if (![self nibName])
+      WBThrowException(NSInvalidArgumentException, @"view controller cannot load a view when name is nil.");
 
     NSNib *nib = [[NSNib alloc] initWithNibNamed:[self nibName] bundle:[self nibBundle]];
     if ([nib instantiateNibWithOwner:self topLevelObjects:&wb_root]) {
@@ -78,10 +78,10 @@
 }
 
 - (id)representedObject {
-	return wb_representedObject;
+  return wb_representedObject;
 }
 - (void)setRepresentedObject:(id)representedObject {
-	WBSetterRetain(wb_representedObject, representedObject);
+  WBSetterRetain(wb_representedObject, representedObject);
 }
 
 @end

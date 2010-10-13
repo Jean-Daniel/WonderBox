@@ -113,10 +113,10 @@ CGFloat WBInterpolationCircular(CGFloat factor, void *info) {
 }
 
 const WBInterpolationCallBack WBInterpolationCallBackSin = {
-	NULL, WBInterpolationSin, NULL,
+  NULL, WBInterpolationSin, NULL,
 };
 const WBInterpolationCallBack WBInterpolationCallBackCircular = {
-	NULL, WBInterpolationCircular, NULL,
+  NULL, WBInterpolationCircular, NULL,
 };
 
 #pragma mark -

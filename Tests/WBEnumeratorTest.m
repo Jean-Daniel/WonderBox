@@ -12,7 +12,7 @@
 #import WBHEADER(WBEnumerator.h)
 
 @interface WBEnumeratorTest : GHTestCase {
-  
+
 }
 
 @end
@@ -24,7 +24,7 @@
   NSMapInsert(table, (void *)25, @"Bonjour");
   NSMapInsert(table, (void *)32, @"Monde");
   NSMapInsert(table, (void *)43, @"!");
-  
+
   NSString *str;
   NSUInteger count = NSCountMapTable(table);
   NSEnumerator *enume = WBMapTableEnumerator(table, NO);
@@ -35,7 +35,7 @@
                  [str isEqualToString:@"!"], @"Invalid value");
   }
   GHAssertTrue(0 == count, @"Count must be null");
-  
+
   NSInteger key = 0;
   enume = WBMapTableEnumerator(table, YES);
   while (key = (NSInteger)[enume nextObject]) {

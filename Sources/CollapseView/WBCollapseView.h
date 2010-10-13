@@ -38,16 +38,16 @@ WB_CLASS_EXPORT
 - (NSArray *)items; // safe to mutate items while iteratign the returned collection
 - (NSUInteger)numberOfItems;
 
-- (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;			// May raise an NSRangeException
+- (WBCollapseViewItem *)itemAtIndex:(NSUInteger)index;      // May raise an NSRangeException
 - (WBCollapseViewItem *)itemWithIdentifier:(id)identifier;
 
 - (NSUInteger)indexOfItem:(WBCollapseViewItem *)tabViewItem; // NSNotFound if not found
-- (NSUInteger)indexOfItemWithIdentifier:(id)identifier;			 // NSNotFound if not found
+- (NSUInteger)indexOfItemWithIdentifier:(id)identifier;      // NSNotFound if not found
 
 - (void)sortItemsUsingFunction:(NSComparisonResult (*)(id, id, void *))compare context:(void *)context;
 
 /* Hit testing */
-- (WBCollapseViewItem *)itemAtPoint:(NSPoint)point;			// point in local coordinates. returns nil if none.
+- (WBCollapseViewItem *)itemAtPoint:(NSPoint)point;      // point in local coordinates. returns nil if none.
 
 @end
 

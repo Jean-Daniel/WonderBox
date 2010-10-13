@@ -16,10 +16,10 @@
 
 @interface WBViewController : NSObject {
 @private
-	NSString *wb_name;
+  NSString *wb_name;
   NSBundle *wb_bundle;
-	id wb_representedObject;
-	NSString *wb_title;
+  id wb_representedObject;
+  NSString *wb_title;
   IBOutlet NSView *view;
   NSArray *wb_root;
 }

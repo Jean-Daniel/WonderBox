@@ -183,7 +183,7 @@
     idx--;
     node = node->wb_sibling;
   }
-	WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+  WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
 }
 
 - (NSUInteger)indexOfChild:(WBTreeNode *)aChild {
@@ -241,7 +241,7 @@
 
 - (void)performOperation:(WBTreeOperation)op atIndex:(NSUInteger)anIndex withChild:(WBTreeNode *)child {
   if (child && child->wb_parent) {
-		WBThrowException(NSInvalidArgumentException, @"Cannot append node with parent.");
+    WBThrowException(NSInvalidArgumentException, @"Cannot append node with parent.");
   }
 
   /* If child is a subtree, find last node and set parents */
@@ -264,7 +264,7 @@
       case kWBTreeOperationRemove:
       case kWBTreeOperationReplace:
         if (!wb_child) {
-					WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+          WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
         } else {
           if (!child) {
             /* child is retain just below, so we have to release it here */
@@ -289,7 +289,7 @@
       case kWBTreeOperationRemove:
       case kWBTreeOperationReplace:
         if (!current) {
-					WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+          WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
         } else {
           if (last) {
             last->wb_sibling = current->wb_sibling;
@@ -354,7 +354,7 @@
   NSParameterAssert(wb_parent);
   WBAssert(nil == sibling->wb_sibling, @"Must remove sibling from newChild first");
   if (sibling->wb_parent) {
-		WBThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
+    WBThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
   }
   [sibling retain];
   [sibling setParent:self->wb_parent];

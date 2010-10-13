@@ -179,7 +179,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
 
     [self configureMovie:wb_movie];
     if (fiszero(rate)) {
-      MoviesTask([wb_movie quickTimeMovie], 0);	// QTKit is not doing this automatically
+      MoviesTask([wb_movie quickTimeMovie], 0);    // QTKit is not doing this automatically
     }
   }
 }

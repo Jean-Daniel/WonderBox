@@ -18,8 +18,8 @@
 #pragma mark -
 
 /*!
-    @class		WBApplication
-    @abstract	Object representation of an Application. Use application signature or Bundle Identifier as identifier.
+    @class    WBApplication
+    @abstract Object representation of an Application. Use application signature or Bundle Identifier as identifier.
 */
 WB_CLASS_EXPORT
 @interface WBApplication : NSObject <NSCoding, NSCopying> {

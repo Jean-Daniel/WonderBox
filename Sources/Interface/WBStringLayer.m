@@ -115,7 +115,7 @@ return [wb_manager backgroundLayoutEnabled];
 }
 - (NSSize)drawingSizeForSize:(NSSize)aSize {
   if (!wb_slFlags.clip)
-  	[[self textContainer] setContainerSize:aSize];
+    [[self textContainer] setContainerSize:aSize];
   return [self wb_textBounds].size;
 }
 

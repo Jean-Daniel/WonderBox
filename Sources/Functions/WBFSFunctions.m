@@ -368,13 +368,13 @@ OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator)
   if (!url) return paramErr;
   if (!type && !creator) return paramErr;
 
-	FSRef ref;
-	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
-	return WBFSGetTypeAndCreator(&ref, type, creator);
+  FSRef ref;
+  if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
+  return WBFSGetTypeAndCreator(&ref, type, creator);
 }
 
 OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) {
-	if (!path) return paramErr;
+  if (!path) return paramErr;
   if (!type && !creator) return paramErr;
 
   FSRef ref;
@@ -390,38 +390,38 @@ OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *cre
 }
 
 OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) {
-	if (!ref) return paramErr;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
+  if (!ref) return paramErr;
+  if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(ref, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &info, NULL, NULL, NULL);
-	if (noErr == err) {
-		if (info.nodeFlags & kFSNodeIsDirectoryMask) {
+  if (noErr == err) {
+    if (info.nodeFlags & kFSNodeIsDirectoryMask) {
       err = notAFileErr;
     } else {
       FileInfo *finfo = (FileInfo *)info.finderInfo;
-			if (kWBFSOSTypeIgnore != type) finfo->fileType = type;
-			if (kWBFSOSTypeIgnore != creator) finfo->fileCreator = creator;
-			err = FSSetCatalogInfo(ref, kFSCatInfoFinderInfo, &info);
+      if (kWBFSOSTypeIgnore != type) finfo->fileType = type;
+      if (kWBFSOSTypeIgnore != creator) finfo->fileCreator = creator;
+      err = FSSetCatalogInfo(ref, kFSCatInfoFinderInfo, &info);
     }
-	}
-	return err;
+  }
+  return err;
 }
 
 OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator) {
-	if (!url) return paramErr;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
+  if (!url) return paramErr;
+  if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 
-	FSRef ref;
-	if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
-	return WBFSSetTypeAndCreator(&ref, type, creator);
+  FSRef ref;
+  if (!CFURLGetFSRef(url, &ref)) return coreFoundationUnknownErr;
+  return WBFSSetTypeAndCreator(&ref, type, creator);
 }
 
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) {
-	if (!path) return paramErr;
-	if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
+  if (!path) return paramErr;
+  if (kWBFSOSTypeIgnore == type && kWBFSOSTypeIgnore == creator) return paramErr;
 
-	FSRef ref;
+  FSRef ref;
   Boolean isDir;
   OSStatus err = WBFSRefCreateFromFileSystemPath(path, kFSPathMakeRefDoNotFollowLeafSymlink, &ref, &isDir);
   if (noErr == err) {

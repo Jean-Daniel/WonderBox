@@ -49,14 +49,14 @@ WB_CLASS_EXPORT
  */
 - (id)childAtIndex:(NSUInteger)index;
 /*!
-	@method
+ @method
  @abstract   Get index of child in receiver children array.
  @result     The index of <em>child</em>.
  */
 - (NSUInteger)indexOfChild:(WBTreeNode *)child;
 
 /*!
-	@method
+ @method
  @abstract   Check if receiver contains child or not.
  @discussion This method search only in the first level.
  @param      aChild
@@ -148,7 +148,7 @@ WB_CLASS_EXPORT
 #pragma mark -
 #pragma mark Add child
 /*!
-	@method
+ @method
  @abstract   Inserts a new sibling after a given tree.
  @param      newNode The sibling to add. If this parameter is not a valid WBTreeNode,
  the behavior is undefined. If this parameter is a tree which is already a child
@@ -157,7 +157,7 @@ WB_CLASS_EXPORT
 - (void)insertSibling:(WBTreeNode *)newNode;
 
 /*!
-	@method
+ @method
  @abstract Adds a new child to a tree as the last in its list of children.
  @param child The child tree node to be added. If this parameter is not a valid WBTreeNode, the behavior is undefined.
  If this parameter is a tree which is already a child of any tree, the behavior is undefined.
@@ -166,7 +166,7 @@ WB_CLASS_EXPORT
 - (void)appendChild:(WBTreeNode *)child;
 
 /*!
-	@method
+ @method
  @abstract Adds a new child to the specified tree as the first in its list of children.
  @param child The child tree to add to tree. If this parameter is not a valid WBTreeNode,
  the behavior is undefined. If this parameter is a tree which is already a child of
@@ -175,7 +175,7 @@ WB_CLASS_EXPORT
 - (void)prependChild:(WBTreeNode *)child;
 
 /*!
-	@method
+ @method
  @abstract   (brief description)
  @param      newChild (description)
  @param      index (description)
@@ -183,7 +183,7 @@ WB_CLASS_EXPORT
 - (void)insertChild:(WBTreeNode *)newChild atIndex:(NSUInteger)index;
 
 /*!
-	@method
+ @method
  @abstract   (brief description)
  @param      index (description)
  @param      newChild (description)

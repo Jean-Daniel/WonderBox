@@ -12,7 +12,7 @@
 #import WBHEADER(WBScope.h)
 
 @interface WBScopeTest : GHTestCase {
-  
+
 }
 
 @end
@@ -36,7 +36,7 @@
   NSUInteger rc;
   {
     WBScopeAutoreleasePool();
-    
+
     NSString *test = [[NSMutableString alloc] init];
     tmp = [[test retain] autorelease];
     rc = [test retainCount];

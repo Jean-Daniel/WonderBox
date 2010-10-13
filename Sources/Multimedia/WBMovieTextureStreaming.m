@@ -15,11 +15,11 @@
 static
 OSStatus _WBQDMakeQTGWorld(Rect *bounds, bool clear, GWorldPtr *gworld) {
   OSErr err = noErr;
-	GWorldPtr newGWorld = NULL;
+  GWorldPtr newGWorld = NULL;
 
-	err = QTNewGWorld(&newGWorld, 0, bounds, NULL, NULL, kNativeEndianPixMap);
+  err = QTNewGWorld(&newGWorld, 0, bounds, NULL, NULL, kNativeEndianPixMap);
 
-	if (err == noErr) {
+  if (err == noErr) {
     if (clear && LockPixels(GetGWorldPixMap(newGWorld))) {
       Rect portRect;
       GWorldPtr savedPort;

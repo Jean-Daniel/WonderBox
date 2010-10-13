@@ -102,7 +102,7 @@ WB_EXPORT
 OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_OBSOLETE;
 
 enum {
-	kWBFSOSTypeIgnore = -1U
+  kWBFSOSTypeIgnore = -1U
 };
 /* pass kWBFSOSTypeIgnore to keep previous value */
 WB_EXPORT

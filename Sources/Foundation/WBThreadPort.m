@@ -274,7 +274,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark Base method
 - (void)performInvocation:(NSInvocation *)anInvocation waitUntilDone:(NSInteger)shouldWait timeout:(uint32_t)timeout {
   if (![anInvocation target])
-		WBThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
+    WBThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
 
   if ([wb_thread isEqual:[NSThread currentThread]]) {
     WBLogWarning(@"caller thread is the target thread. You should not use 'thread port' to send intra-thread messages.");
@@ -283,7 +283,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   }
 
   bool synch;
-	if (shouldWait < 0)
+  if (shouldWait < 0)
     synch = [[anInvocation methodSignature] methodReturnLength] > 0;
   else
     synch = shouldWait != 0;
@@ -319,10 +319,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     [anInvocation release];
     switch (err) {
       case MACH_SEND_TIMED_OUT:
-				WBThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
+        WBThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
         break;
       default:
-				WBThrowException(NSPortSendException, @"mach_msg(send) return (%#x): %s", err, mach_error_string(err));
+        WBThrowException(NSPortSendException, @"mach_msg(send) return (%#x): %s", err, mach_error_string(err));
         break;
     }
   } else if (synch) {
@@ -353,7 +353,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
           @throw [(id)reply.exception autorelease];
         break;
       case MACH_RCV_TIMED_OUT:
-				WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
+        WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
         break;
       default:
         WBThrowException(NSPortReceiveException, @"mach_msg(recv) return (%#x): %s", err, mach_error_string(err));
@@ -380,7 +380,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark Automatic forwarding
 - (id)wb_prepareWithInvocationTarget:(id)target waitUntilDone:(NSInteger)synch {
   if (!wb_thread)
-		WBThrowException(NSInvalidArgumentException, @"call method on invalid port");
+    WBThrowException(NSInvalidArgumentException, @"call method on invalid port");
 
   // message come from the target thread, no need to forward, use fast path.
   if ([wb_thread isEqual:[NSThread currentThread]])
@@ -602,7 +602,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]])
     return wb_target;
 
-	return nil;
+  return nil;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
@@ -646,7 +646,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (wb_target && [[wb_port targetThread] isEqual:[NSThread currentThread]])
     return wb_target;
 
-	return nil;
+  return nil;
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {

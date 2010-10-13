@@ -28,7 +28,7 @@
 - (id)forwardingTargetForSelector:(SEL)sel { \
   if ([ivar respondsToSelector:sel]) \
     return ivar; \
-	return [super forwardingTargetForSelector:sel]; \
+  return [super forwardingTargetForSelector:sel]; \
 } \
 - (BOOL)respondsToSelector:(SEL)aSelector { \
   return [super respondsToSelector:aSelector] ? YES : [ivar respondsToSelector:aSelector]; \

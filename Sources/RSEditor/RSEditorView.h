@@ -11,10 +11,10 @@
 WB_CLASS_EXPORT
 @interface RSEditorView : NSObject {
 @private
-	IBOutlet NSView *ibView;
-	IBOutlet NSTextField *ibWidth;
+  IBOutlet NSView *ibView;
+  IBOutlet NSTextField *ibWidth;
 
-	CGFloat rs_swidth;
+  CGFloat rs_swidth;
 }
 
 - (NSView *)view;
@@ -37,7 +37,7 @@ WB_CLASS_EXPORT
 WB_CLASS_EXPORT
 @interface RSEditorEffectView : NSView {
 @private
-	NSColor *rs_color;
+  NSColor *rs_color;
 }
 
 @end

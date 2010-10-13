@@ -17,9 +17,9 @@
 __BEGIN_DECLS
 
 /*!
-	@header		WBAEFunctions
-	@abstract   AppleEvent Utilities.
-	@discussion A set of AppleEvent Manipulation functions.
+ @header WBAEFunctions
+ @abstract   AppleEvent Utilities.
+ @discussion A set of AppleEvent Manipulation functions.
  */
 
 WB_EXPORT
@@ -29,7 +29,7 @@ Boolean WBAEDebug;
 #pragma mark AEDesc Constructor & Destructor
 /**************************** AEDesc Constructor & Destructor ****************************/
 /*!
-  @function
+ @function
  @abstract Set descriptorType to <code>typeNull</code> and dataHandle to <code>nil</code>.
  desc must not be nil.
  @param desc The descriptor you want initialize. Cannot be nil.
@@ -41,7 +41,7 @@ void WBAEInitDesc(AEDesc *desc) {
 }
 
 /*!
-@function
+ @function
  @result Returns a new initialized descriptor
  */
 WB_INLINE
@@ -52,10 +52,10 @@ AEDesc WBAEEmptyDesc(void) {
 }
 
 /*!
-	@function
-	@abstract 	Disposes of desc and initialises it to the null descriptor.
-				desc must not be nil.
-	@param		desc The descriptor you want to dispose. Cannot be nil.
+ @function
+ @abstract Disposes of desc and initialises it to the null descriptor.
+           desc must not be nil.
+ @param    desc The descriptor you want to dispose. Cannot be nil.
  */
 WB_INLINE
 OSStatus WBAEDisposeDesc(AEDesc *desc) {
@@ -67,21 +67,21 @@ OSStatus WBAEDisposeDesc(AEDesc *desc) {
 #pragma mark Print AEDesc
 /**************************** Print AEDesc ****************************/
 /*!
-	@function
-	@abstract   Print descriptor description in stdout.
-	@discussion See TN2045 «AEBuild*, AEPrint* and Friends» for more informations on output format.
-	@param      desc the descriptor to print.
-	@result     A result code.
+ @function
+ @abstract   Print descriptor description in stdout.
+ @discussion See TN2045 «AEBuild*, AEPrint* and Friends» for more informations on output format.
+ @param      desc the descriptor to print.
+ @result     A result code.
  */
 WB_EXPORT
 OSStatus WBAEPrintDesc(const AEDesc *desc);
 
 /*!
-    @function
-    @abstract   Copy description of an AEDesc.
-    @param      desc A descriptor.
-    @result     A CFStringRef representing the desc or <i>null</i> if an error occured.
-*/
+ @function
+ @abstract   Copy description of an AEDesc.
+ @param      desc A descriptor.
+ @result     A CFStringRef representing the desc or <i>null</i> if an error occured.
+ */
 WB_EXPORT
 CFStringRef WBAEDescCopyDescription(const AEDesc *desc);
 
@@ -116,31 +116,31 @@ WB_EXPORT OSStatus WBAECreatePropertyObjectSpecifier(DescType desiredType, AEKey
 WB_EXPORT
 OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
 /*!
-    @function
-    @abstract   Create an AppleEvent with target a "typeApplSignature" AEDesc.
-    @param      targetSign The signature of target application.
-    @param      eventClass The event class of the Apple event to create.
-    @param      eventType The event ID of the Apple event to create.
-    @param      theEvent A pointer to an Apple event.
- 				On successful return, the new Apple event. On error, a null descriptor.
- 				If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
- 				function to dispose of the resulting Apple event after it has finished using it.
-    @result     A result code.
-*/
+ @function
+ @abstract   Create an AppleEvent with target a "typeApplSignature" AEDesc.
+ @param      targetSign The signature of target application.
+ @param      eventClass The event class of the Apple event to create.
+ @param      eventType The event ID of the Apple event to create.
+ @param      theEvent A pointer to an Apple event.
+ On successful return, the new Apple event. On error, a null descriptor.
+ If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
+ function to dispose of the resulting Apple event after it has finished using it.
+ @result     A result code.
+ */
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
 
 /*!
-	@function
-	@abstract   Create an AppleEvent with target a "typeApplicationBundleID" AEDesc.
- 	@param      targetId The bundle identifier of target application.
- 	@param      eventClass The event class of the Apple event to create.
- 	@param      eventType The event ID of the Apple event to create.
- 	@param      theEvent A pointer to an Apple event.
- 				On successful return, the new Apple event. On error, a null descriptor.
- 				If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
- 				function to dispose of the resulting Apple event after it has finished using it.
- 	@result     A result code.
+ @function
+ @abstract   Create an AppleEvent with target a "typeApplicationBundleID" AEDesc.
+ @param      targetId The bundle identifier of target application.
+ @param      eventClass The event class of the Apple event to create.
+ @param      eventType The event ID of the Apple event to create.
+ @param      theEvent A pointer to an Apple event.
+ On successful return, the new Apple event. On error, a null descriptor.
+ If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
+ function to dispose of the resulting Apple event after it has finished using it.
+ @result     A result code.
  */
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
@@ -172,10 +172,10 @@ enum {
 #endif
 
 /*!
-	@function
-	@abstract   Add Subjet attribute with value <i>nil</i> and set <i>enumConsidsAndIgnores</i> to ignore all.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
- 	@result     A result code.
+ @function
+ @abstract   Add Subjet attribute with value <i>nil</i> and set <i>enumConsidsAndIgnores</i> to ignore all.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @result     A result code.
  */
 WB_EXPORT
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_OBSOLETE;
@@ -194,26 +194,26 @@ OSStatus WBAEAddParameter(AppleEvent *theEvent, AEKeyword keyword, DescType type
 }
 
 /*!
-    @function
-    @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a signed short.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-    @param      keyword The keyword for the parameter to add.
- 				If the Apple event already includes an parameter with this keyword, the parameter is replaced.
-    @param      value Value to set.
-    @result     A result code.
-*/
+ @function
+ @abstract Simple wrapper on <i>AEPutParamPtr</i> to add a signed short.
+ @param    theEvent A pointer to the Apple event to add an attribute to.
+ @param    keyword The keyword for the parameter to add.
+           If the Apple event already includes an parameter with this keyword, the parameter is replaced.
+ @param    value Value to set.
+ @result   A result code.
+ */
 WB_INLINE
 OSStatus WBAEAddSInt16(AppleEvent *theEvent, AEKeyword keyword, SInt16 value) {
   return WBAEAddParameter(theEvent, keyword, typeSInt16, &value, sizeof(SInt16));
 }
 /*!
-	@function
-	@abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a signed long.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-	@param      keyword The keyword for the parameter to add.
-				If the Apple event already includes an parameter with this keyword, the parameter is replaced.
-    @param      value Value to set.
-	@result     A result code.
+ @function
+ @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a signed long.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      keyword The keyword for the parameter to add.
+ If the Apple event already includes an parameter with this keyword, the parameter is replaced.
+ @param      value Value to set.
+ @result     A result code.
  */
 WB_INLINE
 OSStatus WBAEAddSInt32(AppleEvent *theEvent, AEKeyword keyword, SInt32 value) {
@@ -221,13 +221,13 @@ OSStatus WBAEAddSInt32(AppleEvent *theEvent, AEKeyword keyword, SInt32 value) {
 }
 
 /*!
-	@function
-	@abstract   Simple wrapper on <i>AEPutParamPtr</i> to add an unsigned long.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-	@param      keyword The keyword for the parameter to add.
- 				If the Apple event already includes an parameter with this keyword, the parameter is replaced.
- 	@param      value Value to set.
-	@result     A result code.
+ @function
+ @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add an unsigned long.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      keyword The keyword for the parameter to add.
+ If the Apple event already includes an parameter with this keyword, the parameter is replaced.
+ @param      value Value to set.
+ @result     A result code.
  */
 WB_INLINE
 OSStatus WBAEAddUInt32(AppleEvent *theEvent, AEKeyword keyword, UInt32 value) {
@@ -245,13 +245,13 @@ OSStatus WBAEAddUInt64(AppleEvent *theEvent, AEKeyword keyword, UInt64 value) {
 }
 
 /*!
-	@function
-	@abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a Boolean.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-	@param      keyword The keyword for the parameter to add.
- 				If the Apple event already includes an parameter with this keyword, the parameter is replaced.
-	@param      flag Boolean to set.
-	@result     A result code.
+ @function
+ @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a Boolean.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      keyword The keyword for the parameter to add.
+ If the Apple event already includes an parameter with this keyword, the parameter is replaced.
+ @param      flag Boolean to set.
+ @result     A result code.
  */
 WB_INLINE
 OSStatus WBAEAddBoolean(AppleEvent *theEvent, AEKeyword keyword, Boolean flag) {
@@ -285,11 +285,11 @@ OSStatus WBAESetReplyPort(AppleEvent *theEvent, mach_port_t port) {
   return AEPutAttributePtr(theEvent, keyReplyPortAttr, typeMachPort, &port, sizeof(port));
 }
 /*!
-	@function
-	@abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a rtype.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-	@param      requestType type you resquest in result.
-	@result     A result code.
+ @function
+ @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a rtype.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      requestType type you resquest in result.
+ @result     A result code.
  */
 WB_INLINE
 OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
@@ -297,12 +297,12 @@ OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
 }
 
 /*!
-	@function
- 	@discussion This function add an <code>typeUnicodeText</code> parameter that contains CFString characters.
- 	@param		theEvent A pointer to the Apple event to add an attribute to.
- 	@param      keyword The keyword for the parameter to add.
- 	@param      str The string to set.
-	@result     A result code.
+ @function
+ @discussion This function add an <code>typeUnicodeText</code> parameter that contains CFString characters.
+ @param    theEvent A pointer to the Apple event to add an attribute to.
+ @param      keyword The keyword for the parameter to add.
+ @param      str The string to set.
+ @result     A result code.
  */
 WB_EXPORT
 OSStatus WBAEAddCFStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, CFStringRef str);
@@ -320,17 +320,17 @@ WB_EXPORT
 OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, DescType desiredType, AEKeyword property, AEDesc *container);
 
 /*!
-    @function
-    @abstract   Create and Add an AEDesc to an AppleEvent.
-	@param      theEvent A pointer to the Apple event to add an attribute to.
-	@param      theAEKeyword The keyword specifying the parameter to add.
- 				If the Apple event already has a parameter with this keyword, the parameter is replaced.
-	@param      typeCode The descriptor type for the new descriptor record.
-	@param      dataPtr A pointer to the data for the new descriptor record.
- 				This data is copied into a newly-allocated block of memory for the descriptor record that is created.
-	@param      dataSize The length, in bytes, of the data for the new descriptor record.
-    @result     A result code.
-*/
+ @function
+ @abstract   Create and Add an AEDesc to an AppleEvent.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      theAEKeyword The keyword specifying the parameter to add.
+ If the Apple event already has a parameter with this keyword, the parameter is replaced.
+ @param      typeCode The descriptor type for the new descriptor record.
+ @param      dataPtr A pointer to the data for the new descriptor record.
+ This data is copied into a newly-allocated block of memory for the descriptor record that is created.
+ @param      dataSize The length, in bytes, of the data for the new descriptor record.
+ @result     A result code.
+ */
 WB_EXPORT
 OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, DescType typeCode, const void * dataPtr, Size dataSize);
 
@@ -339,7 +339,7 @@ OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, Des
 /**************************** Send AppleEvents ****************************/
 
 /*!
-@abstract   Send an AppleEvent. Check in reply if it contains an error code and return this code.
+ @abstract   Send an AppleEvent. Check in reply if it contains an error code and return this code.
  @param     theEvent A pointer to the Apple event to be sent.
  @param     sendMode
  @param     timeoutms
@@ -348,117 +348,117 @@ OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, Des
  @result    A result code. If reply contains an error code, returns this code.
  */
 WB_EXPORT
-OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply);
+OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply);
 
 /*!
-	@function
- 	@abstract   Send an AppleEvent and ignore return value.
- 	@param      theEvent A pointer to the Apple event to be sent.
- 	@result     A result code.
+ @function
+ @abstract   Send an AppleEvent and ignore return value.
+ @param      theEvent A pointer to the Apple event to be sent.
+ @result     A result code.
  */
 WB_EXPORT
 OSStatus WBAESendEventNoReply(AppleEvent* theEvent);
 
 /*!
-	@function
-	@abstract	Send the provided AppleEvent.
-	@discussion Return the direct object as a AEDesc of pAEDescType.
-	@param      pAppleEvent ==> The event to be sent.
-	@param      pDescType ==> The type of value returned by the event.
-	@param      pAEDescList <== The value returned by the event.
-	@result     noErr and any other error that can be returned by AESendMessage
-				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a AEDesc of pAEDescType.
+ @param      pAppleEvent ==> The event to be sent.
+ @param      pDescType ==> The type of value returned by the event.
+ @param      pAEDescList <== The value returned by the event.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnAEDesc(AppleEvent *pAppleEvent, const DescType pDescType, AEDesc *pAEDesc);
 
 /*!
-    @function
-    @abstract   Send the provided AppleEvent.
-    @discussion Return the direct object as a AEDescList.
-    @param      pAppleEvent The event to be sent.
- 	@param		pAEDescList The value returned by the event.
- 	@result     noErr and any other error that can be returned by AESendMessage
-				 or the handler in the application that gets the event.
-*/
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a AEDescList.
+ @param      pAppleEvent The event to be sent.
+ @param      pAEDescList The value returned by the event.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
+ */
 WB_EXPORT
 OSStatus WBAESendEventReturnAEDescList(AppleEvent* pAppleEvent, AEDescList* pAEDescList);
 
 /*!
-	@function
-	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a AEDescList.
-	@param      pAppleEvent The event to be sent.
- 	@param		desiredType The desired descriptor type for the copied data.<br /><br />
-				If the descriptor record specified by the theAEKeyword parameter is not of the desired type,
- 				AEGetParamPtr attempts to coerce the data to this type. However, if the desired type is typeWildCard,
- 				no coercion is performed.<br /><br />
- 				On return, you can determine the actual descriptor type by examining the <i>typeCode</i> parameter.
- 	@param		typeCode A pointer to a descriptor type. On return, specifies the descriptor type of the data
- 				pointed to by <i>dataPtr</i>. The returned type is either the same as the type specified by the <i>desiredType</i>
- 				parameter or, if the desired type was type wildcard, the true type of the descriptor.
- 				Specify NULL if you do not care about this return value.
-    @param 		dataPtr A pointer to a buffer, local variable, or other storage location created and disposed of by your application.
- 				The size in bytes must be at least as large as the value you pass in the <i>maximumSize</i> parameter.
- 				On return, contains the parameter data. Specify NULL if you do not care about this return value.
- 	@param		maximumSize The maximum length, in bytes, of the expected Apple event parameter data.
- 	@param 		actualSize A pointer to a variable of type Size. On return, the length, in bytes, of the
-                data for the specified Apple event parameter. If this value is larger than the value you
-                passed in the <i>maximumSize</i> parameter, the buffer pointed to by dataPtr was not large enough to contain
-				all of the data for the parameter, though AEGetParamPtr does not write beyond the end of the buffer.
- 				If the buffer was too small, you can resize it and call AEGetParamPtr again.
- 				Specify NULL if you do not care about this return value.
-	@result     noErr and any other error that can be returned by AESendMessage
- 				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a AEDescList.
+ @param      pAppleEvent The event to be sent.
+ @param   desiredType The desired descriptor type for the copied data.<br /><br />
+           If the descriptor record specified by the theAEKeyword parameter is not of the desired type,
+           AEGetParamPtr attempts to coerce the data to this type. However, if the desired type is typeWildCard,
+           no coercion is performed.<br /><br />
+           On return, you can determine the actual descriptor type by examining the <i>typeCode</i> parameter.
+ @param   typeCode A pointer to a descriptor type. On return, specifies the descriptor type of the data
+           pointed to by <i>dataPtr</i>. The returned type is either the same as the type specified by the <i>desiredType</i>
+           parameter or, if the desired type was type wildcard, the true type of the descriptor.
+           Specify NULL if you do not care about this return value.
+ @param   dataPtr A pointer to a buffer, local variable, or other storage location created and disposed of by your application.
+           The size in bytes must be at least as large as the value you pass in the <i>maximumSize</i> parameter.
+           On return, contains the parameter data. Specify NULL if you do not care about this return value.
+ @param   maximumSize The maximum length, in bytes, of the expected Apple event parameter data.
+ @param   actualSize A pointer to a variable of type Size. On return, the length, in bytes, of the
+           data for the specified Apple event parameter. If this value is larger than the value you
+           passed in the <i>maximumSize</i> parameter, the buffer pointed to by dataPtr was not large enough to contain
+           all of the data for the parameter, though AEGetParamPtr does not write beyond the end of the buffer.
+           If the buffer was too small, you can resize it and call AEGetParamPtr again.
+           Specify NULL if you do not care about this return value.
+ @result  noErr and any other error that can be returned by AESendMessage
+           or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnData(AppleEvent *pAppleEvent, DescType desiredType, DescType* typeCode, void* dataPtr, Size maximumSize, Size *pActualSize);
 
 /*!
-	@function
-	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a Boolean.
-	@param      theEvent The event to be sent.
-	@param      value On return, contains the Boolean extract from the event response.
-	@result     noErr and any other error that can be returned by AESendMessage
-				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a Boolean.
+ @param      theEvent The event to be sent.
+ @param      value On return, contains the Boolean extract from the event response.
+ @result     noErr and any other error that can be returned by AESendMessage
+              or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnBoolean(AppleEvent* theEvent, Boolean* value);
 
 
 /*!
-    @function
- 	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a SInt16.
-    @param      theEvent The event to be sent.
-    @param      value On return, contains the SInt16 extract from the event response.
-	@result     noErr and any other error that can be returned by AESendMessage
-				or the handler in the application that gets the event.
-*/
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a SInt16.
+ @param      theEvent The event to be sent.
+ @param      value On return, contains the SInt16 extract from the event response.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
+ */
 WB_EXPORT
 OSStatus WBAESendEventReturnSInt16(AppleEvent* theEvent, SInt16* value);
 
 /*!
-	@function
- 	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a SInt32.
-	@param      theEvent The event to be sent.
-	@param      value On return, contains the SInt32 extract from the event response.
-	@result     noErr and any other error that can be returned by AESendMessage
-				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a SInt32.
+ @param      theEvent The event to be sent.
+ @param      value On return, contains the SInt32 extract from the event response.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnSInt32(AppleEvent* pAppleEvent, SInt32* pValue);
 
 /*!
-	@function
- 	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a UInt32.
-	@param      theEvent The event to be sent.
-	@param      value On return, contains the UInt32 extract from the event response.
-	@result     noErr and any other error that can be returned by AESendMessage
- 				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a UInt32.
+ @param      theEvent The event to be sent.
+ @param      value On return, contains the UInt32 extract from the event response.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnUInt32(AppleEvent* pAppleEvent, UInt32* pValue);
@@ -470,39 +470,39 @@ WB_EXPORT
 OSStatus WBAESendEventReturnUInt64(AppleEvent* pAppleEvent, UInt64* pValue);
 
 /*!
-	@function
-	@abstract   Send the provided AppleEvent.
-	@discussion Return the direct object as a CFDataRef. Caller must release data.
-	@param      theEvent The event to be sent.
- 	@param		resulType The type of result you request. If you don't want a specific type, pass <code>typeWildCard</code>.
-	@param      data On return, contains the CFDataRef extract from the event response. Caller must release data.
-	@result     noErr and any other error that can be returned by AESendMessage
-				or the handler in the application that gets the event.
+ @function
+ @abstract   Send the provided AppleEvent.
+ @discussion Return the direct object as a CFDataRef. Caller must release data.
+ @param      theEvent The event to be sent.
+ @param    resulType The type of result you request. If you don't want a specific type, pass <code>typeWildCard</code>.
+ @param      data On return, contains the CFDataRef extract from the event response. Caller must release data.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
  */
 WB_EXPORT
-OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType, DescType *actualType, CFDataRef *data);
+OSStatus WBAESendEventReturnCFData(AppleEvent *pAppleEvent, DescType resultType, DescType *actualType, CFDataRef *data);
 
 /*!
-	@function
- 	@abstract	Send the provided AppleEvent
-	@discussion Return the direct object as a CFStringRef. Caller must release string.
-	@param      theEvent The event to be sent.
-	@result     noErr and any other error that can be returned by AESendMessage
- 				or the handler in the application that gets the event.
+ @function
+ @abstract  Send the provided AppleEvent
+ @discussion Return the direct object as a CFStringRef. Caller must release string.
+ @param      theEvent The event to be sent.
+ @result     noErr and any other error that can be returned by AESendMessage
+ or the handler in the application that gets the event.
  */
 WB_EXPORT
 OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* string);
 
 /*!
-    @function
-    @abstract   Send a simple AppleEvent to an application.
-    @discussion This methode is a convenient methode to send an AppleEvent to an Application, without param nor return value.
-				It is very usefull to send a simple command action.
-	@param      targetSign The Target Application signature.
-	@param      eventClass Class of the event.
-	@param      eventType Type of Event.
-	@result     A result code.
-*/
+ @function
+ @abstract   Send a simple AppleEvent to an application.
+ @discussion This methode is a convenient methode to send an AppleEvent to an Application, without param nor return value.
+ It is very usefull to send a simple command action.
+ @param      targetSign The Target Application signature.
+ @param      eventClass Class of the event.
+ @param      eventType Type of Event.
+ @result     A result code.
+ */
 WB_EXPORT OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType);
 WB_EXPORT OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventClass, AEEventID eventType);
 WB_EXPORT OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType);
@@ -633,14 +633,14 @@ WB_EXPORT OSStatus WBAECopyNthCFDataFromDescList(const AEDescList *aList, CFInde
 #pragma mark Misc. AE utility functions
 /**************************** Misc. AE utility functions ****************************/
 /*! @function
-	@abstract   Takes a reply event checks it for any errors that may have been returned.
-	@discussion Takes a reply event checks it for any errors that may have been returned
-				by the event handler. A simple function, in that it only returns the error
-				number. You can often also extract an error string and three other error
-				parameters from a reply event.
-	@param      pAEReply ==> The reply event to be checked.
-	@result     noErr or any other error, depending on what the event handler returns for it's errors.
-*/
+ @abstract   Takes a reply event checks it for any errors that may have been returned.
+ @discussion Takes a reply event checks it for any errors that may have been returned
+ by the event handler. A simple function, in that it only returns the error
+ number. You can often also extract an error string and three other error
+ parameters from a reply event.
+ @param      pAEReply ==> The reply event to be checked.
+ @result     noErr or any other error, depending on what the event handler returns for it's errors.
+ */
 WB_EXPORT
 OSStatus WBAEGetHandlerError(const AppleEvent* pAEReply);
 

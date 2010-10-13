@@ -17,7 +17,7 @@
 }
 
 + (id)page {
-	return [[[self alloc] init] autorelease];
+  return [[[self alloc] init] autorelease];
 }
 
 - (id)init {
@@ -104,7 +104,7 @@
       break;
     case WBWizardLoadNextPage:
     case WBWizardLoadPreviousPage: {
-			[self view]; // make sure the nib is loaded
+      [self view]; // make sure the nib is loaded
       [self wizardWillLoadPage];
       id object = [theWizard object];
       if (object && [self loadObject:object]) {
@@ -142,7 +142,7 @@
 }
 
 - (BOOL)wizard:(WBWizard *)theWizard shouldChangePage:(WBWizardOperation)operation {
-	return YES;
+  return YES;
 }
 
 @end

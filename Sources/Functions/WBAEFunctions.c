@@ -20,7 +20,7 @@ OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event, AppleEvent *rep
                                               AESendMode sendMode, long timeOutInTicks);
 
 static
-void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...)	{
+void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
   va_list args;
   va_start(args, format);
   CFStringRef str = CFStringCreateWithFormatAndArguments(kCFAllocatorDefault, NULL, format, args);
@@ -31,7 +31,7 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...)	{
   }
 }
 
-#define WBAEPrintDebug(desc, format, args...)	({ \
+#define WBAEPrintDebug(desc, format, args...) ({ \
   if (WBAEDebug) { \
     CFStringRef __event = WBAEDescCopyDescription(desc); \
       if (__event) { \
@@ -509,8 +509,8 @@ OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword,
 OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
   check(theEvent != NULL);
 
-  OSStatus		err = noErr;
-  AppleEvent	theReply = WBAEEmptyDesc();
+  OSStatus    err = noErr;
+  AppleEvent  theReply = WBAEEmptyDesc();
 
   WBAEPrintDebug(theEvent, CFSTR("Send event no Reply: %@\n"));
   err = AESendMessage(theEvent, &theReply, kAENoReply, kAEDefaultTimeout);
@@ -519,7 +519,7 @@ OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
   return err;
 }
 
-OSStatus WBAESendEvent(AppleEvent	*pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply) {
+OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 timeoutms, AppleEvent *theReply) {
   check(pAppleEvent != NULL);
 
   if (theReply)
@@ -608,12 +608,12 @@ OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eve
 
 #pragma mark Primitive Reply
 
-OSStatus WBAESendEventReturnData(AppleEvent	*pAppleEvent,
-                                 DescType			pDesiredType,
-                                 DescType*			pActualType,
-                                 void*		 		pDataPtr,
-                                 Size				pMaximumSize,
-                                 Size 				*pActualSize) {
+OSStatus WBAESendEventReturnData(AppleEvent *pAppleEvent,
+                                 DescType    pDesiredType,
+                                 DescType   *pActualType,
+                                 void       *pDataPtr,
+                                 Size       pMaximumSize,
+                                 Size       *pActualSize) {
   check(pAppleEvent != NULL);
 
   OSStatus err = noErr;
@@ -668,7 +668,7 @@ OSStatus WBAESendEventReturnSInt64(AppleEvent* pAppleEvent, SInt64* pValue) {
 }
 
 OSStatus WBAESendEventReturnUInt64(AppleEvent* pAppleEvent, UInt64* pValue) {
-	check(pAppleEvent != NULL);
+  check(pAppleEvent != NULL);
   Size actualSize;
   DescType actualType;
   return WBAESendEventReturnData(pAppleEvent, typeUInt64,
@@ -716,7 +716,7 @@ OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* strin
   return err;
 }
 
-OSStatus WBAESendEventReturnCFData(AppleEvent	*pAppleEvent, DescType resultType, DescType *actualType, CFDataRef *data) {
+OSStatus WBAESendEventReturnCFData(AppleEvent *pAppleEvent, DescType resultType, DescType *actualType, CFDataRef *data) {
   if (!pAppleEvent) return paramErr;
   if (!data || *data) return paramErr;
 
@@ -798,13 +798,13 @@ OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef
 
 #pragma mark Alias
 OSStatus WBAECopyAliasFromDescriptor(const AEDesc* pAEDesc, AliasHandle *pAlias) {
-	return WBAECopyHandleFromDescriptor(pAEDesc, typeAlias, (Handle *)pAlias);
+  return WBAECopyHandleFromDescriptor(pAEDesc, typeAlias, (Handle *)pAlias);
 }
 OSStatus WBAECopyAliasFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, AliasHandle *pAlias) {
-	return WBAECopyHandleFromAppleEvent(anEvent, aKey, typeAlias, (Handle *)pAlias);
+  return WBAECopyHandleFromAppleEvent(anEvent, aKey, typeAlias, (Handle *)pAlias);
 }
 OSStatus WBAECopyNthAliasFromDescList(const AEDescList *aList, CFIndex idx, AliasHandle *pAlias) {
-	return WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)pAlias);
+  return WBAECopyNthHandleFromDescList(aList, idx, typeAlias, (Handle *)pAlias);
 }
 
 #pragma mark CFStringRef
@@ -914,7 +914,7 @@ OSStatus WBAECopyCFDataFromAppleEvent(const AppleEvent *anEvent, AEKeyword aKey,
   OSStatus err = AEGetParamDesc(anEvent, aKey, aType, &dataDesc);
 
   if (noErr == err) {
-		if (actualType) *actualType = dataDesc.descriptorType;
+    if (actualType) *actualType = dataDesc.descriptorType;
     err = WBAECopyCFDataFromDescriptor(&dataDesc, data);
   }
 
@@ -929,7 +929,7 @@ OSStatus WBAECopyNthCFDataFromDescList(const AEDescList *aList, CFIndex idx, Des
   AEDesc nthItem = WBAEEmptyDesc();
   OSStatus err = AEGetNthDesc(aList, idx, aType, NULL, &nthItem);
   if (noErr == err) {
-		if (actualType) *actualType = nthItem.descriptorType;
+    if (actualType) *actualType = nthItem.descriptorType;
     err = WBAECopyCFDataFromDescriptor(&nthItem, data);
   }
 
@@ -976,13 +976,13 @@ OSStatus WBAEDescListAppendWithArguments(AEDescList *list, va_list args) {
 }
 
 OSStatus WBAEDescListGetCount(const AEDescList *list, CFIndex *count) {
-	if (!count) return paramErr;
+  if (!count) return paramErr;
 
-	long cnt = 0;
-	OSStatus err = AECountItems(list, &cnt);
-	if (noErr == err)
-		*count = cnt;
-	return err;
+  long cnt = 0;
+  OSStatus err = AECountItems(list, &cnt);
+  if (noErr == err)
+    *count = cnt;
+  return err;
 }
 
 #pragma mark Record
@@ -1029,13 +1029,13 @@ OSStatus WBAEGetHandlerError(const AppleEvent* pAEReply) {
   if (!pAEReply) return paramErr;
 
   OSStatus err = noErr;
-  if (pAEReply->descriptorType != typeNull ) {	// there's a reply, so there may be an error
+  if (pAEReply->descriptorType != typeNull ) { // there's a reply, so there may be an error
     SInt32 handlerErr;
     OSStatus getErrErr = noErr;
     getErrErr = WBAEGetSInt32FromAppleEvent(pAEReply, keyErrorNumber, &handlerErr);
 
-    if (getErrErr != errAEDescNotFound) {	// found an errorNumber parameter
-      err = handlerErr;					// so return it's value
+    if (getErrErr != errAEDescNotFound) {  // found an errorNumber parameter
+      err = handlerErr;                    // so return it's value
     }
   }
   return err;
@@ -1055,34 +1055,34 @@ OSStatus WBAECopyHandleFromDescriptor(const AEDesc* pDesc, DescType desiredType,
   if (!pDesc || !descData) return paramErr;
 
   OSStatus err = noErr;
-	const AEDesc *desc = pDesc;
-	AEDesc stackdesc = WBAEEmptyDesc();
-	if (pDesc->descriptorType != desiredType && desiredType != typeWildCard) {
-		desc = &stackdesc;
-		err = AECoerceDesc(pDesc, desiredType, &stackdesc);
-	}
+  const AEDesc *desc = pDesc;
+  AEDesc stackdesc = WBAEEmptyDesc();
+  if (pDesc->descriptorType != desiredType && desiredType != typeWildCard) {
+    desc = &stackdesc;
+    err = AECoerceDesc(pDesc, desiredType, &stackdesc);
+  }
 
-	if (noErr == err) {
-		Size size = AEGetDescDataSize(desc);
-		*descData = NewHandle(size);
-		err = MemError();
-		if (noErr == err)
-			err = AEGetDescData(desc, **descData, size);
-	}
-	WBAEDisposeDesc(&stackdesc);
+  if (noErr == err) {
+    Size size = AEGetDescDataSize(desc);
+    *descData = NewHandle(size);
+    err = MemError();
+    if (noErr == err)
+      err = AEGetDescData(desc, **descData, size);
+  }
+  WBAEDisposeDesc(&stackdesc);
 
-	return err;
+  return err;
 }
 
 OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, DescType desiredType, Handle *aHandle) {
   if (!anEvent || !aHandle) return paramErr;
 
-	AEDesc desc = WBAEEmptyDesc();
-	OSStatus err = AEGetParamDesc(anEvent, aKey, desiredType, &desc);
-	if (noErr == err) {
-		err = WBAECopyHandleFromDescriptor(anEvent, desiredType, aHandle);
-		WBAEDisposeDesc(&desc);
-	}
+  AEDesc desc = WBAEEmptyDesc();
+  OSStatus err = AEGetParamDesc(anEvent, aKey, desiredType, &desc);
+  if (noErr == err) {
+    err = WBAECopyHandleFromDescriptor(anEvent, desiredType, aHandle);
+    WBAEDisposeDesc(&desc);
+  }
   return err;
 }
 

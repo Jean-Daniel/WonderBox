@@ -38,18 +38,18 @@
  MyFlopClass and MyYopsClass must be MyClass subclass, else it would not be a class cluster.
 */
 
-#define WBClassCluster(classname)		\
-	WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-	WBClassClusterImplementation(classname, classname, classname, classname)
+#define WBClassCluster(classname)    \
+  WBClassClusterPlaceHolder(classname, classname, classname, classname) \
+  WBClassClusterImplementation(classname, classname, classname, classname)
 
-#define WBClassClusterNoClassForCoder(classname)		\
-	WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-	WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)
+#define WBClassClusterNoClassForCoder(classname)    \
+  WBClassClusterPlaceHolder(classname, classname, classname, classname) \
+  WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)
 
 
 // Details
 #define WBClassClusterPlaceHolder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
-	_WBInternalClassClusterPlaceHolder(classname, \
+  _WBInternalClassClusterPlaceHolder(classname, \
                                      WBClusterPlaceholder(placeholderPrefix), \
                                      WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
                                      WBClusterZoneTable(zonestablePrefix))
@@ -59,13 +59,13 @@
                                         WBClusterPlaceholder(placeholderPrefix), \
                                         WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
                                         WBClusterZoneTable(zonestablePrefix)) \
-	_WBInternalClassForCoder(classname)
+  _WBInternalClassForCoder(classname)
 
 #define WBClassClusterImplementationNoClassForCoder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
-	_WBInternalClassClusterImplementation(classname, \
-																				WBClusterPlaceholder(placeholderPrefix), \
-																				WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
-																				WBClusterZoneTable(zonestablePrefix))
+  _WBInternalClassClusterImplementation(classname, \
+                                        WBClusterPlaceholder(placeholderPrefix), \
+                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
+                                        WBClusterZoneTable(zonestablePrefix))
 
 // MARK: Names
 #define WBClusterZoneTable(classname)           classname##ClusterPlaceholderZones
@@ -131,7 +131,7 @@ static placeholderclass *defaultplaceholder = nil; \
        * in the default malloc zone extremely efficiently. \
        */ \
       return defaultplaceholder; \
-	  } else { \
+    } else { \
       id obj; \
       /* \
        * For anything other than the default zone, we need to \

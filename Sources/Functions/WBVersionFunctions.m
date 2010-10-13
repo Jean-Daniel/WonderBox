@@ -26,11 +26,11 @@ CFStringRef const WBVersionBundleKey = CFSTR("CFBundleShortVersionString");
  f: final ~ r: release
  */
 bool WBVersionGetCurrent(CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build) {
-	return WBVersionGetBundleVersion(CFBundleGetMainBundle(), major, minor, bug, stage, build);
+  return WBVersionGetBundleVersion(CFBundleGetMainBundle(), major, minor, bug, stage, build);
 }
 
 bool WBVersionGetBundleVersion(CFBundleRef bundle, CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build) {
-	if (!bundle) return false;
+  if (!bundle) return false;
 
   CFStringRef vers = CFBundleGetValueForInfoDictionaryKey(bundle, WBVersionBundleKey);
   if (vers)
@@ -73,20 +73,20 @@ bool WBVersionDecompose(CFStringRef version, CFIndex *major, CFIndex *minor, CFI
         case 'D':
           if (stage) *stage = kWBVersionStageDevelopement;
           break;
-					case 'a': // alpha
-					case 'A':
+        case 'a': // alpha
+        case 'A':
           if (stage) *stage = kWBVersionStageAlpha;
           break;
-					case 'b': // beta
-					case 'B':
+        case 'b': // beta
+        case 'B':
           if (stage) *stage = kWBVersionStageBeta;
           break;
-					case 'f': // final
-					case 'F':
+        case 'f': // final
+        case 'F':
           if (stage) *stage = kWBVersionStageFinal;
           break;
-					case 'r': // release or candidate
-					case 'R':
+        case 'r': // release or candidate
+        case 'R':
           if ('c' == ptr[1] || 'C' == ptr[1]) {
             ptr++;
             if (stage) *stage = kWBVersionStageCandidate;
@@ -94,7 +94,7 @@ bool WBVersionDecompose(CFStringRef version, CFIndex *major, CFIndex *minor, CFI
             *stage = kWBVersionStageRelease;
           }
           break;
-					default:
+        default:
           // invalid stage
           if (stage) *stage = 0;
           ok = false;
@@ -142,11 +142,11 @@ CFStringRef WBVersionCreateString(CFIndex major, CFIndex minor, CFIndex bug, WBV
 }
 
 UInt64 WBVersionGetCurrentNumber(void) {
-	return WBVersionGetBundleNumber(CFBundleGetMainBundle());
+  return WBVersionGetBundleNumber(CFBundleGetMainBundle());
 }
 
 UInt64 WBVersionGetBundleNumber(CFBundleRef bundle) {
-	CFIndex build;
+  CFIndex build;
   WBVersionStage stage;
   CFIndex major, minor, bug;
   if (WBVersionGetBundleVersion(bundle, &major, &minor, &bug, &stage, &build))

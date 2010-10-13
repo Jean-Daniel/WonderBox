@@ -11,7 +11,7 @@
 #import WBHEADER(WBOutlineViewController.h)
 #import WBHEADER(WBUITreeNode.h)
 
-#define _ContainsNode(item)		 		({(nil != item) && ([item findRoot] == wb_root);})
+#define _ContainsNode(item)         ({(nil != item) && ([item findRoot] == wb_root);})
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @interface WBOutlineViewController () <NSOutlineViewDataSource>

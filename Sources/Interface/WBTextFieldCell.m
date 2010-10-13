@@ -61,12 +61,12 @@
 #pragma mark -
 WB_INLINE
 NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
-	// super would normally draw text at the top of the cell
+  // super would normally draw text at the top of the cell
   if (!self->wb_tfFlags.middle) return frame;
 
   NSFont *font = [self font];
-	NSInteger offset = floor((NSHeight(frame) - ([font ascender] - [font descender])) / 2);
-	return NSInsetRect(frame, 0.0, offset);
+  NSInteger offset = floor((NSHeight(frame) - ([font ascender] - [font descender])) / 2);
+  return NSInsetRect(frame, 0.0, offset);
 }
 
 - (NSRect)titleRectForBounds:(NSRect)theRect {
@@ -78,7 +78,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 }
 
 //-----------------------------------------------------------------------------
-//	editWithFrame:inView:editor:delegate:event:
+//  editWithFrame:inView:editor:delegate:event:
 //-----------------------------------------------------------------------------
 
 - (void)editWithFrame:(NSRect)aRect
@@ -86,7 +86,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
                editor:(NSText *)editor
              delegate:(id)delegate
                 event:(NSEvent *)event {
-	[super editWithFrame:_adjustTextFrame(self, aRect)
+  [super editWithFrame:_adjustTextFrame(self, aRect)
                 inView:controlView
                 editor:editor
               delegate:delegate
@@ -95,7 +95,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 
 
 //-----------------------------------------------------------------------------
-//	selectWithFrame:inView:editor:delegate:start:length:
+//  selectWithFrame:inView:editor:delegate:start:length:
 //-----------------------------------------------------------------------------
 
 - (void)selectWithFrame:(NSRect)aRect
@@ -104,7 +104,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
                delegate:(id)delegate
                   start:(NSInteger)start
                  length:(NSInteger)length {
-	[super selectWithFrame:_adjustTextFrame(self, aRect)
+  [super selectWithFrame:_adjustTextFrame(self, aRect)
                   inView:controlView
                   editor:editor
                  delegate:delegate
@@ -114,11 +114,11 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 
 
 //-----------------------------------------------------------------------------
-//	drawInteriorWithFrame:inView:
+//  drawInteriorWithFrame:inView:
 //-----------------------------------------------------------------------------
 
 - (void)drawInteriorWithFrame:(NSRect)frame inView:(NSView *)view {
-	[super drawInteriorWithFrame:_adjustTextFrame(self, frame) inView:view];
+  [super drawInteriorWithFrame:_adjustTextFrame(self, frame) inView:view];
   if ([self drawsLineOver]) {
     NSRect title = [self titleRectForBounds:frame];
     // FIXME: userspace scale factor

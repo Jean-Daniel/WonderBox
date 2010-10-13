@@ -32,8 +32,8 @@ void WBAudioTimeStampInitializeWithSampleAndHostTime(AudioTimeStamp *timeStamp, 
 UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout) {
   if (!inLayout) return 0;
 
-	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
-		return (UInt32)offsetof(AudioChannelLayout, mChannelDescriptions) + inLayout->mNumberChannelDescriptions * (UInt32)sizeof(AudioChannelDescription);
+  if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+    return (UInt32)offsetof(AudioChannelLayout, mChannelDescriptions) + inLayout->mNumberChannelDescriptions * (UInt32)sizeof(AudioChannelDescription);
 
   return sizeof(AudioChannelLayout) - sizeof(AudioChannelDescription);
 }
@@ -41,12 +41,12 @@ UInt32 WBAudioChannelLayoutGetByteSize(const AudioChannelLayout *inLayout) {
 
 UInt32 WBAudioChannelLayoutGetNumberOfChannels(const AudioChannelLayout *inLayout) {
   if (!inLayout) return 0;
-	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
-		return inLayout->mNumberChannelDescriptions;
+  if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+    return inLayout->mNumberChannelDescriptions;
 
-	if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
-		return __builtin_popcount(inLayout->mChannelBitmap);
+  if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
+    return __builtin_popcount(inLayout->mChannelBitmap);
 
-	return AudioChannelLayoutTag_GetNumberOfChannels(inLayout->mChannelLayoutTag);
+  return AudioChannelLayoutTag_GetNumberOfChannels(inLayout->mChannelLayoutTag);
 }
 

@@ -18,10 +18,10 @@
 @implementation WBLicenseTest
 
 - (void)testPBKDF {
-	char wonder[16], open[16];
-	WBPKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, wonder);
-	PKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, open);
-	GHAssertTrue(0 == memcmp(wonder, open, 16), @"non conform PBKDF function");
+  char wonder[16], open[16];
+  WBPKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, wonder);
+  PKCS5_PBKDF2_HMAC_SHA1("Youpi", 5, "salt for sally", 14, 1500, 16, open);
+  GHAssertTrue(0 == memcmp(wonder, open, 16), @"non conform PBKDF function");
 }
 
 @end

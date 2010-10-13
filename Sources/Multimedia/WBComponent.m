@@ -122,8 +122,8 @@
     Handle h1 = NewHandle(0);
     Handle h2 = NewHandle(0);
 
-		ComponentDescription desc;
-		OSStatus err = GetComponentInfo(_comp, &desc, h1, h2, 0);
+    ComponentDescription desc;
+    OSStatus err = GetComponentInfo(_comp, &desc, h1, h2, 0);
 
     if (noErr == err) {
       if (GetHandleSize(h1) > 1) {
@@ -182,7 +182,7 @@
       }
     }
     DisposeHandle(h2);
-		DisposeHandle(h1);
+    DisposeHandle(h1);
   }
 }
 
@@ -193,13 +193,13 @@
     OSStatus err = GetComponentInfo(_comp, NULL, NULL, NULL, h1);
     if (noErr == err) {
       // TODO: generate image
-//      void *data = *h1;
-//      size_t length = GetHandleSize(h1);
-//      if (length > 0) {
-//        NSData *bytes = [[NSData alloc] initWithBytesNoCopy:data length:length freeWhenDone:NO];
-//        _icon = [[NSClassFromString(@"NSImage") alloc] initWithData:bytes];
-//        [bytes release];
-//      }
+      //      void *data = *h1;
+      //      size_t length = GetHandleSize(h1);
+      //      if (length > 0) {
+      //        NSData *bytes = [[NSData alloc] initWithBytesNoCopy:data length:length freeWhenDone:NO];
+      //        _icon = [[NSClassFromString(@"NSImage") alloc] initWithData:bytes];
+      //        [bytes release];
+      //      }
     }
     DisposeHandle(h1);
   }
@@ -242,56 +242,56 @@
 - (UInt32)resourceVersion:(OSStatus *)error {
   bool versionFound = false;
   ResFileRefNum curRes = CurResFile();
-	ResFileRefNum componentResFileID = kResFileNotOpened;
+  ResFileRefNum componentResFileID = kResFileNotOpened;
 
-	OSStatus result;
+  OSStatus result;
   UInt32 version = 0;
-	short thngResourceCount;
+  short thngResourceCount;
 
-	require_noerr (result = OpenAComponentResFile(_comp, &componentResFileID), home);
-	require_noerr (result = componentResFileID <= 0, home);
+  require_noerr (result = OpenAComponentResFile(_comp, &componentResFileID), home);
+  require_noerr (result = componentResFileID <= 0, home);
 
-	UseResFile(componentResFileID);
+  UseResFile(componentResFileID);
 
-	thngResourceCount = Count1Resources(kComponentResourceType);
+  thngResourceCount = Count1Resources(kComponentResourceType);
 
-	require_noerr (result = ResError(), home);
+  require_noerr (result = ResError(), home);
   // only go on if we successfully found at least 1 thng resource
-	require_noerr (thngResourceCount <= 0 ? -1 : 0, home);
+  require_noerr (thngResourceCount <= 0 ? -1 : 0, home);
 
-	// loop through all of the Component thng resources trying to
-	// find one that matches this Component description
-	for (short i = 0; i < thngResourceCount && (!versionFound); i++)
-	{
-		// try to get a handle to this code resource
-		Handle thngResourceHandle = Get1IndResource(kComponentResourceType, i+1);
-		if (thngResourceHandle != NULL && ((*thngResourceHandle) != NULL))
-		{
-			if ((UInt32)GetHandleSize(thngResourceHandle) >= sizeof(ExtComponentResource))
-			{
-				ExtComponentResource * componentThng = (ExtComponentResource*) (*thngResourceHandle);
+  // loop through all of the Component thng resources trying to
+  // find one that matches this Component description
+  for (short i = 0; i < thngResourceCount && (!versionFound); i++)
+  {
+    // try to get a handle to this code resource
+    Handle thngResourceHandle = Get1IndResource(kComponentResourceType, i+1);
+    if (thngResourceHandle != NULL && ((*thngResourceHandle) != NULL))
+    {
+      if ((UInt32)GetHandleSize(thngResourceHandle) >= sizeof(ExtComponentResource))
+      {
+        ExtComponentResource * componentThng = (ExtComponentResource*) (*thngResourceHandle);
 
-				// check to see if this is the thng resource for the particular Component that we are looking at
-				// (there often is more than one Component described in the resource)
-				if ((componentThng->cd.componentType == _desc.componentType)
-						&& (componentThng->cd.componentSubType == _desc.componentSubType)
-						&& (componentThng->cd.componentManufacturer == _desc.componentManufacturer))
-				{
-					version = componentThng->componentVersion;
-					versionFound = true;
-				}
-			}
-			ReleaseResource(thngResourceHandle);
-		}
-	}
+        // check to see if this is the thng resource for the particular Component that we are looking at
+        // (there often is more than one Component described in the resource)
+        if ((componentThng->cd.componentType == _desc.componentType)
+            && (componentThng->cd.componentSubType == _desc.componentSubType)
+            && (componentThng->cd.componentManufacturer == _desc.componentManufacturer))
+        {
+          version = componentThng->componentVersion;
+          versionFound = true;
+        }
+      }
+      ReleaseResource(thngResourceHandle);
+    }
+  }
 
-	if (!versionFound)
-		result = resNotFound;
+  if (!versionFound)
+    result = resNotFound;
 
-	UseResFile(curRes);	// revert
+  UseResFile(curRes); // revert
 
-	if ( componentResFileID != kResFileNotOpened )
-		CloseComponentResFile(componentResFileID);
+  if ( componentResFileID != kResFileNotOpened )
+    CloseComponentResFile(componentResFileID);
 
 home:
   if (error) *error = result;

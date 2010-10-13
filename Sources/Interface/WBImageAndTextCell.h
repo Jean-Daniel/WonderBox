@@ -13,7 +13,7 @@
 WB_CLASS_EXPORT
 @interface WBImageAndTextCell : WBTextFieldCell <NSCopying, NSCoding> {
 @private
-  NSImage	*wb_image;
+  NSImage *wb_image;
 }
 
 - (NSImage *)image;

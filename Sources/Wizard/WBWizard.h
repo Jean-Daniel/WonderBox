@@ -53,9 +53,9 @@ WB_CLASS_EXPORT
   NSUInteger wb_idx;
 
   id wb_object;
-	id wb_delegate;
+  id wb_delegate;
   NSImage *wb_image;
-	NSString *wb_wTitle;
+  NSString *wb_wTitle;
   NSString *wb_pageTitle;
   NSMutableArray *wb_pages;
 }

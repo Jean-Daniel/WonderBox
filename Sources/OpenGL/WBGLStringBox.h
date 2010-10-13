@@ -19,7 +19,7 @@ WB_CLASS_EXPORT
   CGRect wb_texBounds;
   CGFloat wb_userScale;
 
-	CGLContextObj wb_glctxt; // current context at time of texture creation
+  CGLContextObj wb_glctxt; // current context at time of texture creation
 
   /* cache */
   void *wb_buffer;

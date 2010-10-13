@@ -25,19 +25,19 @@
 #pragma mark Deallocs
 
 - (void)deleteTexture {
-	if (wb_texName && wb_glctxt) {
-		(*wb_glctxt->disp.delete_textures)(wb_glctxt->rend, 1, &wb_texName);
+  if (wb_texName && wb_glctxt) {
+    (*wb_glctxt->disp.delete_textures)(wb_glctxt->rend, 1, &wb_texName);
     wb_texName = 0;
 
     if (wb_buffer) free(wb_buffer);
     wb_blength = 0;
-	}
+  }
 }
 
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-	[self setOpenGLContext:nil];
-	[super dealloc];
+  [self setOpenGLContext:nil];
+  [super dealloc];
 }
 
 #pragma mark -
@@ -215,10 +215,10 @@
 #pragma mark Accessors
 
 - (GLuint)textureName {
-	return wb_texName;
+  return wb_texName;
 }
 - (CGSize)textureSize {
-	return wb_texBounds.size;
+  return wb_texBounds.size;
 }
 
 #pragma mark -
@@ -235,11 +235,11 @@
   if ([self needsUpdateTexture])
     [self updateTexture];
 
-	if (wb_texName) {
+  if (wb_texName) {
     CGLContextObj CGL_MACRO_CONTEXT = theContext ? : wb_glctxt;
-		glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT); // GL_COLOR_BUFFER_BIT for glBlendFunc, GL_ENABLE_BIT for glEnable / glDisable
 
-		glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
 
     /* adjust bounds */
     aPoint.x += wb_texBounds.origin.x;
@@ -251,8 +251,8 @@
       imgSize.height /= wb_userScale;
     }
 
-		glBindTexture(GL_TEXTURE_RECTANGLE_ARB, wb_texName);
-		glBegin(GL_QUADS);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, wb_texName);
+    glBegin(GL_QUADS);
     if (colors) glColor4f(colors[0], colors[1], colors[2], colors[3]);
     glTexCoord2d(0, wb_texBounds.size.height); // draw upper left in world coordinates
     glVertex2d(aPoint.x, aPoint.y);
@@ -268,10 +268,10 @@
     if (colors) glColor4f(colors[12], colors[13], colors[14], colors[15]);
     glTexCoord2d(wb_texBounds.size.width, wb_texBounds.size.height); // draw upper right in world coordinates
     glVertex2d(aPoint.x + imgSize.width, aPoint.y);
-		glEnd();
+    glEnd();
 
-		glPopAttrib();
-	}
+    glPopAttrib();
+  }
 }
 
 @end

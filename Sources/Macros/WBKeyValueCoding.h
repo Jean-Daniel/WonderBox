@@ -23,25 +23,25 @@
 #define WBKeyValueCodingDefinition(key, ivar) \
  \
 - (NSUInteger)countOf##key { \
-	return [ivar count]; \
+  return [ivar count]; \
 } \
  \
 - (id)objectIn##key##AtIndex:(NSUInteger)idx { \
-	return [ivar objectAtIndex:idx]; \
+  return [ivar objectAtIndex:idx]; \
 } \
  \
 - (void)get##key:(id *)objects range:(NSRange)aRange { \
-	[ivar getObjects:objects range:aRange]; \
+  [ivar getObjects:objects range:aRange]; \
 } \
  \
 - (void)insertObject:(id)anObject in##key##AtIndex:(NSUInteger)idx { \
-	[ivar insertObject:anObject atIndex:idx]; \
+  [ivar insertObject:anObject atIndex:idx]; \
 } \
  \
 - (void)removeObjectFrom##key##AtIndex:(NSUInteger)idx { \
-	[ivar removeObjectAtIndex:idx]; \
+  [ivar removeObjectAtIndex:idx]; \
 } \
  \
 - (void)replaceObjectIn##key##AtIndex:(NSUInteger)idx withObject:(id)anObject { \
-	[ivar replaceObjectAtIndex:idx withObject:anObject]; \
+  [ivar replaceObjectAtIndex:idx withObject:anObject]; \
 }

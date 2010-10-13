@@ -18,8 +18,8 @@
 // We perform a stack var dereference to correctly handle case where we affect a new value
 // to 'var' afterward
 #define WBScopeCFReleased(type, var, value) \
-	type var = value; \
-	__attribute__((cleanup($wb_scopeCFReleaseObject))) CFTypeRef *__##var##__auto__ = (CFTypeRef *)&var
+  type var = value; \
+  __attribute__((cleanup($wb_scopeCFReleaseObject))) CFTypeRef *__##var##__auto__ = (CFTypeRef *)&var
 
 
 #define __WBScopeAutoreleasePool(line) \

@@ -11,13 +11,13 @@
 #include WBHEADER(WBTextFunctions.h)
 
 CFIndex WBTextGetCountOfLines(CFStringRef str) {
-	CFIndex lines = 0;
+  CFIndex lines = 0;
 
-	CFIndex stringLength = CFStringGetLength(str);
-	for (CFIndex idx = 0; idx < stringLength; lines++)
-		CFStringGetLineBounds(str, CFRangeMake(idx, 0), NULL, &idx, NULL);
+  CFIndex stringLength = CFStringGetLength(str);
+  for (CFIndex idx = 0; idx < stringLength; lines++)
+    CFStringGetLineBounds(str, CFRangeMake(idx, 0), NULL, &idx, NULL);
 
-	return lines;
+  return lines;
 }
 
 CFIndex WBTextConvertLineEnding(CFMutableStringRef str, CFStringRef endOfLine) {

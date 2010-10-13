@@ -244,7 +244,7 @@
     if (![wb_item isExpanded]) return;
 
     WBThrowException(NSInternalInconsistencyException, @"not implemented");
-//		NSView *new = [change objectForKey:NSKeyValueChangeNewKey];
+//    NSView *new = [change objectForKey:NSKeyValueChangeNewKey];
 //    NSView *old = [change objectForKey:NSKeyValueChangeOldKey];
 //    CGFloat delta = new ? NSHeight([new frame]) : 0;
 //    delta -= old ? NSHeight([old frame]) : 0;

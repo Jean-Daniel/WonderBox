@@ -1,5 +1,5 @@
 /*
- *	WBTableView.h
+ *  WBTableView.h
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.

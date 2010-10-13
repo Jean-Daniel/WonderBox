@@ -186,7 +186,7 @@
       NSHashRemove(wb_noPadding, column);
     }
   } else {
-		WBThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
+    WBThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
   }
 }
 

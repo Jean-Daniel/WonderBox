@@ -13,8 +13,8 @@
 WB_CLASS_EXPORT
 @interface WBXMLWriter : NSObject {
 @private
-	bool wb_indent;
-	void *wb_pwriter;
+  bool wb_indent;
+  void *wb_pwriter;
 }
 
 - (id)initWithURL:(NSURL *)anURL;

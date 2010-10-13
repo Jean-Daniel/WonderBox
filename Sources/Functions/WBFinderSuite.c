@@ -33,7 +33,7 @@ OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFInde
   OSStatus err = noErr;
   long numDocs;
   CFIndex count = 0;
-  AEKeyword	keyword = 0;
+  AEKeyword keyword = 0;
 
   err = AECountItems(items, &numDocs);
 
@@ -65,7 +65,7 @@ OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFInde
 } //end WBAEFinderSelectionToFSRefs
 
 OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) {
-  AppleEvent theEvent = WBAEEmptyDesc();	//	If you always init AEDescs, it's always safe to dispose of them.
+  AppleEvent theEvent = WBAEEmptyDesc();  // If you always init AEDescs, it's always safe to dispose of them.
   OSStatus err = noErr;
 
   // the descriptor pointer, alias handle is required
@@ -73,7 +73,7 @@ OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) {
     return paramErr;
 
   if (typeObjectSpecifier != pAEDesc->descriptorType)
-    return paramErr;	// this has to be an object specifier
+    return paramErr;  // this has to be an object specifier
 
   err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
 
@@ -91,15 +91,15 @@ OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) {
     err = WBAESendEventReturnAEDesc(&theEvent, typeAlias, &tAEDesc);
     if (noErr == err) {
       err = WBAECopyAliasFromDescriptor(&tAEDesc, alias);
-      WBAEDisposeDesc(&tAEDesc);	// always dispose of AEDescs when you are finished with them
+      WBAEDisposeDesc(&tAEDesc);  // always dispose of AEDescs when you are finished with them
     }
   }
-  WBAEDisposeDesc(&theEvent);	// always dispose of AEDescs when you are finished with them
+  WBAEDisposeDesc(&theEvent);  // always dispose of AEDescs when you are finished with them
   return err;
 }
 
 OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) {
-  AppleEvent theEvent = WBAEEmptyDesc();	//	If you always init AEDescs, it's always safe to dispose of them.
+  AppleEvent theEvent = WBAEEmptyDesc();  // If you always init AEDescs, it's always safe to dispose of them.
   OSStatus err = noErr;
 
   // the descriptor pointer, alias handle is required
@@ -107,7 +107,7 @@ OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) {
     return paramErr;
 
   if (typeObjectSpecifier != pAEDesc->descriptorType)
-    return paramErr;	// this has to be an object specifier
+    return paramErr;  // this has to be an object specifier
 
   err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
 
@@ -131,9 +131,9 @@ OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) {
       if (noErr == err)
         err = WBAEGetFSRefFromDescriptor(&tAEDesc, file);
     }
-    WBAEDisposeDesc(&tAEDesc);	// always dispose of AEDescs when you are finished with them
+    WBAEDisposeDesc(&tAEDesc);  // always dispose of AEDescs when you are finished with them
   }
-  WBAEDisposeDesc(&theEvent);	// always dispose of AEDescs when you are finished with them
+  WBAEDisposeDesc(&theEvent);  // always dispose of AEDescs when you are finished with them
   return err;
 }
 

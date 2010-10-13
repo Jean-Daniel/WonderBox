@@ -33,9 +33,9 @@ OSStatus WBAEFinderGetSelection(AEDescList *items);
  @abstract   Change a AEDescList representing Finder selection (obtains from <i>WBAEGetFinderSelection</i>) into an
  array of FSRef.
  @param      items AEDescList representing Finder items.
- @param		selection A pointer to an Array of FSRef. On return contains <i>itemsCount</i> converted items.
- @param		maxCount Size of <i>selection</i> array.
- @param		itemsCount Count of items successfully converted.
+ @param    selection A pointer to an Array of FSRef. On return contains <i>itemsCount</i> converted items.
+ @param    maxCount Size of <i>selection</i> array.
+ @param    itemsCount Count of items successfully converted.
  @result     A result code.
  */
 WB_EXPORT
@@ -53,14 +53,14 @@ OSStatus WBAEFinderGetCurrentFolder(FSRef *folder);
 
 /*!
  @function
- @abstract	Returns a CFURLRef representation of the path of the current Finder folder or NULL.
+ @abstract  Returns a CFURLRef representation of the path of the current Finder folder or NULL.
  */
 WB_EXPORT
 CFURLRef WBAEFinderCopyCurrentFolderURL(void);
 
 /*!
  @function
- @abstract	Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
+ @abstract  Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
  */
 WB_EXPORT
 CFStringRef WBAEFinderCopyCurrentFolderPath(void);

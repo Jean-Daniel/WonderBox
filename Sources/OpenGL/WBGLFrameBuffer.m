@@ -194,7 +194,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 
   // When binding to draw, setup the view port.
   if (mode == GL_FRAMEBUFFER_EXT || mode == GL_DRAW_FRAMEBUFFER_EXT) {
-    glGetIntegerv(GL_VIEWPORT, wb_viewport);			// Retrieves The Viewport Values (X, Y, Width, Height)
+    glGetIntegerv(GL_VIEWPORT, wb_viewport);    // Retrieves The Viewport Values (X, Y, Width, Height)
 
     [self resetViewPort:CGL_MACRO_CONTEXT];
   }
@@ -389,19 +389,19 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 #define kOpenGLFramebufferIncompleteFormats             @"OpenGL framebuffer incomplete formats!"
 #define kOpenGLFramebufferIncompleteDrawBuffer          @"OpenGL framebuffer incomplete draw buffer!"
 #define kOpenGLFramebufferIncompleteReadBuffer          @"OpenGL framebuffer incomplete read buffer!"
-#define kOpenGLFramebufferDefaultMessage      					@"Undefined error !"
+#define kOpenGLFramebufferDefaultMessage                @"Undefined error !"
 
 NSString *WBGLFrameBufferGetErrorString(GLenum error) {
   switch (error) {
     default: return kOpenGLFramebufferDefaultMessage;
     case GL_FRAMEBUFFER_COMPLETE_EXT: return nil;
     case GL_FRAMEBUFFER_UNSUPPORTED_EXT: return kOpenGLFramebufferUnsupported;
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: return kOpenGLFramebufferIncompleteAttachement;
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT: return kOpenGLFramebufferIncompleteMissingAttachement;
-		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: return KOpenGLFramebufferIncompleteDimensions;
-		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: return kOpenGLFramebufferIncompleteFormats;
-		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: return kOpenGLFramebufferIncompleteDrawBuffer;
-		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: return kOpenGLFramebufferIncompleteReadBuffer;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: return kOpenGLFramebufferIncompleteAttachement;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT: return kOpenGLFramebufferIncompleteMissingAttachement;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: return KOpenGLFramebufferIncompleteDimensions;
+    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: return kOpenGLFramebufferIncompleteFormats;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: return kOpenGLFramebufferIncompleteDrawBuffer;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: return kOpenGLFramebufferIncompleteReadBuffer;
   }
 }
 

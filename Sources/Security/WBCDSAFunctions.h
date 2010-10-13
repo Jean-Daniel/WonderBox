@@ -1,5 +1,5 @@
 /*
- *	WBCDSAFunctions.h
+ *  WBCDSAFunctions.h
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
@@ -40,4 +40,4 @@ void *WBCDSARealloc(CSSM_MODULE_HANDLE handle, void *ptr, CSSM_SIZE length);
 WB_EXPORT
 void WBCDSAFree(CSSM_MODULE_HANDLE handle, void *ptr);
 
-#endif	/* __WB_CDSA_FUNCTIONS_H */
+#endif  /* __WB_CDSA_FUNCTIONS_H */

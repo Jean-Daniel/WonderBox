@@ -15,17 +15,17 @@
 
 static
 bool _WBAUCocoaViewIsValid(Class pluginClass) {
-	if ([pluginClass conformsToProtocol:@protocol(AUCocoaUIBase)]) {
-		if ([pluginClass instancesRespondToSelector:@selector(interfaceVersion)] &&
+  if ([pluginClass conformsToProtocol:@protocol(AUCocoaUIBase)]) {
+    if ([pluginClass instancesRespondToSelector:@selector(interfaceVersion)] &&
         [pluginClass instancesRespondToSelector:@selector(uiViewForAudioUnit:withSize:)]) {
-			return true;
-		}
-	}
+      return true;
+    }
+  }
   return false;
 }
 
 NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
-	// get AU's Cocoa view property
+  // get AU's Cocoa view property
   UInt32 dataSize = 0;
   Boolean isWritable;
   UInt32 numberOfClasses;
@@ -39,41 +39,41 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
   NSURL *bundleURL = nil;
   NSString *factoryClassName = nil;
 
-	// Does view have custom Cocoa UI?
+  // Does view have custom Cocoa UI?
   if ((result == noErr) && (numberOfClasses > 0) ) {
     cocoaViewInfo = (AudioUnitCocoaViewInfo *)malloc(dataSize);
     if(AudioUnitGetProperty(anUnit, kAudioUnitProperty_CocoaUI,
                             kAudioUnitScope_Global, 0, cocoaViewInfo, &dataSize) == noErr) {
-      bundleURL	= (NSURL *)cocoaViewInfo->mCocoaAUViewBundleLocation;
-			// we only take the first view in this example.
+      bundleURL = (NSURL *)cocoaViewInfo->mCocoaAUViewBundleLocation;
+      // we only take the first view in this example.
       factoryClassName = [[(id)cocoaViewInfo->mCocoaAUViewClass[0] retain] autorelease];
     } else {
       if (cocoaViewInfo != NULL) {
-				free (cocoaViewInfo);
-				cocoaViewInfo = NULL;
-			}
+        free (cocoaViewInfo);
+        cocoaViewInfo = NULL;
+      }
     }
   }
 
-	NSView *AUView = nil;
-	// Show custom UI if view has it
-	if (bundleURL && factoryClassName) {
-		NSBundle *viewBundle = [NSBundle bundleWithPath:[bundleURL path]];
-		if (viewBundle == nil) {
-			NSLog (@"Error loading AU view's bundle");
-		} else {
-			Class factoryClass = [viewBundle classNamed:factoryClassName];
-			WBAssert(factoryClass != nil, @"Error getting AU view's factory class from bundle");
+  NSView *AUView = nil;
+  // Show custom UI if view has it
+  if (bundleURL && factoryClassName) {
+    NSBundle *viewBundle = [NSBundle bundleWithPath:[bundleURL path]];
+    if (viewBundle == nil) {
+      NSLog (@"Error loading AU view's bundle");
+    } else {
+      Class factoryClass = [viewBundle classNamed:factoryClassName];
+      WBAssert(factoryClass != nil, @"Error getting AU view's factory class from bundle");
 
-			// make sure 'factoryClass' implements the AUCocoaUIBase protocol
-			WBAssert(_WBAUCocoaViewIsValid(factoryClass),
-                @"AU view's factory class does not properly implement the AUCocoaUIBase protocol");
+      // make sure 'factoryClass' implements the AUCocoaUIBase protocol
+      WBAssert(_WBAUCocoaViewIsValid(factoryClass),
+               @"AU view's factory class does not properly implement the AUCocoaUIBase protocol");
 
-			// make a factory
-			id<AUCocoaUIBase> factoryInstance = [[[factoryClass alloc] init] autorelease];
-			WBAssert (factoryInstance != nil, @"Could not create an instance of the AU view factory");
-			// make a view
-			AUView = [factoryInstance	uiViewForAudioUnit:anUnit withSize:aSize];
+      // make a factory
+      id<AUCocoaUIBase> factoryInstance = [[[factoryClass alloc] init] autorelease];
+      WBAssert (factoryInstance != nil, @"Could not create an instance of the AU view factory");
+      // make a view
+      AUView = [factoryInstance uiViewForAudioUnit:anUnit withSize:aSize];
     }
 
     // cleanup
@@ -89,9 +89,9 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
     }
   }
 
-	if (!AUView) { // No custom view (or failed to load), show generic Cocoa view
-		AUView = [[[AUGenericView alloc] initWithAudioUnit:anUnit] autorelease];
-		[(AUGenericView *)AUView setShowsExpertParameters:NO];
+  if (!AUView) { // No custom view (or failed to load), show generic Cocoa view
+    AUView = [[[AUGenericView alloc] initWithAudioUnit:anUnit] autorelease];
+    [(AUGenericView *)AUView setShowsExpertParameters:NO];
   }
 
   return AUView;

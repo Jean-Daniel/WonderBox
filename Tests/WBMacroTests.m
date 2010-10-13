@@ -11,7 +11,7 @@
 #import <GHUnit/GHUnit.h>
 
 @interface WBMacroTests : GHTestCase {
-  
+
 }
 
 @end
