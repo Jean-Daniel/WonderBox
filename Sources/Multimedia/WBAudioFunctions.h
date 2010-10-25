@@ -8,10 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <CoreAudio/CoreAudio.h>
-
 #if !defined(__WB_AUDIO_FUNCTIONS_H)
 #define __WB_AUDIO_FUNCTIONS_H 1
+
+#import <CoreAudio/CoreAudio.h>
 
 #include WBHEADER(WBBase.h)
 
