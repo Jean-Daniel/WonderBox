@@ -45,7 +45,7 @@
 @implementation WBSerialQueue
 
 + (id)allocWithZone:(NSZone *)zone {
-  if (self == [WBSerialQueue class]) {
+  if ([WBSerialQueue class] == self) {
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
     if (dispatch_sync_f)
       return [_WBGCDSerialQueue allocWithZone:zone];

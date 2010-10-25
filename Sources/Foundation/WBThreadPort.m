@@ -179,7 +179,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 + (void)initialize {
-  if (self == [WBThreadPort class]) {
+  if ([WBThreadPort class] == self) {
     verify(0 == pthread_key_create(&sThreadRecorderKey, _WBThreadRecorderDestructor));
     verify(0 == pthread_key_create(&sThreadSendPortKey, _WBThreadSendPortDestructor));
     verify(0 == pthread_key_create(&sThreadReceivePortKey, _WBThreadReceivePortDestructor));

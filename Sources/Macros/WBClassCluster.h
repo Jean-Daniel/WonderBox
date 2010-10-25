@@ -119,7 +119,7 @@ static placeholderclass *defaultplaceholder = nil; \
 @implementation classname (WBClassCluster) \
 \
 + (id)allocWithZone:(NSZone *)zone { \
-  if (self == [classname class]) { \
+  if ([classname class] == self) { \
     /* \
      * For a constant string, we return a placeholder object that can \
      * be converted to a real object when its initialisation method \
