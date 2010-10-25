@@ -269,7 +269,7 @@
   if ([item respondsToSelector:@selector(isEditable)] && [item isEditable]) {
     @try {
       NSString *name = [item name];
-      if ([object isKindOfClass:NSString.class] && ![name isEqualToString:object]) {
+      if ([object isKindOfClass:[NSString class]] && ![name isEqualToString:object]) {
         [(WBBaseUITreeNode *)item setName:object];
       }
     } @catch (id exception) {

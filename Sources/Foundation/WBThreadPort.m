@@ -179,7 +179,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 + (void)initialize {
-  if (WBThreadPort.class == self) {
+  if (self == [WBThreadPort class]) {
     verify(0 == pthread_key_create(&sThreadRecorderKey, _WBThreadRecorderDestructor));
     verify(0 == pthread_key_create(&sThreadSendPortKey, _WBThreadSendPortDestructor));
     verify(0 == pthread_key_create(&sThreadReceivePortKey, _WBThreadReceivePortDestructor));
@@ -556,7 +556,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   arg.argument = argument;
 
   [NSThread detachNewThreadSelector:@selector(wb_ThreadPortMain:)
-                           toTarget:_WBThreadArgument.class withObject:arg];
+                           toTarget:[_WBThreadArgument class] withObject:arg];
   // Wait thread initialization
   [condition lock];
   while (!arg.port)

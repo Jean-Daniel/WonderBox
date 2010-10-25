@@ -184,11 +184,11 @@
   WBAssert(wb_item, @"cannot attach nil item");
 
   [wb_item addObserver:self forKeyPath:@"title"
-              options:0 context:_WBCollapseItemView.class];
+              options:0 context:[_WBCollapseItemView class]];
 
   [wb_item addObserver:self forKeyPath:@"view"
               options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-              context:_WBCollapseItemView.class];
+              context:[_WBCollapseItemView class]];
 }
 
 - (void)wb_detachItem {
@@ -233,7 +233,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if (context != _WBCollapseItemView.class)
+  if (context != [_WBCollapseItemView class])
     return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 
   if ([keyPath isEqualToString:@"title"]) {

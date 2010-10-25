@@ -32,7 +32,7 @@ void _WBDaemonCleanup(void) {
 
 static
 void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
-  @synchronized(WBDaemonTask.class) {
+  @synchronized([WBDaemonTask class]) {
     if (!sDaemons) {
       sDaemons = [[NSMutableSet alloc] init];
       atexit(_WBDaemonCleanup);
@@ -321,7 +321,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 
 // MARK: -
 - (void)_cleanup:(BOOL)force {
-  @synchronized(WBDaemonTask.class) {
+  @synchronized([WBDaemonTask class]) {
     [sDaemons removeObject:self];
   }
   if (_registred && (_unregister || force)) {
@@ -388,7 +388,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 //      CFRelease(error);
 //    return NO;
 //  }
-//  @synchronized(WBDaemonTask.class) {
+//  @synchronized([WBDaemonTask class]) {
 //    [sDaemons removeObject:self];
 //  }
 //  [self willChangeValueForKey:@"registred"];

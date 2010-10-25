@@ -62,7 +62,7 @@
   if ([obj respondsToSelector:@selector(name)] && [obj respondsToSelector:@selector(icon)]) {
     [self setTitle:[obj name] ? : @""];
     [self setImage:[obj icon]];
-  } else if ([obj isKindOfClass:NSDictionary.class]) {
+  } else if ([obj isKindOfClass:[NSDictionary class]]) {
     [self setTitle:[obj objectForKey:@"name"] ? : @""];
     [self setImage:[obj objectForKey:@"icon"]];
   } else if ((keys = [obj exposedBindings]) &&

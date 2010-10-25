@@ -157,7 +157,7 @@ bool __IsValidSignature(OSType signature) {
 }
 WB_INLINE
 bool __IsValidIdentifier(id identifier) {
-  return identifier && ![identifier isKindOfClass:NSNull.class];
+  return identifier && ![identifier isKindOfClass:[NSNull class]];
 }
 
 - (NSUInteger)hash {
@@ -169,7 +169,7 @@ bool __IsValidIdentifier(id identifier) {
 - (BOOL)isEqual:(id)object {
   if (self == object) return YES;
 
-  if (![object isKindOfClass:WBApplication.class]) return NO;
+  if (![object isKindOfClass:[WBApplication class]]) return NO;
 
   if ([self signature]) {
     if (![object signature] || [object signature] != wb_signature) return NO;

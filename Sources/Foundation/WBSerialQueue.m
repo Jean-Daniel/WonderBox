@@ -45,7 +45,7 @@
 @implementation WBSerialQueue
 
 + (id)allocWithZone:(NSZone *)zone {
-  if (WBSerialQueue.class == self) {
+  if (self == [WBSerialQueue class]) {
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
     if (dispatch_sync_f)
       return [_WBGCDSerialQueue allocWithZone:zone];
@@ -95,7 +95,7 @@
       [op addDependency:wb_last];
 
     WBSetterRetain(wb_last, op);
-    [op addObserver:self forKeyPath:@"isFinished" options:0 context:_WBSerialOperationQueue.class];
+    [op addObserver:self forKeyPath:@"isFinished" options:0 context:[_WBSerialOperationQueue class]];
   }
   [wb_queue addOperation:op];
 }
@@ -122,7 +122,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if (context == _WBSerialOperationQueue.class) {
+  if (context == [_WBSerialOperationQueue class]) {
     @synchronized(self) {
       [object removeObserver:self forKeyPath:@"isFinished"];
       if (wb_last == object)

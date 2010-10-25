@@ -27,7 +27,7 @@
 
 + (NSString *)nibName { return @"WBTabWindow"; }
 // Force nib search in this bundle, even for subclasses
-+ (NSBundle *)nibBundle { return [NSBundle bundleForClass:WBTabWindowController.class]; }
++ (NSBundle *)nibBundle { return [NSBundle bundleForClass:[WBTabWindowController class]]; }
 
 - (void)dealloc {
   // nullify weak reference
@@ -60,7 +60,7 @@
   NSMutableDictionary *cache = [[NSMutableDictionary alloc] initWithCapacity:[wb_identifiers count]];
   for (NSUInteger idx = 0, count = [classes count]; idx < count; ++idx) {
     Class cls = [classes objectAtIndex:idx];
-    WBAssert([cls isSubclassOfClass:WBTabWindowItem.class], @"Invalid Item Class: %@", cls);
+    WBAssert([cls isSubclassOfClass:[WBTabWindowItem class]], @"Invalid Item Class: %@", cls);
     [cache setObject:cls forKey:[wb_identifiers objectAtIndex:idx]];
   }
   wb_classes = cache;
