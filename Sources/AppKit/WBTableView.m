@@ -58,20 +58,18 @@
   switch ([theEvent keyCode]) {
     case 0x033: //kVirtualDeleteKey:
     case 0x075: //kVirtualForwardDeleteKey:
-      [self wb_deleteSelection];
-      break;
+      return [self wb_deleteSelection];
     case 0x04C: //kVirtualEnterKey:
     case 0x024: //kVirtualReturnKey:
     {
       id target = [self target];
       SEL doubleAction = [self doubleAction];
-      if ([self sendAction:doubleAction to:target]) {
-        break;
-      }
+      if (doubleAction && [self sendAction:doubleAction to:target])
+        return;
     }
-    default:
-      [super keyDown:theEvent];
+    default: break;
   }
+  [super keyDown:theEvent];
 }
 
 - (void)editColumn:(NSInteger)column row:(NSInteger)row {
