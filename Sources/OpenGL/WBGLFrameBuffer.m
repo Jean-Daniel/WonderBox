@@ -13,6 +13,9 @@
 #import <OpenGL/CGLMacro.h>
 #import <OpenGL/glu.h>
 
+static
+const char*_WBGLFrameBufferGetErrorString(GLenum error);
+
 @implementation WBGLFrameBuffer
 
 - (id)initWithContext:(CGLContextObj)CGL_MACRO_CONTEXT {
@@ -72,7 +75,8 @@ WB_INLINE
 void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum mode) {
   GLuint save;
   glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
-  WBAssert(GL_ZERO == glGetError(), @"error while getting actual FBO");
+  GLint err = glGetError();
+  WBAssert(GL_ZERO == err, @"Invalid FBO: %s", _WBGLFrameBufferGetErrorString(err));
 
   if (save != fbo)
     WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
@@ -382,16 +386,16 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 @end
 
 #pragma mark ===== Validation =====
-#define kOpenGLFramebufferUnsupported                   @"OpenGL framebuffer unsupported! Choose different format."
-#define kOpenGLFramebufferIncompleteAttachement         @"OpenGL framebuffer incomplete attachment!"
-#define kOpenGLFramebufferIncompleteMissingAttachement  @"OpenGL framebuffer incomplete missing attachment!"
-#define KOpenGLFramebufferIncompleteDimensions          @"OpenGL framebuffer incomplete dimensions!"
-#define kOpenGLFramebufferIncompleteFormats             @"OpenGL framebuffer incomplete formats!"
-#define kOpenGLFramebufferIncompleteDrawBuffer          @"OpenGL framebuffer incomplete draw buffer!"
-#define kOpenGLFramebufferIncompleteReadBuffer          @"OpenGL framebuffer incomplete read buffer!"
-#define kOpenGLFramebufferDefaultMessage                @"Undefined error !"
+#define kOpenGLFramebufferUnsupported                   "OpenGL framebuffer unsupported! Choose different format."
+#define kOpenGLFramebufferIncompleteAttachement         "OpenGL framebuffer incomplete attachment!"
+#define kOpenGLFramebufferIncompleteMissingAttachement  "OpenGL framebuffer incomplete missing attachment!"
+#define KOpenGLFramebufferIncompleteDimensions          "OpenGL framebuffer incomplete dimensions!"
+#define kOpenGLFramebufferIncompleteFormats             "OpenGL framebuffer incomplete formats!"
+#define kOpenGLFramebufferIncompleteDrawBuffer          "OpenGL framebuffer incomplete draw buffer!"
+#define kOpenGLFramebufferIncompleteReadBuffer          "OpenGL framebuffer incomplete read buffer!"
+#define kOpenGLFramebufferDefaultMessage                "Undefined error !"
 
-NSString *WBGLFrameBufferGetErrorString(GLenum error) {
+const char*_WBGLFrameBufferGetErrorString(GLenum error) {
   switch (error) {
     default: return kOpenGLFramebufferDefaultMessage;
     case GL_FRAMEBUFFER_COMPLETE_EXT: return nil;
@@ -402,6 +406,20 @@ NSString *WBGLFrameBufferGetErrorString(GLenum error) {
     case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: return kOpenGLFramebufferIncompleteFormats;
     case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: return kOpenGLFramebufferIncompleteDrawBuffer;
     case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: return kOpenGLFramebufferIncompleteReadBuffer;
+  }
+}
+
+NSString *WBGLFrameBufferGetErrorString(GLenum error) {
+  switch (error) {
+    default: return @kOpenGLFramebufferDefaultMessage;
+    case GL_FRAMEBUFFER_COMPLETE_EXT: return nil;
+    case GL_FRAMEBUFFER_UNSUPPORTED_EXT: return @kOpenGLFramebufferUnsupported;
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: return @kOpenGLFramebufferIncompleteAttachement;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT: return @kOpenGLFramebufferIncompleteMissingAttachement;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT: return @KOpenGLFramebufferIncompleteDimensions;
+    case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT: return @kOpenGLFramebufferIncompleteFormats;
+    case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT: return @kOpenGLFramebufferIncompleteDrawBuffer;
+    case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT: return @kOpenGLFramebufferIncompleteReadBuffer;
   }
 }
 
