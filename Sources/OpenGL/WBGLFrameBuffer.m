@@ -14,7 +14,7 @@
 #import <OpenGL/glu.h>
 
 static
-const char*_WBGLFrameBufferGetErrorString(GLenum error);
+const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 
 @implementation WBGLFrameBuffer
 
