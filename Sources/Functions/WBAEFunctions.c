@@ -99,8 +99,14 @@ OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target) {
   if (!CFStringGetCString(bundleId, bundleStr, 512, kCFStringEncodingUTF8))
     err = coreFoundationUnknownErr;
 
-  if (noErr == err)
-    err = AECreateDesc(typeApplicationBundleID, bundleStr, strlen(bundleStr), target);
+  if (noErr == err) {
+    size_t length = strlen(bundleStr);
+    if (length <= LONG_MAX)
+      err = AECreateDesc(typeApplicationBundleID, bundleStr, (Size)length, target);
+    else
+      err = errAEIndexTooLarge;
+  }
+
   return err;
 }
 
@@ -144,19 +150,23 @@ OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc) {
   UniChar stackStr[512];
 
   CFIndex length = CFStringGetLength(string);
-  if (!length)
+  // Note: We need to check CFIndex overflow.
+  // It should be (lenght * sizeof(UniChar) > CFINDEX_MAX), but
+  // it may overflow, and CFINDEX_MAX is not defined
+  if (!length || length > (LONG_MAX / (CFIndex)sizeof(UniChar)))
     return paramErr;
 
   CFRange range = CFRangeMake(0, length);
+  CFIndex buflen = length * (CFIndex)sizeof(UniChar);
   if (length <= 512) {
     str = stackStr;
   } else {
-    str = CFAllocatorAllocate(kCFAllocatorDefault, length * sizeof(UniChar), 0);
+    str = CFAllocatorAllocate(kCFAllocatorDefault, buflen, 0);
     if (!str)
       return memFullErr;
   }
   CFStringGetCharacters(string, range, str);
-  err = AECreateDesc(typeUnicodeText, str, length * sizeof(UniChar), desc);
+  err = AECreateDesc(typeUnicodeText, str, buflen, desc);
   if (str != stackStr) CFAllocatorDeallocate(kCFAllocatorDefault, str);
 
   return err;
@@ -424,24 +434,31 @@ OSStatus WBAEAddCFStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, C
 
   OSStatus err = noErr;
   if (str) {
-    UniChar buffer[2048];
-    Boolean release = false;
     CFIndex length = CFStringGetLength(str);
-    UniChar *chr = (UniChar *)CFStringGetCharactersPtr(str);
-    if (!chr) {
-      if (length < 2048) {
-        chr = buffer;
-      } else {
-        release = true;
-        chr = CFAllocatorAllocate(kCFAllocatorDefault, length * sizeof(UniChar), 0);
-      }
-      CFStringGetCharacters(str, CFRangeMake(0, length), chr);
-    }
-    // typeUnicodeText: native byte ordering, optional BOM
-    err = WBAEAddParameter(theEvent, keyword, typeUnicodeText, chr, length * sizeof(UniChar));
+    // Check CFIndex overflow
+    if (length > (LONG_MAX / (CFIndex)sizeof(UniChar)))
+      err = memFullErr;
 
-    if (release)
-      CFAllocatorDeallocate(kCFAllocatorDefault, chr);
+    if (noErr == err) {
+      UniChar buffer[2048];
+      Boolean release = false;
+      CFIndex buflen = length * (CFIndex)sizeof(UniChar);
+      UniChar *chr = (UniChar *)CFStringGetCharactersPtr(str);
+      if (!chr) {
+        if (length < 2048) {
+          chr = buffer;
+        } else {
+          release = true;
+          chr = CFAllocatorAllocate(kCFAllocatorDefault, buflen, 0);
+        }
+        CFStringGetCharacters(str, CFRangeMake(0, length), chr);
+      }
+      // typeUnicodeText: native byte ordering, optional BOM
+      err = WBAEAddParameter(theEvent, keyword, typeUnicodeText, chr, buflen);
+
+      if (release)
+        CFAllocatorDeallocate(kCFAllocatorDefault, chr);
+    }
   } else {
     err = WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
   }
@@ -825,7 +842,7 @@ OSStatus WBAECopyCFStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* aStr
           if (NULL != characters) {
             err = AEGetDescData(&uniAEDesc, characters, bufSize);
             if (noErr == err) {
-              *aString = CFStringCreateWithCharactersNoCopy(kCFAllocatorDefault, characters, bufSize / sizeof(UniChar), kCFAllocatorDefault);
+              *aString = CFStringCreateWithCharactersNoCopy(kCFAllocatorDefault, characters, bufSize / (CFIndex)sizeof(UniChar), kCFAllocatorDefault);
               if (!*aString) {
                 err = coreFoundationUnknownErr;
                 CFAllocatorDeallocate(kCFAllocatorDefault, characters);

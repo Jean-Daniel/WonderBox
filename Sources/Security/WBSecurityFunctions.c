@@ -13,7 +13,7 @@
 
 #include <unistd.h>
 
-OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght) {
+OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght) {
   OSStatus err = noErr;
 #if 0
   const CSSM_KEY *ckey;
@@ -122,9 +122,13 @@ OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
   err = SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)cert, &info, NULL, &list, NULL, NULL);
   if (noErr == err) {
     SecKeychainAttribute *attr = list->attr;
-    *label = CFStringCreateWithBytes(kCFAllocatorDefault, attr->data, attr->length, kCFStringEncodingUTF8, FALSE);
-    if (!*label)
-      err = -1;
+    if (attr->length > LONG_MAX)
+      err = memFullErr;
+    else {
+      *label = CFStringCreateWithBytes(kCFAllocatorDefault, attr->data, (CFIndex)attr->length, kCFStringEncodingUTF8, FALSE);
+      if (!*label)
+        err = coreFoundationUnknownErr;
+    }
 
     SecKeychainItemFreeAttributesAndData(list, NULL); // ignore err
   }
@@ -338,7 +342,7 @@ CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialTy
       } else {
         ssize_t count = 0;
         while (CSSM_OK == err && (count = read(fd, buffer, blen)) > 0) {
-          CSSM_DATA data = { count, buffer };
+          CSSM_DATA data = { (CSSM_SIZE)count, buffer };
           err = CSSM_SignDataUpdate(ctxt, &data, 1);
         }
         if (count < 0)
@@ -380,7 +384,7 @@ CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *sig
       } else {
         ssize_t count = 0;
         while (CSSM_OK == err && (count = read(fd, buffer, blen)) > 0) {
-          CSSM_DATA data = { count, buffer };
+          CSSM_DATA data = { (CSSM_SIZE)count, buffer };
           err = CSSM_VerifyDataUpdate(ctxt, &data, 1);
         }
         if (count < 0)

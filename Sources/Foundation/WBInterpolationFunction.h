@@ -69,6 +69,4 @@ WB_EXPORT
 CGFloat WBBezierCurveSolve(const WBBezierCurve *curve, CGFloat x, CGFloat epsilon);
 
 WB_INLINE
-CGFloat WBBezierCurveEpsilonForDuration(CGFloat duration) {
-  return 1.0 / (200.0 * duration);
-}
+CGFloat WBBezierCurveEpsilonForDuration(CGFloat duration) { return 1 / (200 * duration); }

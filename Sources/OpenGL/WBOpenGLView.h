@@ -20,7 +20,7 @@ WB_CLASS_EXPORT
     unsigned int doublebuf:1;
     unsigned int drawResize:1;
     unsigned int transparent:1;
-    unsigned int syncSwap:8;
+    unsigned int syncSwap:1;
     unsigned int reserved:2;
   } wb_glvFlags;
 }

@@ -21,25 +21,24 @@ WB_CLASS_EXPORT
 @private
   GLuint wb_name;
   GLenum wb_target;
+  GLint wb_zoff, wb_level;
   GLuint wb_width, wb_height;
 
   struct {
     unsigned int type:2;
-    unsigned int zoff:7;
-    unsigned int level:7;
   } wb_fbaFlags;
 }
 
 + (id)depthBufferWithBitsSize:(NSUInteger)bits width:(GLuint)w height:(GLuint)h context:(CGLContextObj)aContext;
 + (id)stencilBufferWithBitsSize:(NSUInteger)bits width:(GLuint)w height:(GLuint)h context:(CGLContextObj)aContext;
 
-- (id)initWithRendererBuffer:(GLint)aBuffer width:(GLuint)w height:(GLuint)h;
+- (id)initWithRendererBuffer:(GLuint)aBuffer width:(GLuint)w height:(GLuint)h;
 
-//- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget context:(CGLContextObj)theContext;
+//- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget context:(CGLContextObj)theContext;
 
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h;
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel width:(GLuint)w height:(GLuint)h;
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel zOffset:(GLint)offset width:(GLuint)w height:(GLuint)h;
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h;
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget level:(GLint)aLevel width:(GLuint)w height:(GLuint)h;
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget level:(GLint)aLevel zOffset:(GLint)offset width:(GLuint)w height:(GLuint)h;
 
 /* helper */
 - (id)initRendererBufferWithFormat:(GLenum)format width:(GLuint)w height:(GLuint)h context:(CGLContextObj)CGL_MACRO_CONTEXT;
@@ -81,7 +80,7 @@ WB_CLASS_EXPORT
 // use to release resources in a deterministic way.
 - (void)delete:(CGLContextObj)aContext;
 
-- (GLint)frameBufferObject;
+- (GLuint)frameBufferObject;
 
 - (NSUInteger)maxBufferCount:(CGLContextObj)aContext;
 // return 0 if FBO complete, else return a status enum.

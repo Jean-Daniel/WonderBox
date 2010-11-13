@@ -17,7 +17,7 @@
 
 #pragma mark Keys
 WB_EXPORT
-OSStatus WBKeyGetStrengthInBits(SecKeyRef key, CFIndex *strenght);
+OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght);
 WB_EXPORT
 OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) WB_OBSOLETE;
 

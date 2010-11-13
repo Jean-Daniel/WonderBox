@@ -114,6 +114,11 @@ bool WBVersionDecompose(CFStringRef version, CFIndex *major, CFIndex *minor, CFI
 }
 
 CFStringRef WBVersionCreateString(CFIndex major, CFIndex minor, CFIndex bug, WBVersionStage stage, CFIndex build) {
+  if (major < 0 || minor < 0 || bug < 0 || stage < 0 || build < 0)
+    return NULL;
+  if (stage > kWBVersionStageFinal) // undefined stage
+    return NULL;
+
   CFMutableStringRef str = CFStringCreateMutable(kCFAllocatorDefault, 64);
   CFStringAppendFormat(str, NULL, CFSTR("%lu.%lu"), (long)major, (long)minor);
   if (bug)
@@ -176,7 +181,9 @@ CFStringRef WBVersionCreateStringForNumber(UInt64 version) {
 UInt64 WBVersionComposeNumber(CFIndex major, CFIndex minor, CFIndex bug, WBVersionStage stage, CFIndex build) {
   if (major > 0xffff || minor > 0xffff || bug > 0xffff || stage > 0x7 || build > 0x1fff)
     return kWBVersionInvalid;
-  return ((UInt64)major & 0xffff) << 48 | ((UInt64)minor & 0xffff) << 32 | (bug & 0xffff) << 16 | (stage & 0x7) << 13 | (build & 0x1fff);
+  if (major < 0 || minor < 0 || bug < 0 || stage < 0 || build < 0)
+    return kWBVersionInvalid;
+  return ((UInt64)major & 0xffff) << 48 | ((UInt64)minor & 0xffff) << 32 | ((uint32_t)bug & 0xffff) << 16 | ((uint32_t)stage & 0x7) << 13 | (build & 0x1fff);
 }
 
 void WBVersionDecomposeNumber(UInt64 version, CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build) {

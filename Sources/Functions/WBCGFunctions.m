@@ -111,7 +111,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
   CGPathCloseSubpath(path);
 }
 
-#define KAPPA 0.5522847498
+#define KAPPA (CGFloat)0.5522847498
 void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
   CGFloat x = CGRectGetMinX(rect);
   CGFloat y = CGRectGetMinY(rect);
@@ -220,12 +220,12 @@ void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloa
   if (sides < 5) return;
 
   /* angles */
-  CGFloat omega = M_PI_2;
-  CGFloat delta = M_PI / sides;
+  CGFloat omega = (CGFloat)M_PI_2;
+  CGFloat delta = (CGFloat)M_PI / sides;
 
   /* Internal rayon */
   if (ir <= 0)
-    ir = r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta);
+    ir = (CGFloat)(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
 
   CGContextMoveToPoint(ctxt, center.x, center.y + r);
   omega -= delta;
@@ -243,12 +243,12 @@ void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, 
   if (sides < 5) return;
 
   /* angles */
-  CGFloat omega = M_PI_2;
-  CGFloat delta = M_PI / sides;
+  CGFloat omega = (CGFloat)M_PI_2;
+  CGFloat delta = (CGFloat)M_PI / sides;
 
   /* Internal rayon */
   if (ir <= 0)
-    ir = r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta);
+    ir = (CGFloat)(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
 
   CGPathMoveToPoint(path, transform, center.x, center.y + r);
   omega -= delta;
@@ -269,12 +269,12 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   CGFloat width = CGRectGetMaxX(rect);
   CGFloat height = CGRectGetHeight(rect);
 
-  CGFloat step = pi * height / (2 * period);
+  CGFloat step = (CGFloat)(M_PI * height / (2 * period));
   CGFloat delta = period * step;
 
   CGFloat end, center, middle;
   middle = CGRectGetMidY(rect);
-  end = CGRectGetMinX(rect) - 3 * step/2.;
+  end = CGRectGetMinX(rect) - 3 * step / 2;
 
   CGContextBeginPath(context);
   /* Move to x, mid y */
@@ -369,14 +369,32 @@ CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictiona
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   CGImageRef result = NULL;
   CGSize size = CGLayerGetSize(layer);
+  if (size.width <= 1 || size.height <= 1)
+    return NULL;
+
+  // Probably useless as it contains Layer Size which is already limited
+  if (size.width * sizeof(UInt32) > SIZE_T_MAX || size.height > SIZE_T_MAX)
+    return NULL;
+
+  // Check buffer overflow in malloc
+  double bsize = size.width * size.height * sizeof(UInt32);
+  if (bsize > SIZE_T_MAX)
+    return NULL;
+
+  void *buffer = malloc(ulround(bsize));
+  if (!buffer)
+    return NULL;
+
   CGColorSpaceRef space = WBCGColorSpaceCreateRGB();
-  CGContextRef bitmap = CGBitmapContextCreate(malloc(size.width * size.height * sizeof(UInt32)), size.width, size.height, 8, size.width * sizeof(UInt32), space, kCGImageAlphaPremultipliedLast);
+  CGContextRef bitmap = CGBitmapContextCreate(buffer, (size_t)size.width, (size_t)size.height, 8,
+                                              (size_t)(size.width * sizeof(UInt32)), space, kCGImageAlphaPremultipliedLast);
   if (bitmap) {
     CGContextDrawLayerInRect(bitmap, CGRectMake(0, 0, size.width, size.height), layer);
     result = CGBitmapContextCreateImage(bitmap);
     CGContextRelease(bitmap);
   }
   CGColorSpaceRelease(space);
+  free(buffer);
   return result;
 }
 

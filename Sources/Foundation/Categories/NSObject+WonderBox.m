@@ -18,7 +18,7 @@
 - (void)cancelPerformSelectorASAP:(SEL)aSelector withObject:(id)anObject {
   [[NSRunLoop currentRunLoop] cancelPerformSelector:aSelector target:self argument:anObject];
 }
-- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject order:(NSInteger)anOrder inModes:(NSArray *)theModes {
+- (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject order:(NSUInteger)anOrder inModes:(NSArray *)theModes {
   [[NSRunLoop currentRunLoop] performSelector:aSelector
                                        target:self
                                      argument:anObject

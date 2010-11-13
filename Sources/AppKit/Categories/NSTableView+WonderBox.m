@@ -50,9 +50,9 @@
       BOOL add;
       if (outlineView)
         add = [[(NSOutlineView *)self delegate] outlineView:(NSOutlineView *)self
-                                           shouldSelectItem:[(NSOutlineView *)self itemAtRow:row]];
+                                           shouldSelectItem:[(NSOutlineView *)self itemAtRow:(NSInteger)row]];
       else
-        add = [[self delegate] tableView:self shouldSelectRow:row];
+        add = [[self delegate] tableView:self shouldSelectRow:(NSInteger)row];
 
       if (add) {
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:extends];
@@ -66,11 +66,13 @@
 }
 
 - (void)wb_selectSingleRow:(NSInteger)aRow {
-  [self wb_selectRows:[NSIndexSet indexSetWithIndex:aRow] byExtendingSelection:NO];
+  if (aRow >= 0)
+    [self wb_selectRows:[NSIndexSet indexSetWithIndex:(NSUInteger)aRow] byExtendingSelection:NO];
 }
 
 - (void)wb_addRowToSelection:(NSInteger)aRow {
-  [self wb_selectRows:[NSIndexSet indexSetWithIndex:aRow] byExtendingSelection:YES];
+  if (aRow >= 0)
+    [self wb_selectRows:[NSIndexSet indexSetWithIndex:(NSUInteger)aRow] byExtendingSelection:YES];
 }
 
 - (void)handleSelectEvent:(NSEvent *)theEvent {
@@ -105,9 +107,9 @@
       if (last >= 0 && last != row) {
         NSRange range;
         if (last < row) {
-          range = NSMakeRange(last, row - last + 1);
+          range = NSMakeRange((NSUInteger)last, (NSUInteger)(row - last) + 1);
         } else {
-          range = NSMakeRange(row, last - row + 1);
+          range = NSMakeRange((NSUInteger)row, (NSUInteger)(last - row) + 1);
         }
         [self wb_selectRows:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:NO];
       }
@@ -121,7 +123,7 @@
 }
 
 - (BOOL)wb_handleMenuForEvent:(NSEvent *)theEvent row:(NSInteger)row {
-  if (row != -1) {
+  if (row >= 0) {
     if ([theEvent modifierFlags] & NSCommandKeyMask) {
       //      if ([self isRowSelected:row]) {
       //        [self deselectRow:row];
@@ -130,7 +132,7 @@
       //      } else
       if ([self numberOfSelectedRows] == 0 || [self allowsMultipleSelection]) {
         //if (WBDelegateHandle([self delegate],
-        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:YES];
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)row] byExtendingSelection:YES];
       }
       return NO;
     } else if ([theEvent modifierFlags] & NSShiftKeyMask) {
@@ -146,9 +148,9 @@
           if (last != -1) {
             NSRange range;
             if (last < row) {
-              range = NSMakeRange(last, row - last + 1);
+              range = NSMakeRange((NSUInteger)last, (NSUInteger)(row - last) + 1);
             } else {
-              range = NSMakeRange(row, last - row);
+              range = NSMakeRange((NSUInteger)row, (NSUInteger)(last - row));
             }
             [self selectRowIndexes:[NSIndexSet indexSetWithIndexesInRange:range] byExtendingSelection:YES];
           }
@@ -156,7 +158,7 @@
       }
     } else {
       if (![self isRowSelected:row])
-        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)row] byExtendingSelection:NO];
     }
   }
   [self displayIfNeeded];

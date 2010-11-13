@@ -51,7 +51,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 - (id)initWithColorSpace:(NSColorSpace *)aColorSpace {
   if (self = [super init]) {
     wb_cs = [aColorSpace ? : [NSColorSpace genericRGBColorSpace] retain];
-    NSUInteger count = [wb_cs numberOfColorComponents] + 1; // add one for alpha
+    NSUInteger count = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // add one for alpha
     if (count < 2 || count > 5) {
       WBLogError(@"WBGradient: Unsupported color space: %@", wb_cs);
       [self release];
@@ -148,7 +148,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
                  to:(CGFloat)endLocation components:(const CGFloat *)endColor interpolation:(WBInterpolationFunction *)fct {
   [self wb_checkLocation:startLocation end:endLocation];
 
-  NSUInteger cnt = [wb_cs numberOfColorComponents] + 1; // + one for alpha
+  NSUInteger cnt = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // + one for alpha
   WBGradientStep *step = [[WBGradientStep alloc] initWithComponents:cnt];
   [step setStartColor:startColor];
   [step setEndColor:endColor];
@@ -165,7 +165,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
   if ([wb_steps count] == 0)
     WBThrowException(NSInvalidArgumentException, @"cannot create empty shading");
 
-  size_t components = [wb_cs numberOfColorComponents] + 1; // + one for alpha
+  size_t components = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // + one for alpha
   CGFloat input_value_range [2] = { 0, 1 }; // on input, value varying in [0; 1]
   CGFloat output_value_ranges [components * 2]; // on output, color components
   for (NSUInteger idx = 0; idx < components; idx++) {
@@ -231,8 +231,8 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
     double a = fabs(tan(angle));
     double b = size.height + size.width/a;
 
-    p2.x = (a * b) / (a * a + 1); // x = (a * b) / (a^2 + 1)
-    p2.y = a * p2.x; // y = a * x
+    p2.x = (CGFloat)((a * b) / (a * a + 1)); // x = (a * b) / (a^2 + 1)
+    p2.y = (CGFloat)(a * p2.x);              // y = a * x
   }
 
   // take care of orientation
@@ -293,7 +293,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 - (id)initWithComponents:(NSUInteger)count {
   NSParameterAssert(count > 0 && count <= 5);
   if (self = [super init]) {
-    wb_cnt = count;
+    wb_cnt = (uint8_t)count;
   }
   return self;
 }

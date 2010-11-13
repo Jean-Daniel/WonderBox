@@ -35,8 +35,8 @@
     wb_uid = [[aCoder decodeObjectForKey:@"item.identifier"] retain];
     wb_owner = [aCoder decodeObjectForKey:@"item.owner"];
 
-    wb_cviFlags.animates = [aCoder decodeBoolForKey:@"item.flags.animates"];
-    wb_cviFlags.expanded = [aCoder decodeBoolForKey:@"item.flags.expanded"];
+    WBFlagSet(wb_cviFlags.animates, [aCoder decodeBoolForKey:@"item.flags.animates"]);
+    WBFlagSet(wb_cviFlags.expanded, [aCoder decodeBoolForKey:@"item.flags.expanded"]);
   }
   return self;
 }

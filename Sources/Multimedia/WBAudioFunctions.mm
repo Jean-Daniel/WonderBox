@@ -45,7 +45,7 @@ UInt32 WBAudioChannelLayoutGetNumberOfChannels(const AudioChannelLayout *inLayou
     return inLayout->mNumberChannelDescriptions;
 
   if (inLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelBitmap)
-    return __builtin_popcount(inLayout->mChannelBitmap);
+    return (UInt32)__builtin_popcount(inLayout->mChannelBitmap);
 
   return AudioChannelLayoutTag_GetNumberOfChannels(inLayout->mChannelLayoutTag);
 }

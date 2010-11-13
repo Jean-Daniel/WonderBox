@@ -59,7 +59,7 @@
 
 @interface _WBCollapseItemBodyView : NSView {
 @private
-  unsigned int wb_flipped:1;
+  uint8_t wb_flipped:1;
 }
 
 - (void)setFlipped:(BOOL)flag;
@@ -413,7 +413,7 @@
     switch ([theEvent type]) {
       case NSLeftMouseDragged:
         if (wb_chvFlags.highlight != (uint8_t)isInside) {
-          wb_chvFlags.highlight = isInside;
+          WBFlagSet(wb_chvFlags.highlight, isInside);
           //[wb_disclose setState:isInside ? NSMixedState : [wb_item isExpanded] ? NSOnState : NSOffState];
           [self setNeedsDisplayInRect:bounds];
         }
@@ -445,8 +445,8 @@
   background.origin.y += 1;
 
   if (!sHeaderBackground) {
-    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:.733 alpha:1]
-                                                                endingColor:[NSColor colorWithCalibratedWhite:.9 alpha:1]];
+    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:(CGFloat).733 alpha:1]
+                                                                endingColor:[NSColor colorWithCalibratedWhite:(CGFloat).9 alpha:1]];
     sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
     [b release];
   }
@@ -463,10 +463,10 @@
   CGContextSetLineWidth(ctxt, 1);
   {
     // first line
-    CGContextSetGrayStrokeColor(ctxt, .33, 1);
+    CGContextSetGrayStrokeColor(ctxt, (CGFloat).33, 1);
     CGPoint line[] = {
-      CGPointMake(NSMinX(bounds), NSMinY(bounds) + .5),
-      CGPointMake(NSMaxX(bounds), NSMinY(bounds) + .5)
+      CGPointMake(NSMinX(bounds), NSMinY(bounds) + (CGFloat).5),
+      CGPointMake(NSMaxX(bounds), NSMinY(bounds) + (CGFloat).5)
     };
     CGContextStrokeLineSegments(ctxt, line, 2);
   }
@@ -476,7 +476,7 @@
 
 @implementation _WBCollapseItemBodyView
 
-- (BOOL)isFlipped { return wb_flipped; }
+- (BOOL)isFlipped { return (BOOL)wb_flipped; }
 - (void)setFlipped:(BOOL)flag { WBFlagSet(wb_flipped, flag); }
 
 - (void)drawRect:(NSRect)aRect {
@@ -486,11 +486,11 @@
     CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
     CGContextSetLineWidth(ctxt, 1);
 
-    CGFloat y = [self isFlipped] ? NSMaxY(bounds) - .5 : NSMinY(bounds) + .5;
+    CGFloat y = [self isFlipped] ? NSMaxY(bounds) - (CGFloat).5 : NSMinY(bounds) + (CGFloat).5;
     line[0] = CGPointMake(NSMinX(bounds), y);
     line[1] = CGPointMake(NSMaxX(bounds), y);
 
-    CGContextSetGrayStrokeColor(ctxt, .33, 1);
+    CGContextSetGrayStrokeColor(ctxt, (CGFloat).33, 1);
     CGContextStrokeLineSegments(ctxt, line, 2);
   }
 }

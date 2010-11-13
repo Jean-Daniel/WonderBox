@@ -388,7 +388,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
   _WBRecorderProxy *recorder = _WBThreadGetRecorder();
   [recorder setPort:self];
-  [recorder setMode:synch];
+  [recorder setMode:(int8_t)synch];
   [recorder setTarget:target];
   return recorder;
 }
@@ -581,7 +581,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (id)initWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
   /* NSProxy does not implements init */
-  wb_sync = synch;
+  wb_sync = (int8_t)synch;
   wb_timeout = timeout;
   wb_port = [port retain];
   wb_target = [target retain];

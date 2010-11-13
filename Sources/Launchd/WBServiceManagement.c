@@ -310,10 +310,10 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
       length = CFStringGetBytes(str, CFRangeMake(0, CFStringGetLength(str)), encoding, 0, FALSE, NULL, 0, &length);
       if (length < 0) {
         result = kTextUndefinedElementErr;
-      } else if (length >= kStackBufferSize) {
+      } else if (length >= kStackBufferSize && (size_t)length < (LONG_MAX / sizeof(*buffer)) - 1) {
         /* If real size > stack buffer, allocate a true heap buffer */
         length++; /* null terminate string */
-        buffer = CFAllocatorAllocate(kCFAllocatorDefault, length * sizeof(*buffer), 0);
+        buffer = CFAllocatorAllocate(kCFAllocatorDefault, length * (CFIndex)sizeof(*buffer), 0);
       } else {
         /* Set length to max stack buffer size */
         length = kStackBufferSize;
@@ -325,7 +325,7 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
     if (length > 0) {
       if (CFStringGetBytes(str, CFRangeMake(0, CFStringGetLength(str)), encoding, 0, false, (UInt8 *)buffer, length - 1, &length)) {
         buffer[length] = '\0'; // GetBytes does not append zero at buffer end.
-        cb(buffer, length, ctxt);
+        cb(buffer, (size_t)length, ctxt);
       } else {
         result = kTextUndefinedElementErr;
       }
@@ -365,9 +365,14 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
     case LAUNCH_DATA_STRING:
       object = CFStringCreateWithCString(kCFAllocatorDefault, launch_data_get_string(data), kCFStringEncodingUTF8);
       break;
-    case LAUNCH_DATA_OPAQUE:
-      object = CFDataCreate(kCFAllocatorDefault, launch_data_get_opaque(data), launch_data_get_opaque_size(data));
+    case LAUNCH_DATA_OPAQUE: {
+      size_t s = launch_data_get_opaque_size(data);
+      if (s <= LONG_MAX)
+        object = CFDataCreate(kCFAllocatorDefault, launch_data_get_opaque(data), (CFIndex)s);
+      else
+        WBCLogError("Launchd data too big to fit in CFData object (%zu bytes)", s);
       break;
+    }
     case LAUNCH_DATA_ERRNO:
       object = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, launch_data_get_errno(data), NULL);
       break;
@@ -404,8 +409,10 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
 //}
 
 CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) {
-  CFMutableArrayRef array = CFArrayCreateMutable(kCFAllocatorDefault, launch_data_array_get_count(data), &kCFTypeArrayCallBacks);
-  for (size_t idx = 0, count = launch_data_array_get_count(data); idx < count; ++idx) {
+  size_t count = launch_data_array_get_count(data);
+  if (count > LONG_MAX) return NULL;
+  CFMutableArrayRef array = CFArrayCreateMutable(kCFAllocatorDefault, (CFIndex)count, &kCFTypeArrayCallBacks);
+  for (size_t idx = 0; idx < count; ++idx) {
     CFTypeRef item = _WBServiceCreateObjectFromData(launch_data_array_get_index(data, idx));
     if (item) {
       CFArrayAppendValue(array, item);
@@ -444,7 +451,9 @@ void __WBServiceCreateDictionary(const launch_data_t value, const char *key, voi
 }
 
 CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data) {
-  CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorDefault, launch_data_dict_get_count(data),
+  size_t count = launch_data_array_get_count(data);
+  if (count > LONG_MAX) return NULL;
+  CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorDefault, (CFIndex)count,
                                                           &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   launch_data_dict_iterate(data, __WBServiceCreateDictionary, &dict);
   return dict;

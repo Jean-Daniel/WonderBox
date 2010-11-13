@@ -55,7 +55,7 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 }
 
 #pragma mark -
-- (GLint)frameBufferObject { return wb_fbo; }
+- (GLuint)frameBufferObject { return wb_fbo; }
 
 #if DEBUG
 WB_INLINE
@@ -75,7 +75,7 @@ WB_INLINE
 void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum mode) {
   GLuint save;
   glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
-  GLint err = glGetError();
+  GLenum err = glGetError();
   WBAssert(GL_ZERO == err, @"Invalid FBO: %s", _WBGLFrameBufferGetErrorString(err));
 
   if (save != fbo)
@@ -240,7 +240,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   NSParameterAssert(CGL_MACRO_CONTEXT);
   GLint value = 0;
   glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &value);
-  return value;
+  return value > 0 ? (NSUInteger)value : 0;
 }
 
 @end
@@ -300,7 +300,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return buffer;
 }
 
-- (id)initWithName:(GLint)aName target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h {
+- (id)initWithName:(GLuint)aName target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h {
   if (self = [super init]) {
     wb_width = w;
     wb_height = h;
@@ -310,7 +310,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return self;
 }
 
-- (id)initWithRendererBuffer:(GLint)aBuffer width:(GLuint)w height:(GLuint)h {
+- (id)initWithRendererBuffer:(GLuint)aBuffer width:(GLuint)w height:(GLuint)h {
   if (self = [self initWithName:aBuffer target:GL_RENDERBUFFER_EXT width:w height:h]) {
     wb_fbaFlags.type = kWBGLAttachementTypeBuffer;
   }
@@ -324,17 +324,17 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 //  return [self initWithTexture:aTexture target:aTarget width:w height:h];
 //}
 
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h {
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget width:(GLuint)w height:(GLuint)h {
   return [self initWithTexture:aTexture target:aTarget level:0 zOffset:0 width:w height:h];
 }
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel width:(GLuint)w height:(GLuint)h {
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget level:(GLint)aLevel width:(GLuint)w height:(GLuint)h {
   return [self initWithTexture:aTexture target:aTarget level:aLevel zOffset:0 width:w height:h];
 }
-- (id)initWithTexture:(GLint)aTexture target:(GLenum)aTarget level:(GLint)aLevel zOffset:(GLint)offset width:(GLuint)w height:(GLuint)h {
+- (id)initWithTexture:(GLuint)aTexture target:(GLenum)aTarget level:(GLint)aLevel zOffset:(GLint)offset width:(GLuint)w height:(GLuint)h {
   if (self = [self initWithName:aTexture target:aTarget width:w height:h]) {
     wb_fbaFlags.type = kWBGLAttachementTypeTexture;
-    wb_fbaFlags.zoff = offset;
-    wb_fbaFlags.level = aLevel;
+    wb_zoff = offset;
+    wb_level = aLevel;
   }
   return self;
 }
@@ -361,27 +361,15 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   }
 }
 
-- (NSUInteger)type {
-  return wb_fbaFlags.type;
-}
+- (NSUInteger)type { return wb_fbaFlags.type; }
 
-- (CGSize)size {
-  return CGSizeMake(wb_width, wb_height);
-}
+- (CGSize)size { return CGSizeMake(wb_width, wb_height); }
 
-- (GLuint)name {
-  return wb_name;
-}
-- (GLenum)target {
-  return wb_target;
-}
+- (GLuint)name { return wb_name; }
+- (GLenum)target { return wb_target; }
 
-- (GLint)level {
-  return wb_fbaFlags.level;
-}
-- (GLint)zOffset {
-  return wb_fbaFlags.zoff;
-}
+- (GLint)level { return wb_level; }
+- (GLint)zOffset { return wb_zoff; }
 
 @end
 

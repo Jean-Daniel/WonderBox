@@ -153,7 +153,7 @@ void WBQTMovieGetStaticFrameRate(QTMovie *inMovie, double *outStaticFrameRate) {
   {
     Boolean isMPEG = false;
     /* is this the MPEG-1/MPEG-2 media handler? */
-    OSErr err = _WBMediaHandlerIsMPEG(movieMediaHandler, &isMPEG);
+    OSStatus err = _WBMediaHandlerIsMPEG(movieMediaHandler, &isMPEG);
     if (err == noErr)
     {
       if (isMPEG) /* working with MPEG-1/MPEG-2 media */

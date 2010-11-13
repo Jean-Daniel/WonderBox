@@ -85,9 +85,9 @@ WB_EXPORT
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target) WB_OBSOLETE;
 
 WB_EXPORT
-OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders);
+OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, UInt32 *files, UInt32 *folders);
 WB_EXPORT
-OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders);
+OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *files, UInt32 *folders);
 
 WB_EXPORT
 OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,

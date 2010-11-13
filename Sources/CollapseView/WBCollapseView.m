@@ -65,7 +65,7 @@
 
 - (void)viewWillMoveToSuperview:(NSView *)newSuperview {
   NSUInteger mask = [self autoresizingMask];
-  mask &= ~(NSViewMaxYMargin | NSViewMinYMargin | NSViewHeightSizable);
+  mask = mask & (NSUInteger)(~(NSViewMaxYMargin | NSViewMinYMargin | NSViewHeightSizable));
   mask |= [newSuperview isFlipped] ? NSViewMaxYMargin : NSViewMinYMargin;
   [self setAutoresizingMask:mask];
 

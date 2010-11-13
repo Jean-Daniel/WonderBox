@@ -46,8 +46,11 @@
   if (self = [super init]) {
     wb_path = [[coder decodeObjectForKey:@"WBAliasPath"] retain];
     NSData *data = [coder decodeObjectForKey:@"WBAliasHandle"];
-    if (data)
-      PtrToHand([data bytes], (Handle *)&wb_alias, [data length]);
+    if (data && [data length] < LONG_MAX) {
+      OSErr err = PtrToHand([data bytes], (Handle *)&wb_alias, (long)[data length]);
+      if (noErr != err)
+        WBCLogWarning("Failed to read alias data: %s", GetMacOSStatusErrorString(err));
+    }
   }
   return self;
 }
@@ -81,7 +84,7 @@
   NSParameterAssert(data && [data length] > 0);
 
   AliasHandle alias;
-  if (noErr == PtrToHand([data bytes], (Handle *)&alias, [data length]))
+  if ([data length] < LONG_MAX && noErr == PtrToHand([data bytes], (Handle *)&alias, (long)[data length]))
     return [self initFromAliasHandleNoCopy:alias];
 
   [self release];
@@ -145,8 +148,12 @@
 
 #pragma mark -
 - (NSData *)data {
-  if (wb_alias)
-    return [NSData dataWithBytes:*wb_alias length:GetAliasSize(wb_alias)];
+  if (wb_alias) {
+    Size s = GetAliasSize(wb_alias);
+    if (s > 0)
+      return [NSData dataWithBytes:*wb_alias length:(NSUInteger)s];
+  }
+
   return nil;
 }
 

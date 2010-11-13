@@ -37,7 +37,7 @@ OSType WBProcessGetSignature(ProcessSerialNumber *psn) {
 }
 CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn) {
   CFStringRef identifier = NULL;
-  CFDictionaryRef infos = ProcessInformationCopyDictionary(psn, kProcessDictionaryIncludeAllInformationMask);
+  CFDictionaryRef infos = ProcessInformationCopyDictionary(psn, (UInt32)kProcessDictionaryIncludeAllInformationMask);
   if (infos) {
     identifier = CFDictionaryGetValue(infos, kCFBundleIdentifierKey);
     if (identifier)
@@ -95,7 +95,7 @@ ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFProp
     return serialNumber;
 
   while (procNotFound != GetNextProcess(&serialNumber))  {
-    CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
+    CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, (UInt32)kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
     if (info) {
       CFPropertyListRef procValue = CFDictionaryGetValue(info, property);
       if (procValue && (CFEqual(procValue, value))) {
@@ -143,7 +143,7 @@ Boolean WBProcessIsNative(pid_t pid) {
       // pre-dates Rosetta, so the application must be native.
       return TRUE;
     }
-    return -1;
+    return FALSE;
   }
   return ret ? TRUE : FALSE;
 }

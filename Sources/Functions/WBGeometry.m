@@ -53,7 +53,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
 CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignment) {
   switch (alignment) {
     case kWBRectAlignTop:
-      alignee.origin.x = aligner.origin.x + (aligner.size.width * .5 - alignee.size.width * .5);
+      alignee.origin.x = aligner.origin.x + (CGFloat)(aligner.size.width * .5 - alignee.size.width * .5);
       alignee.origin.y = aligner.origin.y + aligner.size.height - alignee.size.height;
       break;
 
@@ -69,7 +69,7 @@ CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignme
 
     case kWBRectAlignLeft:
       alignee.origin.x = aligner.origin.x;
-      alignee.origin.y = aligner.origin.y + (aligner.size.height * .5 - alignee.size.height * .5);
+      alignee.origin.y = aligner.origin.y + (CGFloat)(aligner.size.height * .5 - alignee.size.height * .5);
       break;
 
     case kWBRectAlignBottomLeft:
@@ -78,7 +78,7 @@ CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignme
       break;
 
     case kWBRectAlignBottom:
-      alignee.origin.x = aligner.origin.x + (aligner.size.width * .5 - alignee.size.width * .5);
+      alignee.origin.x = aligner.origin.x + (CGFloat)(aligner.size.width * .5 - alignee.size.width * .5);
       alignee.origin.y = aligner.origin.y;
       break;
 
@@ -89,13 +89,13 @@ CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignme
 
     case kWBRectAlignRight:
       alignee.origin.x = aligner.origin.x + aligner.size.width - alignee.size.width;
-      alignee.origin.y = aligner.origin.y + (aligner.size.height * .5 - alignee.size.height * .5);
+      alignee.origin.y = aligner.origin.y + (CGFloat)(aligner.size.height * .5 - alignee.size.height * .5);
       break;
 
     default:
     case kWBRectAlignCenter:
-      alignee.origin.x = aligner.origin.x + (aligner.size.width * .5 - alignee.size.width * .5);
-      alignee.origin.y = aligner.origin.y + (aligner.size.height * .5 - alignee.size.height * .5);
+      alignee.origin.x = aligner.origin.x + (CGFloat)(aligner.size.width * .5 - alignee.size.width * .5);
+      alignee.origin.y = aligner.origin.y + (CGFloat)(aligner.size.height * .5 - alignee.size.height * .5);
       break;
   }
   return alignee;

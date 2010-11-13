@@ -125,7 +125,7 @@ CFDataRef WBCFDataCreateFromHexString(CFStringRef str) {
     CFIndex v1 = __WBHexCharToByte(CFStringGetCharacterFromInlineBuffer(&buffer, idx));
     CFIndex v2 = __WBHexCharToByte(CFStringGetCharacterFromInlineBuffer(&buffer, idx + 1));
     if (v1 >= 0 && v2 >= 0)
-      *(bytes++) = v1 * 16 + v2;
+      *(bytes++) = (uint8_t)(v1 * 16 + v2);
     else
       isValid = false;
   }

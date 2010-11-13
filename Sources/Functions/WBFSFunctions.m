@@ -69,7 +69,7 @@
   if ([path getFSRef:&file traverseLink:NO]) {
     Boolean isFolder;
     if (noErr == FSIsAliasFile(&file, &result, &isFolder)) {
-      return result;
+      return result ? YES : NO;
     }
   }
   return NO;
@@ -84,7 +84,7 @@
     err = FSResolveAliasFile(&file, YES, &folder, &aliased);
     if (noErr == err && aliased) {
       if (isFolder)
-        *isFolder = folder;
+        *isFolder = folder ? YES : NO;
       path = [NSString stringFromFSRef:&file];
     }
   }
@@ -109,15 +109,18 @@ OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path
       path = malloc(length * sizeof(UInt8));
     } else {
       length *= 2;
-      path = realloc(path, length * sizeof(UInt8));
+      path = reallocf(path, length * sizeof(UInt8));
     }
-    err = FSRefMakePath(ref, path, length);
+    if (path)
+      err = FSRefMakePath(ref, path, length);
+    else
+      err = memFullErr;
   }
-  if (noErr == err) {
+  if (noErr == err)
     err = callback((char *)path, ctxt);
-  }
-  /* Free if needed */
-  if (buffer != path)
+
+  /* Cleanup if needed */
+  if (path && buffer != path)
     free(path);
 
   return err;
@@ -210,9 +213,8 @@ OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options,
   OSStatus err = noErr;
   /* Adjust buffer size */
   CFIndex maximum = CFStringGetMaximumSizeOfFileSystemRepresentation(string);
-  if (maximum > 2048) {
-    path = malloc(maximum * sizeof(char));
-  }
+  if (maximum > 2048)
+    path = malloc((size_t)maximum * sizeof(char));
 
   if (!CFStringGetFileSystemRepresentation(string, path, maximum))
     err = coreFoundationUnknownErr;
@@ -248,7 +250,7 @@ CFStringRef WBFSCreateStringFromHFSUniStr(CFAllocatorRef alloc, const HFSUniStr2
 }
 
 #pragma mark Folders
-OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, CFIndex *files, CFIndex *folders) {
+OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, UInt32 *files, UInt32 *folders) {
   if (!size && !files && !folders) return paramErr;
 
   FSVolumeInfo info;
@@ -265,7 +267,7 @@ bail:
 
 #define BULK_SIZE 128
 static
-OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders) {
+OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *files, UInt32 *folders) {
   FSIterator iter;
   OSStatus err = FSOpenIterator(folder, kFSIterateFlat, &iter);
   if (noErr == err) {
@@ -300,7 +302,7 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex
   return err;
 }
 
-OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, CFIndex *files, CFIndex *folders) {
+OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *files, UInt32 *folders) {
   if (!lsize && !psize && !files && !folders) return paramErr;
 
   FSCatalogInfo info;
@@ -839,7 +841,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
       if (stat(stack, &info) == 0 || mkdir(stack, 0700) == 0) {
         err = noErr;
         // FIXME: should rewrite that to avoid URL creation and then URL path extraction
-        folder = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)stack, length, true);
+        folder = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)stack, (CFIndex)length, true);
       }
     }
   }
@@ -854,7 +856,11 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
     CFStringRef str = CFURLCopyFileSystemPath(folder, kCFURLPOSIXPathStyle);
     if (str) {
       CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
-      buffer = malloc(length + 27);
+      // We are using buffer in CFURLCreateFromFileSystemRepresentation later,
+      // So make sure it is not too large for this function.
+      if (length >= 0 && (size_t)length < LONG_MAX - 27)
+        buffer = malloc((size_t)length + 27);
+
       if (!CFStringGetFileSystemRepresentation(str, buffer, length)) {
         free(buffer);
         buffer = NULL;
@@ -890,7 +896,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
   }
 
   if (noErr == err) {
-    *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, strlen(buffer), isDir);
+    *result = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (UInt8 *)buffer, (CFIndex)strlen(buffer), isDir);
     if (!*result)
       err = coreFoundationUnknownErr;
   }

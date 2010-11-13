@@ -159,8 +159,8 @@ NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict) {
   Class *classes = NULL;
   numClasses = objc_getClassList(NULL, 0);
   NSMutableArray *result = [NSMutableArray array];
-  if (numClasses > 0 ) {
-    classes = malloc(sizeof(Class) * numClasses);
+  if (numClasses > 0 && (size_t)numClasses < SIZE_T_MAX / sizeof(Class)) {
+    classes = malloc(sizeof(Class) * (size_t)numClasses);
     numClasses = objc_getClassList(classes, numClasses);
     for (int idx = 0; idx < numClasses; idx++) {
       Class cls = classes[idx];

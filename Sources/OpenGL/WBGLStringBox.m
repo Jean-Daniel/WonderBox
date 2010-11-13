@@ -26,7 +26,8 @@
 
 - (void)deleteTexture {
   if (wb_texName && wb_glctxt) {
-    (*wb_glctxt->disp.delete_textures)(wb_glctxt->rend, 1, &wb_texName);
+    CGLContextObj CGL_MACRO_CONTEXT = wb_glctxt;
+    glDeleteTextures(1, &wb_texName);
     wb_texName = 0;
 
     if (wb_buffer) free(wb_buffer);
@@ -128,6 +129,10 @@
   /* the OpenGL context is never flipped */
   CGSize previousSize = wb_texBounds.size;
   wb_texBounds = NSRectToCGRect([self bounds:NO]);
+  if (CGRectIsEmpty(wb_texBounds)) {
+    [self deleteTexture]; // cleanup cache
+    return;
+  }
 
   if (wb_userScale > 0) {
     wb_texBounds.size.width *= wb_userScale;
@@ -135,25 +140,31 @@
   }
   wb_texBounds = CGRectIntegral(wb_texBounds);
 
-  CGLLockContext(wb_glctxt);
+  if (wb_texBounds.size.width * 4 > NSUIntegerMax)
+    return;
 
   /* 16 bytes boundary */
-  NSUInteger bytePerRow = wb_texBounds.size.width * 4;
-  NSUInteger datalen = bytePerRow * wb_texBounds.size.height;
+  NSUInteger bytePerRow = (NSUInteger)(wb_texBounds.size.width * 4);
+  if (bytePerRow * wb_texBounds.size.height > NSUIntegerMax)
+    return;
+
+  NSUInteger datalen = (NSUInteger)(bytePerRow * wb_texBounds.size.height);
+
+  CGLLockContext(wb_glctxt);
   /* reduce buffer size when needed */
   if (datalen > wb_blength || datalen < wb_blength / 2) {
     wb_blength = datalen;
-    if (wb_buffer) wb_buffer = realloc(wb_buffer, wb_blength);
+    if (wb_buffer) wb_buffer = reallocf(wb_buffer, wb_blength);
     else wb_buffer = malloc(wb_blength);
     if (!wb_buffer) {
       WBCLogError("Invalid buffer size. cannot allocate memory: %s", strerror(errno));
-      wb_blength = 0;
+      [self deleteTexture]; // cleanup cache
       return;
     }
   }
 
   CGColorSpaceRef cspace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-  CGContextRef bmapContext = CGBitmapContextCreate(wb_buffer, wb_texBounds.size.width, wb_texBounds.size.height,
+  CGContextRef bmapContext = CGBitmapContextCreate(wb_buffer, (size_t)wb_texBounds.size.width, (size_t)wb_texBounds.size.height,
                                                    8, bytePerRow, cspace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
   CGColorSpaceRelease(cspace);
   WBAssert(bmapContext, @"invalid bitmap context");
@@ -214,12 +225,8 @@
 #pragma mark -
 #pragma mark Accessors
 
-- (GLuint)textureName {
-  return wb_texName;
-}
-- (CGSize)textureSize {
-  return wb_texBounds.size;
-}
+- (GLuint)textureName { return wb_texName; }
+- (CGSize)textureSize { return wb_texBounds.size; }
 
 #pragma mark -
 #pragma mark Drawing

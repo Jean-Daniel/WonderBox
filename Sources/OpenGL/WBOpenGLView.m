@@ -58,9 +58,8 @@
     CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
     CGLLockContext(glctxt);
     [[self openGLContext] getValues:&swap forParameter:NSOpenGLCPSwapInterval];
-    WBAssert(swap < (1 << 8), @"sync swap overflow");
-    wb_glvFlags.syncSwap = swap;
-    if (swap > 0) {
+    WBFlagSet(wb_glvFlags.syncSwap, swap);
+    if (swap) {
       swap = 0;
       [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];
     }
@@ -73,7 +72,7 @@
     [self setNeedsDisplay:YES];
   } else {
     // restore context settings
-    if (wb_glvFlags.syncSwap > 0) {
+    if (wb_glvFlags.syncSwap) {
       CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
       GLint swap = wb_glvFlags.syncSwap;
       CGLLockContext(glctxt);

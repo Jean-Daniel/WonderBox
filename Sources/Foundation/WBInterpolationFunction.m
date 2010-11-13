@@ -102,10 +102,9 @@ WBClassCluster(WBInterpolationFunction)
 
 @end
 
-
 CGFloat WBInterpolationSin(CGFloat factor, void *info) {
-  CGFloat sinus = sin(M_PI_2 * factor);
-  return sinus * sinus;
+  double sinus = sin(M_PI_2 * factor);
+  return (CGFloat)(sinus * sinus);
 }
 
 CGFloat WBInterpolationCircular(CGFloat factor, void *info) {
@@ -212,7 +211,7 @@ CGFloat _WBBezierCurveSolveT(const WBBezierCurve *curve, CGFloat x, CGFloat epsi
       t0 = t2;
     else
       t1 = t2;
-    t2 = (t1 - t0) * .5 + t0;
+    t2 = (CGFloat)((t1 - t0) * .5 + t0);
   }
 
   // Failure.

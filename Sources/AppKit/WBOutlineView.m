@@ -102,8 +102,8 @@
         NSInteger row = [self rowAtPoint:point];
         NSInteger column = [self columnAtPoint:point];
 
-        if (column != -1 && row != -1) {
-          NSTableColumn *col = [[self tableColumns] objectAtIndex:column];
+        if (column >= 0 && row >= 0) {
+          NSTableColumn *col = [[self tableColumns] objectAtIndex:(NSUInteger)column];
           if ([col isEditable]) {
             // Check if already editing
             if ([self editedRow] == row && [self editedColumn] == column) return;
@@ -139,7 +139,7 @@
               // Select row if needed
               if (row != [self selectedRow] || [self numberOfSelectedRows] > 1) {
                 // [self selectRow:row byExtendingSelection:NO];
-                [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+                [self selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)row] byExtendingSelection:NO];
               }
               // Edit row
               [self editColumn:column row:row withEvent:theEvent select:YES];
@@ -165,7 +165,7 @@
     NSInteger row = [self selectedRow];
     if (row >= 0) {
       [self deselectRow:row];
-      [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+      [self selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)row] byExtendingSelection:NO];
     }
   }
 }
@@ -189,8 +189,8 @@
 }
 
 - (NSRect)frameOfCellAtColumn:(NSInteger)columnIndex row:(NSInteger)rowIndex {
-  if (wb_noPadding) {
-    NSTableColumn *column = [[self tableColumns] objectAtIndex:columnIndex];
+  if (wb_noPadding && rowIndex >= 0) {
+    NSTableColumn *column = [[self tableColumns] objectAtIndex:(NSUInteger)columnIndex];
     if (column && NSHashGet(wb_noPadding, column)) {
       return NSIntersectionRect([self rectOfRow:rowIndex], [self rectOfColumn:columnIndex]);
     }
