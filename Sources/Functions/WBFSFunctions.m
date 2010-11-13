@@ -858,7 +858,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
       CFIndex length = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
       // We are using buffer in CFURLCreateFromFileSystemRepresentation later,
       // So make sure it is not too large for this function.
-      if (length >= 0 && (size_t)length < LONG_MAX - 27)
+      if (length >= 0 && (size_t)length < CFIndexMax - 27)
         buffer = malloc((size_t)length + 27);
 
       if (!CFStringGetFileSystemRepresentation(str, buffer, length)) {

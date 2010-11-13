@@ -97,7 +97,6 @@ bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t 
   assert(!sServiceContext.ports && "Service already running");
 
   // checkin
-  sServiceContext.idle = idle;
   sServiceContext.dispatch = dispatch;
   sServiceContext.service = _WBServiceCheckIn(name, outError);
   if (!sServiceContext.service) return false;
@@ -127,7 +126,7 @@ kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
   if (idle > 0) {
     struct mach_timebase_info info;
     mach_timebase_info(&info);
-    sServiceContext.idle = llround((idle * 1.0e9 / (double)info.numer) * (double)info.denom);
+    sServiceContext.idle = ullround((idle * 1.0e9 / info.numer) * info.denom);
     // Create the time if needed
     if (!sServiceContext.timer) {
       sServiceContext.timer = mk_timer_create();

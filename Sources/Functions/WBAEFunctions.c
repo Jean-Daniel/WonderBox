@@ -153,7 +153,7 @@ OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc) {
   // Note: We need to check CFIndex overflow.
   // It should be (lenght * sizeof(UniChar) > CFINDEX_MAX), but
   // it may overflow, and CFINDEX_MAX is not defined
-  if (!length || length > (LONG_MAX / (CFIndex)sizeof(UniChar)))
+  if (!length || length > (CFIndexMax / (CFIndex)sizeof(UniChar)))
     return paramErr;
 
   CFRange range = CFRangeMake(0, length);
@@ -436,7 +436,7 @@ OSStatus WBAEAddCFStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, C
   if (str) {
     CFIndex length = CFStringGetLength(str);
     // Check CFIndex overflow
-    if (length > (LONG_MAX / (CFIndex)sizeof(UniChar)))
+    if (length > (CFIndexMax / (CFIndex)sizeof(UniChar)))
       err = memFullErr;
 
     if (noErr == err) {

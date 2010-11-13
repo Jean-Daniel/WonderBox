@@ -310,7 +310,7 @@ OSStatus _WBCFStringGetBytes(CFStringRef str, CFStringEncoding encoding, void (*
       length = CFStringGetBytes(str, CFRangeMake(0, CFStringGetLength(str)), encoding, 0, FALSE, NULL, 0, &length);
       if (length < 0) {
         result = kTextUndefinedElementErr;
-      } else if (length >= kStackBufferSize && (size_t)length < (LONG_MAX / sizeof(*buffer)) - 1) {
+      } else if (length >= kStackBufferSize && (size_t)length < (CFIndexMax / sizeof(*buffer)) - 1) {
         /* If real size > stack buffer, allocate a true heap buffer */
         length++; /* null terminate string */
         buffer = CFAllocatorAllocate(kCFAllocatorDefault, length * (CFIndex)sizeof(*buffer), 0);
@@ -367,7 +367,7 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
       break;
     case LAUNCH_DATA_OPAQUE: {
       size_t s = launch_data_get_opaque_size(data);
-      if (s <= LONG_MAX)
+      if (s <= CFIndexMax)
         object = CFDataCreate(kCFAllocatorDefault, launch_data_get_opaque(data), (CFIndex)s);
       else
         WBCLogError("Launchd data too big to fit in CFData object (%zu bytes)", s);
@@ -410,7 +410,7 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
 
 CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) {
   size_t count = launch_data_array_get_count(data);
-  if (count > LONG_MAX) return NULL;
+  if (count > CFIndexMax) return NULL;
   CFMutableArrayRef array = CFArrayCreateMutable(kCFAllocatorDefault, (CFIndex)count, &kCFTypeArrayCallBacks);
   for (size_t idx = 0; idx < count; ++idx) {
     CFTypeRef item = _WBServiceCreateObjectFromData(launch_data_array_get_index(data, idx));
@@ -452,7 +452,7 @@ void __WBServiceCreateDictionary(const launch_data_t value, const char *key, voi
 
 CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data) {
   size_t count = launch_data_array_get_count(data);
-  if (count > LONG_MAX) return NULL;
+  if (count > CFIndexMax) return NULL;
   CFMutableDictionaryRef dict = CFDictionaryCreateMutable(kCFAllocatorDefault, (CFIndex)count,
                                                           &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
   launch_data_dict_iterate(data, __WBServiceCreateDictionary, &dict);

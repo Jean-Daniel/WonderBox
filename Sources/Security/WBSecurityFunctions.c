@@ -122,7 +122,7 @@ OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
   err = SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)cert, &info, NULL, &list, NULL, NULL);
   if (noErr == err) {
     SecKeychainAttribute *attr = list->attr;
-    if (attr->length > LONG_MAX)
+    if (attr->length > CFIndexMax)
       err = memFullErr;
     else {
       *label = CFStringCreateWithBytes(kCFAllocatorDefault, attr->data, (CFIndex)attr->length, kCFStringEncodingUTF8, FALSE);
