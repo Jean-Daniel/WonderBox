@@ -49,7 +49,7 @@ WB_CLASS_EXPORT
 - (OSStatus)open:(ComponentInstance *)instance;
 
 - (Component)component;
-- (UInt32)resourceVersion:(OSStatus *)error;
+- (SInt32)resourceVersion:(OSStatus *)error;
 - (void)getComponentDescription:(ComponentDescription *)description;
 
 @end

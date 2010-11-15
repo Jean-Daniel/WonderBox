@@ -128,16 +128,16 @@
     if (noErr == err) {
       if (GetHandleSize(h1) > 1) {
         char* ptr1 = *h1 + 1;
-        size_t len = GetHandleSize(h1) - 1;
+        size_t len = (size_t)(GetHandleSize(h1) - 1);
         // Get the manufacturer's name... look for the ':' character convention
         _cname = [[NSString alloc] initWithBytes:ptr1
                                           length:MIN(StrLength(*h1), len)
                                         encoding:NSMacOSRomanStringEncoding]; // pascal string
 
-        char* end = NULL;
+        char *end = NULL;
 
         end = memchr(ptr1, ':', len);
-        size_t strLength = end ? end - ptr1 : 0;
+        size_t strLength = end ? (size_t)(end - ptr1) : 0;
         // if ':' is the last char or the name contains more than one ':' (common in codec name like 4:2:2 decoder)
         if (end && (strLength + 1 < len || memchr(end + 1, ':', len - strLength - 1)))
           end = NULL;
@@ -175,7 +175,7 @@
       }
       if (GetHandleSize(h2) > 1) {
         char* ptr2 = *h2 + 1;
-        size_t len = GetHandleSize(h2);
+        size_t len = (size_t)(GetHandleSize(h2) - 1);
         _info = [[NSString alloc] initWithBytes:ptr2
                                          length:MIN(StrLength(*h2), len)
                                        encoding:NSMacOSRomanStringEncoding];
@@ -239,13 +239,13 @@
   return _comp;
 }
 
-- (UInt32)resourceVersion:(OSStatus *)error {
+- (SInt32)resourceVersion:(OSStatus *)error {
   bool versionFound = false;
   ResFileRefNum curRes = CurResFile();
   ResFileRefNum componentResFileID = kResFileNotOpened;
 
   OSStatus result;
-  UInt32 version = 0;
+  SInt32 version = 0;
   short thngResourceCount;
 
   require_noerr (result = OpenAComponentResFile(_comp, &componentResFileID), home);
