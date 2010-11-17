@@ -109,23 +109,23 @@ CGRect WBCGContextIntegralPixelRect(CGContextRef aContext, CGRect aRect) {
 
 WB_INLINE
 CGFloat WBCGPointRoundToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (round(point * factor) + shift) / factor;
+  return (CGFloat)((round(point * factor) + shift) / factor);
 }
 WB_INLINE
 CGFloat WBCGPointFloorToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (floor(point * factor) + shift) / factor;
+  return (CGFloat)((floor(point * factor) + shift) / factor);
 }
 WB_INLINE
 CGFloat WBCGPointCeilToPixel(CGFloat point, CGFloat factor, CGFloat shift) {
-  return (ceil(point * factor) + shift) / factor;
+  return (CGFloat)((ceil(point * factor) + shift) / factor);
 }
 
 WB_INLINE
 CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
-  return CGRectMake(round(aRect.origin.x * factor) / factor,
-                    round(aRect.origin.y * factor) / factor,
-                    round(aRect.size.width * factor) / factor,
-                    round(aRect.size.height * factor) / factor);
+  return CGRectMake((CGFloat)(round(aRect.origin.x * factor) / factor),
+                    (CGFloat)(round(aRect.origin.y * factor) / factor),
+                    (CGFloat)(round(aRect.size.width * factor) / factor),
+                    (CGFloat)(round(aRect.size.height * factor) / factor));
 }
 
 
