@@ -112,12 +112,16 @@
 		1B5634980F5AF9D700BD119C /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5634970F5AF9D700BD119C /* GHUnit.framework */; };
 		1B5634A90F5AFA6000BD119C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		1B8B08841255D1420028DAD4 /* WBBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B8B08831255D1420028DAD4 /* WBBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1BB7CC3D129C2E59003C3E95 /* WBIndexSetIterator.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BB7CC3B129C2E59003C3E95 /* WBIndexSetIterator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1BB7CC3E129C2E59003C3E95 /* WBIndexSetIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */; };
 		1BB7CCAC129C350D003C3E95 /* GHUnitTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */; };
 		1BB7CCB4129C3521003C3E95 /* WBBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AA812551FE300584D8E /* WBBase64.c */; };
 		1BB7CCB9129C353C003C3E95 /* WBObjCRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB912551FE300584D8E /* WBObjCRuntime.m */; };
 		1BB7CCBC129C3542003C3E95 /* WBVersionFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158ABF12551FE300584D8E /* WBVersionFunctions.m */; };
 		1BB7CCBF129C3546003C3E95 /* WBLSFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB712551FE300584D8E /* WBLSFunctions.m */; };
 		1BB7CCC2129C354B003C3E95 /* WBFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB112551FE300584D8E /* WBFunctions.m */; };
+		1BB7CCE6129C35B7003C3E95 /* WBIndexIteratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */; };
+		1BB7CCEC129C3682003C3E95 /* WBIndexSetIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */; };
 		1BD8EF431257F5F600F359B0 /* RSEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */; };
 		1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD8EF401257F5F600F359B0 /* RSEditorView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8EF411257F5F600F359B0 /* RSEditorView.m */; };
@@ -327,7 +331,10 @@
 		1B8B08831255D1420028DAD4 /* WBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase.h; sourceTree = "<group>"; };
 		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1BB0E2620D62F7580041C166 /* WBLicenseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLicenseTest.m; sourceTree = "<group>"; };
+		1BB7CC3B129C2E59003C3E95 /* WBIndexSetIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBIndexSetIterator.h; sourceTree = "<group>"; };
+		1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIndexSetIterator.m; sourceTree = "<group>"; };
 		1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
+		1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIndexIteratorTests.m; sourceTree = "<group>"; };
 		1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RSEditor.xib; sourceTree = "<group>"; };
 		1BD8EF401257F5F600F359B0 /* RSEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSEditorView.h; sourceTree = "<group>"; };
 		1BD8EF411257F5F600F359B0 /* RSEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSEditorView.m; sourceTree = "<group>"; };
@@ -544,6 +551,8 @@
 				1B158A9A12551FE300584D8E /* WBExtendedTreeNode.m */,
 				1B158A9B12551FE300584D8E /* WBInterpolationFunction.h */,
 				1B158A9C12551FE300584D8E /* WBInterpolationFunction.m */,
+				1BB7CC3B129C2E59003C3E95 /* WBIndexSetIterator.h */,
+				1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */,
 				1B158A9D12551FE300584D8E /* WBSerialQueue.h */,
 				1B158A9E12551FE300584D8E /* WBSerialQueue.m */,
 				1B158A9F12551FE300584D8E /* WBThreadPort.h */,
@@ -767,6 +776,7 @@
 				1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */,
 				1BB0E2620D62F7580041C166 /* WBLicenseTest.m */,
 				1B63B9710EE2C57F000ED041 /* WBBase64Test.m */,
+				1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -825,6 +835,7 @@
 				1B8B08841255D1420028DAD4 /* WBBase.h in Headers */,
 				1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */,
 				1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */,
+				1BB7CC3D129C2E59003C3E95 /* WBIndexSetIterator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -931,6 +942,8 @@
 				1BB7CCBC129C3542003C3E95 /* WBVersionFunctions.m in Sources */,
 				1BB7CCBF129C3546003C3E95 /* WBLSFunctions.m in Sources */,
 				1BB7CCC2129C354B003C3E95 /* WBFunctions.m in Sources */,
+				1BB7CCE6129C35B7003C3E95 /* WBIndexIteratorTests.m in Sources */,
+				1BB7CCEC129C3682003C3E95 /* WBIndexSetIterator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -983,6 +996,7 @@
 				1B158EFB1255245500584D8E /* WBStringLayer.m in Sources */,
 				1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */,
 				1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */,
+				1BB7CC3E129C2E59003C3E95 /* WBIndexSetIterator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
