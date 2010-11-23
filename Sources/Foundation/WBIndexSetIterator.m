@@ -11,29 +11,29 @@
 #import WBHEADER(WBIndexSetIterator.h)
 
 WB_INLINE
-void __WBIndexSetIteratorInitialize(WBIndexSetIterator *iter) {
+void __WBIndexIteratorInitialize(WBIndexIterator *iter) {
   iter->_cnt = iter->_idx = 0;
   // Invalid range
   if (NSNotFound == iter->_state.location || NSNotFound == iter->_state.length)
     iter->_indexes = nil;
 }
 
-WBIndexSetIterator WBIndexSetIteratorCreate(NSIndexSet *aSet) {
+WBIndexIterator WBIndexIteratorCreate(NSIndexSet *aSet) {
   NSRange range = NSMakeRange(0, [aSet lastIndex]);
   if (NSNotFound != range.length) range.length += 1; // case where last index is 0.
-  return WBIndexSetIteratorCreateWithRange(aSet, range);
+  return WBIndexIteratorCreateWithRange(aSet, range);
 }
 
-WBIndexSetIterator WBIndexSetIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange) {
-  WBIndexSetIterator iter = {
+WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange) {
+  WBIndexIterator iter = {
     ._indexes = aSet,
     ._state = aRange,
   };
-  __WBIndexSetIteratorInitialize(&iter);
+  __WBIndexIteratorInitialize(&iter);
   return iter;
 }
 
-NSUInteger WBIndexSetIteratorNextIndex(WBIndexSetIterator *iter) {
+NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
   NSCParameterAssert(iter);
   if (!iter || iter->_idx < 0) return NSNotFound;
   if (iter->_cnt == iter->_idx) {
@@ -53,4 +53,37 @@ NSUInteger WBIndexSetIteratorNextIndex(WBIndexSetIterator *iter) {
   NSUInteger result = iter->_values[iter->_idx];
   iter->_idx++;
   return result;
+}
+
+// MARK: Range
+WBRangeIterator WBRangeIteratorCreate(NSIndexSet *aSet) {
+  WBRangeIterator iter = {
+    ._iter = WBIndexIteratorCreate(aSet)
+  };
+  iter._next = WBIndexIteratorNext(&iter._iter);
+  return iter;
+}
+WBRangeIterator WBRangeIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange) {
+  WBRangeIterator iter = {
+    ._iter = WBIndexIteratorCreateWithRange(aSet, aRange)
+  };
+  iter._next = WBIndexIteratorNext(&iter._iter);
+  return iter;
+}
+
+bool WBRangeIteratorGetNext(WBRangeIterator *iter, NSRange *range) {
+  if (!iter || !range) return false;
+  if (NSNotFound == iter->_next) return false;
+
+  range->location = iter->_next;
+  range->length = 1;
+  NSUInteger next = WBIndexIteratorNext(&iter->_iter);
+  while (next == iter->_next + 1) {
+    range->length++;
+    iter->_next = next;
+    next = WBIndexIteratorNext(&iter->_iter);
+  }
+  // Save last value
+  iter->_next = next;
+  return true;
 }

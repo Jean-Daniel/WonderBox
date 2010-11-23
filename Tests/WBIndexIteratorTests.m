@@ -21,79 +21,135 @@
 
 @implementation WBIndexIteratorTests
 
-- (void)testEmptySet {
-  WBIndexSetIterator iter = WBIndexSetIteratorCreate([NSIndexSet indexSet]);
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for empty set");
+- (void)test_1_EmptySet {
+  NSIndexSet *indexes = [NSIndexSet indexSet];
+  WBIndexIterator iter = WBIndexIteratorCreate(indexes);
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for empty set");
+
+  NSRange range;
+  WBRangeIterator riter = WBRangeIteratorCreate(indexes);
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
 }
 
-- (void)testSingleValueSet {
-  WBIndexSetIterator iter = WBIndexSetIteratorCreate([NSIndexSet indexSetWithIndex:0]);
-  GHAssertTrue(0 == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+- (void)test_2_SingleValueSet {
+  NSIndexSet *indexes = [NSIndexSet indexSetWithIndex:0];
+  WBIndexIterator iter = WBIndexIteratorCreate(indexes);
+  GHAssertTrue(0 == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
-  iter = WBIndexSetIteratorCreate([NSIndexSet indexSetWithIndex:10]);
-  GHAssertTrue(10 == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  NSRange range;
+  WBRangeIterator riter = WBRangeIteratorCreate(indexes);
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 0 && range.length == 1, @"WBRangeIteratorGetNext(): invalid range");
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return true for an empty set");
+
+  indexes = [NSIndexSet indexSetWithIndex:10];
+  iter = WBIndexIteratorCreate(indexes);
+  GHAssertTrue(10 == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
+
+  riter = WBRangeIteratorCreate(indexes);
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 10 && range.length == 1, @"WBRangeIteratorGetNext(): invalid range");
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return true for an empty set");
 }
 
-- (void)testMultipleFillSet {
-  WBIndexSetIterator iter = WBIndexSetIteratorCreate([NSIndexSet indexSetWithIndexesInRange:NSMakeRange(12, 64)]);
+- (void)test_3_SingleRangeSet {
+  NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(12, 64)];
+  WBIndexIterator iter = WBIndexIteratorCreate(indexes);
   for (NSUInteger idx = 12; idx < 12 + 64; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
-  iter = WBIndexSetIteratorCreate([NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 20)]);
+  NSRange range;
+  WBRangeIterator riter = WBRangeIteratorCreate(indexes);
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 12 && range.length == 64, @"WBRangeIteratorGetNext(): invalid range");
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return true for an empty set");
+
+  indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 20)];
+  iter = WBIndexIteratorCreate(indexes);
   for (NSUInteger idx = 0; idx < 20; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
+
+  riter = WBRangeIteratorCreate(indexes);
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 0 && range.length == 20, @"WBRangeIteratorGetNext(): invalid range");
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return true for an empty set");
 }
 
-- (void)testWithRange {
+- (void)test_4_MultipleRanges {
+  NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+  [indexes addIndexesInRange:NSMakeRange(0, 12)];
+  [indexes addIndex:20];
+  [indexes addIndexesInRange:NSMakeRange(23, 54)];
+  [indexes addIndex:97];
+
+  NSRange range;
+  WBRangeIterator riter = WBRangeIteratorCreate(indexes);
+  /* [0; 12] */
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 0 && range.length == 12, @"WBRangeIteratorGetNext(): invalid range");
+  /* 20 */
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 20 && range.length == 1, @"WBRangeIteratorGetNext(): invalid range");
+  /* [23; 77] */
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 23 && range.length == 54, @"WBRangeIteratorGetNext(): invalid range");
+  /* 97 */
+  GHAssertTrue(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return an index for empty set");
+  GHAssertTrue(range.location == 97 && range.length == 1, @"WBRangeIteratorGetNext(): invalid range");
+
+  GHAssertFalse(WBRangeIteratorGetNext(&riter, &range), @"WBRangeIteratorGetNext return true for an empty set");
+}
+
+- (void)test_5_IterateSubRange {
   NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(12, 64)];
 
   // Test ranges with no intersection
-  WBIndexSetIterator iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(0, 12));
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  WBIndexIterator iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(0, 12));
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(12, 0));
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(12, 0));
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
   // Range with exact end
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(0, 76));
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(0, 76));
   for (NSUInteger idx = 12; idx < 12 + 64; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
   // Range with exact start + end
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(12, 64));
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(12, 64));
   for (NSUInteger idx = 12; idx < 12 + 64; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
   // Range with end > last index
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(60, 128));
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(60, 128));
   for (NSUInteger idx = 60; idx < 12 + 64; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
   // Range with start < first index
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(0, 50));
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(0, 50));
   for (NSUInteger idx = 12; idx < 50; idx++) {
-    GHAssertTrue(idx == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
   // Test invalid ranges
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(NSNotFound, 10));
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(NSNotFound, 10));
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 
-  iter = WBIndexSetIteratorCreateWithRange(indexes, NSMakeRange(15, NSNotFound));
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  iter = WBIndexIteratorCreateWithRange(indexes, NSMakeRange(15, NSNotFound));
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 }
 
 static
@@ -102,7 +158,7 @@ int __compareInteger(const void *arg1, const void *arg2) {
   const NSUInteger *i2 = (const NSUInteger *)arg2;
   return *i1 - *i2;
 }
-- (void)testRandomSet {
+- (void)test_6_RandomSet {
   NSUInteger values[32];
   NSMutableIndexSet *indexes = [[NSMutableIndexSet alloc] init];
   for (NSUInteger idx = 0; idx < 32; idx++) {
@@ -110,28 +166,28 @@ int __compareInteger(const void *arg1, const void *arg2) {
     [indexes addIndex:values[idx]];
   }
   qsort(values, 32, sizeof(*values), __compareInteger);
-  WBIndexSetIterator iter = WBIndexSetIteratorCreate(indexes);
+  WBIndexIterator iter = WBIndexIteratorCreate(indexes);
   for (NSUInteger idx = 0; idx < 32; idx++) {
-    NSUInteger value = WBIndexSetIteratorNextIndex(&iter);
-    GHAssertTrue(values[idx] == value, @"WBIndexSetIteratorNextIndex(): invalid index");
+    NSUInteger value = WBIndexIteratorNext(&iter);
+    GHAssertTrue(values[idx] == value, @"WBIndexIteratorNext(): invalid index");
   }
-  GHAssertTrue(NSNotFound == WBIndexSetIteratorNextIndex(&iter), @"WBIndexSetIteratorNextIndex return an index for an empty set");
+  GHAssertTrue(NSNotFound == WBIndexIteratorNext(&iter), @"WBIndexIteratorNext return an index for an empty set");
 }
 
-- (void)testForSyntax {
+- (void)test_7_IteratorMacros {
   NSUInteger expected = 12;
   WBIndexesIterator(idx, [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(12, 64)]) {
-    GHAssertTrue(idx == expected, @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == expected, @"WBIndexIteratorNext(): invalid index");
     expected++;
   }
-  GHAssertTrue(76 == expected, @"WBIndexSetIteratorNextIndex(): end prematurely");
+  GHAssertTrue(76 == expected, @"WBIndexIteratorNext(): end prematurely");
 
   expected = 0;
   WBIndexesIterator(idx, [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, 127)]) {
-    GHAssertTrue(idx == expected, @"WBIndexSetIteratorNextIndex(): invalid index");
+    GHAssertTrue(idx == expected, @"WBIndexIteratorNext(): invalid index");
     expected++;
   }
-  GHAssertTrue(127 == expected, @"WBIndexSetIteratorNextIndex(): end prematurely");
+  GHAssertTrue(127 == expected, @"WBIndexIteratorNext(): end prematurely");
 }
 
 @end
