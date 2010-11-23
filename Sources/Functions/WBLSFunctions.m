@@ -79,7 +79,7 @@ OSStatus WBLSIsApplication(const FSRef *aRef, Boolean *isApp) {
 }
 
 OSStatus WBLSIsApplicationAtURL(CFURLRef anURL, Boolean *isApp) {
-  if (anURL || !isApp) return paramErr;
+  if (!anURL || !isApp) return paramErr;
   LSItemInfoRecord info;
   OSStatus err = LSCopyItemInfoForURL(anURL, kLSRequestBasicFlagsOnly, &info);
   if (noErr == err) {
