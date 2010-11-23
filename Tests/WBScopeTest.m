@@ -9,7 +9,7 @@
  */
 
 #import <GHUnit/GHUnit.h>
-#import WBHEADER(WBScope.h)
+#import "WBScope.h"
 
 @interface WBScopeTest : GHTestCase {
 

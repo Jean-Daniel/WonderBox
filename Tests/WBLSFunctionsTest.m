@@ -9,7 +9,7 @@
  */
 
 #import <GHUnit/GHUnit.h>
-#import WBHEADER(WBLSFunctions.h)
+#import "WBLSFunctions.h"
 
 @interface WBLSFunctionsTest : GHTestCase {
 

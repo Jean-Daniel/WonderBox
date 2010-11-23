@@ -105,16 +105,19 @@
 		1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B4C14E31255E65D00C82DE3 /* WBDateTableColumn.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4C14E41255E65D00C82DE3 /* WBDateTableColumn.m */; };
 		1B5634900F5AF9C400BD119C /* WBBase64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B63B9710EE2C57F000ED041 /* WBBase64Test.m */; };
-		1B5634910F5AF9C400BD119C /* WBEnumeratorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */; };
 		1B5634920F5AF9C400BD119C /* WBFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */; };
 		1B5634930F5AF9C400BD119C /* WBLSFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */; };
 		1B5634940F5AF9C400BD119C /* WBMacroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4F54E10F53E9080091CADB /* WBMacroTests.m */; };
-		1B5634950F5AF9C400BD119C /* WBPointerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */; };
 		1B5634960F5AF9C400BD119C /* WBScopeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */; };
 		1B5634980F5AF9D700BD119C /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B5634970F5AF9D700BD119C /* GHUnit.framework */; };
 		1B5634A90F5AFA6000BD119C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		1B5634C50F5AFA8D00BD119C /* WonderBox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC2EF5B0486A6940098B216 /* WonderBox.framework */; };
 		1B8B08841255D1420028DAD4 /* WBBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B8B08831255D1420028DAD4 /* WBBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1BB7CCAC129C350D003C3E95 /* GHUnitTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */; };
+		1BB7CCB4129C3521003C3E95 /* WBBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AA812551FE300584D8E /* WBBase64.c */; };
+		1BB7CCB9129C353C003C3E95 /* WBObjCRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB912551FE300584D8E /* WBObjCRuntime.m */; };
+		1BB7CCBC129C3542003C3E95 /* WBVersionFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158ABF12551FE300584D8E /* WBVersionFunctions.m */; };
+		1BB7CCBF129C3546003C3E95 /* WBLSFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB712551FE300584D8E /* WBLSFunctions.m */; };
+		1BB7CCC2129C354B003C3E95 /* WBFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB112551FE300584D8E /* WBFunctions.m */; };
 		1BD8EF431257F5F600F359B0 /* RSEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */; };
 		1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD8EF401257F5F600F359B0 /* RSEditorView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8EF411257F5F600F359B0 /* RSEditorView.m */; };
@@ -133,16 +136,6 @@
 			);
 		};
 /* End PBXBuildRule section */
-
-/* Begin PBXContainerItemProxy section */
-		1B56348E0F5AF9B900BD119C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = WonderBox;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -314,7 +307,6 @@
 		1B158B1412551FE300584D8E /* WBWizardPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWizardPage.m; sourceTree = "<group>"; };
 		1B158D8D1255225400584D8E /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		1B158E8B1255229E00584D8E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBPointerTest.m; sourceTree = "<group>"; };
 		1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBScopeTest.m; sourceTree = "<group>"; };
 		1B4C14E31255E65D00C82DE3 /* WBDateTableColumn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDateTableColumn.h; sourceTree = "<group>"; };
@@ -335,11 +327,11 @@
 		1B8B08831255D1420028DAD4 /* WBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase.h; sourceTree = "<group>"; };
 		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		1BB0E2620D62F7580041C166 /* WBLicenseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLicenseTest.m; sourceTree = "<group>"; };
+		1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
 		1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RSEditor.xib; sourceTree = "<group>"; };
 		1BD8EF401257F5F600F359B0 /* RSEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSEditorView.h; sourceTree = "<group>"; };
 		1BD8EF411257F5F600F359B0 /* RSEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSEditorView.m; sourceTree = "<group>"; };
 		1BD8EF421257F5F600F359B0 /* TOutline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOutline.png; sourceTree = "<group>"; };
-		1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBEnumeratorTest.m; sourceTree = "<group>"; };
 		1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctionsTest.m; sourceTree = "<group>"; };
 		1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctionsTest.m; sourceTree = "<group>"; };
 		1BF23A8A0D376DF6007EF8EB /* DirectoryService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DirectoryService.framework; path = /System/Library/Frameworks/DirectoryService.framework; sourceTree = "<absolute>"; };
@@ -359,7 +351,6 @@
 			files = (
 				1B5634980F5AF9D700BD119C /* GHUnit.framework in Frameworks */,
 				1B5634A90F5AFA6000BD119C /* Cocoa.framework in Frameworks */,
-				1B5634C50F5AFA8D00BD119C /* WonderBox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,12 +759,11 @@
 		1BF76C800D367DF100A8758E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */,
 				1BF76C870D367E0000A8758E /* Info.plist */,
-				1B1B3F300E0DC5F3002C3269 /* WBPointerTest.m */,
 				1B4F54E10F53E9080091CADB /* WBMacroTests.m */,
 				1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */,
 				1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */,
-				1BE35AD60D36E1120007ED9A /* WBEnumeratorTest.m */,
 				1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */,
 				1BB0E2620D62F7580041C166 /* WBLicenseTest.m */,
 				1B63B9710EE2C57F000ED041 /* WBBase64Test.m */,
@@ -852,7 +842,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1B56348F0F5AF9B900BD119C /* PBXTargetDependency */,
 			);
 			name = GHTests;
 			productName = GHTests;
@@ -932,12 +921,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B5634900F5AF9C400BD119C /* WBBase64Test.m in Sources */,
-				1B5634910F5AF9C400BD119C /* WBEnumeratorTest.m in Sources */,
 				1B5634920F5AF9C400BD119C /* WBFunctionsTest.m in Sources */,
 				1B5634930F5AF9C400BD119C /* WBLSFunctionsTest.m in Sources */,
 				1B5634940F5AF9C400BD119C /* WBMacroTests.m in Sources */,
-				1B5634950F5AF9C400BD119C /* WBPointerTest.m in Sources */,
 				1B5634960F5AF9C400BD119C /* WBScopeTest.m in Sources */,
+				1BB7CCAC129C350D003C3E95 /* GHUnitTestMain.m in Sources */,
+				1BB7CCB4129C3521003C3E95 /* WBBase64.c in Sources */,
+				1BB7CCB9129C353C003C3E95 /* WBObjCRuntime.m in Sources */,
+				1BB7CCBC129C3542003C3E95 /* WBVersionFunctions.m in Sources */,
+				1BB7CCBF129C3546003C3E95 /* WBLSFunctions.m in Sources */,
+				1BB7CCC2129C354B003C3E95 /* WBFunctions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -995,14 +988,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		1B56348F0F5AF9B900BD119C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8DC2EF4F0486A6940098B216 /* WonderBox */;
-			targetProxy = 1B56348E0F5AF9B900BD119C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -1049,6 +1034,7 @@
 				INFOPLIST_FILE = Tests/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = GHTests;
+				WONDERBOX = "";
 			};
 			name = Debug;
 		};
@@ -1059,6 +1045,7 @@
 				INFOPLIST_FILE = Tests/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = GHTests;
+				WONDERBOX = "";
 			};
 			name = Release;
 		};

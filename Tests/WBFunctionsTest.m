@@ -10,9 +10,9 @@
 
 #import <GHUnit/GHUnit.h>
 
-#import WBHEADER(WBObjCRuntime.h)
-#import WBHEADER(WBVersionFunctions.h)
-#import WBHEADER(WonderBoxFunctions.h)
+#import "WBFunctions.h"
+#import "WBObjCRuntime.h"
+#import "WBVersionFunctions.h"
 
 @interface WBFunctionsTest : GHTestCase {
 

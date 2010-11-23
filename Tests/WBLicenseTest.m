@@ -10,7 +10,7 @@
 
 #import "WBLicenseTest.h"
 
-#import WBHEADER(WBLicenseCrypto.h)
+#import "WBLicenseCrypto.h"
 
 #undef I
 #include <openssl/evp.h>
