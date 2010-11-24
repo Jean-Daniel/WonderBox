@@ -32,4 +32,7 @@ WB_CLASS_EXPORT
 - (BOOL)isHighlightingEnabled;
 - (void)setHighlightingEnabled:(BOOL)flag;
 
+// Method used to adjust text drawing area.
+- (NSRect)contentRectForBounds:(NSRect)bounds;
+
 @end

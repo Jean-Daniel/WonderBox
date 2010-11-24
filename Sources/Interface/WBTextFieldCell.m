@@ -69,12 +69,16 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
   return NSInsetRect(frame, 0.0, offset);
 }
 
+- (NSRect)contentRectForBounds:(NSRect)bounds {
+  return _adjustTextFrame(self, bounds);
+}
+
 - (NSRect)titleRectForBounds:(NSRect)theRect {
-  return [super titleRectForBounds:_adjustTextFrame(self, theRect)];
+  return [super titleRectForBounds:[self contentRectForBounds:theRect]];
 }
 
 - (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
-  return [super hitTestForEvent:event inRect:_adjustTextFrame(self, cellFrame) ofView:controlView];
+  return [super hitTestForEvent:event inRect:[self contentRectForBounds:cellFrame] ofView:controlView];
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +90,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
                editor:(NSText *)editor
              delegate:(id)delegate
                 event:(NSEvent *)event {
-  [super editWithFrame:_adjustTextFrame(self, aRect)
+  [super editWithFrame:[self contentRectForBounds:aRect]
                 inView:controlView
                 editor:editor
               delegate:delegate
@@ -104,7 +108,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
                delegate:(id)delegate
                   start:(NSInteger)start
                  length:(NSInteger)length {
-  [super selectWithFrame:_adjustTextFrame(self, aRect)
+  [super selectWithFrame:[self contentRectForBounds:aRect]
                   inView:controlView
                   editor:editor
                  delegate:delegate
@@ -118,7 +122,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 //-----------------------------------------------------------------------------
 
 - (void)drawInteriorWithFrame:(NSRect)frame inView:(NSView *)view {
-  [super drawInteriorWithFrame:_adjustTextFrame(self, frame) inView:view];
+  [super drawInteriorWithFrame:[self contentRectForBounds:frame] inView:view];
   if ([self drawsLineOver]) {
     NSRect title = [self titleRectForBounds:frame];
     // FIXME: userspace scale factor
