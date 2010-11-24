@@ -13,7 +13,7 @@
 @implementation WBDateTableColumn
 
 #define WB_MEDIUM_DATE_WIDTH 80
-#define WB_LONG_DATE_WIDTH 100
+#define WB_LONG_DATE_WIDTH 110
 
 static
 void _WBFixupDateFormat(NSDateFormatter *formatter, CGFloat width, CGFloat previous) {
