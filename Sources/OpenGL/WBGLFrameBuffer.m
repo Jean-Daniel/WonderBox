@@ -76,7 +76,7 @@ void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum 
   GLuint save;
   glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
   GLenum err = glGetError();
-  WBAssert(GL_ZERO == err, @"Invalid FBO: %s", _WBGLFrameBufferGetErrorString(err));
+  WBAssert(GL_ZERO == err, @"glGetError() -> 0x%x (%s)", err, _WBGLFrameBufferGetErrorString(err));
 
   if (save != fbo)
     WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
@@ -386,6 +386,8 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 const char*_WBGLFrameBufferGetErrorString(GLenum error) {
   switch (error) {
     default: return kOpenGLFramebufferDefaultMessage;
+    case GL_INVALID_ENUM: return "Invalid Enumerator constant";
+    case GL_INVALID_OPERATION: return "Invalid OpenGL Operation";
     case GL_FRAMEBUFFER_COMPLETE_EXT: return nil;
     case GL_FRAMEBUFFER_UNSUPPORTED_EXT: return kOpenGLFramebufferUnsupported;
     case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT: return kOpenGLFramebufferIncompleteAttachement;
