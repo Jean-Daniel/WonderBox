@@ -18,7 +18,7 @@
     @abstract Tree structure.
     @discussion Tree node class to implements Tree structure.
 */
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBTreeNode : NSObject <NSCopying, NSCoding> {
   @private
   WBTreeNode *wb_child;

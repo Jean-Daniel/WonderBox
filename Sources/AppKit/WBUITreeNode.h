@@ -120,7 +120,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
 
 @end
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBUITreeNode : WBBaseUITreeNode <NSCopying, NSCoding> {
 @private
   NSImage *wb_icon;

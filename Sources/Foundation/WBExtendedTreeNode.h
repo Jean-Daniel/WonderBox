@@ -20,7 +20,7 @@
   @abstract   A WBTreeNode that is KVC/KVO Compliant for children key.
   @discussion This class override all node manipulation methods to correctly send KVO notifications.
 */
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBExtendedTreeNode : WBTreeNode <NSCopying, NSCoding> {
   @private
 }

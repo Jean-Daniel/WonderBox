@@ -10,7 +10,7 @@
 
 #import WBHEADER(WBBase.h)
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBXMLWriter : NSObject {
 @private
   bool wb_indent;

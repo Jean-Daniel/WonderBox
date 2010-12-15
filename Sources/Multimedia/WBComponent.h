@@ -10,7 +10,7 @@
 
 #import WBHEADER(WBBase.h)
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBComponent : NSObject <NSCopying> {
 @private
   Component _comp;

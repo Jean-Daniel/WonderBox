@@ -11,7 +11,7 @@
 #import WBHEADER(WBBase.h)
 #import WBHEADER(WBBoxLayer.h)
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBStringLayer : WBBoxLayer {
 @private
   NSTextStorage *wb_storage;

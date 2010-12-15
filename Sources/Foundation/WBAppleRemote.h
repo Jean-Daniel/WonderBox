@@ -29,7 +29,7 @@ typedef NSUInteger WBAppleRemoteButton;
 #define kWBAppleRemoteButtonCount 8
 
 @protocol WBAppleRemoteListener;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBAppleRemote : NSObject {
 @private
   NSMutableArray *wb_listeners;

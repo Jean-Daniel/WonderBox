@@ -41,7 +41,7 @@ typedef NSUInteger WBWizardOperation;
 
 @end
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBWizard : WBWindowController {
   @private
   IBOutlet NSView *pageView;

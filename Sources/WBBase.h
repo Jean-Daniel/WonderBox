@@ -11,29 +11,54 @@
 #if !defined(__WONDERBOX_BASE_H)
 #define __WONDERBOX_BASE_H 1
 
+#if !defined(WB_VISIBLE)
+  #define WB_VISIBLE __attribute__((visibility("default")))
+#endif
+
+#if !defined(WB_HIDDEN)
+  #define WB_HIDDEN __attribute__((visibility("hidden")))
+#endif
+
+#if !defined(WB_EXTERN)
+  #if defined(__cplusplus)
+    #define WB_EXTERN extern "C"
+  #else
+    #define WB_EXTERN extern
+  #endif
+#endif
+
 #if !defined(WB_PRIVATE)
-  #define WB_PRIVATE SC_PRIVATE
+  #define WB_PRIVATE WB_EXTERN WB_HIDDEN
 #endif
 
 #if !defined(WB_EXPORT)
   #if defined(WONDERBOX_FRAMEWORK)
-    #define WB_EXPORT SC_EXPORT
+    #define WB_EXPORT WB_EXTERN WB_VISIBLE
   #else
-    #define WB_EXPORT SC_PRIVATE
+    #define WB_EXPORT WB_EXTERN WB_HIDDEN
   #endif
+#endif
+
+#if !defined(WB_OBJC_EXPORT)
+  #if __LP64__
+    #define WB_OBJC_PRIVATE WB_HIDDEN
+    #if defined(WONDERBOX_FRAMEWORK)
+      #define WB_OBJC_EXPORT WB_VISIBLE
+    #else
+      #define WB_OBJC_EXPORT WB_HIDDEN
+    #endif
+  #else
+    #define WB_OBJC_EXPORT
+    #define WB_OBJC_PRIVATE
+  #endif /* Framework && 64 bits runtime */
 #endif
 
 #if !defined(WB_INLINE)
-  #define WB_INLINE SC_INLINE
-#endif
-
-#if !defined(WB_CLASS_EXPORT)
-  #define WB_CLASS_PRIVATE SC_CLASS_PRIVATE
-  #if defined(WONDERBOX_FRAMEWORK)
-    #define WB_CLASS_EXPORT SC_CLASS_EXPORT
+  #if !defined(__NO_INLINE__)
+    #define WB_INLINE static __inline__ __attribute__((always_inline))
   #else
-    #define WB_CLASS_EXPORT SC_CLASS_PRIVATE
-  #endif
+    #define WB_INLINE static __inline__
+  #endif /* No inline */
 #endif
 
 /* Function Attributes */

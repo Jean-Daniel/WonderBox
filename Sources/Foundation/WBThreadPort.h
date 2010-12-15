@@ -17,7 +17,7 @@ enum {
   kWBThreadPortWaitIfReturns = -1,
 };
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBThreadPort : NSObject {
   @private
   NSThread *wb_thread;

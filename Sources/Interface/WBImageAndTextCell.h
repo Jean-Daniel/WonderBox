@@ -10,7 +10,7 @@
 
 #import WBHEADER(WBTextFieldCell.h)
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBImageAndTextCell : WBTextFieldCell <NSCopying, NSCoding> {
 @private
   NSImage *wb_image;

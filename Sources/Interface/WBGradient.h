@@ -61,7 +61,7 @@ typedef struct {
  @class WBGradientBuilder
 
  */
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBGradientBuilder : NSObject {
 @private
   uint8_t wb_extends;

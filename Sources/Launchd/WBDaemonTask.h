@@ -11,7 +11,7 @@
 #import WBHEADER(WBBase.h)
 
 @protocol WBDaemonTaskDelegate;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBDaemonTask : NSObject {
 @private
   BOOL _registred;

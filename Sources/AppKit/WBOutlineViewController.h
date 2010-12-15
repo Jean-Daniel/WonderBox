@@ -11,7 +11,7 @@
 #import WBHEADER(WBBase.h)
 
 @class WBBaseUITreeNode;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBOutlineViewController : NSObject {
 @private
   WBBaseUITreeNode *wb_root;

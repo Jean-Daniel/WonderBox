@@ -13,7 +13,7 @@
 typedef NSComparisonResult (*WBCompareFunction)(id, id, void *);
 typedef BOOL (*WBFilterFunction)(NSString *, id, void *);
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBTableDataSource : NSArrayController {
   @private
   NSString *wb_searchString;

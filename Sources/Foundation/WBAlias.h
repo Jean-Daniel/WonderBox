@@ -19,7 +19,7 @@
     @class WBAlias
     @abstract WBAlias class is a wrapper on Carbon AliasHandle.
 */
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBAlias : NSObject <NSCoding, NSCopying> {
   @private
   NSString *wb_path;

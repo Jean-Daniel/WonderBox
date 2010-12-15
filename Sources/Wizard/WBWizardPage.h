@@ -12,7 +12,7 @@
 #import WBHEADER(WBWizard.h)
 
 @class WBWizard;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBWizardPage : WBViewController <WBWizardPage> {
   @private
   WBWizard *wb_wizard;

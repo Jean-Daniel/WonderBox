@@ -14,7 +14,7 @@
 @protocol WBOutlineViewDelegate;
 #endif
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBOutlineView : NSOutlineView {
 @private
   struct _wb_ovFlags {

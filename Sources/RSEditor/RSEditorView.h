@@ -8,7 +8,7 @@
 
 #import WBHEADER(WBBase.h)
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface RSEditorView : NSObject {
 @private
   IBOutlet NSView *ibView;
@@ -26,7 +26,7 @@ WB_CLASS_EXPORT
 
 @end
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface RSTextView : NSTextView {
 @private
 
@@ -34,7 +34,7 @@ WB_CLASS_EXPORT
 
 @end
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface RSEditorEffectView : NSView {
 @private
   NSColor *rs_color;

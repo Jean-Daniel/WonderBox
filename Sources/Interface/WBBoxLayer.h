@@ -20,7 +20,7 @@ enum {
   kWBStringLayerAlignmentBottom = kWBStringLayerAlignmentRight,
 };
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBBoxLayer : NSObject {
 @private
   NSSize wb_size; // layer size.

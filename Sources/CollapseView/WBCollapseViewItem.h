@@ -11,7 +11,7 @@
 #include WBHEADER(WBBase.h)
 
 @class WBCollapseView;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBCollapseViewItem : NSObject <NSCoding> {
 @private
   id wb_uid;

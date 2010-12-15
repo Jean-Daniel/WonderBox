@@ -16,7 +16,7 @@
 @class QTMovie;
 @protocol WBMovieDrawer;
 @class WBQTVisualContext;
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBMovieTexture : NSObject {
 @private
   QTTime wb_time;

@@ -12,7 +12,7 @@
 
 @protocol WBProgressPanelDelegate;
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBProgressPanel : WBWindowController {
 @private
   IBOutlet NSButton *uiCancel;

@@ -25,7 +25,7 @@ WB_EXPORT const WBInterpolationCallBack const WBInterpolationCallBackCircular;
 WB_EXPORT CGFloat WBInterpolationSin(CGFloat factor, void *info);
 WB_EXPORT CGFloat WBInterpolationCircular(CGFloat factor, void *info);
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBInterpolationFunction : NSObject {
 @private
 

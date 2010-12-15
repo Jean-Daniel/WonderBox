@@ -14,7 +14,7 @@
 @protocol WBTableViewDelegate;
 #endif
 
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBTableView : NSTableView {
 @private
   struct _wb_tvFlags {

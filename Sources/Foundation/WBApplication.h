@@ -21,7 +21,7 @@
     @class    WBApplication
     @abstract Object representation of an Application. Use application signature or Bundle Identifier as identifier.
 */
-WB_CLASS_EXPORT
+WB_OBJC_EXPORT
 @interface WBApplication : NSObject <NSCoding, NSCopying> {
   @private
   NSString *wb_name;
