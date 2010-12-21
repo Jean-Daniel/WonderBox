@@ -21,10 +21,10 @@ WB_OBJC_EXPORT
 }
 
 #if OBJC_NEW_PROPERTIES
-@property(readonly) NSString *name;
-@property(readonly) NSString *manufacturer;
-@property(readonly) NSString *informations;
-@property(readonly) NSString *componentName;
+@property(nonatomic, readonly) NSString *name;
+@property(nonatomic, readonly) NSString *manufacturer;
+@property(nonatomic, readonly) NSString *informations;
+@property(nonatomic, readonly) NSString *componentName;
 #endif
 
 + (NSArray *)componentsWithComponentDescription:(const ComponentDescription *)search;

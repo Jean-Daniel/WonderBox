@@ -25,10 +25,10 @@ WB_OBJC_EXPORT
   } wb_cviFlags;
 }
 
-@property(retain) NSView *view;
-@property(retain) id identifier;
+@property(nonatomic, retain) NSView *view;
+@property(nonatomic, retain) id identifier;
 
-@property(copy) NSString *title;
+@property(nonatomic, copy) NSString *title;
 
 @property BOOL animates;
 

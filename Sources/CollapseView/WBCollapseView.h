@@ -20,7 +20,7 @@ WB_OBJC_EXPORT
   id <WBCollapseViewDelegate> wb_delegate __weak;
 }
 
-@property(assign) id <WBCollapseViewDelegate> delegate;
+@property(nonatomic, assign) id <WBCollapseViewDelegate> delegate;
 
 - (void)expandAllItems;
 - (void)collapseAllItems;

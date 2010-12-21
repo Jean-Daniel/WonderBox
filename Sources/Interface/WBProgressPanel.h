@@ -32,7 +32,7 @@ WB_OBJC_EXPORT
 //  } wb_PPFlags;
 }
 
-@property(assign) id<WBProgressPanelDelegate> delegate;
+@property(nonatomic, assign) id<WBProgressPanelDelegate> delegate;
 
 /* configuration */
 @property(retain, nonatomic) NSImage *icon;
@@ -61,7 +61,7 @@ WB_OBJC_EXPORT
 - (void)stop;
 
 /* limits message refresh interval */
-@property NSTimeInterval refreshInterval;
+@property(nonatomic) NSTimeInterval refreshInterval;
 
 @end
 

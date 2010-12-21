@@ -19,7 +19,7 @@
 
 @interface WBTabWindowItem ()
 
-@property(copy) NSString *identifier;
+@property(nonatomic, copy) NSString *identifier;
 
 @end
 

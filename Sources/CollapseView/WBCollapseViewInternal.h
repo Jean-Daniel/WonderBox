@@ -46,9 +46,9 @@
   } wb_civFlags;
 }
 
-@property(readonly) id identifier;
-@property(readonly) WBCollapseViewItem *item;
-@property(readonly) WBCollapseView *collapseView;
+@property(nonatomic, readonly) id identifier;
+@property(nonatomic, readonly) WBCollapseViewItem *item;
+@property(nonatomic, readonly) WBCollapseView *collapseView;
 
 - (id)initWithItem:(WBCollapseViewItem *)anItem;
 

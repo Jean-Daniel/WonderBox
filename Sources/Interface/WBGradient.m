@@ -25,8 +25,8 @@ void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out);
 static
 void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
-@property CGFloat start, end;
-@property(retain) WBInterpolationFunction *interpolation;
+@property(nonatomic) CGFloat start, end;
+@property(nonatomic, retain) WBInterpolationFunction *interpolation;
 
 - (id)initWithComponents:(NSUInteger)count;
 

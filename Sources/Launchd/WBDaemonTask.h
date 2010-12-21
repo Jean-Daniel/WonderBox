@@ -22,7 +22,7 @@ WB_OBJC_EXPORT
 }
 
 @property BOOL unregisterAtExit;
-@property(assign) id<WBDaemonTaskDelegate> delegate;
+@property(nonatomic, assign) id<WBDaemonTaskDelegate> delegate;
 @property(getter=isRegistred, readonly) BOOL registred;
 
 - (id)initWithName:(NSString *)aName;

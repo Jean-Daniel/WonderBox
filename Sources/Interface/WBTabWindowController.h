@@ -44,8 +44,8 @@ WB_OBJC_EXPORT
   WBTabWindowController *wb_ctrl __weak;
 }
 
-@property(readonly, copy) NSString *identifier;
-@property(assign) WBTabWindowController *tabWindow;
+@property(nonatomic, readonly, copy) NSString *identifier;
+@property(nonatomic, assign) WBTabWindowController *tabWindow;
 
 + (NSImage *)image;
 + (NSString *)label;

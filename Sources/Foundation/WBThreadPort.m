@@ -500,12 +500,12 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   NSCondition *wb_condition;
 }
 
-@property SEL action;
-@property(retain) id target;
-@property(retain) id argument;
+@property(nonatomic) SEL action;
+@property(nonatomic, retain) id target;
+@property(nonatomic, retain) id argument;
 
-@property(assign) WBThreadPort *port;
-@property(retain) NSCondition *condition;
+@property(nonatomic, assign) WBThreadPort *port;
+@property(nonatomic, retain) NSCondition *condition;
 
 + (void)wb_ThreadPortMain:(_WBThreadArgument *)arg;
 

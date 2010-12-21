@@ -149,7 +149,7 @@
   id wb_argument;
 }
 
-@property SEL action;
+@property(nonatomic) SEL action;
 @property(nonatomic, retain) id target;
 @property(nonatomic, retain) id argument;
 

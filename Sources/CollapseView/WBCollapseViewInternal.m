@@ -48,10 +48,10 @@
 }
 
 @property NSInteger state;
-@property(copy) NSString *title;
+@property(nonatomic, copy) NSString *title;
 
-@property SEL action;
-@property(assign) id target;
+@property(nonatomic) SEL action;
+@property(nonatomic, assign) id target;
 
 - (void)wb_performAction:(id)sender;
 
