@@ -65,7 +65,7 @@ WB_OBJC_EXPORT
 
 @end
 
-@protocol WBProgressPanelDelegate
+@protocol WBProgressPanelDelegate <NSObject>
 
 @optional
 - (BOOL)progressPanelShouldCancel:(WBProgressPanel *)aPanel;

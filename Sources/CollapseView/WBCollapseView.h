@@ -51,7 +51,7 @@ WB_OBJC_EXPORT
 
 @end
 
-@protocol WBCollapseViewDelegate
+@protocol WBCollapseViewDelegate <NSObject>
 
 @optional
 - (void)collapseViewDidChangeNumberOfCollapseViewItems:(WBCollapseView *)aView;
