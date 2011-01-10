@@ -24,7 +24,7 @@ WB_OBJC_EXPORT
   NSTimeInterval wb_rate;
   CFAbsoluteTime wb_last;
   CFAbsoluteTime wb_start;
-  id<WBProgressPanelDelegate> wb_delegate __weak;
+  __weak id<WBProgressPanelDelegate> wb_delegate;
 
 //  struct _wb_PPFlags {
 //    unsigned int showtime:1;
