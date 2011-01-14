@@ -435,6 +435,36 @@
   }
 }
 
+//static const
+//WBGradientDefinition sHeaderGradient = {
+//  1,
+//  kWBInterpolationLinear, // WBInterpolationCallBackDef(WBInterpolationSin),
+//  {
+//    /* step 1 */
+//    {
+//      0.0, WBShadingColorGray(.733, 1), // 808
+//      1.0, WBShadingColorGray(.900, 1), // 647
+//      kWBInterpolationDefault,
+//    },
+//  }
+//};
+
+static const
+WBGradientDefinition sHeaderGradient = {
+  1,
+  WBInterpolationCallBackDef(WBInterpolationSin),
+  {
+    /* step 1 */
+    {
+      0.0, WBShadingColorRGB(.700, .707, .777, 1), // 808
+      1.0, WBShadingColorRGB(.926, .929, .973, 1), // 647
+      kWBInterpolationDefault,
+    },
+  }
+};
+
+#define BORDER_WHITE .60
+
 - (void)drawRect:(NSRect)aRect {
   static CGLayerRef sHeaderBackground = NULL;
 
@@ -445,8 +475,8 @@
   background.origin.y += 1;
 
   if (!sHeaderBackground) {
-    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithStartingColor:[NSColor colorWithCalibratedWhite:(CGFloat).733 alpha:1]
-                                                                endingColor:[NSColor colorWithCalibratedWhite:(CGFloat).9 alpha:1]];
+    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithColorSpace:[NSColorSpace genericRGBColorSpace]
+                                                              definition:&sHeaderGradient];
     sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
     [b release];
   }
@@ -455,7 +485,7 @@
 
   // lazy highlighting
   if (wb_chvFlags.highlight) {
-    CGContextSetGrayFillColor(ctxt, 0, .25);
+    CGContextSetGrayFillColor(ctxt, 0, (CGFloat).25);
     CGContextFillRect(ctxt, background);
   }
 
@@ -463,7 +493,7 @@
   CGContextSetLineWidth(ctxt, 1);
   {
     // first line
-    CGContextSetGrayStrokeColor(ctxt, (CGFloat).33, 1);
+    CGContextSetGrayStrokeColor(ctxt, (CGFloat)BORDER_WHITE, 1);
     CGPoint line[] = {
       CGPointMake(NSMinX(bounds), NSMinY(bounds) + (CGFloat).5),
       CGPointMake(NSMaxX(bounds), NSMinY(bounds) + (CGFloat).5)
@@ -482,15 +512,18 @@
 - (void)drawRect:(NSRect)aRect {
   CGPoint line[2];
   NSRect bounds = [self bounds];
+  CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
+  CGContextSetGrayFillColor(ctxt, .91, 1);
+  CGContextFillRect(ctxt, NSRectToCGRect(aRect));
+
   if (NSIntersectsRect(bounds, aRect)) {
-    CGContextRef ctxt = [NSGraphicsContext currentGraphicsPort];
     CGContextSetLineWidth(ctxt, 1);
 
     CGFloat y = [self isFlipped] ? NSMaxY(bounds) - (CGFloat).5 : NSMinY(bounds) + (CGFloat).5;
     line[0] = CGPointMake(NSMinX(bounds), y);
     line[1] = CGPointMake(NSMaxX(bounds), y);
 
-    CGContextSetGrayStrokeColor(ctxt, (CGFloat).33, 1);
+    CGContextSetGrayStrokeColor(ctxt, (CGFloat)BORDER_WHITE, 1);
     CGContextStrokeLineSegments(ctxt, line, 2);
   }
 }
