@@ -435,20 +435,6 @@
   }
 }
 
-//static const
-//WBGradientDefinition sHeaderGradient = {
-//  1,
-//  kWBInterpolationLinear, // WBInterpolationCallBackDef(WBInterpolationSin),
-//  {
-//    /* step 1 */
-//    {
-//      0.0, WBShadingColorGray(.733, 1), // 808
-//      1.0, WBShadingColorGray(.900, 1), // 647
-//      kWBInterpolationDefault,
-//    },
-//  }
-//};
-
 static const
 WBGradientDefinition sHeaderGradient = {
   1,
