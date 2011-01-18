@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBProcessFunctions.h)
+#include WBHEADER(WBProcessFunctions.h)
 
 #include <unistd.h>
 #include <sys/sysctl.h>

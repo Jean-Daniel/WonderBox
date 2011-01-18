@@ -31,7 +31,7 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
   }
 }
 
-#define WBAEPrintDebug(desc, format, args...) ({ \
+#define WBAEPrintDebug(desc, format, args...) do { \
   if (WBAEDebug) { \
     CFStringRef __event = WBAEDescCopyDescription(desc); \
       if (__event) { \
@@ -39,7 +39,7 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
         CFRelease(__event); \
       } \
   } \
-})
+} while(0)
 
 #pragma mark -
 #pragma mark Print AEDesc

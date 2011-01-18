@@ -187,15 +187,15 @@ void _WBRuntimeExchangeMethods(Class class, SEL orig, SEL new, bool instance) {
 
   Method m2 = getMethod(class, new);
   check(m2 != NULL);
-  return __WBRuntimeExchangeMethods(m1, m2);
+  __WBRuntimeExchangeMethods(m1, m2);
 }
 
 void WBRuntimeExchangeClassMethods(Class cls, SEL orig, SEL replace) {
-  return _WBRuntimeExchangeMethods(cls, orig, replace, false);
+  _WBRuntimeExchangeMethods(cls, orig, replace, false);
 }
 
 void WBRuntimeExchangeInstanceMethods(Class cls, SEL orig, SEL replace) {
-  return _WBRuntimeExchangeMethods(cls, orig, replace, true);
+  _WBRuntimeExchangeMethods(cls, orig, replace, true);
 }
 static
 IMP _WBRuntimeSetMethodImplementation(Class cls, SEL sel, IMP addr, bool instance) {

@@ -884,7 +884,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
 
   bool isDir = (flags & kWBFSTemporaryItemIsFolder) != 0;
   if (isDir) {
-    if (mkdtemp(buffer) < 0)
+    if (!mkdtemp(buffer))
       err = kPOSIXErrorBase + errno;
   } else {
     // by using mkstemp, we avoid a race condition

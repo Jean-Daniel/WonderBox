@@ -363,9 +363,9 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(BOOL)waitDone {
-  return [self performSelector:anAction target:aTarget argument:anObject
-                 waitUntilDone:waitDone ? kWBThreadPortWait : kWBThreadPortDontWait
-                       timeout:wb_timeout];
+  [self performSelector:anAction target:aTarget argument:anObject
+          waitUntilDone:waitDone ? kWBThreadPortWait : kWBThreadPortDontWait
+                timeout:wb_timeout];
 }
 
 - (void)performSelector:(SEL)anAction target:(id)aTarget argument:(id)anObject waitUntilDone:(NSInteger)synch timeout:(uint32_t)timeout {

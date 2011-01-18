@@ -157,11 +157,11 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 }
 
 - (void)bind:(CGLContextObj)aContext {
-  return [self bindMode:GL_FRAMEBUFFER_EXT context:aContext];
+  [self bindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
 - (void)unbind:(CGLContextObj)aContext {
-  return [self unbindMode:GL_FRAMEBUFFER_EXT context:aContext];
+  [self unbindMode:GL_FRAMEBUFFER_EXT context:aContext];
 }
 
 - (void)resetViewPort:(CGLContextObj)CGL_MACRO_CONTEXT {
