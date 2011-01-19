@@ -751,8 +751,8 @@
 				1B7FED420ED3362B00B5780B /* WonderBoxRelease.xcconfig */,
 			);
 			name = xcconfigs;
-			path = /Users/jddupas/Desktop/Emerald/subprojs/xcconfigs;
-			sourceTree = "<absolute>";
+			path = ../xcconfigs;
+			sourceTree = SOURCE_ROOT;
 		};
 		1BD8EF3E1257F5F600F359B0 /* RSEditor */ = {
 			isa = PBXGroup;
