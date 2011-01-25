@@ -40,13 +40,14 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 }
 
 - (id)initWithMovie:(QTMovie *)aMovie {
-  BOOL hasTC;
-  wb_qtmedia = _WBMovieGetTimecodeMedia(aMovie, &hasTC);
-  if (!wb_qtmedia) {
-    [self release];
-    return nil;
-  }
   if (self = [super init]) {
+    BOOL hasTC;
+    wb_qtmedia = _WBMovieGetTimecodeMedia(aMovie, &hasTC);
+    if (!wb_qtmedia) {
+      [self release];
+      return nil;
+    }
+
     wb_first = -1;
     wb_tcFlags.useTcTrack = 1;
     wb_movie = [aMovie retain];
