@@ -30,7 +30,7 @@ WB_OBJC_EXPORT
 
 @property(nonatomic, copy) NSString *title;
 
-@property BOOL animates;
+@property(nonatomic) BOOL animates;
 
 - (id)init;
 - (id)initWithView:(NSView *)aView;

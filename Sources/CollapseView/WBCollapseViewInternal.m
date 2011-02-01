@@ -47,7 +47,7 @@
   } wb_chvFlags;
 }
 
-@property NSInteger state;
+@property(nonatomic) NSInteger state;
 @property(nonatomic, copy) NSString *title;
 
 @property(nonatomic) SEL action;

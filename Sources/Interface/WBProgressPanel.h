@@ -35,23 +35,23 @@ WB_OBJC_EXPORT
 @property(nonatomic, assign) id<WBProgressPanelDelegate> delegate;
 
 /* configuration */
-@property(retain, nonatomic) NSImage *icon;
+@property(nonatomic, retain) NSImage *icon;
 
-@property(copy, nonatomic) NSString *title;
-@property(copy, nonatomic) NSString *message;
+@property(nonatomic, copy) NSString *title;
+@property(nonatomic, copy) NSString *message;
 
-@property(copy, nonatomic) NSString *windowTitle;
+@property(nonatomic, copy) NSString *windowTitle;
 
-@property(getter=isIndeterminate) BOOL indeterminate;
+@property(nonatomic, getter=isIndeterminate) BOOL indeterminate;
 
 //- (BOOL)evaluatesRemainingTime;
 //- (void)setEvaluatesRemainingTime:(BOOL)flag;
 
 /* progress */
-@property double minValue;
-@property double maxValue;
+@property(nonatomic) double minValue;
+@property(nonatomic) double maxValue;
 
-@property double value;
+@property(nonatomic) double value;
 - (void)incrementBy:(double)delta;
 
 - (IBAction)ok:(id)sender;

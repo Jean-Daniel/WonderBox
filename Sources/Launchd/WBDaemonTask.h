@@ -21,38 +21,38 @@ WB_OBJC_EXPORT
   __weak id<WBDaemonTaskDelegate> wb_delegate;
 }
 
-@property BOOL unregisterAtExit;
+@property(nonatomic) BOOL unregisterAtExit;
 @property(nonatomic, assign) id<WBDaemonTaskDelegate> delegate;
-@property(getter=isRegistred, readonly) BOOL registred;
+@property(nonatomic, getter=isRegistred, readonly) BOOL registred;
 
 - (id)initWithName:(NSString *)aName;
 
-@property(copy) NSString *name;
-@property(getter=isDisabled) BOOL disabled;
+@property(nonatomic, copy) NSString *name;
+@property(nonatomic, getter=isDisabled) BOOL disabled;
 
-@property BOOL debug;
-@property BOOL waitForDebugger;
+@property(nonatomic) BOOL debug;
+@property(nonatomic) BOOL waitForDebugger;
 
-@property(copy) NSObject<NSCopying> *keepAlive;
+@property(nonatomic, copy) NSObject<NSCopying> *keepAlive;
 
-@property uint32_t timeout; // seconds
-@property uint32_t exitTimeout; // seconds
-@property uint32_t throttleInterval; // seconds
+@property(nonatomic) uint32_t timeout; // seconds
+@property(nonatomic) uint32_t exitTimeout; // seconds
+@property(nonatomic) uint32_t throttleInterval; // seconds
 
-@property BOOL launchOnlyOnce; // run once
-@property BOOL startImmediatly; // run at load
+@property(nonatomic) BOOL launchOnlyOnce; // run once
+@property(nonatomic) BOOL startImmediatly; // run at load
 
-@property(copy) NSString *standardError;
-@property(copy) NSString *standardOutput;
+@property(nonatomic, copy) NSString *standardError;
+@property(nonatomic, copy) NSString *standardOutput;
 
-@property(copy) NSString *rootDirectoryPath;
-@property(copy) NSString *workingDirectoryPath;
+@property(nonatomic, copy) NSString *rootDirectoryPath;
+@property(nonatomic, copy) NSString *workingDirectoryPath;
 
-@property(copy) NSDictionary *environment;
+@property(nonatomic, copy) NSDictionary *environment;
 
-@property BOOL globArguments;
-@property(copy) NSArray *arguments;
-@property(copy) NSString *launchPath; // program
+@property(nonatomic) BOOL globArguments;
+@property(nonatomic, copy) NSArray *arguments;
+@property(nonatomic, copy) NSString *launchPath; // program
 
 - (id)valueForProperty:(NSString *)aProperty;
 - (void)setValue:(id)anObject forProperty:(NSString *)aProperty;
