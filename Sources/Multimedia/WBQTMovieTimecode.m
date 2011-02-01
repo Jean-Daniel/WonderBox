@@ -81,7 +81,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 }
 - (NSUInteger)numberOfFrame {
   if (wb_frames <= 0) {
-    TimeValue64 duration;
+    TimeValue64 duration = 0;
     TimeValue64 scale = GetMovieTimeScale([wb_movie quickTimeMovie]);
     OSStatus err = GetMoviesError();
     if (noErr == err) {
