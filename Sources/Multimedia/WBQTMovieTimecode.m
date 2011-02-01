@@ -87,9 +87,10 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
     if (noErr == err) {
       duration = GetMovieDuration([wb_movie quickTimeMovie]);
       err = GetMoviesError();
+
+      if (noErr == err)
+        wb_frames = round([self staticFrameRate] * duration / scale);
     }
-    if (noErr == err)
-      wb_frames = round([self staticFrameRate] * duration / scale);
   }
   return wb_frames;
 }

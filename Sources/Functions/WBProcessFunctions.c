@@ -95,7 +95,7 @@ ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFProp
     return serialNumber;
 
   while (procNotFound != GetNextProcess(&serialNumber))  {
-    CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, (UInt32)kProcessDictionaryIncludeAllInformationMask); // leak: WBCFRelease
+    CFDictionaryRef info = ProcessInformationCopyDictionary(&serialNumber, (UInt32)kProcessDictionaryIncludeAllInformationMask);
     if (info) {
       CFPropertyListRef procValue = CFDictionaryGetValue(info, property);
       if (procValue && (CFEqual(procValue, value))) {

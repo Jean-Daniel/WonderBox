@@ -64,7 +64,7 @@
 
 @interface WBThreadPort ()
 
-- (id)wb_init NS_RETURNS_RETAINED;
+- (id)wb_init NS_INIT_METHOD;
 
 - (void)invalidate;
 + (void)willBecomeMultiThreaded:(NSNotification *)aNotification;
