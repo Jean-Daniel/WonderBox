@@ -33,26 +33,20 @@ WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange)
   return iter;
 }
 
-NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
-  NSCParameterAssert(iter);
-  if (!iter || iter->_idx < 0) return NSNotFound;
-  if (iter->_cnt == iter->_idx) {
-    // The array is empty, we have to refill.
-    if (!iter->_indexes) return NSNotFound; // we are done
-    iter->_cnt = [iter->_indexes getIndexes:iter->_values maxCount:16 inIndexRange:&iter->_state];
+bool _WBIndexIteratorGetNext(WBIndexIterator *iter) {
+  // The array is empty, we have to refill.
+  if (!iter->_indexes) return false; // we are done
+  iter->_cnt = [iter->_indexes getIndexes:iter->_values maxCount:16 inIndexRange:&iter->_state];
 
-    if (iter->_cnt < 16) { // if count less than provided space, we reached the end. We no longer need the index set.
-      iter->_indexes = nil;
-      if (0 == iter->_cnt) // we are done
-        return NSNotFound;
-    }
-
-    WBAssert(iter->_cnt <= 16, @"Buffer overflow !");
-    iter->_idx = 0;
+  if (iter->_cnt < 16) { // if count less than provided space, we reached the end. We no longer need the index set.
+    iter->_indexes = nil;
+    if (0 == iter->_cnt) // we are done
+      return false;
   }
-  NSUInteger result = iter->_values[iter->_idx];
-  iter->_idx++;
-  return result;
+
+  WBAssert(iter->_cnt <= 16, @"Buffer overflow !");
+  iter->_idx = 0;
+  return true;
 }
 
 // MARK: Range

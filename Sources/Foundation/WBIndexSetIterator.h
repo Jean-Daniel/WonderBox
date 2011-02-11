@@ -26,8 +26,20 @@ WBIndexIterator WBIndexIteratorCreate(NSIndexSet *aSet);
 WB_EXPORT
 WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange);
 
-WB_EXPORT
-NSUInteger WBIndexIteratorNext(WBIndexIterator *iter);
+/* Internal Method. Never use it directly */
+WB_EXPORT bool _WBIndexIteratorGetNext(WBIndexIterator *iter);
+
+WB_INLINE
+NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
+  NSCParameterAssert(iter && iter->_idx >= 0);
+
+  NSUInteger result = NSNotFound;
+  if (iter && (iter->_cnt != iter->_idx || _WBIndexIteratorGetNext(iter))) {
+    result = iter->_values[iter->_idx];
+    iter->_idx++;
+  }
+  return result;
+}
 
 // .Hack: for syntax is not flexible enought to declare 2 variable inside the first statement,
 // So, we have to declare either the iterator, or the index out of the for scope.
@@ -53,6 +65,14 @@ NSUInteger WBIndexIteratorNext(WBIndexIterator *iter);
 #define WBIndexesReverseIterator(var, indexes) for (NSUInteger var = [indexes lastIndex]; indexes != nil && var != NSNotFound; var = [indexes indexLessThanIndex:var])
 
 // MARK: Ranges Iterator
+/*!
+ @abstract
+   NSRange range;
+   WBRangeIterator iter = WBRangeIteratorCreate(indexes);
+   while (WBRangeIteratorGetNext(&iter, &range)) {
+     // Do something with range.
+   }
+ */
 typedef struct _WBRangeIterator {
   // @private
   WBIndexIterator _iter;
