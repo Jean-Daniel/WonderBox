@@ -81,11 +81,11 @@ WB_OBJC_EXPORT
 - (id)initWithColorSpace:(NSColorSpace *)aColorSpace; // designated
 
 - (void)addStepFrom:(CGFloat)value components:(const CGFloat *)startColor
-                 to:(CGFloat)value components:(const CGFloat *)endColor
+                 to:(CGFloat)endValue components:(const CGFloat *)endColor
       interpolation:(WBInterpolationFunction *)fct;
 
 - (void)addStepFrom:(CGFloat)value color:(NSColor *)aColor
-                 to:(CGFloat)value color:(NSColor *)endColor
+                 to:(CGFloat)endValue color:(NSColor *)endColor
       interpolation:(WBInterpolationFunction  *)fct;
 
 // output
@@ -105,7 +105,7 @@ WB_OBJC_EXPORT
 - (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
 
 - (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)aPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)endPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
 
 @end
 
