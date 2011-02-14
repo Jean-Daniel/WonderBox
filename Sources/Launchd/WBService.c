@@ -126,7 +126,7 @@ kern_return_t WBServiceSetTimeout(CFTimeInterval idle) {
   if (idle > 0) {
     struct mach_timebase_info info;
     mach_timebase_info(&info);
-    sServiceContext.idle = ullround((idle * 1.0e9 / info.numer) * info.denom);
+    sServiceContext.idle = sullround((idle * 1.0e9 / info.numer) * info.denom);
     // Create the time if needed
     if (!sServiceContext.timer) {
       sServiceContext.timer = mk_timer_create();
