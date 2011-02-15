@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !__LP64__
+
 #import WBHEADER(WBBase.h)
 
 #import <QTKit/QTKit.h>
@@ -66,3 +68,4 @@ WB_OBJC_EXPORT
 - (void)frameDidChange:(WBMovieTexture *)aTexture;
 @end
 
+#endif

@@ -37,16 +37,16 @@
   return box;
 }
 
+- (void)wb_alertDidEnd:(NSAlert *)alert returnCode:(NSUInteger)returnCode contextInfo:(void *)contextInfo {
+  [NSApp stopModalWithCode:returnCode];
+}
+
 - (NSInteger)runSheetModalForWindow:(NSWindow *)window {
   [self beginSheetModalForWindow:window
                    modalDelegate:self
                   didEndSelector:@selector(wb_alertDidEnd:returnCode:contextInfo:)
                      contextInfo:nil];
   return [NSApp runModalForWindow:[self window]];
-}
-
-- (void)wb_alertDidEnd:(NSAlert *)alert returnCode:(NSUInteger)returnCode contextInfo:(void *)contextInfo {
-  [NSApp stopModalWithCode:returnCode];
 }
 
 @end

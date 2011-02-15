@@ -311,7 +311,7 @@
       }
       NSUInteger idx = [item indexOfChild:anObject];
       /* ... or destination is line above or belove dragged item */
-      if (idx != NSNotFound && (anIndex == (NSInteger)idx) || (anIndex == (NSInteger)idx + 1)) {
+      if (idx != NSNotFound && ((anIndex == (NSInteger)idx) || (anIndex == (NSInteger)idx + 1))) {
         return YES;
       }
     }

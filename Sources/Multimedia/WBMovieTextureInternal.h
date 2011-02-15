@@ -8,6 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !__LP64__
 #import WBHEADER(WBMovieTexture.h)
 
 #import <QTKit/QTKit.h>
@@ -36,3 +37,5 @@
 }
 
 @end
+
+#endif

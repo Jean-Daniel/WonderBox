@@ -8,6 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#if !__LP64__
 #import WBHEADER(WBMovieTexture.h)
 
 #import WBHEADER(WBClassCluster.h)
@@ -266,3 +267,4 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
 
 @end
 
+#endif
