@@ -61,29 +61,25 @@ OSStatus WBLaunchSystemEvents(ProcessSerialNumber *psnPtr) {
 // Finds the "System Events" process or, if it's not running, launches it.
 static
 OSStatus WBFindSystemEvents(ProcessSerialNumber *psnPtr) {
-  OSStatus err;
-  Boolean found = false;
-  ProcessInfoRec info;
-
-  check(psnPtr != NULL);
+  if (!psnPtr) return paramErr;
 
   psnPtr->lowLongOfPSN	= kNoProcess;
   psnPtr->highLongOfPSN	= kNoProcess;
 
+  OSStatus err;
+  Boolean found = false;
   do {
     err = GetNextProcess(psnPtr);
     if (err == noErr) {
-      memset(&info, 0, sizeof(info));
+      ProcessInfoRec info = { .processInfoLength = 0 };
       err = GetProcessInformation(psnPtr, &info);
-    }
-    if (err == noErr) {
-      found = (info.processSignature == kSystemEventsCreator);
+      if (err == noErr)
+        found = (info.processSignature == kSystemEventsCreator);
     }
   } while ( (err == noErr) && !found );
 
-  if (err == procNotFound) {
+  if (err == procNotFound)
     err = WBLaunchSystemEvents(psnPtr);
-  }
   return err;
 }
 
@@ -111,30 +107,22 @@ enum {
 // On success, *itemsPtr will be a valid CFArray
 // On error, *itemsPtr will be NULL
 static OSStatus CreateCFArrayFromAEDescList(const AEDescList *descList, CFArrayRef *itemsPtr) {
-  OSStatus			err;
-  CFMutableArrayRef	result;
-  long				itemCount;
-  long				itemIndex;
-  AEKeyword			junkKeyword;
-
-  check( itemsPtr != NULL);
+  if (!descList || !itemsPtr) return paramErr;
   check(*itemsPtr == NULL);
 
-  result = NULL;
-
   // Create a place for the result.
-  err = noErr;
-  result = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
-  if (result == NULL) {
+  OSStatus err = noErr;
+  CFMutableArrayRef result = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
+  if (result == NULL)
     err = coreFoundationUnknownErr;
-  }
 
   // For each element in the descriptor list...
-  if (err == noErr) {
+  long itemCount;
+  if (err == noErr)
     err = AECountItems(descList, &itemCount);
-  }
+
   if (err == noErr) {
-    for (itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
+    for (long itemIndex = 1; itemIndex <= itemCount; itemIndex++) {
       UInt8 thisPath[1024];
       Size thisPathSize;
       FSRef thisItemRef;
@@ -147,6 +135,7 @@ static OSStatus CreateCFArrayFromAEDescList(const AEDescList *descList, CFArrayR
       thisItemDict = NULL;
 
       // Get this element's AERecord.
+      AEKeyword junkKeyword;
       err = AEGetNthDesc(descList, itemIndex, typeAERecord, &junkKeyword, &thisItem);
 
       // Extract the path and create a CFURL.

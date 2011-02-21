@@ -10,8 +10,11 @@
 
 #import WBHEADER(WBNotificationWindow.h)
 
-static const
-NSTimeInterval kWBNotificationWindowDefaultDelay = 1;
+#define kWBNotificationWindowDefaultDelay 1
+
+@interface WBNotificationWindow ()
+- (void)fadeOut:(NSTimer *)timer;
+@end
 
 @implementation WBNotificationWindow
 

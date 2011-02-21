@@ -13,6 +13,10 @@
 #import WBHEADER(WBCGFunctions.h)
 #import WBHEADER(WBBezelItemContent.h)
 
+@interface WBBezelItem ()
+- (void)didChangeScreen:(NSNotification *)aNotification;
+@end
+
 enum {
   kWBBezelItemRadius = 25,
 };

@@ -134,7 +134,7 @@
   id child = [self firstChild];
   id block = nil;
   while (child) {
-    if (block = [child blockWithName:aName])
+    if ((block = [child blockWithName:aName]))
       break;
     child = [child nextSibling];
   }
