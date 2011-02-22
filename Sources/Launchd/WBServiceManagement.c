@@ -26,12 +26,12 @@ launch_data_t _WBServiceNewDataDictionary(CFDictionaryRef dict);
 
 // MARK: Launchd -> Core Foundation
 static
-CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data);
+CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) CF_RETURNS_RETAINED;
 
 static
-CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data);
+CFArrayRef _WBServiceCreateArrayFromData(const launch_data_t data) CF_RETURNS_RETAINED;
 static
-CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data);
+CFDictionaryRef _WBServiceCreateDictionaryFromData(const launch_data_t data) CF_RETURNS_RETAINED;
 
 // MARK: Message Send
 static
@@ -347,7 +347,9 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
       object = _WBServiceCreateArrayFromData(data);
       break;
     case LAUNCH_DATA_FD:
-      object = CFFileDescriptorCreate(kCFAllocatorDefault, launch_data_get_fd(data), false, NULL, NULL) ? : (CFTypeRef)kCFNull;
+      object = CFFileDescriptorCreate(kCFAllocatorDefault, launch_data_get_fd(data), false, NULL, NULL);
+      if (!object)
+        object = kCFNull;
       break;
     case LAUNCH_DATA_INTEGER: {
       long long value = launch_data_get_integer(data);
@@ -377,7 +379,9 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
       object = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, launch_data_get_errno(data), NULL);
       break;
     case LAUNCH_DATA_MACHPORT:
-      object = CFMachPortCreateWithPort(kCFAllocatorDefault, launch_data_get_machport(data), NULL, NULL, NULL) ? : (CFTypeRef)kCFNull;
+      object = CFMachPortCreateWithPort(kCFAllocatorDefault, launch_data_get_machport(data), NULL, NULL, NULL);
+      if (!object)
+        object = kCFNull;
       break;
   }
   return object;
