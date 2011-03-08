@@ -269,7 +269,6 @@
 }
 
 - (void)viewDidLoad {}
-- (void)setDocument:(NSDocument *)aDocument { }
 
 @end
 
