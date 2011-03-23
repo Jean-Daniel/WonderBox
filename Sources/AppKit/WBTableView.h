@@ -20,7 +20,7 @@ WB_OBJC_EXPORT
   struct _wb_tvFlags {
     unsigned int edit:1;
     unsigned int editOnClick:1;
-    unsigned int reserved:29;
+    unsigned int reserved:30;
   } wb_tvFlags;
   NSHashTable *wb_noPadding;
 }
