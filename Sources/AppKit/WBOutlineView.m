@@ -44,10 +44,11 @@
       return [[self delegate] canDeleteSelectionInOutlineView:self];
     return [self numberOfSelectedRows] != 0 && WBDelegateHandle([self delegate], deleteSelectionInOutlineView:);
   } else if ([anItem action] == @selector(selectAll:)) {
+    // Disable selectAll: when multi-selection is not allowed
     return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
   }
 
-  return YES;
+  return [super validateUserInterfaceItem:anItem];
 }
 
 - (void)wb_deleteSelection {
