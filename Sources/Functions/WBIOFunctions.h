@@ -15,21 +15,6 @@
 
 __BEGIN_DECLS
 
-/* Low level functions */
-WB_EXPORT
-int WBIOSetNonBlocking(int fd);
-
-WB_EXPORT
-size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length);
-
-WB_EXPORT
-size_t WBIOUtilsWrite(int fd, UInt8 *buffer, size_t length);
-
-WB_EXPORT
-ssize_t WBIOUtilsSendFileDescriptor(int sockfd, int fd);
-WB_EXPORT
-ssize_t WBIOUtilsReceiveFileDescriptor(int sockfd, int *fd);
-
 /* High level Functions */
 WB_EXPORT
 CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length);
