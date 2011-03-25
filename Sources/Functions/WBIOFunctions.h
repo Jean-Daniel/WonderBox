@@ -17,6 +17,9 @@ __BEGIN_DECLS
 
 /* Low level functions */
 WB_EXPORT
+int WBIOSetNonBlocking(int fd);
+
+WB_EXPORT
 size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length);
 
 WB_EXPORT

@@ -16,6 +16,14 @@
 #include <sys/socket.h>
 
 /* Low level functions */
+int WBIOSetNonBlocking(int fd) {
+  // According to the man page, F_GETFL can't error!
+  int flags = fcntl(fd, F_GETFL, NULL);
+
+  int err = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+  return WBErrno(err);
+}
+
 size_t WBIOUtilsRead(int fd, UInt8 *buffer, size_t length) {
   check(fd > 0);
   check(length > 0);
