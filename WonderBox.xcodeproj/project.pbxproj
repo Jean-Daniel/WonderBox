@@ -122,6 +122,8 @@
 		1BB7CCC2129C354B003C3E95 /* WBFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B158AB112551FE300584D8E /* WBFunctions.m */; };
 		1BB7CCE6129C35B7003C3E95 /* WBIndexIteratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */; };
 		1BB7CCEC129C3682003C3E95 /* WBIndexSetIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */; };
+		1BD143ED133BE5D300AB1CAF /* WBSignalFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD143EB133BE5D300AB1CAF /* WBSignalFunctions.h */; };
+		1BD143EE133BE5D300AB1CAF /* WBSignalFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD143EC133BE5D300AB1CAF /* WBSignalFunctions.m */; };
 		1BD8EF431257F5F600F359B0 /* RSEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */; };
 		1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BD8EF401257F5F600F359B0 /* RSEditorView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BD8EF411257F5F600F359B0 /* RSEditorView.m */; };
@@ -335,6 +337,8 @@
 		1BB7CC3C129C2E59003C3E95 /* WBIndexSetIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIndexSetIterator.m; sourceTree = "<group>"; };
 		1BB7CCA8129C3507003C3E95 /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
 		1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIndexIteratorTests.m; sourceTree = "<group>"; };
+		1BD143EB133BE5D300AB1CAF /* WBSignalFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSignalFunctions.h; sourceTree = "<group>"; };
+		1BD143EC133BE5D300AB1CAF /* WBSignalFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSignalFunctions.m; sourceTree = "<group>"; };
 		1BD8EF3F1257F5F600F359B0 /* RSEditor.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RSEditor.xib; sourceTree = "<group>"; };
 		1BD8EF401257F5F600F359B0 /* RSEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSEditorView.h; sourceTree = "<group>"; };
 		1BD8EF411257F5F600F359B0 /* RSEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSEditorView.m; sourceTree = "<group>"; };
@@ -605,6 +609,8 @@
 				1B158ABD12551FE300584D8E /* WBTextFunctions.h */,
 				1B158ABE12551FE300584D8E /* WBVersionFunctions.h */,
 				1B158ABF12551FE300584D8E /* WBVersionFunctions.m */,
+				1BD143EB133BE5D300AB1CAF /* WBSignalFunctions.h */,
+				1BD143EC133BE5D300AB1CAF /* WBSignalFunctions.m */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -836,6 +842,7 @@
 				1B4C14E51255E65D00C82DE3 /* WBDateTableColumn.h in Headers */,
 				1BD8EF441257F5F600F359B0 /* RSEditorView.h in Headers */,
 				1BB7CC3D129C2E59003C3E95 /* WBIndexSetIterator.h in Headers */,
+				1BD143ED133BE5D300AB1CAF /* WBSignalFunctions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -997,6 +1004,7 @@
 				1B4C14E61255E65D00C82DE3 /* WBDateTableColumn.m in Sources */,
 				1BD8EF451257F5F600F359B0 /* RSEditorView.m in Sources */,
 				1BB7CC3E129C2E59003C3E95 /* WBIndexSetIterator.m in Sources */,
+				1BD143EE133BE5D300AB1CAF /* WBSignalFunctions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
