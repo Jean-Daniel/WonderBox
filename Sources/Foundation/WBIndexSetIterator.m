@@ -36,7 +36,7 @@ WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange)
 bool _WBIndexIteratorGetNext(WBIndexIterator *iter) {
   // The array is empty, we have to refill.
   if (!iter->_indexes) return false; // we are done
-  iter->_cnt = [iter->_indexes getIndexes:iter->_values maxCount:16 inIndexRange:&iter->_state];
+  iter->_cnt = (int8_t)[iter->_indexes getIndexes:iter->_values maxCount:16 inIndexRange:&iter->_state];
 
   if (iter->_cnt < 16) { // if count less than provided space, we reached the end. We no longer need the index set.
     iter->_indexes = nil;

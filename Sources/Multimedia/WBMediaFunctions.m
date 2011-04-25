@@ -322,7 +322,7 @@ void WBQTMovieGetStaticFrameRate(QTMovie *aMovie, double *outStaticFrameRate) {
   QTMedia *movieMedia;
   _WBMovieGetVideoMedia(aMovie, &movieMedia);
   if (movieMedia) {
-    NSUInteger scount = [[movieMedia attributeForKey:QTMediaSampleCountAttribute] integerValue];
+    NSInteger scount = [[movieMedia attributeForKey:QTMediaSampleCountAttribute] integerValue];
     if (scount > 0) {
       /* find the media duration */
       QTTime t = [[movieMedia attributeForKey:QTMediaDurationAttribute] QTTimeValue];
