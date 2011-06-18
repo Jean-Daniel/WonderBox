@@ -16,7 +16,7 @@
   WBInterpolationCallBack wb_ctxt;
 }
 
-- (id)initWithCallBack:(WBInterpolationCallBack *)callback;
+- (id)initWithCallBack:(const WBInterpolationCallBack *)callback;
 
 - (CGFloat)valueForInput:(CGFloat)input;
 
@@ -35,6 +35,12 @@
 @end
 
 WBClassCluster(WBInterpolationFunction)
+
+@interface WBClusterPlaceholder(WBInterpolationFunction) (WBPlaceholder)
+- (id)initWithCallBack:(const WBInterpolationCallBack *)callback NS_METHOD_FAMILY(none);
+- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y NS_METHOD_FAMILY(none);
+- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint NS_METHOD_FAMILY(none);
+@end
 
 @implementation WBClusterPlaceholder(WBInterpolationFunction) (WBPlaceholder)
 
@@ -82,7 +88,7 @@ WBClassCluster(WBInterpolationFunction)
 #pragma mark -
 @implementation _WBInterpolationFunctionCB
 
-- (id)initWithCallBack:(WBInterpolationCallBack *)callback {
+- (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
   NSParameterAssert(callback);
   if (self = [super initWithCallBack:callback]) {
     wb_ctxt = *callback;
