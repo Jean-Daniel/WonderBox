@@ -96,7 +96,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 
 - (void)dealloc {
   [wb_listeners release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -224,7 +224,7 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
     CFRelease(wb_device);
     wb_device = NULL;
   }
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -398,7 +398,7 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
     (*wb_plugin)->Release(wb_plugin);
     wb_plugin = NULL;
   }
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

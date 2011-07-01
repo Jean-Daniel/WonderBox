@@ -88,7 +88,7 @@ static placeholderclass *defaultplaceholder = nil; \
   if (!zonestable) { \
     zonestable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, \
                                   NSNonRetainedObjectMapValueCallBacks, 0); \
-    defaultplaceholder = (id)NSAllocateObject(self, 0, nil); \
+    defaultplaceholder = NSAllocateObject(self, 0, nil); \
   } \
 } \
 \
@@ -96,24 +96,26 @@ static placeholderclass *defaultplaceholder = nil; \
   return nil; \
 } \
 \
-/* -------------- Constant Instance -------------- */ \
-- (id)copyWithZone:(NSZone *)zone { \
-  return self; \
-} \
-- (id)retain { \
-  return self; \
-} \
-- (NSUInteger)retainCount { \
-  return NSUIntegerMax;  /* denotes an object that cannot be released */ \
-} \
-- (oneway void)release { \
-  /* do nothing */ \
-} \
-- (id)autorelease { \
-  return self; \
-} \
-\
 @end
+
+/* -------------- Constant Instance -------------- */ \
+//- (id)copyWithZone:(NSZone *)zone { \
+//  return self; \
+//} \
+//- (id)retain { \
+//  return self; \
+//} \
+//- (NSUInteger)retainCount { \
+//  return NSUIntegerMax;  /* denotes an object that cannot be released */ \
+//} \
+//- (oneway void)release { \
+//  /* do nothing */ \
+//} \
+//- (id)autorelease { \
+//  return self; \
+//} \
+//\
+//@end
 
 #define _WBInternalClassClusterImplementation(classname, placeholderclass, defaultplaceholder, zonestable) \
 @implementation classname (WBClassCluster) \
@@ -139,14 +141,14 @@ static placeholderclass *defaultplaceholder = nil; \
        * table of placeholders. \
        */ \
       @synchronized(self) { \
-          obj = (id)NSMapGet(zonestable, (void*)zone); \
+          obj = (__bridge id)NSMapGet(zonestable, (void*)zone); \
           if (obj == nil) { \
             /* \
              * There is no placeholder object for this zone, so we \
              * create a new one and use that. \
              */ \
-            obj = (id)NSAllocateObject([placeholderclass class], 0, zone); \
-            NSMapInsert(zonestable, (void*)zone, (void*)obj); \
+            obj = NSAllocateObject([placeholderclass class], 0, zone); \
+            NSMapInsert(zonestable, (void *)zone, (__bridge void *)obj); \
           } \
         } \
       return obj; \

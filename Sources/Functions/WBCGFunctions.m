@@ -422,7 +422,8 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
                                 WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                                 [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                                 nil];
-      properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&tiffDict, 1,
+      CFDictionaryRef cfdict = WBNSToCFDictionary(tiffDict);
+      properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&cfdict, 1,
                                       &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // leak: WBCFRelease
     }
     CGImageDestinationAddImage(dest, image, properties);

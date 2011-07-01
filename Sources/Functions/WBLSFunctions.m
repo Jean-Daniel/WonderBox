@@ -147,19 +147,19 @@ NSString *WBLSFindApplicationForSignature(OSType signature) {
   NSString *path = nil;
   CFURLRef url = WBLSCopyApplicationURLForSignature(signature);
   if (url) {
-    path = (NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    path = WBCFToNSString(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? [path autorelease] : nil;
+  return path ? wb_autorelease(path) : nil;
 }
 
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) {
   NSString *path = nil;
   CFURLRef url = WBLSCopyApplicationURLForBundleIdentifier(WBNSToCFString(bundle));
   if (url) {
-    path = (NSString *)CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
+    path = WBCFToNSString(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? [path autorelease] : nil;
+  return path ? wb_autorelease(path) : nil;
 }
 

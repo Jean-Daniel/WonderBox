@@ -39,7 +39,7 @@ OSStatus _WBServiceSendMessage(launch_data_t request, launch_data_t *outResponse
 static
 Boolean _WBServiceSendSimpleMessage(CFStringRef name, const char *msg, launch_data_t *outResponse, CFErrorRef *outError);
 static
-CFTypeRef _WBServiceSendSimpleMessage2(CFStringRef name, const char *msg, CFErrorRef *outError);
+CFTypeRef _WBServiceSendSimpleMessage2(CFStringRef name, const char *msg, CFErrorRef *outError) CF_RETURNS_RETAINED;
 
 // MARK: String Utilities
 static

@@ -31,7 +31,7 @@
 /* Internal functions */
 static __inline__
 void $wb_scopeReleaseObject(id *scopeReleasedObject) {
-  [*scopeReleasedObject release];
+  wb_release(*scopeReleasedObject);
 }
 
 static __inline__

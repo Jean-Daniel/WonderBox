@@ -26,7 +26,7 @@
 
 - (id)copyWithZone:(NSZone *)zone {
   WBImageAndTextCell *copy = (WBImageAndTextCell *)[super copyWithZone:zone];
-  copy->wb_image = [wb_image retain];
+  copy->wb_image = [wb_image copyWithZone:zone];
   return copy;
 }
 
@@ -42,17 +42,17 @@
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
     if ([aCoder allowsKeyedCoding]) {
-      wb_image = [[aCoder decodeObjectForKey:@"wb.cell.image"] retain];
+      wb_image = wb_retain([aCoder decodeObjectForKey:@"wb.cell.image"]);
     } else {
-      wb_image = [[aCoder decodeObject] retain];
+      wb_image = wb_retain([aCoder decodeObject]);
     }
   }
   return self;
 }
 
 - (void)dealloc {
-  [wb_image release];
-  [super dealloc];
+  wb_release(wb_image);
+  wb_dealloc();
 }
 
 #pragma mark -

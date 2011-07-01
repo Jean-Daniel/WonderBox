@@ -67,7 +67,7 @@ xmlOutputBufferPtr _WBXMLCreateNSDataOutputBuffer(NSMutableData *data, xmlCharEn
 
 - (void)dealloc {
   [self close];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

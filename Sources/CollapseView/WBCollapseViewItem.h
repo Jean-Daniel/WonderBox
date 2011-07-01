@@ -17,7 +17,7 @@ WB_OBJC_EXPORT
   id wb_uid;
   NSView *wb_view; // view to be displayed
   NSString *wb_title;
-  WBCollapseView *wb_owner __weak; // back pointer to the parent view. Could be nil.
+  wb_weak WBCollapseView *wb_owner; // back pointer to the parent view. Could be nil.
   struct _wb_cviFlags {
     unsigned int animates:1;
     unsigned int expanded:1;

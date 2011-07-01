@@ -139,7 +139,7 @@ WB_INLINE
 NSURL *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
   CFURLRef path = NULL;
   if (noErr == WBFSCopyFolderURL(folderType, domain, create, &path))
-    return WBCFAutorelease(path);
+    return WBCFAutorelease(NSURL, path);
   return nil;
 }
 

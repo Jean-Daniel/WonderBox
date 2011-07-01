@@ -34,9 +34,9 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 
 - (void)delete:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
-  [wb_stencil release];
+  wb_release(wb_stencil);
   wb_stencil = nil;
-  [wb_depth release];
+  wb_release(wb_depth);
   wb_depth = nil;
   if (wb_attachements) {
     NSFreeMapTable(wb_attachements);
@@ -51,7 +51,7 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 - (void)dealloc {
   if (wb_fbo)
     WBCLogError("Release undeleted FBO. Leaks OpenGL objects !");
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -120,7 +120,8 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (WBGLFrameBufferAttachement *)depthBuffer { return wb_depth; }
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
-  if (WBSetterRetain(wb_depth, aBuffer)) {
+  if (wb_depth != aBuffer) {
+    WBSetterRetain(wb_depth, aBuffer);
     __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_DEPTH_ATTACHMENT_EXT, aBuffer);
   }
@@ -129,7 +130,8 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (WBGLFrameBufferAttachement *)stencilBuffer { return wb_stencil; }
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
-  if (WBSetterRetain(wb_stencil, aBuffer)) {
+  if (wb_stencil != aBuffer) {
+    WBSetterRetain(wb_stencil, aBuffer);
     __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_STENCIL_ATTACHMENT_EXT, aBuffer);
   }
@@ -139,11 +141,11 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   return NSAllMapTableValues(wb_attachements);
 }
 - (WBGLFrameBufferAttachement *)colorBufferAtIndex:(NSUInteger)anIndex {
-  return NSMapGet(wb_attachements, (const void *)anIndex);
+  return (__bridge id)NSMapGet(wb_attachements, (const void *)anIndex);
 }
 - (void)setColorBuffer:(WBGLFrameBufferAttachement *)aBuffer atIndex:(NSUInteger)anIndex context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
-  NSMapInsert(wb_attachements, (const void *)anIndex, aBuffer);
+  NSMapInsert(wb_attachements, (const void *)anIndex, (__bridge void *)aBuffer);
   __WBGLFrameBufferAttach(aContext, wb_fbo,
                           GL_COLOR_ATTACHMENT0_EXT + (GLuint)anIndex, aBuffer);
 }
@@ -175,10 +177,10 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     size = [wb_stencil size];
   else {
     // infer size from the first attached color
-    WBGLFrameBufferAttachement *buffer = nil;
+    void *buffer = nil;
     NSMapEnumerator iter = NSEnumerateMapTable(wb_attachements);
-    if (NSNextMapEnumeratorPair(&iter, NULL, (void **)&buffer))
-      size = [buffer size];
+    if (NSNextMapEnumeratorPair(&iter, NULL, &buffer))
+      size = [(__bridge WBGLFrameBufferAttachement *)buffer size];
     NSEndMapTableEnumeration(&iter);
   }
 
@@ -266,7 +268,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, save);
   }
   if (name) {
-    buffer = [[[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h] autorelease];
+    buffer = wb_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
     if (!buffer)
       glDeleteRenderbuffersEXT(1, &name);
   }
@@ -293,7 +295,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, save);
   }
   if (name) {
-    buffer = [[[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h] autorelease];
+    buffer = wb_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
     if (!buffer)
       glDeleteRenderbuffersEXT(1, &name);
   }

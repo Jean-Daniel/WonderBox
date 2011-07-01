@@ -80,7 +80,7 @@ typedef struct {
 
 typedef struct {
   mach_msg_header_t header;
-  intptr_t exception;
+  void *exception;
   mach_msg_trailer_t trailer;
 } wbreply_msg;
 
@@ -90,7 +90,7 @@ static WBThreadPort *sMainThread = nil;
 
 static
 void _WBTPMachMessageCallBack(CFMachPortRef port, void *msg, CFIndex size, void *info) {
-  [(id)info handleMachMessage:msg];
+  [(__bridge id)info handleMachMessage:msg];
 }
 
 #pragma mark Thread Specific
@@ -119,12 +119,12 @@ mach_port_t _WBThreadGetSendPort(void) {
 
 static
 _WBRecorderProxy *_WBThreadGetRecorder(void) {
-  _WBRecorderProxy *proxy = pthread_getspecific(sThreadRecorderKey);
+  _WBRecorderProxy *proxy = (__bridge _WBRecorderProxy *)pthread_getspecific(sThreadRecorderKey);
   if (!proxy) {
     proxy = [[_WBRecorderProxy alloc] init];
-    if (0 != pthread_setspecific(sThreadRecorderKey, proxy)) {
+    if (0 != pthread_setspecific(sThreadRecorderKey, (__bridge_retained void *)proxy)) {
       DCLog("pthread_setspecific error");
-      [proxy release];
+      wb_release(proxy);
       proxy = NULL;
     }
   }
@@ -133,10 +133,10 @@ _WBRecorderProxy *_WBThreadGetRecorder(void) {
 
 static
 void _WBThreadRecorderDestructor(void *ptr) {
-  _WBRecorderProxy *proxy = (_WBRecorderProxy *)ptr;
+  _WBRecorderProxy *proxy = (__bridge_transfer _WBRecorderProxy *)ptr;
   if ([proxy isRecording])
     [proxy abort];
-  [proxy release];
+  wb_release(proxy);
 }
 
 static
@@ -152,7 +152,7 @@ void _WBThreadSendPortDestructor(void *ptr) {
 
 static
 void _WBThreadReceivePortDestructor(void *ptr) {
-  WBThreadPort *port = (WBThreadPort *)ptr;
+  WBThreadPort *port = (__bridge_transfer WBThreadPort *)ptr;
   if (port) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     /* invalidate main thread */
@@ -160,7 +160,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       sMainThread = nil;
 
     [port invalidate];
-    [port release];
+    wb_release(port);
 
     [pool drain];
   }
@@ -196,19 +196,19 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (id)wb_init {
   /* return current port if exists (FIXME: should be done in alloc ? ) */
-  WBThreadPort *current = (WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
+  WBThreadPort *current = (__bridge WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (current) {
-    [self release];
+    wb_release(self);
     return current;
   }
 
   if (self = [super init]) {
     // register receive port.
-    CFMachPortContext ctxt = { 0, self, NULL, NULL, NULL };
+    CFMachPortContext ctxt = { 0, (__bridge void *)self, NULL, NULL, NULL };
     wb_port = CFMachPortCreate(kCFAllocatorDefault, _WBTPMachMessageCallBack, &ctxt, NULL);
     if (!wb_port) {
       DLog(@"Error while creating runloop port");
-      [self release];
+      wb_release(self);
       return nil;
     }
 
@@ -219,20 +219,20 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     }
 
     wb_timeout = MACH_MSG_TIMEOUT_NONE;
-    wb_thread = [[NSThread currentThread] retain];
+    wb_thread = wb_retain([NSThread currentThread]);
   }
   return self;
 }
 
 + (WBThreadPort *)currentPort {
-  WBThreadPort *current = (WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
+  WBThreadPort *current = (__bridge WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (!current) {
     current = [[WBThreadPort alloc] wb_init]; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
 
-    if (0 != pthread_setspecific(sThreadReceivePortKey, current)) {
+    if (0 != pthread_setspecific(sThreadReceivePortKey, (__bridge_retained void *)current)) {
       WBCLogWarning("pthread_setspecific failed");
       [current invalidate];
-      [current release];
+      wb_release(current);
       current = nil;
     }
   }
@@ -240,13 +240,13 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (id)init {
-  [self release];
+  wb_release(self);
   WBThrowException(NSInvalidArgumentException, @"Invalid initializer. Should use +currentPort instead");
 }
 
 - (void)dealloc {
   [self invalidate];
-  [super dealloc];
+  wb_dealloc();
 }
 
 - (void)invalidate {
@@ -256,7 +256,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       CFRelease(wb_port);
       wb_port = nil;
 
-      [wb_thread autorelease];
+      (void)wb_autorelease(wb_thread);
       wb_thread = nil;
     }
   }
@@ -308,7 +308,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     send_hdr->msgh_local_port = _WBThreadGetSendPort();
   }
   msg.async = !synch;
-  msg.invocation = (intptr_t)[anInvocation retain];
+  msg.invocation = (intptr_t)wb_retain(anInvocation);
 
   /* Send invocation to target thread */
   mach_msg_option_t opts = MACH_SEND_MSG;
@@ -318,7 +318,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (MACH_MSG_SUCCESS != err) {
     /* invocation is released by the target thread,
      so if an error occured, it is not released */
-    [anInvocation release];
+    wb_release(anInvocation);
     switch (err) {
       case MACH_SEND_TIMED_OUT:
         WBThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
@@ -352,7 +352,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     switch (err) {
       case MACH_MSG_SUCCESS:
         if (reply.exception)
-          @throw [(id)reply.exception autorelease];
+          @throw wb_autorelease((__bridge_transfer id)reply.exception);
         break;
       case MACH_RCV_TIMED_OUT:
         WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
@@ -375,7 +375,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   @try {
     [self performInvocation:(id)invok waitUntilDone:synch timeout:timeout];
   } @finally {
-    [invok release];
+    wb_release(invok);
   }
 }
 
@@ -431,13 +431,13 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   wbinvoke_msg *msg = (wbinvoke_msg *)machMessage;
 
   id error = nil;
-  NSInvocation *invocation = (NSInvocation *)msg->invocation;
+  NSInvocation *invocation = (__bridge_transfer NSInvocation *)(void *)msg->invocation;
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   @try {
     [invocation invoke];
   } @catch (id exception) {
     // Note: we are in a local autorelease pool => must retain error
-    error = [exception retain];
+    error = wb_retain(exception);
   }
   [pool drain];
   if (!msg->async) {
@@ -452,7 +452,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     reply_hdr->msgh_local_port = MACH_PORT_NULL;
     reply_hdr->msgh_remote_port = msg->header.msgh_remote_port;
 
-    reply_msg.exception = (intptr_t)[error retain];
+    reply_msg.exception = (__bridge_retained void *)wb_retain(error);
 
     mach_msg_option_t opts = MACH_SEND_MSG;
     if (wb_timeout != MACH_MSG_TIMEOUT_NONE) opts |= MACH_SEND_TIMEOUT;
@@ -467,8 +467,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
                  [error respondsToSelector:@selector(name)] ? [error name] : error,
                  [error respondsToSelector:@selector(reason)] ? [error reason] : @"undefined reason");
   }
-  [error release];
-  [invocation release];
+  wb_release(error);
+  wb_release(invocation);
 }
 
 #pragma mark -
@@ -495,11 +495,11 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 // MARK: Thread
 @interface _WBThreadArgument : NSObject {
 @private
-  WBThreadPort *wb_port;
   id wb_target;
   SEL wb_action;
   id wb_argument;
   NSCondition *wb_condition;
+  wb_weak WBThreadPort *wb_port;
 }
 
 @property(nonatomic) SEL action;
@@ -538,10 +538,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (void)dealloc {
-  [wb_condition release];
-  [wb_argument release];
-  [wb_target release];
-  [super dealloc];
+  wb_release(wb_condition);
+  wb_release(wb_argument);
+  wb_release(wb_target);
+  wb_dealloc();
 }
 
 @end
@@ -567,8 +567,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
   WBThreadPort *port = arg.port;
   arg.condition = nil;
-  [condition release];
-  [arg release];
+  wb_release(condition);
+  wb_release(arg);
   return port;
 }
 
@@ -578,24 +578,24 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 @implementation _WBThreadProxy
 
 + (id)proxyWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
-  return [[[self alloc] initWithPort:port target:target sync:synch timeout:timeout] autorelease];
+  return wb_autorelease([[self alloc] initWithPort:port target:target sync:synch timeout:timeout]);
 }
 
 - (id)initWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
   /* NSProxy does not implements init */
   wb_sync = (int8_t)synch;
   wb_timeout = timeout;
-  wb_port = [port retain];
-  wb_target = [target retain];
+  wb_port = wb_retain(port);
+  wb_target = wb_retain(target);
   return self;
 }
 
 - (void)dealloc {
-  [wb_target release];
+  wb_release(wb_target);
   wb_target = nil;
-  [wb_port release];
+  wb_release(wb_port);
   wb_port = nil;
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -692,16 +692,16 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (id)initWithAction:(SEL)anAction target:(id)aTarget argument:(id)anArgument {
   if (self = [super init]) {
     wb_action = anAction;
-    wb_target = [aTarget retain];
-    wb_argument = [anArgument retain];
+    wb_target = wb_retain(aTarget);
+    wb_argument = wb_retain(anArgument);
   }
   return self;
 }
 
 - (void)dealloc {
-  [wb_argument release];
-  [wb_target release];
-  [super dealloc];
+  wb_release(wb_argument);
+  wb_release(wb_target);
+  wb_dealloc();
 }
 
 - (id)target { return wb_target; }

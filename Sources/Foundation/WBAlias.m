@@ -26,7 +26,7 @@
     /* Copy Handler */
     copy->wb_alias = wb_alias;
     if (noErr != HandToHand((Handle *)&copy->wb_alias)) {
-      [copy release];
+      wb_release(copy);
       copy = nil;
     }
   }
@@ -44,7 +44,7 @@
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_path = [[coder decodeObjectForKey:@"WBAliasPath"] retain];
+    wb_path = wb_retain([coder decodeObjectForKey:@"WBAliasPath"]);
     NSData *data = [coder decodeObjectForKey:@"WBAliasHandle"];
     if (data && [data length] < LONG_MAX) {
       OSErr err = PtrToHand([data bytes], (Handle *)&wb_alias, (long)[data length]);
@@ -57,17 +57,17 @@
 
 #pragma mark -
 + (id)aliasFromData:(NSData *)data {
-  return [[[self alloc] initFromData:data] autorelease];
+  return wb_autorelease([[self alloc] initFromData:data]);
 }
 + (id)aliasFromAliasHandle:(AliasHandle)handle {
-  return [[[self alloc] initFromAliasHandle:handle] autorelease];
+  return wb_autorelease([[self alloc] initFromAliasHandle:handle]);
 }
 
 + (id)aliasWithURL:(NSURL *)anURL {
-  return [[[self alloc] initWithURL:anURL] autorelease];
+  return wb_autorelease([[self alloc] initWithURL:anURL]);
 }
 + (id)aliasWithPath:(NSString *)aPath {
-  return [[[self alloc] initWithPath:aPath] autorelease];
+  return wb_autorelease([[self alloc] initWithPath:aPath]);
 }
 
 #pragma mark Initializers
@@ -87,7 +87,7 @@
   if ([data length] < LONG_MAX && noErr == PtrToHand([data bytes], (Handle *)&alias, (long)[data length]))
     return [self initFromAliasHandleNoCopy:alias];
 
-  [self release];
+  wb_release(self);
   return nil;
 }
 
@@ -98,13 +98,13 @@
   if (noErr == HandToHand((Handle *)&alias))
     return [self initFromAliasHandleNoCopy:alias];
 
-  [self release];
+  wb_release(self);
   return nil;
 }
 
 - (id)initWithURL:(NSURL *)anURL {
   if (!anURL) {
-    [self release];
+    wb_release(self);
     return nil;
   }
   if (self = [self init]) {
@@ -119,7 +119,7 @@
       [self setPath:[anURL path]];
     } else {
       // unsupported URL
-      [self release];
+      wb_release(self);
       self = nil;
     }
   }
@@ -128,7 +128,7 @@
 
 - (id)initWithPath:(NSString *)aPath {
   if (!aPath) {
-    [self release];
+    wb_release(self);
     return nil;
   }
   if (self = [self init]) {
@@ -142,8 +142,8 @@
     DisposeHandle((Handle)wb_alias);
     wb_alias = nil;
   }
-  [wb_path release];
-  [super dealloc];
+  wb_release(wb_path);
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -174,7 +174,7 @@
     WBThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
 
   if (wb_path != path) {
-    [wb_path release];
+    wb_release(wb_path);
     wb_path = [path copy];
 
     if (wb_alias) {
@@ -205,18 +205,18 @@
     if (noErr == err) {
       // update path if needed
       if (wasChanged && wb_path) {
-        [wb_path release];
+        wb_release(wb_path);
         wb_path = nil;
       }
       if (!wb_path) {
-        wb_path = [[NSString stringFromFSRef:target] retain];
+        wb_path = wb_retain([NSString stringFromFSRef:target]);
         WBAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
         if (outChanged) *outChanged = YES;
       }
       return noErr;
     } else if (wb_path) {
       // no longer reference a valid file
-      [wb_path release];
+      wb_release(wb_path);
       wb_path = nil;
     }
     return err;

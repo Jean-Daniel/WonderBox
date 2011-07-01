@@ -31,7 +31,7 @@ static const CGFloat kAVImageRightMargin = 6;
 - (void)dealloc {
   [wb_icon release];
   [wb_title release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

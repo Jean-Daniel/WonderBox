@@ -28,7 +28,7 @@
 }
 
 - (void)dealloc {
-  [super dealloc];
+  wb_dealloc();
 }
 
 - (NSImage *)image {

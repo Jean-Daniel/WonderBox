@@ -27,10 +27,9 @@ static NSMutableSet *sMissingImages = nil;
   if (!image) {
     /* Then search bundle resource */
     NSString *path = bundle ? [bundle pathForImageResource:name] : nil;
-    image = path ? [[NSImage alloc] initWithContentsOfFile:path] : nil;
+    image = path ? wb_autorelease([[NSImage alloc] initWithContentsOfFile:path]) : nil;
     if (image) {
       [image setName:name];
-      [image autorelease];
     } else {
       WBLogWarning(@"Unable to find image named '%@' in bundle '%@'", name, [bundle bundleIdentifier]);
       if (!sMissingImages)

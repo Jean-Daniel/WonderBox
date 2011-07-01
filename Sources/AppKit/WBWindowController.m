@@ -59,7 +59,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:NSWindowWillCloseNotification
                                                 object:nil];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -148,7 +148,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 #if (__OBJC_GC__)
     [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
 #endif
-    [self autorelease];
+    (void)wb_autorelease(self);
   }
 }
 

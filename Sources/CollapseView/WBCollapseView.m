@@ -35,8 +35,8 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_views = [[aCoder decodeObjectForKey:@"collapse.views"] retain];
-    wb_items = [[aCoder decodeObjectForKey:@"collapse.items"] retain];
+    wb_views = wb_retain([aCoder decodeObjectForKey:@"collapse.views"]);
+    wb_items = wb_retain([aCoder decodeObjectForKey:@"collapse.items"]);
   }
   return self;
 }
@@ -53,9 +53,9 @@
 }
 
 - (void)dealloc {
-  [wb_views release];
-  [wb_items release];
-  [super dealloc];
+  wb_release(wb_views);
+  wb_release(wb_items);
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -78,7 +78,7 @@
 
 // MARK: Query
 - (NSArray *)items {
-  return [[wb_items copy] autorelease];
+  return wb_autorelease([wb_items copy]);
 }
 
 - (NSUInteger)numberOfItems {
@@ -172,7 +172,7 @@
   [wb_views insertObject:view atIndex:anIndex];
   [wb_items insertObject:anItem atIndex:anIndex];
   [self addSubview:view];
-  [view release];
+  wb_release(view);
 
   if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
@@ -281,7 +281,7 @@
                            nil];
     [animation setViewAnimations:[NSArray arrayWithObject:props]];
     [animation startAnimation];
-    [animation release];
+    wb_release(animation);
   } else {
     [self setFrame:frame];
   }

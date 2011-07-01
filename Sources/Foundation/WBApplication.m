@@ -142,7 +142,7 @@ enum {
 - (void)dealloc {
   [wb_name release];
   [wb_identifier release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 - (NSString *)description {

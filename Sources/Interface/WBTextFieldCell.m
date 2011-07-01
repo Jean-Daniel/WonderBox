@@ -13,7 +13,7 @@
 @implementation WBTextFieldCell
 
 + (id)cell {
-  return [[[self alloc] init] autorelease];
+  return wb_autorelease([[self alloc] init]);
 }
 
 - (id)copyWithZone:(NSZone *)zone {

@@ -32,9 +32,9 @@
 }
 
 - (void)dealloc {
-  [wb_background release];
-  [wb_border release];
-  [super dealloc];
+  wb_release(wb_background);
+  wb_release(wb_border);
+  wb_dealloc();
 }
 
 #pragma mark -

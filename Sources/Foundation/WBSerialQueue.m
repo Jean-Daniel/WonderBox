@@ -83,10 +83,10 @@
 }
 
 - (void)dealloc {
-  [wb_queue release];
-  [wb_event release];
-  [wb_last release];
-  [super dealloc];
+  wb_release(wb_queue);
+  wb_release(wb_event);
+  wb_release(wb_last);
+  wb_dealloc();
 }
 
 - (void)addOperation:(NSOperation *)op {
@@ -95,7 +95,8 @@
       [op addDependency:wb_last];
 
     WBSetterRetain(wb_last, op);
-    [op addObserver:self forKeyPath:@"isFinished" options:0 context:[_WBSerialOperationQueue class]];
+    [op addObserver:self forKeyPath:@"isFinished" 
+            options:0 context:(__bridge void *)[_WBSerialOperationQueue class]];
   }
   [wb_queue addOperation:op];
 }
@@ -118,11 +119,11 @@
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
   NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:target selector:sel object:arg];
   [self addOperation:op waitUntilFinished:shouldWait];
-  [op release];
+  wb_release(op);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if (context == [_WBSerialOperationQueue class]) {
+  if (context == (__bridge void *)[_WBSerialOperationQueue class]) {
     @synchronized(self) {
       [object removeObserver:self forKeyPath:@"isFinished"];
       if (wb_last == object)
@@ -167,18 +168,18 @@
 - (void)dealloc {
   if (wb_queue)
     dispatch_release(wb_queue);
-  [super dealloc];
+  wb_dealloc();
 }
 
 static
 void wb_dispatch_execute(void *ctxt) {
-  _WBSerialQueueBlock *block = (_WBSerialQueueBlock *)ctxt;
+  _WBSerialQueueBlock *block = (__bridge_transfer _WBSerialQueueBlock *)ctxt;
   @try {
     [block.target performSelector:block.action withObject:block.argument];
   } @catch (id exception) {
     WBLogException(exception);
   }
-  [block release];
+  wb_release(block);
 }
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
@@ -187,9 +188,9 @@ void wb_dispatch_execute(void *ctxt) {
   block.argument = arg;
   block.action = sel;
   if (shouldWait) {
-    dispatch_sync_f(wb_queue, block, wb_dispatch_execute);
+    dispatch_sync_f(wb_queue, (__bridge_retained void *)block, wb_dispatch_execute);
   } else {
-    dispatch_async_f(wb_queue, block, wb_dispatch_execute);
+    dispatch_async_f(wb_queue, (__bridge_retained void *)block, wb_dispatch_execute);
   }
 }
 
@@ -202,9 +203,9 @@ void wb_dispatch_execute(void *ctxt) {
 @synthesize argument = wb_argument;
 
 - (void)dealloc {
-  [wb_argument release];
-  [wb_target release];
-  [super dealloc];
+  wb_release(wb_argument);
+  wb_release(wb_target);
+  wb_dealloc();
 }
 
 

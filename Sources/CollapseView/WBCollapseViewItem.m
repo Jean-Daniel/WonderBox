@@ -30,9 +30,9 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super init]) {
-    wb_view = [[aCoder decodeObjectForKey:@"item.view"] retain];
-    wb_title = [[aCoder decodeObjectForKey:@"item.title"] retain];
-    wb_uid = [[aCoder decodeObjectForKey:@"item.identifier"] retain];
+    wb_view = wb_retain([aCoder decodeObjectForKey:@"item.view"]);
+    wb_title = wb_retain([aCoder decodeObjectForKey:@"item.title"]);
+    wb_uid = wb_retain([aCoder decodeObjectForKey:@"item.identifier"]);
     wb_owner = [aCoder decodeObjectForKey:@"item.owner"];
 
     WBFlagSet(wb_cviFlags.animates, [aCoder decodeBoolForKey:@"item.flags.animates"]);
@@ -58,10 +58,10 @@
 }
 
 - (void)dealloc {
-  [wb_title release];
-  [wb_view release];
-  [wb_uid release];
-  [super dealloc];
+  wb_release(wb_title);
+  wb_release(wb_view);
+  wb_release(wb_uid);
+  wb_dealloc();
 }
 
 #pragma mark -

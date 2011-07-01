@@ -21,7 +21,7 @@ WB_EXPORT Boolean WBServiceStopJob(CFStringRef name, CFErrorRef *outError);
 
 WB_EXPORT CFDictionaryRef WBServiceCopyJob(CFStringRef name, CFErrorRef *outError);
 
-WB_EXPORT CFTypeRef WBServiceCheckIn(CFErrorRef *outError);
+WB_EXPORT CFTypeRef WBServiceCheckIn(CFErrorRef *outError) CF_RETURNS_RETAINED;
 WB_EXPORT launch_data_t WBServiceCheckIn2(CFErrorRef *outError);
 
 //WB_EXPORT void WBServiceCleanupObject(CFTypeRef aService);

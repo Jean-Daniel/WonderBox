@@ -33,7 +33,7 @@
   [wb_root release];
   [wb_name release];
   [view release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 - (void)loadView {

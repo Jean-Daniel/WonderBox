@@ -61,7 +61,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 - (void)dealloc {
   [wb_icon release];
   [wb_name release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

@@ -24,7 +24,7 @@
   NSString *iTunes = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"iTunes"];
   GHAssertNotNil(iTunes, @"iTunes not found. Cannot test isApplication");
   Boolean isApp = FALSE;
-  OSStatus err = WBLSIsApplicationAtPath((CFStringRef)iTunes, &isApp);
+  OSStatus err = WBLSIsApplicationAtPath(WBNSToCFString(iTunes), &isApp);
   GHAssertTrue(noErr == err, @"WBLSIsApplicationAtPath: %s", GetMacOSStatusCommentString(err));
   GHAssertTrue(isApp, @"iTunes should be an Application");
 }

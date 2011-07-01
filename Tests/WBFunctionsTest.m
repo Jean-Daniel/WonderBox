@@ -25,7 +25,7 @@
 
 - (void)testDataFromHexString {
   CFDataRef data = WBCFDataCreateFromHexString(CFSTR("12af1b5a4c2d84"));
-  GHAssertNotNil((id)data, @"error while creating data");
+  GHAssertNotNil(WBCFToNSData(data), @"error while creating data");
   GHAssertTrue(CFDataGetLength(data) == 7, @"invalid data length: %ld", (long)CFDataGetLength(data));
   const UInt8 *bytes = CFDataGetBytePtr(data);
   const char ref[] = { 0x12, 0xaf, 0x1b, 0x5a, 0x4c, 0x2d, 0x84 };
@@ -72,33 +72,40 @@
 - (void)testWBVersionCreateString {
   CFStringRef str;
   str = WBVersionCreateStringForNumber(0x000c000a00004001);
-  GHAssertNotNil((id)str, @"WBVersionCreateStringForNumber");
-  GHAssertEqualObjects((id)str, @"12.10b1", @"WBVersionCreateStringForNumber() => %@", str);
+  GHAssertNotNil(WBCFToNSString(str), @"WBVersionCreateStringForNumber");
+  GHAssertEqualObjects(WBCFToNSString(str), @"12.10b1", @"WBVersionCreateStringForNumber() => %@", str);
   if (str) CFRelease(str);
 
   str = WBVersionCreateStringForNumber(0x0000000000002001);
-  GHAssertNotNil((id)str, @"WBVersionCreateStringForNumber");
-  GHAssertEqualObjects((id)str, @"0.0a1", @"WBVersionCreateStringForNumber() => %@", str);
+  GHAssertNotNil(WBCFToNSString(str), @"WBVersionCreateStringForNumber");
+  GHAssertEqualObjects(WBCFToNSString(str), @"0.0a1", @"WBVersionCreateStringForNumber() => %@", str);
   if (str) CFRelease(str);
 
   str = WBVersionCreateStringForNumber(0x0002000000004000);
-  GHAssertNotNil((id)str, @"WBVersionCreateStringForNumber");
-  GHAssertEqualObjects((id)str, @"2.0b", @"WBVersionCreateStringForNumber() => %@", str);
+  GHAssertNotNil(WBCFToNSString(str), @"WBVersionCreateStringForNumber");
+  GHAssertEqualObjects(WBCFToNSString(str), @"2.0b", @"WBVersionCreateStringForNumber() => %@", str);
   if (str) CFRelease(str);
 }
 
+static inline
+bool _CFArrayContainsClass(CFArrayRef classes, Class cls) {
+  return CFArrayContainsValue(classes, CFRangeMake(0, CFArrayGetCount(classes)), (__bridge void *)cls);
+}
 - (void)testWBRuntime {
-  NSArray *classes = WBRuntimeGetSubclasses([self class], YES);
-  GHAssertTrue([classes count] == 0, @"invalid sublclass result");
-
-  classes = WBRuntimeGetSubclasses([NSArray class], YES);
-  GHAssertTrue([classes count] > 1, @"invalid sublclass result: %@", classes);
-  GHAssertTrue([classes containsObject:[NSMutableArray class]], @"invalid sublclass result");
-  GHAssertTrue(![classes containsObject:NSClassFromString(@"NSCFArray")], @"invalid sublclass result");
-
-  classes = WBRuntimeGetSubclasses([NSArray class], NO);
-  GHAssertTrue([classes count] > 1, @"invalid sublclass result");
-  GHAssertTrue([classes containsObject:NSClassFromString(@"NSCFArray")], @"invalid sublclass result");
+  CFArrayRef classes = WBRuntimeCopySubclasses([self class], YES);
+  GHAssertTrue(CFArrayGetCount(classes) == 0, @"invalid sublclass result");
+  CFRelease(classes);
+  
+  classes = WBRuntimeCopySubclasses([NSArray class], YES);
+  GHAssertTrue(CFArrayGetCount(classes) > 1, @"invalid sublclass result: %@", classes);
+  GHAssertTrue(_CFArrayContainsClass(classes, [NSMutableArray class]), @"invalid sublclass result");
+  GHAssertTrue(!_CFArrayContainsClass(classes, NSClassFromString(@"NSCFArray")), @"invalid sublclass result");
+  CFRelease(classes);
+  
+  classes = WBRuntimeCopySubclasses([NSArray class], NO);
+  GHAssertTrue(CFArrayGetCount(classes) > 1, @"invalid sublclass result");
+  GHAssertTrue(_CFArrayContainsClass(classes, NSClassFromString(@"NSCFArray")), @"invalid sublclass result");
+  CFRelease(classes);
 }
 
 @end

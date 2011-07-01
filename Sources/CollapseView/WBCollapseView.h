@@ -17,7 +17,7 @@ WB_OBJC_EXPORT
 @private
   NSMutableArray *wb_items;
   NSMutableArray *wb_views;
-  __weak id <WBCollapseViewDelegate> wb_delegate;
+  wb_weak id <WBCollapseViewDelegate> wb_delegate;
 }
 
 @property(nonatomic, assign) id <WBCollapseViewDelegate> delegate;

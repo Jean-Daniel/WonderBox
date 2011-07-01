@@ -54,7 +54,7 @@ WBClassCluster(WBMovieTexture)
 - (void)dealloc {
   [self dispose];
   [wb_movie release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

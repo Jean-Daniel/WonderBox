@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBObjCRuntime.h)
+#include <objc/objc-runtime.h> // must be before WBObjCRuntime.h
 
-#include <objc/objc-runtime.h>
+#import WBHEADER(WBObjCRuntime.h)
 
 #pragma mark Objective-C Runtime
 
@@ -35,7 +35,7 @@ BOOL _WBRuntimeInstanceImplementsSelector(Class cls, SEL sel) {
 
 WB_INLINE
 BOOL __WBRuntimeIsSubclass(Class cls, Class parent) {
-  NSCParameterAssert(cls);
+  assert(cls && "invalid parameter");
   Class super = cls;
   do {
     if (super == parent)
@@ -151,24 +151,24 @@ BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL method) {
 
 WB_INLINE
 Class __WBRuntimeGetMetaClass(Class cls) {
-  return __WBRuntimeGetClass(cls);
+  return __WBRuntimeGetClass((id)cls);
 }
 
-NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict) {
+CFArrayRef WBRuntimeCopySubclasses(Class parent, BOOL strict) {
   int numClasses;
   Class *classes = NULL;
   numClasses = objc_getClassList(NULL, 0);
-  NSMutableArray *result = [NSMutableArray array];
+  CFMutableArrayRef result = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL); // no need to managed memory for Class
   if (numClasses > 0 && (size_t)numClasses < SIZE_T_MAX / sizeof(Class)) {
-    classes = malloc(sizeof(Class) * (size_t)numClasses);
+    classes = (Class *)malloc(sizeof(Class) * (size_t)numClasses);
     numClasses = objc_getClassList(classes, numClasses);
     for (int idx = 0; idx < numClasses; idx++) {
       Class cls = classes[idx];
       if (strict) {
         if (__WBRuntimeIsDirectSubclass(cls, parent))
-          [result addObject:cls];
+          CFArrayAppendValue(result, cls);
       } else if (parent != cls && __WBRuntimeIsSubclass(cls, parent)) {
-        [result addObject:cls];
+        CFArrayAppendValue(result, cls);
       }
     }
     free(classes);
@@ -214,7 +214,7 @@ IMP WBRuntimeSetInstanceMethodImplementation(Class base, SEL selector, IMP place
 }
 
 BOOL WBRuntimeObjectImplementsSelector(id object, SEL method) {
-  return WBRuntimeInstanceImplementsSelector([object class], method);
+  return WBRuntimeInstanceImplementsSelector(__WBRuntimeGetClass(object), method);
 }
 
 BOOL WBRuntimeClassImplementsSelector(Class cls, SEL method) {

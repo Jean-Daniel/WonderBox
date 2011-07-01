@@ -89,23 +89,23 @@ WB_OBJC_EXPORT
       interpolation:(WBInterpolationFunction  *)fct;
 
 // output
-- (CGFunctionRef)function; // autorelease function
+- (CGFunctionRef)newFunction CF_RETURNS_RETAINED;
 
 // All following methods conform to Cocoa Memory Management rule: methods that begin with new return a not-autoreleased object.
 // caller MUST release it when over
-- (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to;
+- (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to CF_RETURNS_RETAINED;
 
 // caller MUST release it when over
 - (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
-                                  to:(CGPoint)to radius:(CGFloat)toRadius;
+                                  to:(CGPoint)to radius:(CGFloat)toRadius CF_RETURNS_RETAINED;
 
 // from bottom to top
-- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 // from left to right
-- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)endPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)endPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 
 @end
 

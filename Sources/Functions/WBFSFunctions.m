@@ -20,7 +20,7 @@
 + (NSString *)stringFromFSRef:(const FSRef *)ref {
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return WBCFAutorelease(str);
+    return WBCFAutorelease(NSString, str);
   return nil;
 }
 
@@ -31,7 +31,7 @@
    */
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return (id)str;
+    return WBCFToNSString(str);
   return nil;
 }
 
@@ -468,8 +468,7 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
 
   BOOL isDirectory;
   NSFileManager *manager = [NSFileManager defaultManager];
-
-  if ([manager fileExistsAtPath:(id)path isDirectory:&isDirectory]) {
+  if ([manager fileExistsAtPath:WBCFToNSString(path) isDirectory:&isDirectory]) {
     WBAutoreleasePoolDrain(pool);
     return isDirectory ? noErr : errFSNotAFolder;
   }
@@ -477,7 +476,7 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
   NSMutableArray *components = [[NSMutableArray alloc] init];
 
   /* Replace . and .. in path, and convert it into c string */
-  const char *characters = [(id)path fileSystemRepresentation];
+  const char *characters = [WBCFToNSString(path) safeFileSystemRepresentation];
   NSString *subpath = [NSString stringWithFileSystemRepresentation:characters length:strlen(characters)];
   while ([subpath length] && ![manager fileExistsAtPath:subpath isDirectory:&isDirectory]) {
     [components addObject:subpath];
@@ -498,7 +497,7 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
   }
 
 dispose:
-  [components release];
+  wb_release(components);
   WBAutoreleasePoolDrain(pool);
 
   return err;

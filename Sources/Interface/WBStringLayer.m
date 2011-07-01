@@ -27,30 +27,30 @@
     wb_manager = [[NSLayoutManager alloc] init];
     wb_container = [[NSTextContainer alloc] initWithContainerSize:aSize];
     [wb_manager addTextContainer:wb_container];
-    [wb_container release];
+    wb_release(wb_container);
 
-    NSTextStorage *storage = aStorage ? [aStorage retain] : [[NSTextStorage alloc] init];
+    NSTextStorage *storage = aStorage ? wb_retain(aStorage) : [[NSTextStorage alloc] init];
     [storage addLayoutManager:wb_manager];
-    [wb_manager release];
+    wb_release(wb_manager);
 
     [self setTextStorage:storage];
-    [storage release];
+    wb_release(storage);
   }
   return self;
 }
 
 - (id)initWithSize:(NSSize)aSize attributedString:(NSAttributedString *)aString {
-  return [self initWithSize:aSize textStorage:aString ? [[[NSTextStorage alloc] initWithAttributedString:aString] autorelease] : nil];
+  return [self initWithSize:aSize textStorage:aString ? wb_autorelease([[NSTextStorage alloc] initWithAttributedString:aString]) : nil];
 }
 
 - (id)initWithSize:(NSSize)aSize string:(NSString *)aString attributes:(NSDictionary *)attributes {
-  return [self initWithSize:aSize textStorage:aString ? [[[NSTextStorage alloc] initWithString:aString
-                                                                                    attributes:attributes] autorelease] : nil];
+  return [self initWithSize:aSize textStorage:aString ? wb_autorelease([[NSTextStorage alloc] initWithString:aString
+                                                                                                  attributes:attributes]) : nil];
 }
 
 - (void)dealloc {
-  [wb_storage release];
-  [super dealloc];
+  wb_release(wb_storage);
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -88,7 +88,7 @@
   if (!attribs) attribs = [wb_storage attributesAtIndex:0 effectiveRange:nil];
   NSAttributedString *astr = [[NSAttributedString alloc] initWithString:aString attributes:attribs];
   [self setAttributedString:astr];
-  [astr release];
+  wb_release(astr);
 }
 
 #pragma mark -

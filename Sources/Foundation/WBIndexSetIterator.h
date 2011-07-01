@@ -16,7 +16,7 @@ typedef struct _WBIndexIterator {
   int8_t _cnt;
   int8_t _idx;
   NSRange _state;
-  NSIndexSet *_indexes;
+  void *_indexes;
   NSUInteger _values[16];
 } WBIndexIterator;
 

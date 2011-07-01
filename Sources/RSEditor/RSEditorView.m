@@ -28,7 +28,7 @@
     dict = [attributes mutableCopy];
     [dict removeObjectForKey:NSStrokeColorAttributeName];
   }
-  return dict ? [dict autorelease] : attributes;
+  return dict ? wb_autorelease(dict) : attributes;
 }
 
 @end
@@ -43,8 +43,8 @@
 }
 
 - (void)dealloc {
-  [ibView release]; // root object
-  [super dealloc];
+  wb_release(ibView); // root object
+  wb_dealloc();
 }
 
 - (NSView *)view {
@@ -80,7 +80,7 @@
     dict = [attributes mutableCopy];
     [dict removeObjectForKey:NSStrokeWidthAttributeName];
   }
-  return dict ? [dict autorelease] : attributes;
+  return dict ? wb_autorelease(dict) : attributes;
 }
 
 - (void)updateAttributes:(NSTextView *)sender {

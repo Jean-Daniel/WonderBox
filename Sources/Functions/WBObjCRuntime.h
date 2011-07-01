@@ -13,12 +13,10 @@
 
 #import WBHEADER(WBBase.h)
 
-__BEGIN_DECLS
-
 WB_EXPORT
 Class WBRuntimeSetObjectClass(id anObject, Class newClass);
 WB_EXPORT
-NSArray *WBRuntimeGetSubclasses(Class parent, BOOL strict);
+CFArrayRef WBRuntimeCopySubclasses(Class parent, BOOL strict);
 
 WB_EXPORT
 bool WBRuntimeObjectIsKindOfClass(id obj, Class parent);
@@ -46,7 +44,5 @@ WB_EXPORT
 BOOL WBRuntimeClassImplementsSelector(Class cls, SEL method);
 WB_EXPORT
 BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL method);
-
-__END_DECLS
 
 #endif /* __WB_RUNTIME_FUNCTIONS_H */

@@ -56,7 +56,7 @@
   NSString *str = [[NSString alloc] initWithFormat:message arguments:args];
   va_end(args);
   NSError *error = [NSError errorWithDomain:aDomain code:code reason:str];
-  [str release];
+  wb_release(str);
   return error;
 }
 

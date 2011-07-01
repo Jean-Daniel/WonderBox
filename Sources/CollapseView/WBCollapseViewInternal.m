@@ -35,9 +35,9 @@
 
 @interface _WBCollapseItemHeaderView : NSView {
 @private
-  id wb_target;
   SEL wb_action;
-
+  wb_weak id wb_target;
+  
   NSTextField *wb_title;
   NSButton *wb_disclose;
 
@@ -79,7 +79,7 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_item = [[aCoder decodeObjectForKey:@"view.item"] retain];
+    wb_item = wb_retain([aCoder decodeObjectForKey:@"view.item"]);
     [self wb_attachItem];
     wb_body = [aCoder decodeObjectForKey:@"view.body"];
     wb_header = [aCoder decodeObjectForKey:@"view.header"];
@@ -94,7 +94,7 @@
     // setup self
     [self setAutoresizesSubviews:YES];
 
-    wb_item = [anItem retain];
+    wb_item = wb_retain(anItem);
 
     [self wb_attachItem];
     [self wb_buildBodyView];
@@ -122,7 +122,7 @@
 
 - (void)dealloc {
   [self wb_detachItem];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -184,11 +184,11 @@
   WBAssert(wb_item, @"cannot attach nil item");
 
   [wb_item addObserver:self forKeyPath:@"title"
-              options:0 context:[_WBCollapseItemView class]];
+              options:0 context:(__bridge void *)[_WBCollapseItemView class]];
 
   [wb_item addObserver:self forKeyPath:@"view"
               options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
-              context:[_WBCollapseItemView class]];
+              context:(__bridge void *)[_WBCollapseItemView class]];
 }
 
 - (void)wb_detachItem {
@@ -197,7 +197,7 @@
   if ([wb_item isExpanded]) // restore state
     [self wb_detachView:[wb_item view]];
 
-  [wb_item release];
+  wb_release(wb_item);
   wb_item = nil;
 }
 
@@ -233,7 +233,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if (context != [_WBCollapseItemView class])
+  if (context != (__bridge void *)[_WBCollapseItemView class])
     return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 
   if ([keyPath isEqualToString:@"title"]) {
@@ -313,7 +313,7 @@
   wb_body = [[_WBCollapseItemBodyView alloc] initWithFrame:NSMakeRect(0, 0, NSWidth([self frame]), 0)];
   [wb_body setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
   [self addSubview:wb_body];
-  [wb_body release];
+  wb_release(wb_body);
 }
 
 - (void)wb_buildHeaderView {
@@ -327,7 +327,7 @@
   wb_header.target = self;
   wb_header.action = @selector(toggleCollapse:);
   [self addSubview:wb_header];
-  [wb_header release];
+  wb_release(wb_header);
 }
 
 @end
@@ -356,7 +356,7 @@
     [wb_title setSelectable:NO];
     [wb_title setBordered:NO];
     [self addSubview:wb_title];
-    [wb_title release];
+    wb_release(wb_title);
 
     // Disclose Button
     // Empirical values
@@ -375,7 +375,7 @@
     [wb_disclose setAction:@selector(wb_performAction:)];
     // Add Button
     [self addSubview:wb_disclose];
-    [wb_disclose release];
+    wb_release(wb_disclose);
   }
   return self;
 }
@@ -464,7 +464,7 @@ WBGradientDefinition sHeaderGradient = {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithColorSpace:[NSColorSpace genericRGBColorSpace]
                                                               definition:&sHeaderGradient];
     sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
-    [b release];
+    wb_release(b);
   }
   // draw background gradient
   CGContextDrawLayerInRect(ctxt, background, sHeaderBackground);

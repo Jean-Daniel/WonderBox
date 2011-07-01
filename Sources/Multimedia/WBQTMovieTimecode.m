@@ -63,7 +63,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieEditedNotification object:nil];
   [wb_movie release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 #pragma mark -

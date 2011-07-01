@@ -13,8 +13,8 @@
 @implementation WBTableDataSource
 
 - (void)dealloc {
-  [wb_searchString release];
-  [super dealloc];
+  wb_release(wb_searchString);
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -42,8 +42,8 @@
 
 - (void)setSearchString:(NSString *)aString {
   if (![aString isEqualToString:wb_searchString]) {
-    [wb_searchString release];
-    wb_searchString = [aString length] > 0 ? [aString retain] : nil;
+    wb_release(wb_searchString);
+    wb_searchString = [aString length] > 0 ? wb_retain(aString) : nil;
     [self rearrangeObjects];
   }
 }
@@ -78,9 +78,9 @@
 
   if (wb_compare) {
     @try { /* If Mutable Array sort it */
-      [(NSMutableArray *)result sortUsingFunction:wb_compare context:self];
+      [(NSMutableArray *)result sortUsingFunction:wb_compare context:(__bridge void *)self];
     } @catch (id) { /* else return a sorted copy */
-      result = [result sortedArrayUsingFunction:wb_compare context:self];
+      result = [result sortedArrayUsingFunction:wb_compare context:(__bridge void *)self];
     }
   } else {
     result = [super arrangeObjects:result];

@@ -15,7 +15,7 @@
 - (void)dealloc {
   if (wb_noPadding)
     NSFreeHashTable(wb_noPadding);
-  [super dealloc];
+  wb_dealloc();
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
@@ -158,9 +158,9 @@
   NSTableColumn *column = [self tableColumnWithIdentifier:columnIdentifier];
   if (column) {
     if (!flag) {
-      NSHashInsertIfAbsent(wb_noPadding, column);
+      NSHashInsertIfAbsent(wb_noPadding, (__bridge void *)column);
     } else if (wb_noPadding) {
-      NSHashRemove(wb_noPadding, column);
+      NSHashRemove(wb_noPadding, (__bridge void *)column);
     }
   } else {
     WBThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
@@ -170,7 +170,7 @@
 - (NSRect)frameOfCellAtColumn:(NSInteger)columnIndex row:(NSInteger)rowIndex {
   if (wb_noPadding && columnIndex >= 0) {
     NSTableColumn *column = [[self tableColumns] objectAtIndex:(NSUInteger)columnIndex];
-    if (column && NSHashGet(wb_noPadding, column)) {
+    if (column && NSHashGet(wb_noPadding, (__bridge void *)column)) {
       return NSIntersectionRect([self rectOfRow:rowIndex], [self rectOfColumn:columnIndex]);
     }
   }

@@ -52,7 +52,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   // generate a range of sizes w/ random content
   for (int x = 1 ; x < 1024 ; ++x) {
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    GHAssertNotNil((id)data, @"failed to alloc data block");
+    GHAssertNotNil(WBCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, x);
     FillWithRandom(CFDataGetMutableBytePtr(data), CFDataGetLength(data));
 
@@ -62,7 +62,7 @@ static BOOL NoEqualChar(CFDataRef data) {
                    @"encoded size via *Bytes apis should be a multiple of 4");
     CFDataRef dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encoded),
                                                             CFDataGetLength(encoded));
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip via *Bytes apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -72,7 +72,7 @@ static BOOL NoEqualChar(CFDataRef data) {
                    @"encoded size via *Data apis should be a multiple of 4");
 
     dataPrime = WBBase64CreateDataByDecodingData(encoded);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip via *Data apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -83,7 +83,7 @@ static BOOL NoEqualChar(CFDataRef data) {
     GHAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Bytes to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -93,7 +93,7 @@ static BOOL NoEqualChar(CFDataRef data) {
     GHAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Data to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -103,7 +103,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   {
     // now test all byte values
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    GHAssertNotNil((id)data, @"failed to alloc data block");
+    GHAssertNotNil(WBCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, 256);
     unsigned char *scan = CFDataGetMutableBytePtr(data);
     for (int x = 0 ; x <= 255 ; ++x) {
@@ -117,7 +117,7 @@ static BOOL NoEqualChar(CFDataRef data) {
                    @"encoded size via *Bytes apis should be a multiple of 4");
     CFDataRef dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encoded),
                                                             CFDataGetLength(encoded));
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip via *Bytes apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -128,7 +128,7 @@ static BOOL NoEqualChar(CFDataRef data) {
                    @"encoded size via *Data apis should be a multiple of 4");
 
     dataPrime = WBBase64CreateDataByDecodingData(encoded);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip via *Data apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -139,7 +139,7 @@ static BOOL NoEqualChar(CFDataRef data) {
     GHAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Bytes to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -149,7 +149,7 @@ static BOOL NoEqualChar(CFDataRef data) {
     GHAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Data to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -161,7 +161,7 @@ static BOOL NoEqualChar(CFDataRef data) {
 
     // generate some data, encode it, and add spaces
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    GHAssertNotNil((id)data, @"failed to alloc data block");
+    GHAssertNotNil(WBCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, 253); // should get some padding chars on the end
     FillWithRandom(CFDataGetMutableBytePtr(data), CFDataGetLength(data));
 
@@ -179,24 +179,24 @@ static BOOL NoEqualChar(CFDataRef data) {
     // we'll need it as data for apis
     CFDataRef encodedAsData = CFStringCreateExternalRepresentation(kCFAllocatorDefault, encodedAndSpaced,
                                                                    NSASCIIStringEncoding, 0);
-    GHAssertNotNil((id)encodedAsData, @"failed to extract from string");
+    GHAssertNotNil(WBCFToNSData(encodedAsData), @"failed to extract from string");
     GHAssertEquals(CFDataGetLength(encodedAsData), CFStringGetLength(encodedAndSpaced),
                    @"lengths for encoded string and data didn't match?");
 
     // all the decode modes
     CFDataRef dataPrime = WBBase64CreateDataByDecodingData(encodedAsData);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed Data decode w/ spaces");
     CFRelease(dataPrime);
 
     dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encodedAsData),
                                                   CFDataGetLength(encodedAsData));
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed Bytes decode w/ spaces");
     CFRelease(dataPrime);
 
     dataPrime = WBBase64CreateDataByDecodingString(encodedAndSpaced);
-    GHAssertEqualObjects((id)data, (id)dataPrime,
+    GHAssertEqualObjects(WBCFToNSData(data), WBCFToNSData(dataPrime),
                          @"failed String decode w/ spaces");
 
     CFRelease(encodedAndSpaced);
@@ -402,29 +402,29 @@ static BOOL NoEqualChar(CFDataRef data) {
   const int something = 0;
   CFStringRef nonAscString = CFSTR("This test ©™®๒०᠐٧");
 
-  GHAssertNil((id)WBBase64CreateDataByEncodingData(NULL), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingData(NULL), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByEncodingBytes(NULL, 10), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByEncodingBytes(&something, 0), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingBytes(NULL, 10), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingBytes(&something, 0), @"it worked?");
-  GHAssertNil((id)WBBase64CreateStringByEncodingData(NULL), @"it worked?");
-  GHAssertNil((id)WBBase64CreateStringByEncodingBytes(NULL, 10), @"it worked?");
-  GHAssertNil((id)WBBase64CreateStringByEncodingBytes(&something, 0), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(NULL), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByEncodingData(NULL)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingData(NULL)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByEncodingBytes(NULL, 10)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByEncodingBytes(&something, 0)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingBytes(NULL, 10)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingBytes(&something, 0)), @"it worked?");
+  GHAssertNil(WBCFToNSString(WBBase64CreateStringByEncodingData(NULL)), @"it worked?");
+  GHAssertNil(WBCFToNSString(WBBase64CreateStringByEncodingBytes(NULL, 10)), @"it worked?");
+  GHAssertNil(WBCFToNSString(WBBase64CreateStringByEncodingBytes(&something, 0)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(NULL)), @"it worked?");
   // test some pads at the end that aren't right
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("==")), @"it worked?"); // just pads
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("vw=")), @"it worked?"); // missing pad (in state 2)
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("vw")), @"it worked?"); // missing pad (in state 2)
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("NNw")), @"it worked?"); // missing pad (in state 3)
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("vw=v")), @"it worked?"); // missing pad, has something else
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("v=")), @"it worked?"); // missing a needed char, has pad instead
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("v")), @"it worked?"); // missing a needed char
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("vw== vw")), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(nonAscString), @"it worked?");
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("@@@not valid###")), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("=="))), @"it worked?"); // just pads
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw="))), @"it worked?"); // missing pad (in state 2)
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw"))), @"it worked?"); // missing pad (in state 2)
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("NNw"))), @"it worked?"); // missing pad (in state 3)
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw=v"))), @"it worked?"); // missing pad, has something else
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v="))), @"it worked?"); // missing a needed char, has pad instead
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v"))), @"it worked?"); // missing a needed char
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw== vw"))), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(nonAscString)), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("@@@not valid###"))), @"it worked?");
   // carefully crafted bad input to make sure we don't overwalk
-  GHAssertNil((id)WBBase64CreateDataByDecodingString(CFSTR("WD==")), @"it worked?");
+  GHAssertNil(WBCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("WD=="))), @"it worked?");
 #if 0
   GHAssertNil([WBBase64 webSafeEncodeData:nil padded:YES], @"it worked?");
   GHAssertNil([WBBase64 webSafeDecodeData:nil], @"it worked?");
@@ -458,7 +458,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   GHAssertNil([WBBase64 webSafeDecodeString:@"WD=="], @"it worked?");
 #endif
   // make sure our local helper is working right
-  GHAssertFalse(NoEqualChar((CFDataRef)[NSData dataWithBytes:"aa=zz" length:5]), @"");
+  GHAssertFalse(NoEqualChar(WBNSToCFData([NSData dataWithBytes:"aa=zz" length:5])), @"");
 }
 
 @end

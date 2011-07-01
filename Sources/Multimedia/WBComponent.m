@@ -103,7 +103,7 @@
   [_name release];
   [_manu release];
   [_info release];
-  [super dealloc];
+  wb_dealloc();
 }
 
 - (NSString *)description {

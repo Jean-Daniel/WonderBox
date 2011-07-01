@@ -34,11 +34,11 @@
   for (WBTabWindowItem *item in [wb_items allValues])
     item.tabWindow = nil;
 
-  [wb_identifiers release];
-  [wb_classes release];
-  [wb_current release];
-  [wb_items release];
-  [super dealloc];
+  wb_release(wb_identifiers);
+  wb_release(wb_classes);
+  wb_release(wb_current);
+  wb_release(wb_items);
+  wb_dealloc();
 }
 
 #pragma mark -
@@ -81,7 +81,7 @@
   [tb setVisible:YES];
 
   [[self window] setToolbar:tb];
-  [tb release];
+  wb_release(tb);
 
   [self setSelectedItemIdentifier:[self defaultTabWindowItem]];
 }
@@ -163,8 +163,8 @@
   [self setNextResponder:anItem];
 
   [[window toolbar] setSelectedItemIdentifier:anItem.identifier];
-  [wb_current release];
-  wb_current = [anItem.identifier retain];
+  wb_release(wb_current);
+  wb_current = wb_retain(anItem.identifier);
   [self didSelectItem:anItem];
 }
 
@@ -183,7 +183,7 @@
     [wb_items setObject:item forKey:aPanel];
     item.identifier = aPanel;
     item.tabWindow = self;
-    [item release];
+    wb_release(item);
   }
   [self selectItem:item];
 }
@@ -230,7 +230,7 @@
     [item setLabel:[cls label]];
     [item setImage:[cls image]];
     [item setTarget:self];
-    [item autorelease];
+    (void)wb_autorelease(item);
   }
 
   return item;
@@ -259,8 +259,8 @@
 }
 
 - (void)dealloc {
-  [wb_identifier release];
-  [super dealloc];
+  wb_release(wb_identifier);
+  wb_dealloc();
 }
 
 - (void)loadView {
