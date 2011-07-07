@@ -13,7 +13,6 @@
 
 #include WBHEADER(WBBase.h)
 
-__BEGIN_DECLS
 
 WB_EXPORT
 OSType WBAEFinderSignature;
@@ -86,7 +85,5 @@ WB_EXPORT
 OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file);
 WB_EXPORT
 OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias);
-
-__END_DECLS
 
 #endif /* __WB_FINDER_SUITE_H */
