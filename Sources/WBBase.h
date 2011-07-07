@@ -63,11 +63,23 @@
 
 /* Function Attributes */
 #if !defined(WB_OBSOLETE)
-  #define WB_OBSOLETE SC_OBSOLETE
+  #if defined(_MSC_VER)
+    #define WB_OBSOLETE(msg) __declspec(deprecated(msg))
+  #elif defined(__clang__)
+    #define WB_OBSOLETE(msg) __attribute__((deprecated(msg)))
+  #else
+    #define WB_OBSOLETE(msg) __attribute__((deprecated))
+  #endif
 #endif
 
 #if !defined(WB_REQUIRES_NIL_TERMINATION)
-  #define WB_REQUIRES_NIL_TERMINATION SC_REQUIRES_NIL_TERMINATION
+  #if defined(_MSC_VER)
+    #define WB_REQUIRES_NIL_TERMINATION
+  #elif defined(__clang__) || (defined(__APPLE_CC__) && (__APPLE_CC__ >= 5549))
+    #define WB_REQUIRES_NIL_TERMINATION __attribute__((sentinel(0,1)))
+  #else /* GCC 4.0 */
+    #define WB_REQUIRES_NIL_TERMINATION __attribute__((sentinel))
+  #endif
 #endif
 
 #endif /* __WONDERBOX_BASE_H */
