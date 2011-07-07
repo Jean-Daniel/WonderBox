@@ -13,8 +13,6 @@
 
 #include WBHEADER(WBBase.h)
 
-__BEGIN_DECLS
-
 #pragma mark Process
 WB_EXPORT
 OSType WBProcessGetSignature(ProcessSerialNumber *psn);
@@ -43,6 +41,8 @@ Boolean WBProcessIsNative(pid_t pid);
 WB_EXPORT
 CFStringRef WBProcessCopyNameForPID(pid_t pid);
 
-__END_DECLS
+struct kinfo_proc;
+WB_EXPORT
+int WBProcessIterate(bool (*callback)(struct kinfo_proc *info, void *ctxt), void *ctxt);
 
 #endif /* __WB_PROCESS_FUNCTIONS_H */
