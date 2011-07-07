@@ -13,6 +13,7 @@
 
 #include WBHEADER(WBBase.h)
 
+#include <ApplicationServices/ApplicationServices.h>
 
 WB_EXPORT
 OSType WBAEFinderSignature;

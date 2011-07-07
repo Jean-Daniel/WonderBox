@@ -8,12 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include "WBServiceManagement.h"
+#include WBHEADER(WBServiceManagement.h)
 
 #include <launch.h>
 #include <unistd.h>
-
-#include <CoreServices/CoreServices.h>
 
 // MARK: Core Foundation -> Launchd
 static
@@ -347,7 +345,14 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
       object = _WBServiceCreateArrayFromData(data);
       break;
     case LAUNCH_DATA_FD:
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
       object = CFFileDescriptorCreate(kCFAllocatorDefault, launch_data_get_fd(data), false, NULL, NULL);
+#else
+    {
+      int fd = launch_data_get_fd(data);
+      object = CFNumberCreate(kCFAllocatorDefault, kCFNumberIntType, &fd);
+    }
+#endif
       if (!object)
         object = kCFNull;
       break;
@@ -378,11 +383,13 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
     case LAUNCH_DATA_ERRNO:
       object = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainPOSIX, launch_data_get_errno(data), NULL);
       break;
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
     case LAUNCH_DATA_MACHPORT:
       object = CFMachPortCreateWithPort(kCFAllocatorDefault, launch_data_get_machport(data), NULL, NULL, NULL);
       if (!object)
         object = kCFNull;
       break;
+#endif
   }
   return object;
 }
