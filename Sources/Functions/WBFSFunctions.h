@@ -84,6 +84,14 @@ WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
 WB_EXPORT
 OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target) WB_OBSOLETE("Use bookmark API");
 
+/*!
+ @function
+ @abstract Create a bookmark (alias) file that point to targetURL.
+ @param bookmarkName NULL to use displauy name of the target
+ */
+//WB_EXPORT
+//OSStatus WBFSCreateBookmarkFile(CFURLRef targetURL, CFURLRef folder, CFStringRef bookmarkName, CFErrorRef *error);
+
 WB_EXPORT
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, UInt32 *files, UInt32 *folders);
 WB_EXPORT
