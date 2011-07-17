@@ -21,10 +21,10 @@ typedef struct _WBIndexIterator {
 } WBIndexIterator;
 
 WB_EXPORT
-WBIndexIterator WBIndexIteratorCreate(NSIndexSet *aSet);
+void WBIndexIteratorInitialize(NSIndexSet *aSet, WBIndexIterator *iter);
 
 WB_EXPORT
-WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange);
+void WBIndexIteratorInitializeWithRange(NSIndexSet *aSet, NSRange aRange, WBIndexIterator *iter);
 
 /* Internal Method. Never use it directly */
 WB_EXPORT bool _WBIndexIteratorGetNext(WBIndexIterator *iter);
@@ -47,7 +47,7 @@ NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
 // or we would have to declare a WBIndexesEndIterator() macros.
 // To avoid name collision, we create an unique var name using the line number.
 #define __WBIndexesIterator(var, indexes, line) \
-  WBIndexIterator __idxIter##line = WBIndexIteratorCreate(indexes); \
+  WBIndexIterator __idxIter##line; WBIndexIteratorInitialize(indexes, &__idxIter##line); \
   for (NSUInteger var; (var = WBIndexIteratorNext(&__idxIter##line)) != NSNotFound;)
 // Traditional hack to use __LINE__ in a macro.
 #define _WBIndexesIterator(var, indexes, line) __WBIndexesIterator(var, indexes, line)
@@ -80,9 +80,9 @@ typedef struct _WBRangeIterator {
 } WBRangeIterator;
 
 WB_EXPORT
-WBRangeIterator WBRangeIteratorCreate(NSIndexSet *aSet);
+void WBRangeIteratorInitialize(NSIndexSet *aSet, WBRangeIterator *iter);
 WB_EXPORT
-WBRangeIterator WBRangeIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange);
+void WBRangeIteratorInitializeWithRange(NSIndexSet *aSet, NSRange aRange, WBRangeIterator *iter);
 
 WB_EXPORT
 bool WBRangeIteratorGetNext(WBRangeIterator *iter, NSRange *range);

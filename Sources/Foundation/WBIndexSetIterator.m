@@ -18,19 +18,19 @@ void __WBIndexIteratorInitialize(WBIndexIterator *iter) {
     iter->_indexes = nil;
 }
 
-WBIndexIterator WBIndexIteratorCreate(NSIndexSet *aSet) {
+void WBIndexIteratorInitialize(NSIndexSet *aSet, WBIndexIterator *iter) {
+  assert(iter);
   NSRange range = NSMakeRange(0, [aSet lastIndex]);
   if (NSNotFound != range.length) range.length += 1; // case where last index is 0.
-  return WBIndexIteratorCreateWithRange(aSet, range);
+  return WBIndexIteratorInitializeWithRange(aSet, range, iter);
 }
 
-WBIndexIterator WBIndexIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange) {
-  WBIndexIterator iter = {
-    ._indexes = (__bridge void *)aSet,
-    ._state = aRange,
-  };
-  __WBIndexIteratorInitialize(&iter);
-  return iter;
+void WBIndexIteratorInitializeWithRange(NSIndexSet *aSet, NSRange aRange, WBIndexIterator *iter) {
+  assert(iter);
+  iter->_state = aRange;
+  iter->_indexes = (__bridge void *)aSet;
+
+  __WBIndexIteratorInitialize(iter);
 }
 
 bool _WBIndexIteratorGetNext(WBIndexIterator *iter) {
@@ -50,19 +50,15 @@ bool _WBIndexIteratorGetNext(WBIndexIterator *iter) {
 }
 
 // MARK: Range
-WBRangeIterator WBRangeIteratorCreate(NSIndexSet *aSet) {
-  WBRangeIterator iter = {
-    ._iter = WBIndexIteratorCreate(aSet)
-  };
-  iter._next = WBIndexIteratorNext(&iter._iter);
-  return iter;
+void WBRangeIteratorInitialize(NSIndexSet *aSet, WBRangeIterator *iter) {
+  assert(iter);
+  WBIndexIteratorInitialize(aSet, &iter->_iter);
+  iter->_next = WBIndexIteratorNext(&iter->_iter);
 }
-WBRangeIterator WBRangeIteratorCreateWithRange(NSIndexSet *aSet, NSRange aRange) {
-  WBRangeIterator iter = {
-    ._iter = WBIndexIteratorCreateWithRange(aSet, aRange)
-  };
-  iter._next = WBIndexIteratorNext(&iter._iter);
-  return iter;
+void WBRangeIteratorInitializeWithRange(NSIndexSet *aSet, NSRange aRange, WBRangeIterator *iter) {
+  assert(iter);
+  WBIndexIteratorInitializeWithRange(aSet, aRange, &iter->_iter);
+  iter->_next = WBIndexIteratorNext(&iter->_iter);
 }
 
 bool WBRangeIteratorGetNext(WBRangeIterator *iter, NSRange *range) {
