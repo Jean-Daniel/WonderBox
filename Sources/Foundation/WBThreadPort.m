@@ -322,10 +322,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     switch (err) {
       case MACH_SEND_TIMED_OUT:
         WBThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
-        break;
       default:
         WBThrowException(NSPortSendException, @"mach_msg(send) return (%#x): %s", err, mach_error_string(err));
-        break;
     }
   } else if (synch) {
     /* if should wait response */
@@ -356,10 +354,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
         break;
       case MACH_RCV_TIMED_OUT:
         WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
-        break;
       default:
         WBThrowException(NSPortReceiveException, @"mach_msg(recv) return (%#x): %s", err, mach_error_string(err));
-        break;
     }
   }
 }
