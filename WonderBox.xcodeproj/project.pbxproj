@@ -341,6 +341,11 @@
 		1BD8EF421257F5F600F359B0 /* TOutline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOutline.png; sourceTree = "<group>"; };
 		1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctionsTest.m; sourceTree = "<group>"; };
 		1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctionsTest.m; sourceTree = "<group>"; };
+		1BEDBB5513D3862400658D42 /* application.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = application.xcconfig; sourceTree = "<group>"; };
+		1BEDBB5613D3862400658D42 /* archive.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = archive.xcconfig; sourceTree = "<group>"; };
+		1BEDBB5713D3862400658D42 /* bundle.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = bundle.xcconfig; sourceTree = "<group>"; };
+		1BEDBB5813D3862400658D42 /* dylib.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = dylib.xcconfig; sourceTree = "<group>"; };
+		1BEDBB5913D3862400658D42 /* executable.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = executable.xcconfig; sourceTree = "<group>"; };
 		1BF23A8A0D376DF6007EF8EB /* DirectoryService.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DirectoryService.framework; path = /System/Library/Frameworks/DirectoryService.framework; sourceTree = "<absolute>"; };
 		1BF23A8E0D376E01007EF8EB /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		1BF23A920D376E1E007EF8EB /* libffi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libffi.dylib; path = /usr/lib/libffi.dylib; sourceTree = "<absolute>"; };
@@ -749,6 +754,7 @@
 		1B2D5BDD0D36790F00B28046 /* xcconfigs */ = {
 			isa = PBXGroup;
 			children = (
+				1BEDBB5413D3862400658D42 /* targets */,
 				1B7FED410ED3362B00B5780B /* WonderBoxDebug.xcconfig */,
 				1B7FED420ED3362B00B5780B /* WonderBoxRelease.xcconfig */,
 			);
@@ -765,6 +771,18 @@
 				1BD8EF411257F5F600F359B0 /* RSEditorView.m */,
 			);
 			path = RSEditor;
+			sourceTree = "<group>";
+		};
+		1BEDBB5413D3862400658D42 /* targets */ = {
+			isa = PBXGroup;
+			children = (
+				1BEDBB5513D3862400658D42 /* application.xcconfig */,
+				1BEDBB5613D3862400658D42 /* archive.xcconfig */,
+				1BEDBB5713D3862400658D42 /* bundle.xcconfig */,
+				1BEDBB5813D3862400658D42 /* dylib.xcconfig */,
+				1BEDBB5913D3862400658D42 /* executable.xcconfig */,
+			);
+			path = targets;
 			sourceTree = "<group>";
 		};
 		1BF76C800D367DF100A8758E /* Tests */ = {
@@ -1043,8 +1061,8 @@
 /* Begin XCBuildConfiguration section */
 		1B5634870F5AF9B000BD119C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BEDBB5513D3862400658D42 /* application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = Tests/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = GHTests;
@@ -1054,8 +1072,8 @@
 		};
 		1B5634880F5AF9B000BD119C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BEDBB5513D3862400658D42 /* application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = Tests/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = GHTests;
@@ -1065,6 +1083,7 @@
 		};
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BEDBB5813D3862400658D42 /* dylib.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 250;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1080,6 +1099,7 @@
 		};
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BEDBB5813D3862400658D42 /* dylib.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 250;
 				DYLIB_COMPATIBILITY_VERSION = 1;
