@@ -45,15 +45,15 @@ WBClassCluster(WBInterpolationFunction)
 @implementation WBClusterPlaceholder(WBInterpolationFunction) (WBPlaceholder)
 
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
-  return [[_WBInterpolationFunctionCB allocWithZone:[self zone]] initWithCallBack:callback];
+  return [[_WBInterpolationFunctionCB allocWithZone:nil] initWithCallBack:callback];
 }
 
 - (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y {
-  return [[_WBInterpolationFunctionBezier allocWithZone:[self zone]] initWithControlPoints:c1x :c1y :c2x :c2y];
+  return [[_WBInterpolationFunctionBezier allocWithZone:nil] initWithControlPoints:c1x :c1y :c2x :c2y];
 }
 
 - (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint {
-  return [[_WBInterpolationFunctionBezier allocWithZone:[self zone]] initWithControlPoints:c1x :c1y :c2x :c2y length:lengthHint];
+  return [[_WBInterpolationFunctionBezier allocWithZone:nil] initWithControlPoints:c1x :c1y :c2x :c2y length:lengthHint];
 }
 
 @end

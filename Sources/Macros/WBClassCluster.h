@@ -39,137 +39,72 @@
 */
 
 #define WBClassCluster(classname)    \
-  WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-  WBClassClusterImplementation(classname, classname, classname, classname)
+  WBClassClusterPlaceHolder(classname, classname, classname) \
+  WBClassClusterImplementation(classname, classname, classname)
 
+/* Variant which does not override classForCoder */
 #define WBClassClusterNoClassForCoder(classname)    \
-  WBClassClusterPlaceHolder(classname, classname, classname, classname) \
-  WBClassClusterImplementationNoClassForCoder(classname, classname, classname, classname)
+  WBClassClusterPlaceHolder(classname, classname, classname) \
+  WBClassClusterImplementationNoClassForCoder(classname, classname, classname)
 
 
 // Details
-#define WBClassClusterPlaceHolder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
+#define WBClassClusterPlaceHolder(classname, placeholderPrefix, defaultPlaceholderPrefix) \
   _WBInternalClassClusterPlaceHolder(classname, \
                                      WBClusterPlaceholder(placeholderPrefix), \
-                                     WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
-                                     WBClusterZoneTable(zonestablePrefix))
+                                     WBClusterDefaultPlaceholder(defaultPlaceholderPrefix))
 
-#define WBClassClusterImplementation(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
+#define WBClassClusterImplementation(classname, placeholderPrefix, defaultPlaceholderPrefix) \
   _WBInternalClassClusterImplementation(classname, \
                                         WBClusterPlaceholder(placeholderPrefix), \
-                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
-                                        WBClusterZoneTable(zonestablePrefix)) \
+                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix)) \
   _WBInternalClassForCoder(classname)
 
-#define WBClassClusterImplementationNoClassForCoder(classname, placeholderPrefix, defaultPlaceholderPrefix, zonestablePrefix) \
+#define WBClassClusterImplementationNoClassForCoder(classname, placeholderPrefix, defaultPlaceholderPrefix) \
   _WBInternalClassClusterImplementation(classname, \
                                         WBClusterPlaceholder(placeholderPrefix), \
-                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix), \
-                                        WBClusterZoneTable(zonestablePrefix))
+                                        WBClusterDefaultPlaceholder(defaultPlaceholderPrefix))
 
 // MARK: Names
-#define WBClusterZoneTable(classname)           classname##ClusterPlaceholderZones
 #define WBClusterPlaceholder(classname)         classname##ClusterPlaceholder
 #define WBClusterDefaultPlaceholder(classname)  classname##DefaultClusterPlaceholder
 
 // MARK: -
 // MARK: Internal
-#define _WBInternalClassClusterPlaceHolder(superclass, placeholderclass, defaultplaceholder, zonestable) \
-@interface placeholderclass : superclass { \
-} \
-@end \
-\
-static NSMapTable *zonestable = nil; \
-static placeholderclass *defaultplaceholder = nil; \
-\
-@implementation placeholderclass \
-\
-+ (void)load { \
-  if (!zonestable) { \
-    zonestable = NSCreateMapTable(NSNonOwnedPointerMapKeyCallBacks, \
-                                  NSNonRetainedObjectMapValueCallBacks, 0); \
-    defaultplaceholder = NSAllocateObject(self, 0, nil); \
+#if __has_feature(objc_arc)
+  #define __WBInternalSingleton
+#else
+  #define __WBInternalSingleton \
+            - (id)init { return nil; } \
+            - (id)copyWithZone:(NSZone *)zone { return self; }  \
+            - (id)retain { return self; } \
+            - (NSUInteger)retainCount { return NSUIntegerMax; } \
+            - (oneway void)release { /* do nothing */ }         \
+            - (id)autorelease { return self; }
+#endif
+
+#define _WBInternalClassClusterPlaceHolder(superclass, placeholderclass, defaultplaceholder) \
+  @interface placeholderclass : superclass \
+  @end \
+  static placeholderclass *defaultplaceholder = nil; \
+  @implementation placeholderclass \
+  + (void)initialize { \
+    if ([placeholderclass class] == self) \
+      defaultplaceholder = [self allocWithZone:nil]; \
   } \
-} \
-\
-- (id)init { \
-  return nil; \
-} \
-\
-@end
+  __WBInternalSingleton \
+  @end
 
-/* -------------- Constant Instance -------------- */ \
-//- (id)copyWithZone:(NSZone *)zone { \
-//  return self; \
-//} \
-//- (id)retain { \
-//  return self; \
-//} \
-//- (NSUInteger)retainCount { \
-//  return NSUIntegerMax;  /* denotes an object that cannot be released */ \
-//} \
-//- (oneway void)release { \
-//  /* do nothing */ \
-//} \
-//- (id)autorelease { \
-//  return self; \
-//} \
-//\
-//@end
-
-#define _WBInternalClassClusterImplementation(classname, placeholderclass, defaultplaceholder, zonestable) \
-@implementation classname (WBClassCluster) \
-\
-+ (id)allocWithZone:(NSZone *)zone { \
-  if ([classname class] == self) { \
-    /* \
-     * For a constant string, we return a placeholder object that can \
-     * be converted to a real object when its initialisation method \
-     * is called. \
-     */ \
-    if (zone == NULL || zone == NSDefaultMallocZone()) { \
-      /* \
-       * As a special case, we can return a placeholder for a string \
-       * in the default malloc zone extremely efficiently. \
-       */ \
-      return defaultplaceholder; \
-    } else { \
-      id obj; \
-      /* \
-       * For anything other than the default zone, we need to \
-       * locate the correct placeholder in the (lock protected) \
-       * table of placeholders. \
-       */ \
-      @synchronized(self) { \
-          obj = (__bridge id)NSMapGet(zonestable, (void*)zone); \
-          if (obj == nil) { \
-            /* \
-             * There is no placeholder object for this zone, so we \
-             * create a new one and use that. \
-             */ \
-            obj = NSAllocateObject([placeholderclass class], 0, zone); \
-            NSMapInsert(zonestable, (void *)zone, (__bridge void *)obj); \
-          } \
-        } \
-      return obj; \
-    } \
-  } else { \
-    /* \
-     * For user provided strings, we simply allocate an object of \
-     * the given class. \
-     */ \
+#define _WBInternalClassClusterImplementation(classname, placeholderclass, defaultplaceholder) \
+  @implementation classname (WBClassCluster) \
+  + (id)allocWithZone:(NSZone *)zone { \
+    if ([classname class] == self)     \
+        return defaultplaceholder;     \
     return [super allocWithZone:zone]; \
   } \
-} \
-\
-@end
+  @end
 
 #define _WBInternalClassForCoder(classname) \
-@implementation classname (WBClusterClassForCoder) \
-\
-- (Class)classForCoder { \
-  return [classname class]; \
-} \
-\
-@end
-
+  @implementation classname (WBClusterClassForCoder) \
+  - (Class)classForCoder { return [classname class]; } \
+  @end

@@ -10,13 +10,23 @@
 
 #import WBHEADER(WBBase.h)
 
+/* FIXME: ARC not supported.
+ 10.6: Support block. Use NSIndexSet API to iterate indexes.
+       TODO: Write a range iterator function that take block as parameter.
+ 10.7: Use NSIndexSet API to iterate range.
+ */
+
 // MARK: Indexes Iterator
 typedef struct _WBIndexIterator {
 // @private
   int8_t _cnt;
   int8_t _idx;
   NSRange _state;
-  void *_indexes;
+#if __has_feature(objc_arc)
+  void *_indexes; // probably unsafe
+#else
+  NSIndexSet *_indexes;
+#endif
   NSUInteger _values[16];
 } WBIndexIterator;
 

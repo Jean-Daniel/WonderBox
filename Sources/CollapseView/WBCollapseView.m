@@ -312,8 +312,8 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
   }
 }
 
-- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id *)stackbuf count:(NSUInteger)len {
-  return [wb_items countByEnumeratingWithState:state objects:stackbuf count:len];
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)len {
+  return [wb_items countByEnumeratingWithState:state objects:buffer count:len];
 }
 
 @end

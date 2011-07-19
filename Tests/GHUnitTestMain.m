@@ -65,7 +65,11 @@ int main(int argc, char *argv[]) {
   NSSetUncaughtExceptionHandler(&exceptionHandler);
 
   int retVal = 0;
+#if __has_feature(objc_arc)
+  @autoreleasepool {
+#else
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+#endif
     // Register any special test case classes
     //[[GHTesting sharedInstance] registerClassName:@"GHSpecialTestCase"];
 
@@ -84,6 +88,10 @@ int main(int argc, char *argv[]) {
       [NSApp run];
       wb_release(app);
     }
+#if __has_feature(objc_arc)
+  }
+#else
   [pool drain];
+#endif
   return retVal;
 }
