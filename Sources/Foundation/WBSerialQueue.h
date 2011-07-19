@@ -20,6 +20,6 @@ WB_OBJC_EXPORT
 //- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait;
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg;
-- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
+- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait wb_abstract;
 
 @end

@@ -42,8 +42,8 @@
 }
 
 #pragma mark -
-- (NSArray *)classes { WBClusterException(); }
-- (NSArray *)identifiers { WBClusterException(); }
+- (NSArray *)classes { WBAbstractMethodException(); }
+- (NSArray *)identifiers { WBAbstractMethodException(); }
 
 - (NSString *)toolbarIdentifier {
   return [NSString stringWithFormat:@"%@.toolbar", [self class]];
@@ -243,8 +243,8 @@
 @synthesize tabWindow = wb_ctrl;
 @synthesize identifier = wb_identifier;
 
-+ (NSImage *)image { WBClusterException(); }
-+ (NSString *)label { WBClusterException(); }
++ (NSImage *)image { WBAbstractMethodException(); }
++ (NSString *)label { WBAbstractMethodException(); }
 
 + (NSString *)nibName { return NSStringFromClass(self); }
 

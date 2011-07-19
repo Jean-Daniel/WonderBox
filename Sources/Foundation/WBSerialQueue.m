@@ -60,7 +60,7 @@
 }
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
-  WBClusterException();
+  WBAbstractMethodException();
 }
 
 @end
