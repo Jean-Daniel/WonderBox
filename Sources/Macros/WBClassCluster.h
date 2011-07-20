@@ -38,12 +38,12 @@
  MyFlopClass and MyYopsClass must be MyClass subclass, else it would not be a class cluster.
 */
 
-#define WBClassCluster(classname)    \
+#define WBClassCluster(classname) \
   WBClassClusterPlaceHolder(classname, classname, classname) \
   WBClassClusterImplementation(classname, classname, classname)
 
 /* Variant which does not override classForCoder */
-#define WBClassClusterNoClassForCoder(classname)    \
+#define WBClassClusterNoClassForCoder(classname) \
   WBClassClusterPlaceHolder(classname, classname, classname) \
   WBClassClusterImplementationNoClassForCoder(classname, classname, classname)
 
@@ -75,36 +75,39 @@
   #define __WBInternalSingleton
 #else
   #define __WBInternalSingleton \
-            - (id)init { return nil; } \
+            - (id)init { return nil; }                          \
             - (id)copyWithZone:(NSZone *)zone { return self; }  \
-            - (id)retain { return self; } \
+            - (id)retain { return self; }                       \
             - (NSUInteger)retainCount { return NSUIntegerMax; } \
             - (oneway void)release { /* do nothing */ }         \
             - (id)autorelease { return self; }
 #endif
 
 #define _WBInternalClassClusterPlaceHolder(superclass, placeholderclass, defaultplaceholder) \
-  @interface placeholderclass : superclass \
-  @end \
-  static placeholderclass *defaultplaceholder = nil; \
-  @implementation placeholderclass \
-  + (void)initialize { \
-    if ([placeholderclass class] == self) \
-      defaultplaceholder = [self allocWithZone:nil]; \
-  } \
-  __WBInternalSingleton \
+  @interface placeholderclass : superclass             \
+  @end                                                 \
+  static placeholderclass *defaultplaceholder = nil;   \
+  @implementation placeholderclass                     \
+  + (void)initialize {                                 \
+    if ([placeholderclass class] == self)              \
+      defaultplaceholder = [self allocWithZone:nil];   \
+  }                                                    \
+  + (id)defaultPlaceholder {                           \
+    return defaultplaceholder;                         \
+  }                                                    \
+  __WBInternalSingleton                                \
   @end
 
 #define _WBInternalClassClusterImplementation(classname, placeholderclass, defaultplaceholder) \
-  @implementation classname (WBClassCluster) \
-  + (id)allocWithZone:(NSZone *)zone { \
-    if ([classname class] == self)     \
-        return defaultplaceholder;     \
-    return [super allocWithZone:zone]; \
-  } \
+  @implementation classname (WBClassCluster)                                 \
+  + (id)allocWithZone:(NSZone *)zone {                                       \
+    if ([classname class] == self)                                           \
+        return defaultplaceholder ? : [placeholderclass defaultPlaceholder]; \
+    return [super allocWithZone:zone];                                       \
+  }                                                                          \
   @end
 
 #define _WBInternalClassForCoder(classname) \
-  @implementation classname (WBClusterClassForCoder) \
+  @implementation classname (WBClusterClassForCoder)   \
   - (Class)classForCoder { return [classname class]; } \
   @end
