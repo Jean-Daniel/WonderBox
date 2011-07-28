@@ -36,13 +36,13 @@
 
 WBClassCluster(WBInterpolationFunction)
 
-@interface WBClusterPlaceholder(WBInterpolationFunction) (WBPlaceholder)
+@interface WBClusterPlaceholder(WBInterpolationFunction) ()
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback NS_METHOD_FAMILY(none);
 - (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y NS_METHOD_FAMILY(none);
 - (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint NS_METHOD_FAMILY(none);
 @end
 
-@implementation WBClusterPlaceholder(WBInterpolationFunction) (WBPlaceholder)
+@implementation WBClusterPlaceholder(WBInterpolationFunction)
 
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
   return [[_WBInterpolationFunctionCB allocWithZone:nil] initWithCallBack:callback];

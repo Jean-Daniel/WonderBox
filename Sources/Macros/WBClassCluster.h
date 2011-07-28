@@ -3,14 +3,13 @@
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
- *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *  Copyright (c) 2004 - 2011 Jean-Daniel Dupas. All rights reserved.
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
 /*
- Class initializer must be implemented in a categorie of WBClusterPlaceholder(classname).
- For example, if you have MyClass class, you should declare:
+ Usage:
 
  @interface MyClass
  - (id)initWithType:(OSType)type;
@@ -18,20 +17,20 @@
 
  WBClassCluster(MyClass)
 
- @implementation WBClusterPlaceholder(MyClass) (SomeCategorie)
+ @interface WBClusterPlaceholder(MyClass) ()
+  - (id)initWithType:(OSType)type NS_METHOD_FAMILY(none);
+ @end
+
+ @implementation WBClusterPlaceholder(MyClass)
  - (id)initWithType:(OSType)type {
    switch (type) {
      case 'yops':
      case 'spoy':
-       self = [[MyYopsClass allocWithZone:[self zone]] initWithType:type];
-       break;
+       return [[MyYopsClass allocWithZone:nil] initWithType:type];
      case 'flop':
-       self = [[MyFlopClass allocWithZone:[self zone]] init];
-       break;
-     default:
-       self = nil;
+       return [[MyFlopClass allocWithZone:nil] init];
    }
-   return self;
+   return nil;
  }
  @end
 
@@ -84,18 +83,20 @@
 #endif
 
 #define _WBInternalClassClusterPlaceHolder(superclass, placeholderclass, defaultplaceholder) \
-  @interface placeholderclass : superclass             \
-  @end                                                 \
-  static placeholderclass *defaultplaceholder = nil;   \
-  @implementation placeholderclass                     \
-  + (void)initialize {                                 \
-    if ([placeholderclass class] == self)              \
-      defaultplaceholder = [self allocWithZone:nil];   \
-  }                                                    \
-  + (id)defaultPlaceholder {                           \
-    return defaultplaceholder;                         \
-  }                                                    \
-  __WBInternalSingleton                                \
+  @interface placeholderclass : NSObject                    \
+  @end                                                      \
+  @interface placeholderclass (WBClassClusterInternal)      \
+  @end                                                      \
+  static placeholderclass *defaultplaceholder = nil;        \
+  @implementation placeholderclass (WBClassClusterInternal) \
+  + (void)initialize {                                      \
+    if ([placeholderclass class] == self)                   \
+      defaultplaceholder = [self allocWithZone:nil];        \
+  }                                                         \
+  + (id)defaultPlaceholder {                                \
+    return defaultplaceholder;                              \
+  }                                                         \
+  __WBInternalSingleton                                     \
   @end
 
 #define _WBInternalClassClusterImplementation(classname, placeholderclass, defaultplaceholder) \
