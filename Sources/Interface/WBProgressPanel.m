@@ -12,6 +12,9 @@
 
 @implementation WBProgressPanel
 
+@synthesize delegate = wb_delegate;
+@synthesize refreshInterval = wb_rate;
+
 //- (id)initWithWindow:(NSWindow *)window {
 //  if (self = [super initWithWindow:window]) {
 //
@@ -102,9 +105,6 @@
 - (void)incrementBy:(double)delta {
   [self setValue:[self value] + delta];
 }
-
-@synthesize delegate = wb_delegate;
-@synthesize refreshInterval = wb_rate;
 
 //- (BOOL)evaluatesRemainingTime {
 //  return wb_PPFlags.showtime;
