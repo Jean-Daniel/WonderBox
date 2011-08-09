@@ -37,9 +37,9 @@
 WBClassCluster(WBInterpolationFunction)
 
 @interface WBClusterPlaceholder(WBInterpolationFunction) ()
-- (id)initWithCallBack:(const WBInterpolationCallBack *)callback NS_METHOD_FAMILY(none);
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y NS_METHOD_FAMILY(none);
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint NS_METHOD_FAMILY(none);
+- (id)initWithCallBack:(const WBInterpolationCallBack *)callback WB_CLUSTER_METHOD;
+- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y WB_CLUSTER_METHOD;
+- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint WB_CLUSTER_METHOD;
 @end
 
 @implementation WBClusterPlaceholder(WBInterpolationFunction)

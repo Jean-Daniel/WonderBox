@@ -18,7 +18,7 @@
  WBClassCluster(MyClass)
 
  @interface WBClusterPlaceholder(MyClass) ()
-  - (id)initWithType:(OSType)type NS_METHOD_FAMILY(none);
+  - (id)initWithType:(OSType)type WB_CLUSTER_METHOD;
  @end
 
  @implementation WBClusterPlaceholder(MyClass)
@@ -63,6 +63,8 @@
   _WBInternalClassClusterImplementation(classname, \
                                         WBClusterPlaceholder(placeholderPrefix), \
                                         WBClusterDefaultPlaceholder(defaultPlaceholderPrefix))
+
+#define WB_CLUSTER_METHOD NS_METHOD_FAMILY(none) NS_RETURNS_RETAINED
 
 // MARK: Names
 #define WBClusterPlaceholder(classname)         classname##ClusterPlaceholder
