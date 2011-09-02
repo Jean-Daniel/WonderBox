@@ -183,8 +183,8 @@ Boolean WBIconFamilySetFileIcon(const FSRef *fsRef, IconFamilyHandle iconFamily,
 Boolean WBIconFamilySetFolderIcon(const FSRef *folderRef, IconFamilyHandle iconFamily, Boolean compatible) {
   OSStatus err;
   FSRef iconFileRef;
-  FileInfo *finderInfo;
   FSCatalogInfo catInfo;
+  FileInfo *finderInfo = (FileInfo *)catInfo.finderInfo;
 
   err = WBIconFamilyGetFolderIconFile(folderRef, true, &iconFileRef);
   require_noerr(err, error);
@@ -197,7 +197,6 @@ Boolean WBIconFamilySetFolderIcon(const FSRef *folderRef, IconFamilyHandle iconF
   require_noerr(err, error);
 
   // Get the file's type and creator codes.
-  finderInfo = (FileInfo *)catInfo.finderInfo;
   finderInfo->finderFlags = (finderInfo->finderFlags | kIsInvisible ) & ~kHasBeenInited;
   // And write info back
   err = FSSetCatalogInfo(&iconFileRef, kFSCatInfoFinderInfo, &catInfo);
@@ -223,7 +222,6 @@ Boolean WBIconFamilySetFolderIcon(const FSRef *folderRef, IconFamilyHandle iconF
     require_noerr(err, error);
 
     // Get the file's type and creator codes.
-    finderInfo = (FileInfo *)catInfo.finderInfo;
     finderInfo->finderFlags = (finderInfo->finderFlags | kIsInvisible ) & ~kHasBeenInited;
     // And write info back
     err = FSSetCatalogInfo(&vIconRef, kFSCatInfoFinderInfo, &catInfo);
