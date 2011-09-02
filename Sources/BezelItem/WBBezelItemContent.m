@@ -40,7 +40,11 @@ WBClassCluster(WBBezelItemContent)
 
 @end
 
-@implementation WBClusterPlaceholder(WBBezelItemContent) (WBBezelItemCluster)
+@interface WBClusterPlaceholder(WBBezelItemContent) ()
+- (id)initWithContent:(id)content WB_CLUSTER_METHOD;
+@end
+
+@implementation WBClusterPlaceholder(WBBezelItemContent)
 
 - (id)initWithContent:(id)content {
   if (!content) {
@@ -66,11 +70,11 @@ WBClassCluster(WBBezelItemContent)
 }
 
 - (NSSize)size {
-  WBClusterException();
+  WBAbstractMethodException();
 }
 
 - (id)content {
-  WBClusterException();
+  WBAbstractMethodException();
 }
 
 @end
