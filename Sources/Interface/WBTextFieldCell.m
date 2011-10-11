@@ -127,7 +127,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
     NSRect title = [self titleRectForBounds:frame];
     // FIXME: userspace scale factor
     CGFloat y = NSMidY(title);
-    CGFloat twidth = MIN(NSWidth(frame) - NSMinX(title) - 2, NSWidth(title));
+    CGFloat twidth = WB_MIN(NSWidth(frame) - NSMinX(title) - 2, NSWidth(title));
     [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(title), y) toPoint:NSMakePoint(NSMinX(title) + twidth, y)];
   }
 }

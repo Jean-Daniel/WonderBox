@@ -149,7 +149,7 @@
       CGFloat twidth = textSize.width;
       imageFrame.origin.x = (NSWidth(cellFrame) - twidth) / 2; // - imageSize.width;
       imageFrame.origin.x -= (5 + imageSize.width);
-      imageFrame.origin.x = round(MAX(imageFrame.origin.x, 3));
+      imageFrame.origin.x = round(WB_MAX(imageFrame.origin.x, 3));
     } else {
       /* Update cellFrame and imageFrame */
       NSDivideRect(cellFrame, &imageFrame, &cellFrame, kWBImageMargin + imageSize.width, NSMinXEdge);
@@ -211,7 +211,7 @@
 //    CGFloat twidth = [[self attributedStringValue] size].width;
 //    // FIXME: userspace scale factor
 //    CGFloat y = NSMinY(cellFrame) + 7.5f;
-//    twidth = MIN(NSWidth(cellFrame) - 4, twidth + 2);
+//    twidth = WB_MIN(NSWidth(cellFrame) - 4, twidth + 2);
 //    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(cellFrame) + 2, y) toPoint:NSMakePoint(NSMinX(cellFrame) + twidth, y)];
 //  }
 //}

@@ -173,12 +173,12 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
 
       /* we don't really care about the image structure. we just uses the buffer pool to store raw data */
       /* so we make sure this buffer will be large enough to store the pixmap */
-      integer = ceil(GetPixRowBytes(hPixMap) / 4.0); //ABS(rect.right - rect.left);
+      integer = ceil(GetPixRowBytes(hPixMap) / 4.0); //WB_ABS(rect.right - rect.left);
       value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       CFDictionarySetValue(attrs, kCVPixelBufferWidthKey, value);
       CFRelease(value);
 
-      integer = ABS(rect.top - rect.bottom);
+      integer = WB_ABS(rect.top - rect.bottom);
       value = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &integer);
       CFDictionarySetValue(attrs, kCVPixelBufferHeightKey, value);
       CFRelease(value);

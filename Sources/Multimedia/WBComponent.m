@@ -131,7 +131,7 @@
         size_t len = (size_t)(GetHandleSize(h1) - 1);
         // Get the manufacturer's name... look for the ':' character convention
         _cname = [[NSString alloc] initWithBytes:ptr1
-                                          length:MIN(StrLength(*h1), len)
+                                          length:WB_MIN(StrLength(*h1), len)
                                         encoding:NSMacOSRomanStringEncoding]; // pascal string
 
         char *end = NULL;
@@ -177,7 +177,7 @@
         char* ptr2 = *h2 + 1;
         size_t len = (size_t)(GetHandleSize(h2) - 1);
         _info = [[NSString alloc] initWithBytes:ptr2
-                                         length:MIN(StrLength(*h2), len)
+                                         length:WB_MIN(StrLength(*h2), len)
                                        encoding:NSMacOSRomanStringEncoding];
       }
     }
