@@ -1085,9 +1085,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1BEDBB5813D3862400658D42 /* dylib.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 250;
+				CURRENT_PROJECT_VERSION = 273;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 250;
+				DYLIB_CURRENT_VERSION = 273;
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = Info.plist;
@@ -1101,9 +1101,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1BEDBB5813D3862400658D42 /* dylib.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 250;
+				CURRENT_PROJECT_VERSION = 273;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 250;
+				DYLIB_CURRENT_VERSION = 273;
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = Info.plist;
