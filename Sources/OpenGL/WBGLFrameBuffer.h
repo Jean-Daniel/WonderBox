@@ -99,9 +99,6 @@ WB_OBJC_EXPORT
 - (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 - (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
 
-- (void)setReadBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
-- (void)setWriteBuffer:(NSInteger)anIdx context:(CGLContextObj)aContext;
-
 - (WBGLFrameBufferAttachement *)depthBuffer;
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext;
 
