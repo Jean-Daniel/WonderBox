@@ -76,7 +76,7 @@ void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum 
   GLuint save;
   glGetIntegerv(__WBGLFBOBindingForMode(mode), (GLint *)&save);
   GLenum err = glGetError();
-  WBAssert(GL_ZERO == err, @"glGetError() -> 0x%x (%s)", err, _WBGLFrameBufferGetErrorString(err));
+  NSCAssert(GL_ZERO == err, @"glGetError() -> 0x%x (%s)", err, _WBGLFrameBufferGetErrorString(err));
 
   if (save != fbo)
     WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
@@ -195,7 +195,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
   glBindFramebufferEXT(mode, wb_fbo);
 #if !defined(NS_BLOCK_ASSERTIONS)
   GLenum err = glGetError();
-  WBAssert(err == glGetError(), @"glBindFramebufferEXT(%u, %u): %ld", mode, wb_fbo, err);
+  NSAssert(err == glGetError(), @"glBindFramebufferEXT(%u, %u): %u", mode, wb_fbo, err);
 #endif /* NS_BLOCK_ASSERTIONS */
 
   // When binding to draw, setup the view port.

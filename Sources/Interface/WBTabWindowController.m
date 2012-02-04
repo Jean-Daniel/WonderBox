@@ -56,11 +56,11 @@
   // prepare item definition
   wb_identifiers = [[self identifiers] copyWithZone:[self zone]];
   NSArray *classes = [self classes];
-  WBAssert([classes count] == [wb_identifiers count], @"inconsistent values");
+  NSAssert([classes count] == [wb_identifiers count], @"inconsistent values");
   NSMutableDictionary *cache = [[NSMutableDictionary alloc] initWithCapacity:[wb_identifiers count]];
   for (NSUInteger idx = 0, count = [classes count]; idx < count; ++idx) {
     Class cls = [classes objectAtIndex:idx];
-    WBAssert([cls isSubclassOfClass:[WBTabWindowItem class]], @"Invalid Item Class: %@", cls);
+    NSAssert([cls isSubclassOfClass:[WBTabWindowItem class]], @"Invalid Item Class: %@", cls);
     [cache setObject:cls forKey:[wb_identifiers objectAtIndex:idx]];
   }
   wb_classes = cache;
@@ -179,7 +179,7 @@
   if (!item) {
     // The panel was not loaded yet
     item = [[cls alloc] init];
-    WBAssert(item, @"fail to create panel with identifier: %@", aPanel);
+    NSAssert(item, @"fail to create panel with identifier: %@", aPanel);
     [wb_items setObject:item forKey:aPanel];
     item.identifier = aPanel;
     item.tabWindow = self;

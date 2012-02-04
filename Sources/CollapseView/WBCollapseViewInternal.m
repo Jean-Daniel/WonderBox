@@ -181,7 +181,7 @@
 
 // MARK: Model Sync
 - (void)wb_attachItem {
-  WBAssert(wb_item, @"cannot attach nil item");
+  NSAssert(wb_item, @"cannot attach nil item");
 
   [wb_item addObserver:self forKeyPath:@"title"
               options:0 context:(__bridge void *)[_WBCollapseItemView class]];
@@ -202,7 +202,7 @@
 }
 
 - (void)wb_attachView:(NSView *)theView {
-  WBAssert(![theView superview], @"why the item view is already in a view tree ?");
+  NSAssert(![theView superview], @"why the item view is already in a view tree ?");
   // resizing mask
   wb_civFlags.resizeMask = (uint32_t)[theView autoresizingMask];
   if (wb_civFlags.resizeMask != (NSViewWidthSizable | NSViewMaxYMargin))
@@ -274,7 +274,7 @@
 - (void)_didChangeItemFrame:(NSNotification *)aNotification {
   if (wb_civFlags.resizing) return;
 
-  WBAssert([aNotification object] == [wb_item view], @"notification object inconsistency");
+  NSAssert([aNotification object] == [wb_item view], @"notification object inconsistency");
   NSView *view = [wb_item view];
   NSRect frame = [view frame];
 

@@ -167,7 +167,7 @@
   CGContextRef bmapContext = CGBitmapContextCreate(wb_buffer, (size_t)wb_texBounds.size.width, (size_t)wb_texBounds.size.height,
                                                    8, bytePerRow, cspace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
   CGColorSpaceRelease(cspace);
-  WBAssert(bmapContext, @"invalid bitmap context");
+  NSAssert(bmapContext, @"invalid bitmap context");
 
   CGContextSetShouldAntialias(bmapContext, [self shouldAntialias]);
   CGContextSetShouldSmoothFonts(bmapContext, [self shouldAntialias]);
@@ -238,7 +238,7 @@
 }
 
 - (void)drawTextureAtPoint:(CGPoint)aPoint colors:(GLfloat[16])colors context:(CGLContextObj)theContext {
-  //WBAssert(wb_glctxt == CGLGetCurrentContext(), @"invalid GL context");
+  //NSAssert(wb_glctxt == CGLGetCurrentContext(), @"invalid GL context");
   if ([self needsUpdateTexture])
     [self updateTexture];
 

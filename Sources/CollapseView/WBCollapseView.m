@@ -140,7 +140,7 @@
 }
 
 - (void)_insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex resize:(BOOL)resize {
-  WBAssert(![anItem collapseView] || [anItem collapseView] == self, @"%@ already part of an other collapse view", anItem);
+  NSAssert(![anItem collapseView] || [anItem collapseView] == self, @"%@ already part of an other collapse view", anItem);
 
   // Search position for this new item
   CGFloat height = 0;
@@ -349,9 +349,9 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
 
 - (void)_setExpanded:(BOOL)expands forItem:(WBCollapseViewItem *)anItem animate:(BOOL)animate {
   _WBCollapseItemView *view = [self _viewForItem:anItem];
-  WBAssert(view, @"%@ is not an item of this view", anItem);
+  NSAssert(view, @"%@ is not an item of this view", anItem);
 
-  WBAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]),
+  NSAssert((expands && ![anItem isExpanded]) || (!expands && [anItem isExpanded]),
            @"invalid operation for this item state");
 
   // Let the delegate cancel the action

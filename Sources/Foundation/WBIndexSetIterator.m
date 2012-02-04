@@ -44,7 +44,7 @@ bool _WBIndexIteratorGetNext(WBIndexIterator *iter) {
       return false;
   }
 
-  WBAssert(iter->_cnt <= 16, @"Buffer overflow !");
+  NSCAssert(iter->_cnt <= 16, @"Buffer overflow !");
   iter->_idx = 0;
   return true;
 }

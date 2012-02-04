@@ -210,7 +210,7 @@
       }
       if (!wb_path) {
         wb_path = wb_retain([NSString stringFromFSRef:target]);
-        WBAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
+        NSAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
         if (outChanged) *outChanged = YES;
       }
       return noErr;
