@@ -333,7 +333,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
         // No such process mean the service is not registred:
         unregistred = true;
       } else {
-        WBLogWarning(@"Error while unregistring daemon: %s, %u", error);
+        WBLogWarning(@"Error while unregistring daemon: %@, %@", self.name, (id)error);
       }
       CFRelease(error);
     }

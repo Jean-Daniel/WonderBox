@@ -356,7 +356,7 @@ void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out) {
 }
 
 void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out) {
-  NSArray *steps = WBCFToNSArray(info);
+  NSArray *steps = (__bridge NSArray *)info;
 
   CGFloat input = *in;
   WBGradientStep *first = nil;

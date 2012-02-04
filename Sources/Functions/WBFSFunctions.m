@@ -31,7 +31,7 @@
    */
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return WBCFToNSString(str);
+    return WBCFStringBridgingRelease(str);
   return nil;
 }
 
