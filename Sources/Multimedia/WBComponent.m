@@ -111,7 +111,7 @@
   OSType subtype = OSSwapHostToBigInt32(_desc.componentSubType);
   return [NSString stringWithFormat:@"<%@ %p> { name: %@ ('%4.4s'/'%4.4s'), manufacturer: %@, info: %@ }",
           [self class], self,
-          [self name], &type, &subtype,
+          [self name], (char *)&type, (char *)&subtype,
           [self manufacturer], [self informations]
           ];
 }

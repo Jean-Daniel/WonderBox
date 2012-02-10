@@ -248,7 +248,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
       NSInteger frames = lround(fmod(frame, rate));
 
       str = [NSString stringWithFormat:@"%.2ld:%.2ld:%.2ld%c%.2ld",
-             hours, minutes, seconds, drop ? ';' : ':', frames];
+             (long)hours, (long)minutes, (long)seconds, drop ? ';' : ':', (long)frames];
     } else {
       if (fiszero(rate - floor(rate))) {
         /* integral rate */
@@ -264,7 +264,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
         NSInteger frames = lround(fmod(frame, rate));
 
         str = [NSString stringWithFormat:@"%.2ld:%.2ld:%.2ld:%.2ld",
-               hours, minutes, seconds, frames];
+               (long)hours, (long)minutes, (long)seconds, (long)frames];
       } else {
         aTime.timeValue += round(([self firstFrame] * aTime.timeScale) / rate);
         str = QTStringFromTime(aTime);
