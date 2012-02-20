@@ -73,9 +73,9 @@ BOOL WBTemplateLogMessage = NO;
 #pragma mark -
 - (void)foundVariable:(CFStringRef)theVariable inString:(NSString *)theString atRange:(NSRange)aRange {
   if (tpimp.foundChars) {
-    CFStringRef sub = CFStringCreateWithSubstring(kCFAllocatorDefault, (CFStringRef)theString, CFRangeMake(wb_position, aRange.location - wb_position));
+    CFStringRef sub = CFStringCreateWithSubstring(kCFAllocatorDefault, WBNSToCFString(theString), CFRangeMake(wb_position, aRange.location - wb_position));
     if (sub) {
-      [wb_delegate templateParser:self foundCharacters:(id)sub];
+      [wb_delegate templateParser:self foundCharacters:WBCFToNSString(sub)];
       CFRelease(sub);
     }
   }

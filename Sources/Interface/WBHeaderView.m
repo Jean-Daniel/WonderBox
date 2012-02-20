@@ -35,7 +35,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
 
 @end
 
-#pragma mark -
+// MARK: -
 @implementation WBHeaderView
 
 + (void)initialize {
@@ -93,7 +93,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
   }
 }
 
-#pragma mark -
+// MARK: -
 - (NSUInteger)drawsBorder {
   return wb_xhFlags.left | (wb_xhFlags.right << 1);
 }
@@ -212,7 +212,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
 /* When a button size change, should update all others button origin */
 - (void)didChangedButtonSize:(NSButton *)aButton {
   /* If resized button is a left button */
-  NSInteger idx = [wb_left indexOfObject:aButton];
+  NSUInteger idx = [wb_left indexOfObject:aButton];
   if (idx != NSNotFound) {
     idx++;
     CGFloat origin = NSMaxX([aButton frame]);
@@ -228,15 +228,15 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
     /* If button is a right button */
     idx = [wb_right indexOfObject:aButton];
     if (idx != NSNotFound) {
+      idx += 1; // to be able to use the while(idx--) pattern.
       /* if last object, use padding, else use next button position */
-      CGFloat origin = (idx == [wb_right count] - 1) ? (NSWidth([self bounds]) - wb_rightPadding) : NSMinX([[wb_right objectAtIndex:idx+1] frame]);
-      while (idx >= 0) {
+      CGFloat origin = (idx == [wb_right count]) ? (NSWidth([self bounds]) - wb_rightPadding) : NSMinX([[wb_right objectAtIndex:idx] frame]);
+      while (idx-- > 0) {
         NSButton *button = [wb_right objectAtIndex:idx];
         NSRect frame = [button frame];
         frame.origin.x = origin - NSWidth(frame);
         [button setFrame:frame];
         origin = NSMinX(frame);
-        idx--;
       }
     }
   }
@@ -244,7 +244,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
 }
 
 @end
-#pragma mark -
+// MARK: -
 @implementation WBHeaderMenu
 
 - (id)initWithFrame:(NSRect)frameRect pullsDown:(BOOL)flag position:(WBHeaderPosition)position {
