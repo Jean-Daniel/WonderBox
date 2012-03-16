@@ -37,22 +37,22 @@
 WBClassCluster(WBInterpolationFunction)
 
 @interface WBClusterPlaceholder(WBInterpolationFunction) ()
-- (id)initWithCallBack:(const WBInterpolationCallBack *)callback WB_CLUSTER_METHOD;
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y WB_CLUSTER_METHOD;
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint WB_CLUSTER_METHOD;
+- (WBInterpolationFunction *)initWithCallBack:(const WBInterpolationCallBack *)callback WB_CLUSTER_METHOD;
+- (WBInterpolationFunction *)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y WB_CLUSTER_METHOD;
+- (WBInterpolationFunction *)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint WB_CLUSTER_METHOD;
 @end
 
 @implementation WBClusterPlaceholder(WBInterpolationFunction)
 
-- (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
+- (WBInterpolationFunction *)initWithCallBack:(const WBInterpolationCallBack *)callback {
   return [[_WBInterpolationFunctionCB allocWithZone:nil] initWithCallBack:callback];
 }
 
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y {
+- (WBInterpolationFunction *)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y {
   return [[_WBInterpolationFunctionBezier allocWithZone:nil] initWithControlPoints:c1x :c1y :c2x :c2y];
 }
 
-- (id)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint {
+- (WBInterpolationFunction *)initWithControlPoints:(CGFloat)c1x :(CGFloat)c1y :(CGFloat)c2x :(CGFloat)c2y length:(CGFloat)lengthHint {
   return [[_WBInterpolationFunctionBezier allocWithZone:nil] initWithControlPoints:c1x :c1y :c2x :c2y length:lengthHint];
 }
 
