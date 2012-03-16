@@ -294,8 +294,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (!synch && anInvocation)
     [anInvocation retainArguments];
 
-  wbinvoke_msg msg;
-  memset(&msg, 0, sizeof(msg));
+  wbinvoke_msg msg = {};
   mach_msg_header_t *send_hdr = &msg.header;
   send_hdr->msgh_bits = MACH_MSGH_BITS_REMOTE(MACH_MSG_TYPE_COPY_SEND);
   send_hdr->msgh_size = (mach_msg_size_t)sizeof(msg);
@@ -327,8 +326,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     }
   } else if (synch) {
     /* if should wait response */
-    wbreply_msg reply;
-    memset(&reply, 0, sizeof(reply));
+    wbreply_msg reply = {};
     mach_msg_header_t *recv_hdr = &reply.header;
 
     /* loop until you received the expected message */
@@ -437,8 +435,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   }
   [pool drain];
   if (!msg->async) {
-    wbreply_msg reply_msg;
-    memset(&reply_msg, 0, sizeof(reply_msg));
+    wbreply_msg reply_msg = {};
 
     mach_msg_header_t *reply_hdr = &reply_msg.header;
 

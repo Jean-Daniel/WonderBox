@@ -82,8 +82,7 @@ OSErr _WBMovieDrawingCompleteProcPtr(Movie theMovie, long refCon) {
 
   if (LockPixels(pixmap)) {
     /* prepare time record */
-    ICMFrameTimeRecord now;
-    bzero(&now, sizeof(now));
+    ICMFrameTimeRecord now = {};
     now.recordSize = sizeof(now);
 
     now.rate = rate;
