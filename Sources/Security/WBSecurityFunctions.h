@@ -19,7 +19,7 @@
 WB_EXPORT
 OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght);
 WB_EXPORT
-OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) WB_OBSOLETE("not accurate. do not rely on this function");
+OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) WB_DEPRECATED("not accurate. do not rely on this function");
 
 #pragma mark Certificates
 WB_EXPORT

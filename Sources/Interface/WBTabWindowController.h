@@ -41,7 +41,7 @@ WB_OBJC_EXPORT
 @interface WBTabWindowItem : NSViewController {
 @private
   NSString *wb_identifier;
-  wb_weak WBTabWindowController *wb_ctrl;
+  __unsafe_unretained WBTabWindowController *wb_ctrl;
 }
 
 @property(nonatomic, readonly, copy) NSString *identifier;

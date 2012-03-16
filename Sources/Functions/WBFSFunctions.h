@@ -53,9 +53,9 @@ WB_EXPORT OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *resul
 // create temporary URL on the same volume than anURL (suitable for exchangedata).
 WB_EXPORT OSStatus WBFSCreateTemporaryURLForURL(CFURLRef anURL, CFURLRef *result, CFOptionFlags flags);
 
-WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) WB_OBSOLETE("WBFSCopyFolderURL");
+WB_EXPORT OSStatus WBFSCopyFolderPath(OSType folderType, FSVolumeRefNum domain, bool createFolder, CFStringRef *path) WB_DEPRECATED("WBFSCopyFolderURL");
 // look on the same volume than anURL
-WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) WB_OBSOLETE("WBFSCopyFolderURLForURL");
+WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, bool createFolder, CFStringRef *path) WB_DEPRECATED("WBFSCopyFolderURLForURL");
 
 /* Format a size and return buffer used length */
 WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length);
@@ -82,7 +82,7 @@ WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
  @param target The file pointed by the new alias.
  */
 WB_EXPORT
-OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target) WB_OBSOLETE("Use bookmark API");
+OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef target) WB_DEPRECATED("Use bookmark API");
 
 /*!
  @function
@@ -107,7 +107,7 @@ OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator);
 WB_EXPORT
 OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator);
 WB_EXPORT
-OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_OBSOLETE("WBFSGetTypeAndCreatorAtURL");
+OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_DEPRECATED("WBFSGetTypeAndCreatorAtURL");
 
 enum {
   kWBFSOSTypeIgnore = -1U
@@ -118,7 +118,7 @@ OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator);
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator);
 WB_EXPORT
-OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_OBSOLETE("WBFSSetTypeAndCreatorAtURL");
+OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_DEPRECATED("WBFSSetTypeAndCreatorAtURL");
 
 #if defined(__OBJC__)
 

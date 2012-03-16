@@ -178,7 +178,7 @@ enum {
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_OBSOLETE("Add subject and consideration explicitly instead");
+OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_DEPRECATED("Add subject and consideration explicitly instead");
 WB_EXPORT
 OSStatus WBAESetEventSubject(AppleEvent *theEvent, const AEDesc *subject);
 WB_EXPORT

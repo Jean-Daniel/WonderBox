@@ -18,7 +18,7 @@ WB_OBJC_EXPORT
   BOOL _unregister;
   CFMutableDictionaryRef _ports;
   NSMutableDictionary *_properties;
-  wb_weak id<WBDaemonTaskDelegate> wb_delegate;
+  __unsafe_unretained id<WBDaemonTaskDelegate> wb_delegate;
 }
 
 @property(nonatomic) BOOL unregisterAtExit;

@@ -36,7 +36,7 @@
 @interface _WBCollapseItemHeaderView : NSView {
 @private
   SEL wb_action;
-  wb_weak id wb_target;
+  __unsafe_unretained id wb_target;
   
   NSTextField *wb_title;
   NSButton *wb_disclose;

@@ -495,7 +495,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   SEL wb_action;
   id wb_argument;
   NSCondition *wb_condition;
-  wb_weak WBThreadPort *wb_port;
+  __unsafe_unretained WBThreadPort *wb_port;
 }
 
 @property(nonatomic) SEL action;
