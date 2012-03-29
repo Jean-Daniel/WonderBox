@@ -27,7 +27,7 @@
 #endif
 
 #ifndef __has_include
-  #define __has_include(x) __has_include ## x
+  #define __has_include(x) 0
 #endif
 
 #ifndef __has_include_next
@@ -76,7 +76,7 @@
 #endif
 
 // MARK: Inline
-#if defined(__cplusplus)
+#if defined(__cplusplus) && !defined(__inline__)
   #define __inline__ inline
 #endif
 
