@@ -337,7 +337,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
     // interpolate
     input = (input - wb_start) / (wb_end - wb_start);
     // clamp factor
-    CGFloat factor = wb_fct ? WB_MAX(WB_MIN(1, [wb_fct valueForInput:input]), 0) : input;
+    CGFloat factor = wb_fct ? MAX(MIN(1, [wb_fct valueForInput:input]), 0) : input;
 
     for (NSUInteger k = 0; k < wb_cnt; k++)
       *outColor++ = wb_cStart[k] - (wb_cStart[k] - wb_cEnd[k]) * factor;

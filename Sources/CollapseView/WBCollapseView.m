@@ -268,9 +268,9 @@
     // for debugging and for fun
     NSTimeInterval duration;
     if (([[NSApp currentEvent] modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask)
-      duration = WB_MIN(1.8, WB_ABS(delta / 100));
+      duration = MIN(1.8, ABS(delta / 100));
     else
-      duration = WB_MIN(.50, WB_ABS(delta / 350)); //  350px per seconds, but 0.60s maxi.
+      duration = MIN(.50, ABS(delta / 350)); //  350px per seconds, but 0.60s maxi.
 
     [animation setDuration:duration];
 

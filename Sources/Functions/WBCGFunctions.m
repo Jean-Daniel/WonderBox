@@ -20,7 +20,7 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
 
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
-  CGFloat maxRadius = WB_MIN(width, height) / 2;
+  CGFloat maxRadius = MIN(width, height) / 2;
   if (radius > maxRadius) {
     /* radius to big, use a smaller one */
     DCLog("radius to big -> adjust it.");
@@ -71,7 +71,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
 
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
-  CGFloat maxRadius = WB_MIN(width, height) / 2;
+  CGFloat maxRadius = MIN(width, height) / 2;
   if (radius > maxRadius) {
     /* radius to big, use a smaller one */
     DCLog("radius to big -> adjust it.");

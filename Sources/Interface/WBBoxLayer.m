@@ -100,7 +100,7 @@
     if (wb_blFlags.box_content)
       size.width += 2 * (wb_bwidth + wb_padding.width);
     else
-      size.width = WB_MAX(size.width, 2 * (wb_bwidth + wb_padding.width));
+      size.width = MAX(size.width, 2 * (wb_bwidth + wb_padding.width));
   }
 
   /* height */
@@ -119,7 +119,7 @@
     if (wb_blFlags.box_content)
       size.height += 2 * (wb_bwidth + wb_padding.height);
     else
-      size.height = WB_MAX(size.height, 2 * (wb_bwidth + wb_padding.height));
+      size.height = MAX(size.height, 2 * (wb_bwidth + wb_padding.height));
   }
 
   return size;
@@ -161,8 +161,8 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
 
     // compute real content size (may be smaller than requested)
     // this size is used to compute the real box size, and to clip the content.
-    wb_csize.width = WB_MIN(content.width, wb_content.width);
-    wb_csize.height = WB_MIN(content.height, wb_content.height);
+    wb_csize.width = MIN(content.width, wb_content.width);
+    wb_csize.height = MIN(content.height, wb_content.height);
 
     [self setNeedsUpdate:NO];
     [self didUpdate];
@@ -283,8 +283,8 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
     return wb_box.size;
 
   NSSize size = wb_box.size;
-  size.width = WB_MAX(0, size.width - 2 * (wb_bwidth + wb_padding.width));
-  size.height = WB_MAX(0, size.height - 2 * (wb_bwidth + wb_padding.height));
+  size.width = MAX(0, size.width - 2 * (wb_bwidth + wb_padding.width));
+  size.height = MAX(0, size.height - 2 * (wb_bwidth + wb_padding.height));
   return size;
 }
 - (void)setContentSize:(NSSize)aSize {

@@ -149,7 +149,7 @@
       CGFloat twidth = textSize.width;
       imageFrame.origin.x = (NSWidth(cellFrame) - twidth) / 2; // - imageSize.width;
       imageFrame.origin.x -= (5 + imageSize.width);
-      imageFrame.origin.x = round(WB_MAX(imageFrame.origin.x, 3));
+      imageFrame.origin.x = round(MAX(imageFrame.origin.x, 3));
     } else {
       /* Update cellFrame and imageFrame */
       NSDivideRect(cellFrame, &imageFrame, &cellFrame, kWBImageMargin + imageSize.width, NSMinXEdge);

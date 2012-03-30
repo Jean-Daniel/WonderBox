@@ -27,7 +27,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
       // else, scale down
     case kWBScalingModeProportionallyFit:
     {
-      CGFloat ratio = WB_MIN(dest.width / source.width, dest.height / source.height);
+      CGFloat ratio = MIN(dest.width / source.width, dest.height / source.height);
       return WBSizeScale(source, ratio, ratio);
     }
 
@@ -38,7 +38,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
       // else, scale up
     case kWBScalingModeProportionallyFill:
     {
-      CGFloat ratio = WB_MAX(dest.width / source.width, dest.height / source.height);
+      CGFloat ratio = MAX(dest.width / source.width, dest.height / source.height);
       return WBSizeScale(source, ratio, ratio);
     }
   }
@@ -104,7 +104,7 @@ CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignme
 #pragma mark -
 CGFloat WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt) {
   CGAffineTransform trans = CGContextGetUserSpaceToDeviceSpaceTransform(ctxt);
-  return WB_ABS(trans.a);
+  return ABS(trans.a);
 }
 
 void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width) {
