@@ -417,7 +417,7 @@ CSSM_RETURN WBSecuritySignFileWithIdentity(const char *path, SecIdentityRef iden
   CSSM_RETURN err = SecIdentityCopyPrivateKey(identity, &privKey);
   if (noErr == err) {
     err = WBSecuritySignFile(path, privKey, credentials, algid, signature);
-    CFRelease(privKey);
+    CFRelease(privKey); // Analyze: Never NULL because noErr == err
   }
   return err;
 }
@@ -430,7 +430,7 @@ CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CS
     err = SecCertificateCopyPublicKey(cert, &pubKey);
     if (noErr == err) {
       err = WBSecurityVerifyFileSignature(path, signature, pubKey, algid, outValid);
-      CFRelease(pubKey);
+      CFRelease(pubKey); // Analyze: Never NULL because noErr == err
     }
     CFRelease(cert);
   }

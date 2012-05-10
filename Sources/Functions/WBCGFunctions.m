@@ -378,7 +378,7 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
 
   // Check buffer overflow in malloc
   double bsize = size.width * size.height * sizeof(UInt32);
-  if (bsize > SIZE_T_MAX)
+  if (bsize > SIZE_T_MAX || bsize <= 0)
     return NULL;
 
   void *buffer = malloc(ulround(bsize));
