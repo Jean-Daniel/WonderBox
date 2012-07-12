@@ -440,7 +440,7 @@ ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *b
   if (!unit || !buffer) return paramErr;
 
   if (size < ((UInt64)1 << 10))
-    return snprintf(buffer, length, "%qu %s", size, unit);
+    return snprintf(buffer, length, "%llu %s", size, unit);
 
   /* Kilo */
   if (size < ((UInt64)1 << 20))

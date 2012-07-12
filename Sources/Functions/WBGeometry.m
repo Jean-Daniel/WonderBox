@@ -24,7 +24,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
       // if destination size > source size, do not scale.
       if (source.width <= dest.width && source.height <= dest.height)
         return source;
-      // else, scale down
+      // else, scale down (fallthrough)
     case kWBScalingModeProportionallyFit:
     {
       CGFloat ratio = MIN(dest.width / source.width, dest.height / source.height);
@@ -35,7 +35,7 @@ CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
       // if destination size > movie size, do not scale.
       if (source.width <= dest.width || source.height <= dest.height)
         return source;
-      // else, scale up
+      // else, scale up (fallthrough)
     case kWBScalingModeProportionallyFill:
     {
       CGFloat ratio = MAX(dest.width / source.width, dest.height / source.height);

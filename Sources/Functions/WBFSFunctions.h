@@ -109,9 +109,8 @@ OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator)
 WB_EXPORT
 OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_DEPRECATED("WBFSGetTypeAndCreatorAtURL");
 
-enum {
-  kWBFSOSTypeIgnore = -1U
-};
+#define kWBFSOSTypeIgnore (OSType)-1
+
 /* pass kWBFSOSTypeIgnore to keep previous value */
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator);

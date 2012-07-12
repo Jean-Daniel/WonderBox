@@ -20,6 +20,7 @@ OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event, AppleEvent *rep
                                               AESendMode sendMode, long timeOutInTicks);
 
 static
+void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) WB_CF_FORMAT(2, 3);
 void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
   va_list args;
   va_start(args, format);
@@ -31,11 +32,11 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
   }
 }
 
-#define WBAEPrintDebug(desc, format, args...) do { \
+#define WBAEPrintDebug(desc, format, ...) do { \
   if (WBAEDebug) { \
     CFStringRef __event = WBAEDescCopyDescription(desc); \
       if (__event) { \
-        _WBAEPrintDebug(desc, format, __event, ## args); \
+        _WBAEPrintDebug(desc, format, __event, ## __VA_ARGS__); \
         CFRelease(__event); \
       } \
   } \

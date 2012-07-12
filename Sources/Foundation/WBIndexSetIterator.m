@@ -22,7 +22,7 @@ void WBIndexIteratorInitialize(NSIndexSet *aSet, WBIndexIterator *iter) {
   assert(iter);
   NSRange range = NSMakeRange(0, [aSet lastIndex]);
   if (NSNotFound != range.length) range.length += 1; // case where last index is 0.
-  return WBIndexIteratorInitializeWithRange(aSet, range, iter);
+  WBIndexIteratorInitializeWithRange(aSet, range, iter);
 }
 
 void WBIndexIteratorInitializeWithRange(NSIndexSet *aSet, NSRange aRange, WBIndexIterator *iter) {

@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import WBHEADER(WBBase.h)
+
 @interface NSError (WBExtensions)
 
 + (NSError *)cancel;
@@ -19,7 +21,7 @@
 + (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message;
 
 + (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message;
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ...;
++ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... WB_NS_FORMAT(3, 4);
 
 - (BOOL)isCancel;
 

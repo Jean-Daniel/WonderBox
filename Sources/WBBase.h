@@ -133,7 +133,7 @@
   #if defined(_MSC_VER)
     #define WB_REQUIRED_ARGS(idx, ...)
   #else
-    #define WB_REQUIRED_ARGS(idx, args...) __attribute__((__nonnull__(idx, ##args)))
+    #define WB_REQUIRED_ARGS(idx, ...) __attribute__((__nonnull__(idx, ##__VA_ARGS__)))
   #endif
 #endif
 
@@ -164,7 +164,7 @@
 // MARK: -
 // MARK: Static Analyzer
 #ifndef CF_CONSUMED
-  #if __has_attribute(cf_consumed)
+  #if __has_attribute(__cf_consumed__)
     #define CF_CONSUMED __attribute__((__cf_consumed__))
   #else
     #define CF_CONSUMED
@@ -172,7 +172,7 @@
 #endif
 
 #ifndef CF_RETURNS_RETAINED
-  #if __has_attribute(cf_returns_retained)
+  #if __has_attribute(__cf_returns_retained__)
     #define CF_RETURNS_RETAINED __attribute__((__cf_returns_retained__))
   #else
     #define CF_RETURNS_RETAINED
@@ -180,7 +180,7 @@
 #endif
 
 #ifndef CF_RETURNS_NOT_RETAINED
-	#if __has_attribute(cf_returns_not_retained)
+	#if __has_attribute(__cf_returns_not_retained__)
 		#define CF_RETURNS_NOT_RETAINED __attribute__((__cf_returns_not_retained__))
 	#else
 		#define CF_RETURNS_NOT_RETAINED

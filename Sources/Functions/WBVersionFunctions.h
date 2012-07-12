@@ -26,9 +26,7 @@ enum {
 };
 typedef CFIndex WBVersionStage;
 
-enum  {
-  kWBVersionInvalid = -1LLU
-};
+#define kWBVersionInvalid  (uint64_t)-1LLU
 
 WB_EXPORT CFStringRef const WBVersionBundleKey;
 

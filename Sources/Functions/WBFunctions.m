@@ -89,8 +89,11 @@ CFHashCode WBHashBytes(const uint8_t *bytes, size_t length) {
   }
   switch (rem) {
     case 3:  ELF_STEP(bytes[length - 3]);
+      // fallthrough
     case 2:  ELF_STEP(bytes[length - 2]);
+      // fallthrough
     case 1:  ELF_STEP(bytes[length - 1]);
+      // fallthrough
     case 0:  ;
   }
   return H;

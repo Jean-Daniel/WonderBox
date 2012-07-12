@@ -76,6 +76,7 @@
       if (doubleAction && [self sendAction:doubleAction to:target])
         return;
     }
+      break;
     default: break;
   }
   [super keyDown:theEvent];
