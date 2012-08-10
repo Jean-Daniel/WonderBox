@@ -151,13 +151,15 @@ enum {
     wb_name, WBStringForOSType(wb_signature), wb_identifier];
 }
 
+static NSString * const kInvalidIdentifier = @"org.shadowlab.__invalid__";
+
 WB_INLINE
 bool __IsValidSignature(OSType signature) {
   return signature && signature != kWBUndefinedSignature;
 }
 WB_INLINE
 bool __IsValidIdentifier(id identifier) {
-  return identifier && ![identifier isKindOfClass:[NSNull class]];
+  return identifier && identifier != kInvalidIdentifier;
 }
 
 - (NSUInteger)hash {
@@ -216,10 +218,9 @@ bool __IsValidIdentifier(id identifier) {
   if (!wb_identifier) {
     NSString *path = [self path];
     if (path) {
-      // FIXME: not GC safe
       wb_identifier = (id)WBLSCopyBundleIdentifierForPath((CFStringRef)path);
     }
-    if (!wb_identifier) wb_identifier = [[NSNull null] retain];
+    if (!wb_identifier) wb_identifier = kInvalidIdentifier;
   }
   return (__IsValidIdentifier(wb_identifier)) ? wb_identifier : nil;
 }
