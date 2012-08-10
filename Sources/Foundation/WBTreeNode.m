@@ -250,7 +250,7 @@
     [last setParent:self];
     while (last->wb_sibling) {
       last = last->wb_sibling;
-      WBAssert(nil == last->wb_parent, @"Should not append node with parent not nil");
+      NSAssert(nil == last->wb_parent, @"Should not append node with parent not nil");
       [last setParent:self];
     }
   }
@@ -312,7 +312,7 @@
 #pragma mark Nodes Methods
 - (void)prependChild:(WBTreeNode *)child {
   NSParameterAssert(nil != child);
-  WBAssert(nil == child->wb_sibling, @"Must remove sibling from newChild first");
+  NSAssert(nil == child->wb_sibling, @"Must remove sibling from newChild first");
   [self performOperation:kWBTreeOperationInsert atIndex:0 withChild:child];
 }
 
@@ -323,7 +323,7 @@
 
 - (void)insertChild:(WBTreeNode *)newChild atIndex:(NSUInteger)anIndex {
   NSParameterAssert(nil != newChild);
-  WBAssert(nil == newChild->wb_sibling, @"Must remove sibling from newChild first");
+  NSAssert(nil == newChild->wb_sibling, @"Must remove sibling from newChild first");
   [self performOperation:kWBTreeOperationInsert atIndex:anIndex withChild:newChild];
 }
 
@@ -352,7 +352,7 @@
 - (void)insertSibling:(WBTreeNode *)sibling {
   NSParameterAssert(sibling);
   NSParameterAssert(wb_parent);
-  WBAssert(nil == sibling->wb_sibling, @"Must remove sibling from newChild first");
+  NSAssert(nil == sibling->wb_sibling, @"Must remove sibling from newChild first");
   if (sibling->wb_parent) {
     WBThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
   }

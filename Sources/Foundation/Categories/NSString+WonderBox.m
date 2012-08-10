@@ -68,7 +68,7 @@
   NSRange (*GetLineRange)(id, SEL, NSRange);
   SEL selector = @selector(lineRangeForRange:);
   GetLineRange = (NSRange(*)(id, SEL, NSRange))[self methodForSelector:selector];
-  WBAssert(GetLineRange, @"Error while getting %@", NSStringFromSelector(selector));
+  NSAssert(GetLineRange, @"Error while getting %@", NSStringFromSelector(selector));
 
   // Find start of the first selected line
   do {

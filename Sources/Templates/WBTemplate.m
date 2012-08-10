@@ -26,7 +26,7 @@
 @implementation WBTemplate
 
 - (void)wb_init {
-  WBAssert(wb_contents == nil, @"WARNING: re-init template");
+  NSAssert(wb_contents == nil, @"WARNING: re-init template");
   wb_blocks = [[NSMutableArray alloc] init];
   wb_contents = [[NSMutableArray alloc] init];
   wb_vars = [[NSMutableDictionary alloc] init];

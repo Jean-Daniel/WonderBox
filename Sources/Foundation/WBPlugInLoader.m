@@ -298,11 +298,11 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 /* Load PlugIns */
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier domain:(WBPlugInDomain)aDomain {
-  WBAssert(![wb_plugins objectForKey:identifier], @"plugin already loaded");
+  NSAssert(![wb_plugins objectForKey:identifier], @"plugin already loaded");
 
   DLog(@"Register plugin: %@", plugin);
   [wb_plugins setObject:plugin forKey:identifier];
-  WBAssert([self domainWithName:aDomain], @"domain does not exists");
+  NSAssert([self domainWithName:aDomain], @"domain does not exists");
   [[self domainWithName:aDomain] addPlugIn:plugin];
   [[NSNotificationCenter defaultCenter] postNotificationName:WBPlugInLoaderDidLoadPlugInNotification object:plugin];
 }
@@ -323,7 +323,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
   [plugin retain];
   [wb_plugins removeObjectForKey:identifier];
-  WBAssert([self domainForPlugIn:plugin], @"domain not found for plugin %@", plugin);
+  NSAssert([self domainForPlugIn:plugin], @"domain not found for plugin %@", plugin);
   [[self domainForPlugIn:plugin] removePlugIn:plugin];
   [[NSNotificationCenter defaultCenter] postNotificationName:WBPlugInLoaderDidRemovePlugInNotification object:plugin];
   [plugin release];
