@@ -32,9 +32,8 @@ typedef NSUInteger WBAppleRemoteButton;
 WB_OBJC_EXPORT
 @interface WBAppleRemote : NSObject {
 @private
+  IOHIDDeviceRef wb_device;
   NSMutableArray *wb_listeners;
-
-@protected
   IOHIDElementCookie wb_cookies[kWBAppleRemoteButtonCount];
 }
 

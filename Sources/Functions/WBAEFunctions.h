@@ -165,12 +165,6 @@ OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventC
 #pragma mark -
 #pragma mark Add Param & Attr
 /**************************** Add Param & Attr ****************************/
-#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
-enum {
-  typeUInt64                    = 'ucom'
-};
-#endif
-
 /*!
  @function
  @abstract   Add Subjet attribute with value <i>nil</i> and set <i>enumConsidsAndIgnores</i> to ignore all.

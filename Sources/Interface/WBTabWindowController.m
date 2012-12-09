@@ -10,10 +10,7 @@
 
 #import <WonderBox/WBTabWindowController.h>
 
-@interface WBTabWindowController (NSToolbarDelegate)
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-<NSToolbarDelegate>
-#endif
+@interface WBTabWindowController (NSToolbarDelegate) <NSToolbarDelegate>
 
 @end
 

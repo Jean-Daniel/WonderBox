@@ -1174,11 +1174,6 @@ static OSStatus             sPerThreadStorageKeyInitErrNum; // latches result of
 
 static pthread_key_t        sPerThreadStorageKey = 0;       // key for our per-thread storage
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-static pthread_mutex_t      sPoolMutex;                     // protects sPool
-static CFMutableArrayRef    sPool;                          // array of (PerThreadStorage *), holds the ports that aren't currently bound to a thread
-#endif
-
 static void PerThreadStorageDestructor(void *keyValue);     // forward declaration
 
 static void InitRoutine(void)
@@ -1191,20 +1186,6 @@ static void InitRoutine(void)
   // a thread terminates.
 
   err = (OSStatus) pthread_key_create(&sPerThreadStorageKey, PerThreadStorageDestructor);
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-  // Create the pool of Mach ports that aren't bound to any thread, and its associated
-  // lock.  The pool starts out empty.
-  if (err == noErr) {
-    err = (OSStatus) pthread_mutex_init(&sPoolMutex, NULL);
-  }
-  if (err == noErr) {
-    sPool = CFArrayCreateMutable(NULL, 0, NULL);
-    if (sPool == NULL) {
-      err = coreFoundationUnknownErr;
-    }
-  }
-#endif
   check(err == noErr);
 
   sPerThreadStorageKeyInitErrNum = err;
@@ -1217,27 +1198,6 @@ OSStatus _AllocatePortFromPool(PerThreadStorage **storagePtr) {
   PerThreadStorage *storage = NULL;
 
   if (!storagePtr || *storagePtr) return paramErr;
-
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-  // First try to get an entry from pool.  We try to grab the last one because
-  // that minimises the amount of copying that CFArrayRemoveValueAtIndex has to
-  // do.
-
-  err = (OSStatus) pthread_mutex_lock(&sPoolMutex);
-  if (err == noErr) {
-    OSStatus junk;
-    CFIndex poolCount;
-
-    poolCount = CFArrayGetCount(sPool);
-    if (poolCount > 0) {
-      storage = (PerThreadStorage *) CFArrayGetValueAtIndex(sPool, poolCount - 1);
-      CFArrayRemoveValueAtIndex(sPool, poolCount - 1);
-    }
-
-    junk = (OSStatus) pthread_mutex_unlock(&sPoolMutex);
-    check(junk == noErr);
-  }
-#endif
   // If we failed to find an entry in the pool, create a new one.
 
   if ( (err == noErr) && (storage == NULL) ) {
@@ -1275,17 +1235,8 @@ void _ReturnPortToPool(PerThreadStorage * storage) {
   assert(storage);
   check(storage->magic == kPerThreadStorageMagic);
   check(storage->port  != MACH_PORT_NULL);
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-  err = (OSStatus) pthread_mutex_lock(&sPoolMutex);
-  if (err == noErr) {
-    CFArrayAppendValue(sPool, storage);
-
-    err = (OSStatus) pthread_mutex_unlock(&sPoolMutex);
-  }
-#else
   err = (OSStatus) mach_port_destroy(mach_task_self(), storage->port);
   free(storage);
-#endif
   check(err == noErr);
 }
 

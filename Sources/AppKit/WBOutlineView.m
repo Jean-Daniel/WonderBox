@@ -19,7 +19,6 @@
 }
 
 #pragma mark -
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 - (id<WBOutlineViewDelegate>)delegate {
   return (id<WBOutlineViewDelegate>)[super delegate];
 }
@@ -27,12 +26,6 @@
   [super setDelegate:aDelegate];
   wb_ovFlags.drawOutline = SPXDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
 }
-#else
-- (void)setDelegate:(id)aDelegate {
-  [super setDelegate:aDelegate];
-  wb_ovFlags.drawOutline = WBDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
-}
-#endif
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
   return flag ? NSDragOperationEvery : NSDragOperationNone;

@@ -39,7 +39,7 @@ size_t WBIORead(int fd, uint8_t *buffer, size_t length, size_t *bytesRead) {
   uint8_t *cursor = buffer;
   bytesLeft = length;
   while ( (0 == err) && (bytesLeft != 0) ) {
-    size_t bytesThisTime = read(fd, cursor, bytesLeft);
+    ssize_t bytesThisTime = read(fd, cursor, bytesLeft);
     if (bytesThisTime > 0) {
       done      += bytesThisTime;
       cursor    += bytesThisTime;
@@ -64,7 +64,7 @@ size_t WBIOWrite(int fd, const uint8_t *buffer, size_t length, size_t *bytesWrit
   const uint8_t *cursor = buffer;
   bytesLeft = length;
   while ( (0 == err) && (bytesLeft != 0) ) {
-    size_t bytesThisTime = write(fd, cursor, bytesLeft);
+    ssize_t bytesThisTime = write(fd, cursor, bytesLeft);
     if (bytesThisTime > 0) {
       done      += bytesThisTime;
       cursor    += bytesThisTime;

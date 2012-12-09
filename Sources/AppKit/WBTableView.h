@@ -10,9 +10,7 @@
 
 #import <WonderBox/WBBase.h>
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @protocol WBTableViewDelegate;
-#endif
 
 WB_OBJC_EXPORT
 @interface WBTableView : NSTableView {
@@ -25,10 +23,8 @@ WB_OBJC_EXPORT
   NSHashTable *wb_noPadding;
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 - (id<WBTableViewDelegate>)delegate;
 - (void)setDelegate:(id<WBTableViewDelegate>)delegate;
-#endif
 
 - (IBAction)delete:(id)sender;
 - (void)keyDown:(NSEvent *)theEvent;
@@ -41,12 +37,8 @@ WB_OBJC_EXPORT
 
 @end
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @protocol WBTableViewDelegate <NSTableViewDelegate>
 @optional
-#else
-@interface NSObject (WBTableViewDelegate)
-#endif
 
 - (void)deleteSelectionInTableView:(NSTableView *)aTableView;
 // Used for UI validation

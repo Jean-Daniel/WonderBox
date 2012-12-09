@@ -18,14 +18,12 @@
   spx_dealloc();
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 - (id<WBTableViewDelegate>)delegate {
   return (id<WBTableViewDelegate>)[super delegate];
 }
 - (void)setDelegate:(id<WBTableViewDelegate>)delegate {
   [super setDelegate:delegate];
 }
-#endif
 
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)flag {
   return flag ? NSDragOperationEvery : NSDragOperationNone;

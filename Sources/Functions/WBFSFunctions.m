@@ -461,94 +461,6 @@ ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *b
   return snprintf(buffer, length, "%.*f E%s", (int)precision, (double)size / ((UInt64)1 << 60), unit);
 }
 
-OSStatus WBFSCreateFolder(CFStringRef path) {
-  if (!path || !CFStringGetLength(path)) return paramErr;
-
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-  BOOL isDirectory;
-  NSFileManager *manager = [NSFileManager defaultManager];
-  if ([manager fileExistsAtPath:SPXCFToNSString(path) isDirectory:&isDirectory]) {
-    [pool drain];
-    return isDirectory ? noErr : errFSNotAFolder;
-  }
-
-  NSMutableArray *components = [[NSMutableArray alloc] init];
-
-  /* Replace . and .. in path, and convert it into c string */
-  const char *characters = [SPXCFToNSString(path) safeFileSystemRepresentation];
-  NSString *subpath = [NSString stringWithFileSystemRepresentation:characters length:strlen(characters)];
-  while ([subpath length] && ![manager fileExistsAtPath:subpath isDirectory:&isDirectory]) {
-    [components addObject:subpath];
-    subpath = [subpath stringByDeletingLastPathComponent];
-  }
-
-  OSStatus err = noErr;
-  /* If a subpath component is not a directory */
-  if ([subpath length] && !isDirectory) {
-    err = dupFNErr;
-  }
-  require_noerr(err, dispose);
-
-  NSUInteger count = [components count];
-  while (noErr == err && count-- > 0) {
-    subpath = [components objectAtIndex:count];
-    err = [manager createDirectoryAtPath:subpath attributes:NULL] ? noErr : dirNFErr;
-  }
-
-dispose:
-  spx_release(components);
-  [pool drain];
-
-  return err;
-}
-
-static
-OSStatus _WBFSForceDeletePath(const char *path, void *ctxt) {
-  struct stat info = {};
-  int err = lstat(path, &info);
-  if (0 == err) {
-    if (S_ISDIR(info.st_mode))
-      err = rmdir(path);
-    else
-      err = unlink(path);
-  }
-  if (0 != err) {
-    /* basic error mapping */
-    switch (errno) {
-      default:
-        return kPOSIXErrorBase + errno;
-      case EPERM:
-      case EACCES:
-        return permErr;
-      case ENAMETOOLONG:
-        return errFSNameTooLong;
-    }
-  }
-  return noErr;
-}
-
-WB_INLINE
-OSStatus __WBFSForceDeleteObject(const FSRef *object) {
-  /* delete a busy file */
-  return _WBFSRefGetPath(object, _WBFSForceDeletePath, NULL);
-}
-
-WB_INLINE
-OSStatus _WBFSForceDeleteObject(const FSRef *object) {
-  /* delete a busy file */
-  OSStatus err;
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
-  if (!FSUnlinkObject) {
-    err = FSDeleteObject(object);
-    if (fBsyErr == err)
-      err = __WBFSForceDeleteObject(object);
-  } else
-#endif
-    err = FSUnlinkObject(object);
-  return err;
-}
-
 OSStatus WBFSForceDeleteObject(const FSRef *object) {
   if (!object) return paramErr;
 
@@ -560,7 +472,7 @@ OSStatus WBFSForceDeleteObject(const FSRef *object) {
       /* result can be safely ignored as the following delete operation will failed if an error occured */
       FSSetCatalogInfo(object, kFSCatInfoNodeFlags, &info);
     }
-    err = _WBFSForceDeleteObject(object);
+    err = FSUnlinkObject(object);
   }
   return err;
 }
@@ -592,7 +504,7 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
               err = userCanceledErr;
 
             if (noErr == err || errFSNoMoreItems == err) {
-              err = _WBFSForceDeleteObject(&refs[count]);
+              err = FSUnlinkObject(&refs[count]);
             }
           }
         }
@@ -610,7 +522,7 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
   if (noErr == err && willDeleteObject && !willDeleteObject(folder, ctxt))
     err = userCanceledErr;
   if (noErr == err) {
-    err = _WBFSForceDeleteObject(folder);
+    err = FSUnlinkObject(folder);
   }
 
   return err;
