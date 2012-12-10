@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBServiceManagement.h)
+#include <WonderBox/WBServiceManagement.h>
 
 #include <launch.h>
 #include <unistd.h>
@@ -377,7 +377,7 @@ CFTypeRef _WBServiceCreateObjectFromData(const launch_data_t data) {
       if (s <= CFIndexMax)
         object = CFDataCreate(kCFAllocatorDefault, launch_data_get_opaque(data), (CFIndex)s);
       else
-        WBCLogError("Launchd data too big to fit in CFData object (%zu bytes)", s);
+        spx_log_error("Launchd data too big to fit in CFData object (%zu bytes)", s);
       break;
     }
     case LAUNCH_DATA_ERRNO:

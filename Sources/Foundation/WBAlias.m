@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBAlias.h)
-#import WBHEADER(WBFSFunctions.h)
+#import <WonderBox/WBAlias.h>
+#import <WonderBox/WBFSFunctions.h>
 
 @interface WBAlias ()
 - (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle;
@@ -26,7 +26,7 @@
     /* Copy Handler */
     copy->wb_alias = wb_alias;
     if (noErr != HandToHand((Handle *)&copy->wb_alias)) {
-      wb_release(copy);
+      spx_release(copy);
       copy = nil;
     }
   }
@@ -44,12 +44,12 @@
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_path = wb_retain([coder decodeObjectForKey:@"WBAliasPath"]);
+    wb_path = spx_retain([coder decodeObjectForKey:@"WBAliasPath"]);
     NSData *data = [coder decodeObjectForKey:@"WBAliasHandle"];
     if (data && [data length] < LONG_MAX) {
       OSErr err = PtrToHand([data bytes], (Handle *)&wb_alias, (long)[data length]);
       if (noErr != err)
-        WBCLogWarning("Failed to read alias data: %s", GetMacOSStatusErrorString(err));
+        spx_log_warning("Failed to read alias data: %s", GetMacOSStatusErrorString(err));
     }
   }
   return self;
@@ -57,17 +57,17 @@
 
 #pragma mark -
 + (id)aliasFromData:(NSData *)data {
-  return wb_autorelease([[self alloc] initFromData:data]);
+  return spx_autorelease([[self alloc] initFromData:data]);
 }
 + (id)aliasFromAliasHandle:(AliasHandle)handle {
-  return wb_autorelease([[self alloc] initFromAliasHandle:handle]);
+  return spx_autorelease([[self alloc] initFromAliasHandle:handle]);
 }
 
 + (id)aliasWithURL:(NSURL *)anURL {
-  return wb_autorelease([[self alloc] initWithURL:anURL]);
+  return spx_autorelease([[self alloc] initWithURL:anURL]);
 }
 + (id)aliasWithPath:(NSString *)aPath {
-  return wb_autorelease([[self alloc] initWithPath:aPath]);
+  return spx_autorelease([[self alloc] initWithPath:aPath]);
 }
 
 #pragma mark Initializers
@@ -87,7 +87,7 @@
   if ([data length] < LONG_MAX && noErr == PtrToHand([data bytes], (Handle *)&alias, (long)[data length]))
     return [self initFromAliasHandleNoCopy:alias];
 
-  wb_release(self);
+  spx_release(self);
   return nil;
 }
 
@@ -98,19 +98,19 @@
   if (noErr == HandToHand((Handle *)&alias))
     return [self initFromAliasHandleNoCopy:alias];
 
-  wb_release(self);
+  spx_release(self);
   return nil;
 }
 
 - (id)initWithURL:(NSURL *)anURL {
   if (!anURL) {
-    wb_release(self);
+    spx_release(self);
     return nil;
   }
   if (self = [self init]) {
     FSRef ref;
     // First, try using FSRef
-    if (CFURLGetFSRef(WBNSToCFURL(anURL), &ref)) {
+    if (CFURLGetFSRef(SPXNSToCFURL(anURL), &ref)) {
       AliasHandle alias;
       if (noErr == FSNewAlias(NULL, &ref, &alias))
         return [self initFromAliasHandleNoCopy:alias];
@@ -119,7 +119,7 @@
       [self setPath:[anURL path]];
     } else {
       // unsupported URL
-      wb_release(self);
+      spx_release(self);
       self = nil;
     }
   }
@@ -128,7 +128,7 @@
 
 - (id)initWithPath:(NSString *)aPath {
   if (!aPath) {
-    wb_release(self);
+    spx_release(self);
     return nil;
   }
   if (self = [self init]) {
@@ -142,8 +142,8 @@
     DisposeHandle((Handle)wb_alias);
     wb_alias = nil;
   }
-  wb_release(wb_path);
-  wb_dealloc();
+  spx_release(wb_path);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -162,7 +162,7 @@
 }
 - (void)setURL:(NSURL *)anURL {
   if (![anURL isFileURL])
-    WBThrowException(NSInvalidArgumentException, @"Unsupported URL scheme: %@", [anURL scheme]);
+    SPXThrowException(NSInvalidArgumentException, @"Unsupported URL scheme: %@", [anURL scheme]);
   [self setPath:[anURL path]];
 }
 
@@ -171,10 +171,10 @@
 }
 - (void)setPath:(NSString *)path {
   if (!path)
-    WBThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
+    SPXThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
 
   if (wb_path != path) {
-    wb_release(wb_path);
+    spx_release(wb_path);
     wb_path = [path copy];
 
     if (wb_alias) {
@@ -205,18 +205,18 @@
     if (noErr == err) {
       // update path if needed
       if (wasChanged && wb_path) {
-        wb_release(wb_path);
+        spx_release(wb_path);
         wb_path = nil;
       }
       if (!wb_path) {
-        wb_path = wb_retain([NSString stringFromFSRef:target]);
+        wb_path = spx_retain([NSString stringFromFSRef:target]);
         NSAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
         if (outChanged) *outChanged = YES;
       }
       return noErr;
     } else if (wb_path) {
       // no longer reference a valid file
-      wb_release(wb_path);
+      spx_release(wb_path);
       wb_path = nil;
     }
     return err;
@@ -224,8 +224,7 @@
 
   // wb_alias is not valid. Try to use path.
   if (!wb_path)
-    WBThrowException(NSInternalInconsistencyException,
-                     @"Both alias and path are null");
+    SPXThrowException(NSInternalInconsistencyException, @"Both alias and path are null");
   // try to create alias
   OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path fileSystemRepresentation], target, NULL);
   if (noErr == err) {

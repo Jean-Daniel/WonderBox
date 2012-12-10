@@ -8,11 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @protocol WBOutlineViewDelegate;
-#endif
 
 WB_OBJC_EXPORT
 @interface WBOutlineView : NSOutlineView {
@@ -26,10 +24,8 @@ WB_OBJC_EXPORT
   NSHashTable *wb_noPadding;
 }
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 - (id<WBOutlineViewDelegate>)delegate;
 - (void)setDelegate:(id<WBOutlineViewDelegate>)aDelegate;
-#endif
 
 - (IBAction)delete:(id)sender;
 /*!
@@ -48,12 +44,8 @@ WB_OBJC_EXPORT
 
 @end
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @protocol WBOutlineViewDelegate <NSOutlineViewDelegate>
 @optional
-#else
-@interface NSObject (WBOutlineViewDelegate)
-#endif
 
 - (void)deleteSelectionInOutlineView:(NSOutlineView *)aView;
 // Used for UI validation

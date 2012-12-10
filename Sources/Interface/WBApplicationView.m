@@ -8,10 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBApplicationView.h)
+#import <WonderBox/WBApplicationView.h>
 
-#import WBHEADER(WBGeometry.h)
-#import WBHEADER(WBApplication.h)
+#import <WonderBox/WBGeometry.h>
+#import <WonderBox/WBApplication.h>
 
 /*
  Recommanded height: 31 pixels.
@@ -56,7 +56,7 @@
 }
 
 - (void)setApplication:(WBApplication *)anApplication title:(NSString *)aTitle icon:(NSImage *)anIcon {
-  WBSetterRetain(wb_app, anApplication);
+  SPXSetterRetain(wb_app, anApplication);
   [self setIcon:anIcon];
   /* Should be last => refresh */
   [self setTitle:aTitle];

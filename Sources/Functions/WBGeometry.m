@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBGeometry.h)
+#import <WonderBox/WBGeometry.h>
 
 CGSize WBSizeScaleToSize(CGSize source, CGSize dest, WBScalingMode mode) {
   if (source.width <= 0 || source.height <= 0) return CGSizeZero;

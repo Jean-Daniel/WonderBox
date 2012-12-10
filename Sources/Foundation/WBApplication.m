@@ -8,11 +8,11 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBApplication.h)
+#import <WonderBox/WBApplication.h>
 
-#import WBHEADER(WBFunctions.h)
-#import WBHEADER(WBLSFunctions.h)
-#import WBHEADER(WBProcessFunctions.h)
+#import <WonderBox/WBFunctions.h>
+#import <WonderBox/WBLSFunctions.h>
+#import <WonderBox/WBProcessFunctions.h>
 
 enum {
   kWBUndefinedSignature = kUnknownType // '????'
@@ -30,7 +30,7 @@ enum {
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-  WBEncodeInteger(coder, wb_signature, @"WBSignature");
+  [coder encodeInteger:wb_signature forKey:@"WBSignature"];
   if (wb_name) [coder encodeObject:wb_name forKey:@"WBName"];
   if (wb_identifier) [coder encodeObject:wb_identifier forKey:@"WBIdentifier"];
   return;
@@ -38,7 +38,7 @@ enum {
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_signature = (OSType)WBDecodeInteger(coder, @"WBSignature");
+    wb_signature = (OSType)[coder decodeIntegerForKey:@"WBSignature"];
     wb_name = [[coder decodeObjectForKey:@"WBName"] retain];
     wb_identifier = [[coder decodeObjectForKey:@"WBIdentifier"] retain];
   }
@@ -142,7 +142,7 @@ enum {
 - (void)dealloc {
   [wb_name release];
   [wb_identifier release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (NSString *)description {
@@ -197,14 +197,14 @@ bool __IsValidIdentifier(id identifier) {
 }
 
 - (void)setName:(NSString *)newName {
-  WBSetterCopy(wb_name, newName);
+  SPXSetterCopy(wb_name, newName);
 }
 
 - (OSType)signature {
   if (!wb_signature) {
     NSString *path = [self path];
     if (path) {
-      wb_signature = WBLSGetSignatureForPath(WBNSToCFString(path));
+      wb_signature = WBLSGetSignatureForPath(SPXNSToCFString(path));
     }
     if (!wb_signature) wb_signature = kWBUndefinedSignature;
   }
@@ -231,7 +231,7 @@ bool __IsValidIdentifier(id identifier) {
 - (void)setSignature:(OSType)aSignature bundleIdentifier:(NSString *)identifier {
   // Should we invalidate the name ?
   wb_signature = aSignature;
-  WBSetterCopy(wb_identifier, identifier);
+  SPXSetterCopy(wb_identifier, identifier);
 }
 
 #pragma mark -
@@ -263,14 +263,14 @@ bool __IsValidIdentifier(id identifier) {
   }
 
   Boolean isApp = false;
-  if (noErr != WBLSIsApplicationAtPath(WBNSToCFString(aPath), &isApp) || !isApp) {
+  if (noErr != WBLSIsApplicationAtPath(SPXNSToCFString(aPath), &isApp) || !isApp) {
     return NO;
   }
 
-  CFStringRef bundle = WBLSCopyBundleIdentifierForPath(WBNSToCFString(aPath));
-  OSType signature = WBLSGetSignatureForPath(WBNSToCFString(aPath)) ? : kWBUndefinedSignature;
-  [self setSignature:signature bundleIdentifier:WBCFToNSString(bundle)];
-  WBCFRelease(bundle);
+  CFStringRef bundle = WBLSCopyBundleIdentifierForPath(SPXNSToCFString(aPath));
+  OSType signature = WBLSGetSignatureForPath(SPXNSToCFString(aPath)) ? : kWBUndefinedSignature;
+  [self setSignature:signature bundleIdentifier:SPXCFToNSString(bundle)];
+  SPXCFRelease(bundle);
 
   return [self isValid];
 }
@@ -280,7 +280,7 @@ bool __IsValidIdentifier(id identifier) {
 
   BOOL ok = NO;
   if (__IsValidIdentifier(wb_identifier))
-    ok = noErr == WBLSGetApplicationForBundleIdentifier(WBNSToCFString(wb_identifier), ref);
+    ok = noErr == WBLSGetApplicationForBundleIdentifier(SPXNSToCFString(wb_identifier), ref);
 
   if (!ok && __IsValidSignature(wb_signature))
     ok = noErr == WBLSGetApplicationForSignature(wb_signature, ref);
@@ -292,7 +292,7 @@ bool __IsValidIdentifier(id identifier) {
   ProcessSerialNumber psn = {kNoProcess, kNoProcess};
 
   if (__IsValidIdentifier(wb_identifier))
-    psn = WBProcessGetProcessWithBundleIdentifier(WBNSToCFString(wb_identifier));
+    psn = WBProcessGetProcessWithBundleIdentifier(SPXNSToCFString(wb_identifier));
 
   if (psn.lowLongOfPSN == kNoProcess && __IsValidSignature(wb_signature))
     psn = WBProcessGetProcessWithSignature(wb_signature);

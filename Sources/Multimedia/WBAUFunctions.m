@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBAUFunctions.h)
+#import <WonderBox/WBAUFunctions.h>
 
 #import <AudioUnit/AUCocoaUIView.h>
 #import <CoreAudioKit/CoreAudioKit.h>
@@ -63,15 +63,15 @@ NSView *WBAUInstanciateViewFromAudioUnit(AudioUnit anUnit, NSSize aSize) {
       NSLog (@"Error loading AU view's bundle");
     } else {
       Class factoryClass = [viewBundle classNamed:factoryClassName];
-      WBAssert(factoryClass != nil, @"Error getting AU view's factory class from bundle");
+      spx_assert(factoryClass != nil, "Error getting AU view's factory class from bundle");
 
       // make sure 'factoryClass' implements the AUCocoaUIBase protocol
-      WBAssert(_WBAUCocoaViewIsValid(factoryClass),
-               @"AU view's factory class does not properly implement the AUCocoaUIBase protocol");
+      spx_assert(_WBAUCocoaViewIsValid(factoryClass),
+                 "AU view's factory class does not properly implement the AUCocoaUIBase protocol");
 
       // make a factory
       id<AUCocoaUIBase> factoryInstance = [[[factoryClass alloc] init] autorelease];
-      WBAssert (factoryInstance != nil, @"Could not create an instance of the AU view factory");
+      spx_assert(factoryInstance != nil, "Could not create an instance of the AU view factory");
       // make a view
       AUView = [factoryInstance uiViewForAudioUnit:anUnit withSize:aSize];
     }

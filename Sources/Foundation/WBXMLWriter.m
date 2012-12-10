@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBXMLWriter.h)
+#import <WonderBox/WBXMLWriter.h>
 
 #include <libxml/xmlwriter.h>
 
@@ -67,7 +67,7 @@ xmlOutputBufferPtr _WBXMLCreateNSDataOutputBuffer(NSMutableData *data, xmlCharEn
 
 - (void)dealloc {
   [self close];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -

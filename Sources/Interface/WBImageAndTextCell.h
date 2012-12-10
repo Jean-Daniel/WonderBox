@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTextFieldCell.h)
+#import <WonderBox/WBTextFieldCell.h>
 
 WB_OBJC_EXPORT
 @interface WBImageAndTextCell : WBTextFieldCell <NSCopying, NSCoding> {

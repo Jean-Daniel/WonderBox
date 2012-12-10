@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBImageAndTextCell.h)
-#import WBHEADER(WBGeometry.h)
+#import <WonderBox/WBImageAndTextCell.h>
+#import <WonderBox/WBGeometry.h>
 
 #define kWBImageMargin 5
 
@@ -42,17 +42,17 @@
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
     if ([aCoder allowsKeyedCoding]) {
-      wb_image = wb_retain([aCoder decodeObjectForKey:@"wb.cell.image"]);
+      wb_image = spx_retain([aCoder decodeObjectForKey:@"wb.cell.image"]);
     } else {
-      wb_image = wb_retain([aCoder decodeObject]);
+      wb_image = spx_retain([aCoder decodeObject]);
     }
   }
   return self;
 }
 
 - (void)dealloc {
-  wb_release(wb_image);
-  wb_dealloc();
+  spx_release(wb_image);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -80,7 +80,7 @@
 }
 - (void)setImage:(NSImage *)anImage {
   // should copy to avoid extern image alteration
-  WBSetterRetain(wb_image, anImage);
+  SPXSetterRetain(wb_image, anImage);
 }
 
 #pragma mark NSCell

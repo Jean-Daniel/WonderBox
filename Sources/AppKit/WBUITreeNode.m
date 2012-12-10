@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBUITreeNode.h)
+#import <WonderBox/WBUITreeNode.h>
 
 NSString * const WBNewChildren = @"WBNewChildren";
 NSString * const WBRemovedChild = @"WBRemovedChild";
@@ -61,7 +61,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 - (void)dealloc {
   [wb_icon release];
   [wb_name release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -69,14 +69,14 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   return wb_icon;
 }
 - (void)wb_setIcon:(NSImage *)anIcon {
-  WBSetterRetain(wb_icon, anIcon);
+  SPXSetterRetain(wb_icon, anIcon);
 }
 
 - (NSString *)name {
   return wb_name;
 }
 - (void)wb_setName:(NSString *)aName {
-  WBSetterCopy(wb_name, aName);
+  SPXSetterCopy(wb_name, aName);
 }
 
 @end
@@ -102,12 +102,12 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   if (self = [super initWithCoder:aCoder]) {
     /* to avoid endian and bit fields problems */
     UInt32 flags = [aCoder decodeInt32ForKey:@"SUFlags"];
-    WBFlagSet(wb_utFlags.leaf, flags & 0x01);
-    WBFlagSet(wb_utFlags.undo, flags & 0x02);
-    WBFlagSet(wb_utFlags.notify, flags & 0x04);
-    WBFlagSet(wb_utFlags.editable, flags & 0x08);
-    WBFlagSet(wb_utFlags.removable, flags & 0x10);
-    WBFlagSet(wb_utFlags.draggable, flags & 0x20);
+    SPXFlagSet(wb_utFlags.leaf, flags & 0x01);
+    SPXFlagSet(wb_utFlags.undo, flags & 0x02);
+    SPXFlagSet(wb_utFlags.notify, flags & 0x04);
+    SPXFlagSet(wb_utFlags.editable, flags & 0x08);
+    SPXFlagSet(wb_utFlags.removable, flags & 0x10);
+    SPXFlagSet(wb_utFlags.draggable, flags & 0x20);
   }
   return self;
 }
@@ -156,7 +156,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   return wb_utFlags.undo;
 }
 - (void)setRegisterUndo:(BOOL)flag {
-  WBFlagSet(wb_utFlags.undo, flag);
+  SPXFlagSet(wb_utFlags.undo, flag);
 }
 - (NSUndoManager *)undoManager {
   return [[self parent] undoManager];
@@ -167,7 +167,7 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   return wb_utFlags.notify;
 }
 - (void)setNotify:(BOOL)notify {
-  WBFlagSet(wb_utFlags.notify, notify);
+  SPXFlagSet(wb_utFlags.notify, notify);
 }
 - (NSNotificationCenter *)notificationCenter {
   return [[self parent] notificationCenter];
@@ -178,42 +178,42 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   return wb_utFlags.leaf;
 }
 - (void)setIsLeaf:(BOOL)flag {
-  WBFlagSet(wb_utFlags.leaf, flag);
+  SPXFlagSet(wb_utFlags.leaf, flag);
 }
 
 - (BOOL)isEditable {
   return wb_utFlags.editable;
 }
 - (void)setEditable:(BOOL)flag {
-  WBFlagSet(wb_utFlags.editable, flag);
+  SPXFlagSet(wb_utFlags.editable, flag);
 }
 
 - (BOOL)isRemovable {
   return wb_utFlags.removable;
 }
 - (void)setRemovable:(BOOL)flag {
-  WBFlagSet(wb_utFlags.removable, flag);
+  SPXFlagSet(wb_utFlags.removable, flag);
 }
 
 - (BOOL)isDraggable {
   return wb_utFlags.draggable;
 }
 - (void)setDraggable:(BOOL)flag {
-  WBFlagSet(wb_utFlags.draggable, flag);
+  SPXFlagSet(wb_utFlags.draggable, flag);
 }
 
 - (BOOL)isCollapsable {
   return !wb_utFlags.uncollapsable;
 }
 - (void)setCollapsable:(BOOL)flag {
-  WBFlagSet(wb_utFlags.uncollapsable, !flag);
+  SPXFlagSet(wb_utFlags.uncollapsable, !flag);
 }
 
 - (BOOL)isGroupNode {
   return wb_utFlags.group;
 }
 - (void)setIsGroupNode:(BOOL)flag {
-  WBFlagSet(wb_utFlags.group, flag);
+  SPXFlagSet(wb_utFlags.group, flag);
 }
 
 #pragma mark Name & Icon

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBProgressPanel.h)
+#import <WonderBox/WBProgressPanel.h>
 
 @implementation WBProgressPanel
 
@@ -34,7 +34,7 @@
 //  }
 
   NSString *msg = nil;
-  if (WBDelegateHandle(wb_delegate, progressPanel:messageForValue:))
+  if (SPXDelegateHandle(wb_delegate, progressPanel:messageForValue:))
     msg = [wb_delegate progressPanel:self messageForValue:value];
 
   if (!msg) msg = timeStr;
@@ -50,12 +50,12 @@
 
 - (IBAction)cancel:(id)sender {
   [super setModalResultCode:NSCancelButton];
-  if (!WBDelegateHandle(wb_delegate, progressPanelShouldCancel:) || [wb_delegate progressPanelShouldCancel:self])
+  if (!SPXDelegateHandle(wb_delegate, progressPanelShouldCancel:) || [wb_delegate progressPanelShouldCancel:self])
     [super close:nil];
 }
 
 - (void)start {
-  [uiCancel setTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"WBProgess", WBCurrentBundle(), @"Cancel")];
+  [uiCancel setTitle:NSLocalizedStringFromTableInBundle(@"Cancel", @"WBProgess", SPXCurrentBundle(), @"Cancel")];
   [uiCancel setAction:@selector(cancel:)];
   [uiMessage setStringValue:@""];
   /* start time */
@@ -65,7 +65,7 @@
 }
 - (void)stop {
   [uiProgress stopAnimation:nil];
-  [uiCancel setTitle:NSLocalizedStringFromTableInBundle(@"Close", @"WBProgess", WBCurrentBundle(), @"Close")];
+  [uiCancel setTitle:NSLocalizedStringFromTableInBundle(@"Close", @"WBProgess", SPXCurrentBundle(), @"Close")];
   [uiCancel setAction:@selector(ok:)];
   [self wb_updateMessage:[self value]];
 }
@@ -110,7 +110,7 @@
 //  return wb_PPFlags.showtime;
 //}
 //- (void)setEvaluatesRemainingTime:(BOOL)flag {
-//  WBFlagSet(wb_PPFlags.showtime, flag);
+//  SPXFlagSet(wb_PPFlags.showtime, flag);
 //}
 
 @end

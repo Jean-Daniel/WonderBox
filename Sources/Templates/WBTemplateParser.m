@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTemplateParser.h)
+#import <WonderBox/WBTemplateParser.h>
 
 BOOL WBTemplateLogWarning = NO;
 BOOL WBTemplateLogMessage = NO;
@@ -60,7 +60,7 @@ BOOL WBTemplateLogMessage = NO;
   return wb_file;
 }
 - (void)setFile:(NSString *)aFile {
-  WBSetterCopy(wb_file, aFile);
+  SPXSetterCopy(wb_file, aFile);
 }
 
 - (NSStringEncoding)encoding {
@@ -73,9 +73,9 @@ BOOL WBTemplateLogMessage = NO;
 #pragma mark -
 - (void)foundVariable:(CFStringRef)theVariable inString:(NSString *)theString atRange:(NSRange)aRange {
   if (tpimp.foundChars) {
-    CFStringRef sub = CFStringCreateWithSubstring(kCFAllocatorDefault, WBNSToCFString(theString), CFRangeMake(wb_position, aRange.location - wb_position));
+    CFStringRef sub = CFStringCreateWithSubstring(kCFAllocatorDefault, SPXNSToCFString(theString), CFRangeMake(wb_position, aRange.location - wb_position));
     if (sub) {
-      [wb_delegate templateParser:self foundCharacters:WBCFToNSString(sub)];
+      [wb_delegate templateParser:self foundCharacters:SPXCFToNSString(sub)];
       CFRelease(sub);
     }
   }
@@ -119,7 +119,7 @@ BOOL WBTemplateLogMessage = NO;
 
 - (BOOL)parse {
   if (!wb_file)
-		WBThrowException(NSInternalInconsistencyException, @"A file must be set before parsing.");
+		SPXThrowException(NSInternalInconsistencyException, @"A file must be set before parsing.");
 
   wb_blocks = 0;
   wb_position = 0;
@@ -187,7 +187,7 @@ BOOL WBTemplateLogMessage = NO;
   if (wb_blocks) {
     _WBTemplateLogWarning(@"WARNING: %u blocks unclosed.", wb_blocks);
     if (tpimp.warning)
-      [wb_delegate templateParser:self warningOccured:[NSString stringWithFormat:@"%u blocks unclosed.", wb_blocks]];
+      [wb_delegate templateParser:self warningOccured:[NSString stringWithFormat:@"%lu blocks unclosed.", (unsigned long)wb_blocks]];
 
     while (wb_blocks > 0) {
       if (tpimp.endBlock)

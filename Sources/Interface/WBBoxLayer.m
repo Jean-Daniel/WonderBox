@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBoxLayer.h)
+#import <WonderBox/WBBoxLayer.h>
 
-#import WBHEADER(WBCGFunctions.h)
+#import <WonderBox/WBCGFunctions.h>
 
 #pragma mark -
 @implementation WBBoxLayer
@@ -32,9 +32,9 @@
 }
 
 - (void)dealloc {
-  wb_release(wb_background);
-  wb_release(wb_border);
-  wb_dealloc();
+  spx_release(wb_background);
+  spx_release(wb_border);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -49,14 +49,14 @@
   return wb_border;
 }
 - (void)setBorderColor:(NSColor *)color {
-  WBSetterRetain(wb_border, color);
+  SPXSetterRetain(wb_border, color);
 }
 
 - (NSColor *)backgroundColor {
   return wb_background;
 }
 - (void)setBackgroundColor:(NSColor *)color {
-  WBSetterRetain(wb_background, color);
+  SPXSetterRetain(wb_background, color);
 }
 
 #pragma mark Sizing
@@ -157,7 +157,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
     wb_content = [self drawingSizeForSize:content];
 
     if (wb_content.width >= 64e3 || wb_content.height >= 64e3)
-      WBThrowException(NSInternalInconsistencyException, @"request fit to content, but content does not has a valid size");
+      SPXThrowException(NSInternalInconsistencyException, @"request fit to content, but content does not has a valid size");
 
     // compute real content size (may be smaller than requested)
     // this size is used to compute the real box size, and to clip the content.
@@ -249,10 +249,10 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   switch (theAlignment) {
     default:
     case kWBStringLayerAlignmentTop:
-      update = WBFlagTestAndSet(wb_blFlags.box_bottom, 0) != 0;
+      update = SPXFlagTestAndSet(wb_blFlags.box_bottom, 0) != 0;
       break;
     case kWBStringLayerAlignmentBottom:
-      update = WBFlagTestAndSet(wb_blFlags.box_bottom, 1) != 1;
+      update = SPXFlagTestAndSet(wb_blFlags.box_bottom, 1) != 1;
       break;
   }
   if (update)
@@ -267,10 +267,10 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   switch (theAlignment) {
     default:
     case kWBStringLayerAlignmentLeft:
-      update = WBFlagTestAndSet(wb_blFlags.box_right, 0) != 0;
+      update = SPXFlagTestAndSet(wb_blFlags.box_right, 0) != 0;
       break;
     case kWBStringLayerAlignmentRight:
-      update = WBFlagTestAndSet(wb_blFlags.box_right, 1) != 1;
+      update = SPXFlagTestAndSet(wb_blFlags.box_right, 1) != 1;
       break;
   }
   if (update)
@@ -413,7 +413,7 @@ NSSize __WBBoxContentSizeForBoxSize(WBBoxLayer *layer, NSSize box) {
   return wb_blFlags.dirty;
 }
 - (void)setNeedsUpdate:(BOOL)display {
-  WBFlagSet(wb_blFlags.dirty, display);
+  SPXFlagSet(wb_blFlags.dirty, display);
 }
 
 @end

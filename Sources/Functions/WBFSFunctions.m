@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBFSFunctions.h)
+#import <WonderBox/WBFSFunctions.h>
 
 #include <sys/stat.h>
 
@@ -20,7 +20,7 @@
 + (NSString *)stringFromFSRef:(const FSRef *)ref {
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return WBCFAutorelease(NSString, str);
+    return SPXCFAutorelease(NSString, str);
   return nil;
 }
 
@@ -31,7 +31,7 @@
    */
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return WBCFStringBridgingRelease(str);
+    return SPXCFStringBridgingRelease(str);
   return nil;
 }
 
@@ -53,7 +53,7 @@
   @try {
     fsrep = [self fileSystemRepresentation];
   } @catch (NSException *exception) {
-    WBLogException(exception);
+    SPXLogException(exception);
   }
   return fsrep;
 }
@@ -468,15 +468,15 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
 
   BOOL isDirectory;
   NSFileManager *manager = [NSFileManager defaultManager];
-  if ([manager fileExistsAtPath:WBCFToNSString(path) isDirectory:&isDirectory]) {
-    WBAutoreleasePoolDrain(pool);
+  if ([manager fileExistsAtPath:SPXCFToNSString(path) isDirectory:&isDirectory]) {
+    [pool drain];
     return isDirectory ? noErr : errFSNotAFolder;
   }
 
   NSMutableArray *components = [[NSMutableArray alloc] init];
 
   /* Replace . and .. in path, and convert it into c string */
-  const char *characters = [WBCFToNSString(path) safeFileSystemRepresentation];
+  const char *characters = [SPXCFToNSString(path) safeFileSystemRepresentation];
   NSString *subpath = [NSString stringWithFileSystemRepresentation:characters length:strlen(characters)];
   while ([subpath length] && ![manager fileExistsAtPath:subpath isDirectory:&isDirectory]) {
     [components addObject:subpath];
@@ -497,8 +497,8 @@ OSStatus WBFSCreateFolder(CFStringRef path) {
   }
 
 dispose:
-  wb_release(components);
-  WBAutoreleasePoolDrain(pool);
+  spx_release(components);
+  [pool drain];
 
   return err;
 }

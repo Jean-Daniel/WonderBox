@@ -11,7 +11,7 @@
 #if !defined(__WB_FS_FUNCTIONS_H)
 #define __WB_FS_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #include <fcntl.h>
 
@@ -146,7 +146,7 @@ WB_INLINE
 NSURL *WBFSFindFolder(OSType folderType, FSVolumeRefNum domain, bool create) {
   CFURLRef path = NULL;
   if (noErr == WBFSCopyFolderURL(folderType, domain, create, &path))
-    return WBCFAutorelease(NSURL, path);
+    return SPXCFAutorelease(NSURL, path);
   return nil;
 }
 

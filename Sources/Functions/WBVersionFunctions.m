@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBVersionFunctions.h)
+#import <WonderBox/WBVersionFunctions.h>
 
-#pragma mark Version Parser
+// MARK: Version Parser
 
 /* According to “Runtime Configuration Guidelines”, we should use short version string */
 CFStringRef const WBVersionBundleKey = CFSTR("CFBundleShortVersionString");

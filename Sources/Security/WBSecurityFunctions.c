@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBSecurityFunctions.h)
-#include WBHEADER(WBCDSAFunctions.h)
+#include <WonderBox/WBSecurityFunctions.h>
+#include <WonderBox/WBCDSAFunctions.h>
 
 #include <unistd.h>
 
@@ -223,7 +223,7 @@ OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, Sec
             }
             CFRelease(addresses);
           } else {
-            WBCLogWarning("SecCertificateCopyEmailAddresses() return %ld", (long)err);
+            spx_log_warning("SecCertificateCopyEmailAddresses() return %ld", (long)err);
           }
 
           CFRelease(cert);

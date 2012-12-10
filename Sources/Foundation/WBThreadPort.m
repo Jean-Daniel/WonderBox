@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBThreadPort.h)
+#import <WonderBox/WBThreadPort.h>
 
 #include <pthread.h>
 #include <libkern/OSAtomic.h>
@@ -107,9 +107,9 @@ mach_port_t _WBThreadGetSendPort(void) {
     kern_return_t err = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &port);
     if (KERN_SUCCESS != err) {
       port = MACH_PORT_NULL;
-      DCLog("mach_port_allocate : %s", mach_error_string(err));
+      spx_debug("mach_port_allocate : %s", mach_error_string(err));
     } else if (0 != pthread_setspecific(sThreadSendPortKey, (void *)(intptr_t)port)) {
-      DCLog("pthread_setspecific error");
+      spx_debug("pthread_setspecific error");
       mach_port_destroy(mach_task_self(), port);
       port = MACH_PORT_NULL;
     }
@@ -123,8 +123,8 @@ _WBRecorderProxy *_WBThreadGetRecorder(void) {
   if (!proxy) {
     proxy = [[_WBRecorderProxy alloc] init];
     if (0 != pthread_setspecific(sThreadRecorderKey, (__bridge_retained void *)proxy)) {
-      DCLog("pthread_setspecific error");
-      wb_release(proxy);
+      spx_debug("pthread_setspecific error");
+      spx_release(proxy);
       proxy = NULL;
     }
   }
@@ -136,7 +136,7 @@ void _WBThreadRecorderDestructor(void *ptr) {
   _WBRecorderProxy *proxy = (__bridge_transfer _WBRecorderProxy *)ptr;
   if ([proxy isRecording])
     [proxy abort];
-  wb_release(proxy);
+  spx_release(proxy);
 }
 
 static
@@ -146,7 +146,7 @@ void _WBThreadSendPortDestructor(void *ptr) {
     /* delete receive rights */
     kern_return_t err = mach_port_destroy(mach_task_self(), sport);
     if (KERN_SUCCESS != err)
-      WBCLogWarning("mach_port_destroy: %s", mach_error_string(err));
+      spx_log_warning("mach_port_destroy: %s", mach_error_string(err));
   }
 }
 
@@ -160,7 +160,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       sMainThread = nil;
 
     [port invalidate];
-    wb_release(port);
+    spx_release(port);
 
     [pool drain];
   }
@@ -198,7 +198,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   /* return current port if exists (FIXME: should be done in alloc ? ) */
   WBThreadPort *current = (__bridge WBThreadPort *)pthread_getspecific(sThreadReceivePortKey);
   if (current) {
-    wb_release(self);
+    spx_release(self);
     return current;
   }
 
@@ -207,8 +207,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     CFMachPortContext ctxt = { 0, (__bridge void *)self, NULL, NULL, NULL };
     wb_port = CFMachPortCreate(kCFAllocatorDefault, _WBTPMachMessageCallBack, &ctxt, NULL);
     if (!wb_port) {
-      DLog(@"Error while creating runloop port");
-      wb_release(self);
+      SPXDebug(@"Error while creating runloop port");
+      spx_release(self);
       return nil;
     }
 
@@ -219,7 +219,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     }
 
     wb_timeout = MACH_MSG_TIMEOUT_NONE;
-    wb_thread = wb_retain([NSThread currentThread]);
+    wb_thread = spx_retain([NSThread currentThread]);
   }
   return self;
 }
@@ -230,9 +230,9 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     current = [[WBThreadPort alloc] wb_init]; // leak: released in pthread_specific destructor => _WBThreadReceivePortDestructor()
 
     if (0 != pthread_setspecific(sThreadReceivePortKey, (__bridge_retained void *)current)) {
-      WBCLogWarning("pthread_setspecific failed");
+      spx_log_warning("pthread_setspecific failed");
       [current invalidate];
-      wb_release(current);
+      spx_release(current);
       current = nil;
     }
   }
@@ -240,13 +240,13 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (id)init {
-  wb_release(self);
-  WBThrowException(NSInvalidArgumentException, @"Invalid initializer. Should use +currentPort instead");
+  spx_release(self);
+  SPXThrowException(NSInvalidArgumentException, @"Invalid initializer. Should use +currentPort instead");
 }
 
 - (void)dealloc {
   [self invalidate];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (void)invalidate {
@@ -256,7 +256,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       CFRelease(wb_port);
       wb_port = nil;
 
-      (void)wb_autorelease(wb_thread);
+      (void)spx_autorelease(wb_thread);
       wb_thread = nil;
     }
   }
@@ -276,10 +276,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 #pragma mark Base method
 - (void)performInvocation:(NSInvocation *)anInvocation waitUntilDone:(NSInteger)shouldWait timeout:(uint32_t)timeout {
   if (![anInvocation target])
-    WBThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
+    SPXThrowException(NSInvalidArgumentException, @"The invocation MUST contains a valid target");
 
   if ([wb_thread isEqual:[NSThread currentThread]]) {
-    WBLogWarning(@"caller thread is the target thread. You should not use 'thread port' to send intra-thread messages.");
+    SPXLogWarning(@"caller thread is the target thread. You should not use 'thread port' to send intra-thread messages.");
     [anInvocation invoke];
     return;
   }
@@ -307,7 +307,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     send_hdr->msgh_local_port = _WBThreadGetSendPort();
   }
   msg.async = !synch;
-  msg.invocation = (intptr_t)wb_retain(anInvocation);
+  msg.invocation = (intptr_t)spx_retain(anInvocation);
 
   /* Send invocation to target thread */
   mach_msg_option_t opts = MACH_SEND_MSG;
@@ -317,12 +317,12 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   if (MACH_MSG_SUCCESS != err) {
     /* invocation is released by the target thread,
      so if an error occured, it is not released */
-    wb_release(anInvocation);
+    spx_release(anInvocation);
     switch (err) {
       case MACH_SEND_TIMED_OUT:
-        WBThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
+        SPXThrowException(NSPortTimeoutException, @"timeout occured while sending invocation");
       default:
-        WBThrowException(NSPortSendException, @"mach_msg(send) return (%#x): %s", err, mach_error_string(err));
+        SPXThrowException(NSPortSendException, @"mach_msg(send) return (%#x): %s", err, mach_error_string(err));
     }
   } else if (synch) {
     /* if should wait response */
@@ -340,7 +340,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
       err = mach_msg(recv_hdr, opts, 0, recv_hdr->msgh_size, recv_hdr->msgh_local_port, timeout, MACH_PORT_NULL);
       /* should never append */
       if (err == MACH_MSG_SUCCESS && recv_hdr->msgh_id != send_hdr->msgh_id) {
-        WBCLogWarning("Unexpected message: id is %i and should be %i", recv_hdr->msgh_id, send_hdr->msgh_id);
+        spx_log_warning("Unexpected message: id is %i and should be %i", recv_hdr->msgh_id, send_hdr->msgh_id);
       }
     } while (err == MACH_MSG_SUCCESS && recv_hdr->msgh_id != send_hdr->msgh_id);
 
@@ -348,12 +348,12 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     switch (err) {
       case MACH_MSG_SUCCESS:
         if (reply.exception)
-          @throw wb_autorelease((__bridge_transfer id)reply.exception);
+          @throw spx_autorelease((__bridge_transfer id)reply.exception);
         break;
       case MACH_RCV_TIMED_OUT:
-        WBThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
+        SPXThrowException(NSPortTimeoutException, @"timeout occured while waiting response");
       default:
-        WBThrowException(NSPortReceiveException, @"mach_msg(recv) return (%#x): %s", err, mach_error_string(err));
+        SPXThrowException(NSPortReceiveException, @"mach_msg(recv) return (%#x): %s", err, mach_error_string(err));
     }
   }
 }
@@ -369,14 +369,14 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   @try {
     [self performInvocation:(id)invok waitUntilDone:synch timeout:timeout];
   } @finally {
-    wb_release(invok);
+    spx_release(invok);
   }
 }
 
 #pragma mark Automatic forwarding
 - (id)wb_prepareWithInvocationTarget:(id)target waitUntilDone:(NSInteger)synch {
   if (!wb_thread)
-    WBThrowException(NSInvalidArgumentException, @"call method on invalid port");
+    SPXThrowException(NSInvalidArgumentException, @"call method on invalid port");
 
   // message come from the target thread, no need to forward, use fast path.
   if ([wb_thread isEqual:[NSThread currentThread]])
@@ -431,7 +431,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     [invocation invoke];
   } @catch (id exception) {
     // Note: we are in a local autorelease pool => must retain error
-    error = wb_retain(exception);
+    error = spx_retain(exception);
   }
   [pool drain];
   if (!msg->async) {
@@ -445,23 +445,23 @@ void _WBThreadReceivePortDestructor(void *ptr) {
     reply_hdr->msgh_local_port = MACH_PORT_NULL;
     reply_hdr->msgh_remote_port = msg->header.msgh_remote_port;
 
-    reply_msg.exception = (__bridge_retained void *)wb_retain(error);
+    reply_msg.exception = (__bridge_retained void *)spx_retain(error);
 
     mach_msg_option_t opts = MACH_SEND_MSG;
     if (wb_timeout != MACH_MSG_TIMEOUT_NONE) opts |= MACH_SEND_TIMEOUT;
     /* send message */
     mach_error_t err = mach_msg(reply_hdr, opts, reply_hdr->msgh_size, 0, MACH_PORT_NULL, wb_timeout, MACH_PORT_NULL);
     if (MACH_MSG_SUCCESS != err) {
-      WBCLogWarning("mach_msg(reply) : %s", mach_error_string(err));
+      spx_log_warning("mach_msg(reply) : %s", mach_error_string(err));
     }
   } else if (error) {
-    WBLogWarning(@"exception occured during asynchronous call to [%@ %@]: %@: %@",
+    SPXLogWarning(@"exception occured during asynchronous call to [%@ %@]: %@: %@",
                  [[invocation target] class], NSStringFromSelector([invocation selector]),
                  [error respondsToSelector:@selector(name)] ? [error name] : error,
                  [error respondsToSelector:@selector(reason)] ? [error reason] : @"undefined reason");
   }
-  wb_release(error);
-  wb_release(invocation);
+  spx_release(error);
+  spx_release(invocation);
 }
 
 #pragma mark -
@@ -531,10 +531,10 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 }
 
 - (void)dealloc {
-  wb_release(wb_condition);
-  wb_release(wb_argument);
-  wb_release(wb_target);
-  wb_dealloc();
+  spx_release(wb_condition);
+  spx_release(wb_argument);
+  spx_release(wb_target);
+  spx_dealloc();
 }
 
 @end
@@ -560,8 +560,8 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
   WBThreadPort *port = arg.port;
   arg.condition = nil;
-  wb_release(condition);
-  wb_release(arg);
+  spx_release(condition);
+  spx_release(arg);
   return port;
 }
 
@@ -571,24 +571,24 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 @implementation _WBThreadProxy
 
 + (id)proxyWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
-  return wb_autorelease([[self alloc] initWithPort:port target:target sync:synch timeout:timeout]);
+  return spx_autorelease([[self alloc] initWithPort:port target:target sync:synch timeout:timeout]);
 }
 
 - (id)initWithPort:(WBThreadPort *)port target:(id)target sync:(NSUInteger)synch timeout:(uint32_t)timeout  {
   /* NSProxy does not implements init */
   wb_sync = (int8_t)synch;
   wb_timeout = timeout;
-  wb_port = wb_retain(port);
-  wb_target = wb_retain(target);
+  wb_port = spx_retain(port);
+  wb_target = spx_retain(target);
   return self;
 }
 
 - (void)dealloc {
-  wb_release(wb_target);
+  spx_release(wb_target);
   wb_target = nil;
-  wb_release(wb_port);
+  spx_release(wb_port);
   wb_port = nil;
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -685,16 +685,16 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (id)initWithAction:(SEL)anAction target:(id)aTarget argument:(id)anArgument {
   if (self = [super init]) {
     wb_action = anAction;
-    wb_target = wb_retain(aTarget);
-    wb_argument = wb_retain(anArgument);
+    wb_target = spx_retain(aTarget);
+    wb_argument = spx_retain(anArgument);
   }
   return self;
 }
 
 - (void)dealloc {
-  wb_release(wb_argument);
-  wb_release(wb_target);
-  wb_dealloc();
+  spx_release(wb_argument);
+  spx_release(wb_target);
+  spx_dealloc();
 }
 
 - (id)target { return wb_target; }

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 typedef enum {
   kWBHeaderLeft = 1 << 0,

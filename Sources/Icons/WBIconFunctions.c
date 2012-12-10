@@ -10,9 +10,9 @@
 
 #include <Carbon/Carbon.h>
 
-#include WBHEADER(WBIconFunctions.h)
-#include WBHEADER(WBFSFunctions.h)
-#include WBHEADER(WBFinderSuite.h)
+#include <WonderBox/WBIconFunctions.h>
+#include <WonderBox/WBFSFunctions.h>
+#include <WonderBox/WBFinderSuite.h>
 
 #pragma mark Static Functions Declaration
 static OSStatus WBIconFamilySetCustomIconFlagAndNotify(const FSRef *ref, Boolean flag);

@@ -33,7 +33,7 @@ static CGDeviceColor kWB4BitPalette[16] = {
 Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap) {
   if (!bitmap) return nil;
   if ([bitmap bitsPerSample] != 8) {
-    WBThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
+    SPXThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
   }
 
   BOOL premult = YES;
@@ -47,7 +47,7 @@ Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap) {
   BOOL alpha;
   Handle handle = nil;
   unsigned char *dest;
-  unsigned char *src[5];
+  unsigned char *src[6];
   BOOL isPlanar = [bitmap isPlanar];
   NSSize size = NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh]);
   NSUInteger i, j, pixels = size.width * size.height;
@@ -151,7 +151,7 @@ Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap) {
       }
         break;
     default:
-      WBThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
+      SPXThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
   }
   return handle;
 }
@@ -159,7 +159,7 @@ Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap) {
 Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap) {
   if (!bitmap) return nil;
   if ([bitmap bitsPerSample] != 8) {
-    WBThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
+    SPXThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
   }
 
   BOOL premult = YES;
@@ -173,7 +173,7 @@ Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap) {
   BOOL alpha;
   Handle handle = nil;
   unsigned char *dest;
-  unsigned char *src[5];
+  unsigned char *src[6];
   BOOL isPlanar = [bitmap isPlanar];
   NSSize size = NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh]);
   NSUInteger i, j, pixels = size.width * size.height;
@@ -279,7 +279,7 @@ Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap) {
       break;
     default:
       CGPaletteRelease(palette);
-      WBThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
+      SPXThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
   }
   CGPaletteRelease(palette);
   return handle;
@@ -288,7 +288,7 @@ Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap) {
 Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap) {
   if (!bitmap) return nil;
   if ([bitmap bitsPerSample] != 8) {
-    WBThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
+    SPXThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
   }
 
   BOOL premult = YES;
@@ -302,7 +302,7 @@ Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap) {
   BOOL alpha;
   Handle handle = nil;
   unsigned char *dest;
-  unsigned char *src[5];
+  unsigned char *src[6];
   BOOL isPlanar = [bitmap isPlanar];
   NSSize size = NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh]);
   NSUInteger i, j, idx = 0, pixels = size.width * size.height;
@@ -416,7 +416,7 @@ Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap) {
     default:
       DisposeHandle(handle);
       CGPaletteRelease(palette);
-      WBThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
+      SPXThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
   }
   CGPaletteRelease(palette);
   return handle;
@@ -426,7 +426,7 @@ Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap) {
 Handle WBIconFamilyGet8BitMaskForBitmap(NSBitmapImageRep *bitmap) {
   if (!bitmap) return nil;
   if ([bitmap bitsPerSample] != 8) {
-    WBThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
+    SPXThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
   }
 
   BOOL alphaFirst = NO;
@@ -477,7 +477,7 @@ Handle WBIconFamilyGet8BitMaskForBitmap(NSBitmapImageRep *bitmap) {
 Handle WBIconFamilyGet1BitDataAndMaskForBitmap(NSBitmapImageRep *bitmap) {
   if (!bitmap) return nil;
   if ([bitmap bitsPerSample] != 8) {
-    WBThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
+    SPXThrowException(NSInternalInconsistencyException, @"Image must have 8 bits per sample");
   }
 
   BOOL premult = YES;
@@ -491,7 +491,7 @@ Handle WBIconFamilyGet1BitDataAndMaskForBitmap(NSBitmapImageRep *bitmap) {
   BOOL alpha;
   Handle handle = nil;
   unsigned char r, g, b;
-  unsigned char *src[5];
+  unsigned char *src[6];
   unsigned char *dest, *mask;
   BOOL isPlanar = [bitmap isPlanar];
   NSSize size = NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh]);
@@ -606,7 +606,7 @@ Handle WBIconFamilyGet1BitDataAndMaskForBitmap(NSBitmapImageRep *bitmap) {
       break;
     default:
       DisposeHandle(handle);
-      WBThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
+      SPXThrowException(NSInternalInconsistencyException, @"Unsupported colors space: %@", [bitmap colorSpaceName]);
   }
   return handle;
 }

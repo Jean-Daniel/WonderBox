@@ -115,7 +115,7 @@ bool WBServiceRun(const char *name, WBServiceDispatch dispatch, mach_msg_size_t 
   }
 
   kr = mach_msg_server(_WBServiceDemuxer, msgMaxSize > 0 ? msgMaxSize : 512, sServiceContext.ports, MACH_RCV_LARGE);
-  DCLog("mach_msg_server: %s", mach_error_string(kr));
+  spx_debug("mach_msg_server: %s", mach_error_string(kr));
   return true;
 }
 

@@ -11,9 +11,7 @@
 #if !defined(__WB_LS_FUNCTIONS_H)
 #define __WB_LS_FUNCTIONS_H
 
-#import WBHEADER(WBBase.h)
-
-__BEGIN_DECLS
+#import <WonderBox/WBBase.h>
 
 WB_EXPORT
 OSType WBLSGetSignatureForPath(CFStringRef path);
@@ -54,7 +52,5 @@ WB_EXPORT
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle);
 
 #endif /* __OBJC__ */
-
-__END_DECLS
 
 #endif /* __WB_LS_FUNCTIONS_H */

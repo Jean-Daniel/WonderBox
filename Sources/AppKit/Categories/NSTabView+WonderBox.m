@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSTabView+WonderBox.h)
+#import <WonderBox/NSTabView+WonderBox.h>
 
 @implementation NSTabView (WBExtensions)
 

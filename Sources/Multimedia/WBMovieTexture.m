@@ -54,7 +54,7 @@ WBClassCluster(WBMovieTexture)
 - (void)dealloc {
   [self dispose];
   [wb_movie release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -132,7 +132,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
       [qtctxt release];
       return YES;
     } else {
-      WBLogWarning(@"QTVisualContextCopyImageForTime: %s (%d)\n", GetMacOSStatusErrorString(error), error);
+      SPXLogWarning(@"QTVisualContextCopyImageForTime: %s (%d)\n", GetMacOSStatusErrorString(error), error);
     }
   }
   [qtctxt release];
@@ -156,7 +156,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   return wb_context;
 }
 - (void)setVisualContext:(WBQTVisualContext *)ctxt {
-  WBSetterRetain(wb_context, ctxt);
+  SPXSetterRetain(wb_context, ctxt);
 }
 
 - (void)configureMovie:(QTMovie *)aMovie {}
@@ -196,7 +196,7 @@ static volatile OSSpinLock sWBFrameLock = OS_SPINLOCK_INIT;
   return wb_mtFlag.notify;
 }
 - (void)setShouldNotifyDrawer:(BOOL)shouldNotify {
-  WBFlagSet(wb_mtFlag.notify, shouldNotify);
+  SPXFlagSet(wb_mtFlag.notify, shouldNotify);
   if (shouldNotify) {
     [[self visualContext] setDelegate:self];
   } else {

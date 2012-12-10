@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBackgroundView.h)
+#import <WonderBox/WBBackgroundView.h>
 
 @implementation WBBackgroundView
 
@@ -25,7 +25,7 @@
   return wb_bgcolor;
 }
 - (void)setBackgroundColor:(NSColor *)bgColor {
-  WBSetterRetain(wb_bgcolor, bgColor);
+  SPXSetterRetain(wb_bgcolor, bgColor);
 }
 
 - (void)drawRect:(NSRect)aRect {

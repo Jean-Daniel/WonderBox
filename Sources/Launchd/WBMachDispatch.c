@@ -7,7 +7,7 @@
  *
  */
 
-#include WBHEADER(WBMachDispatch.h)
+#include <WonderBox/WBMachDispatch.h>
 
 /* Copy from XNU sources */
 mach_msg_return_t

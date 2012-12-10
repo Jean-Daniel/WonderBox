@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase64.h)
+#import <WonderBox/WBBase64.h>
 
 static const char *kBase64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char *kWebSafeBase64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -387,7 +387,7 @@ CFDataRef _WBBase64CreateDataByEncodingBytes(const void *bytes, CFIndex length,
                                              CFDataGetLength(result),
                                              charset, padded);
   if (finalLength) {
-    WBCAssert(finalLength == maxLength, "how did we calc the length wrong?");
+    spx_assert(finalLength == maxLength, "how did we calc the length wrong?");
   } else {
     CFRelease(result);
     // shouldn't happen, this means we ran out of space
@@ -457,7 +457,7 @@ CFIndex _WBBase64EncodeBytes(const char *srcBytes, CFIndex srcLen,
   // So we can pump through three-byte chunks atomically.
   while (srcLen > 2) {
     // space?
-    WBCAssert(destLen >= 4, "our calc for encoded length was wrong");
+    spx_assert(destLen >= 4, "our calc for encoded length was wrong");
     curDest[0] = charset[curSrc[0] >> 2];
     curDest[1] = charset[((curSrc[0] & 0x03) << 4) + (curSrc[1] >> 4)];
     curDest[2] = charset[((curSrc[1] & 0x0f) << 2) + (curSrc[2] >> 6)];
@@ -477,13 +477,13 @@ CFIndex _WBBase64EncodeBytes(const char *srcBytes, CFIndex srcLen,
     case 1:
       // One byte left: this encodes to two characters, and (optionally)
       // two pad characters to round out the four-character cypherblock.
-      WBCAssert(destLen >= 2, "our calc for encoded length was wrong");
+      spx_assert(destLen >= 2, "our calc for encoded length was wrong");
       curDest[0] = charset[curSrc[0] >> 2];
       curDest[1] = charset[(curSrc[0] & 0x03) << 4];
       curDest += 2;
       destLen -= 2;
       if (padded) {
-        WBCAssert(destLen >= 2, "our calc for encoded length was wrong");
+        spx_assert(destLen >= 2, "our calc for encoded length was wrong");
         curDest[0] = kBase64PaddingChar;
         curDest[1] = kBase64PaddingChar;
         curDest += 2;
@@ -493,14 +493,14 @@ CFIndex _WBBase64EncodeBytes(const char *srcBytes, CFIndex srcLen,
     case 2:
       // Two bytes left: this encodes to three characters, and (optionally)
       // one pad character to round out the four-character cypherblock.
-      WBCAssert(destLen >= 3, "our calc for encoded length was wrong");
+      spx_assert(destLen >= 3, "our calc for encoded length was wrong");
       curDest[0] = charset[curSrc[0] >> 2];
       curDest[1] = charset[((curSrc[0] & 0x03) << 4) + (curSrc[1] >> 4)];
       curDest[2] = charset[(curSrc[1] & 0x0f) << 2];
       curDest += 3;
       destLen -= 3;
       if (padded) {
-        WBCAssert(destLen >= 1, "our calc for encoded length was wrong");
+        spx_assert(destLen >= 1, "our calc for encoded length was wrong");
         curDest[0] = kBase64PaddingChar;
         curDest += 1;
         destLen -= 1;
@@ -550,7 +550,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
         // We're at the beginning of a four-character cyphertext block.
         // This sets the high six bits of the first byte of the
         // plaintext block.
-        WBCAssert(destIndex < destLen, "our calc for decoded length was wrong");
+        spx_assert(destIndex < destLen, "our calc for decoded length was wrong");
         destBytes[destIndex] = decode << 2;
         state = 1;
         break;
@@ -558,7 +558,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
         // We're one character into a four-character cyphertext block.
         // This sets the low two bits of the first plaintext byte,
         // and the high four bits of the second plaintext byte.
-        WBCAssert((destIndex+1) < destLen, "our calc for decoded length was wrong");
+        spx_assert((destIndex+1) < destLen, "our calc for decoded length was wrong");
         destBytes[destIndex] |= decode >> 4;
         destBytes[destIndex+1] = (decode & 0x0f) << 4;
         destIndex++;
@@ -572,7 +572,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
         // bits are zero, it could be that those two bits are
         // leftovers from the encoding of data that had a length
         // of two mod three.
-        WBCAssert((destIndex+1) < destLen, "our calc for decoded length was wrong");
+        spx_assert((destIndex+1) < destLen, "our calc for decoded length was wrong");
         destBytes[destIndex] |= decode >> 2;
         destBytes[destIndex+1] = (decode & 0x03) << 6;
         destIndex++;
@@ -581,7 +581,7 @@ CFIndex _WBBase64DecodeBytes(const char *srcBytes, CFIndex srcLen,
       case 3:
         // We're at the last character of a four-character cyphertext block.
         // This sets the low six bits of the third plaintext byte.
-        WBCAssert(destIndex < destLen, "our calc for decoded length was wrong");
+        spx_assert(destIndex < destLen, "our calc for decoded length was wrong");
         destBytes[destIndex] |= decode;
         destIndex++;
         state = 0;

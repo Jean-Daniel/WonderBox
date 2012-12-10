@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTemplate.h)
-#import WBHEADER(WBTemplateParser.h)
+#import <WonderBox/WBTemplate.h>
+#import <WonderBox/WBTemplateParser.h>
 
 @interface WBTemplate ()
 
@@ -45,7 +45,7 @@
 }
 
 - (id)initWithContentsOfFile:(NSString *)aFile {
-  DLog(@"WARNING: deprecated fonction: %@", NSStringFromSelector(_cmd));
+  SPXDebug(@"WARNING: deprecated fonction: %@", NSStringFromSelector(_cmd));
   return [self initWithContentsOfFile:aFile encoding:[NSString defaultCStringEncoding]];
 }
 
@@ -212,10 +212,10 @@
 #pragma mark Input
 - (BOOL)load {
   if ([self isBlock]) {
-		WBThrowException(NSInvalidArgumentException, @"Cannot load a block template.");
+		SPXThrowException(NSInvalidArgumentException, @"Cannot load a block template.");
   }
   if (wb_contents) {
-    DLog(@"WARNING: Template already loaded");
+    SPXDebug(@"WARNING: Template already loaded");
     return YES;
   }
   return [self loadFile:wb_name];
@@ -233,7 +233,7 @@
       result = [parser parse];
     } @catch (id exception) {
       [self clear];
-      WBLogException(exception);
+      SPXLogException(exception);
     }
     [parser release];
   }

@@ -13,7 +13,7 @@
     @discussion WBIconView is usefull if you want to draw icon without the overhead of icon to NSImage conversion.
 */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 WB_OBJC_EXPORT
 @interface WBIconView : NSView {

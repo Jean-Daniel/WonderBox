@@ -10,10 +10,10 @@
 
 #import "WBCollapseViewInternal.h"
 
-#import WBHEADER(WBGradient.h)
-#import WBHEADER(WBGeometry.h)
-#import WBHEADER(WBCollapseView.h)
-#import WBHEADER(WBCollapseViewItem.h)
+#import <WonderBox/WBGradient.h>
+#import <WonderBox/WBGeometry.h>
+#import <WonderBox/WBCollapseView.h>
+#import <WonderBox/WBCollapseViewItem.h>
 
 #define ITEM_HEADER_HEIGHT 19
 #define ITEM_BOTTOM_MARGIN 1 // bottom border (only when expanded)
@@ -79,7 +79,7 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_item = wb_retain([aCoder decodeObjectForKey:@"view.item"]);
+    wb_item = spx_retain([aCoder decodeObjectForKey:@"view.item"]);
     [self wb_attachItem];
     wb_body = [aCoder decodeObjectForKey:@"view.body"];
     wb_header = [aCoder decodeObjectForKey:@"view.header"];
@@ -94,7 +94,7 @@
     // setup self
     [self setAutoresizesSubviews:YES];
 
-    wb_item = wb_retain(anItem);
+    wb_item = spx_retain(anItem);
 
     [self wb_attachItem];
     [self wb_buildBodyView];
@@ -122,7 +122,7 @@
 
 - (void)dealloc {
   [self wb_detachItem];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -141,7 +141,7 @@
 // MARK: Expension
 - (void)willSetExpanded:(BOOL)expanded {
   // notify only if state change, but continue even if state do not change (to refresh the view).
-  if (XOR([wb_item isExpanded], expanded))
+  if (spx_xor([wb_item isExpanded], expanded))
     [wb_item willSetExpanded:expanded];
   wb_civFlags.resizing = 1;
   if (expanded) {
@@ -170,7 +170,7 @@
     [self wb_detachView:[wb_item view]];
   }
   wb_civFlags.resizing = 0;
-  if (XOR([wb_item isExpanded], expanded))
+  if (spx_xor([wb_item isExpanded], expanded))
     [wb_item didSetExpanded:expanded];
 }
 
@@ -197,7 +197,7 @@
   if ([wb_item isExpanded]) // restore state
     [self wb_detachView:[wb_item view]];
 
-  wb_release(wb_item);
+  spx_release(wb_item);
   wb_item = nil;
 }
 
@@ -243,7 +243,7 @@
     // adjust height and notify parent
     if (![wb_item isExpanded]) return;
 
-    WBThrowException(NSInternalInconsistencyException, @"not implemented");
+    SPXThrowException(NSInternalInconsistencyException, @"not implemented");
 //    NSView *new = [change objectForKey:NSKeyValueChangeNewKey];
 //    NSView *old = [change objectForKey:NSKeyValueChangeOldKey];
 //    CGFloat delta = new ? NSHeight([new frame]) : 0;
@@ -279,10 +279,10 @@
   NSRect frame = [view frame];
 
   if (fnotequal(NSWidth([self frame]), NSWidth(frame)))
-    WBLogWarning(@"Changing item view width. This is not a good idea !");
+    SPXLogWarning(@"Changing item view width. This is not a good idea !");
 
   if (fnonzero(frame.origin.x)/* || fnotequal(frame.origin.y, ITEM_BOTTOM_MARGIN) */)
-    WBLogWarning(@"Changing item origin. This is not a good idea !");
+    SPXLogWarning(@"Changing item origin. This is not a good idea !");
 
   // theorical item view height is body size - bottom margin (as the body origin is (0; 0))
   CGFloat height = NSHeight([wb_body frame]) - ITEM_BOTTOM_MARGIN;
@@ -313,7 +313,7 @@
   wb_body = [[_WBCollapseItemBodyView alloc] initWithFrame:NSMakeRect(0, 0, NSWidth([self frame]), 0)];
   [wb_body setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
   [self addSubview:wb_body];
-  wb_release(wb_body);
+  spx_release(wb_body);
 }
 
 - (void)wb_buildHeaderView {
@@ -327,7 +327,7 @@
   wb_header.target = self;
   wb_header.action = @selector(toggleCollapse:);
   [self addSubview:wb_header];
-  wb_release(wb_header);
+  spx_release(wb_header);
 }
 
 @end
@@ -356,7 +356,7 @@
     [wb_title setSelectable:NO];
     [wb_title setBordered:NO];
     [self addSubview:wb_title];
-    wb_release(wb_title);
+    spx_release(wb_title);
 
     // Disclose Button
     // Empirical values
@@ -375,7 +375,7 @@
     [wb_disclose setAction:@selector(wb_performAction:)];
     // Add Button
     [self addSubview:wb_disclose];
-    wb_release(wb_disclose);
+    spx_release(wb_disclose);
   }
   return self;
 }
@@ -413,7 +413,7 @@
     switch ([theEvent type]) {
       case NSLeftMouseDragged:
         if (wb_chvFlags.highlight != (uint8_t)isInside) {
-          WBFlagSet(wb_chvFlags.highlight, isInside);
+          SPXFlagSet(wb_chvFlags.highlight, isInside);
           //[wb_disclose setState:isInside ? NSMixedState : [wb_item isExpanded] ? NSOnState : NSOffState];
           [self setNeedsDisplayInRect:bounds];
         }
@@ -464,7 +464,7 @@ WBGradientDefinition sHeaderGradient = {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithColorSpace:[NSColorSpace genericRGBColorSpace]
                                                               definition:&sHeaderGradient];
     sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
-    wb_release(b);
+    spx_release(b);
   }
   // draw background gradient
   CGContextDrawLayerInRect(ctxt, background, sHeaderBackground);
@@ -493,7 +493,7 @@ WBGradientDefinition sHeaderGradient = {
 @implementation _WBCollapseItemBodyView
 
 - (BOOL)isFlipped { return (BOOL)wb_flipped; }
-- (void)setFlipped:(BOOL)flag { WBFlagSet(wb_flipped, flag); }
+- (void)setFlipped:(BOOL)flag { SPXFlagSet(wb_flipped, flag); }
 
 - (void)drawRect:(NSRect)aRect {
   CGPoint line[2];

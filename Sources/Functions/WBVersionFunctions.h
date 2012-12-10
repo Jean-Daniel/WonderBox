@@ -11,9 +11,7 @@
 #if !defined (__WB_VERSION_FUNCTIONS_H)
 #define __WB_VERSION_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
-
-__BEGIN_DECLS
+#include <WonderBox/WBBase.h>
 
 #pragma mark Versions
 enum {
@@ -79,7 +77,5 @@ WB_EXPORT
 UInt64 WBVersionComposeNumber(CFIndex major, CFIndex minor, CFIndex bug, WBVersionStage stage, CFIndex build);
 WB_EXPORT
 void WBVersionDecomposeNumber(UInt64 version, CFIndex *major, CFIndex *minor, CFIndex *bug, WBVersionStage *stage, CFIndex *build);
-
-__END_DECLS
 
 #endif /* __WBVERSION_FUNCTIONS_H */

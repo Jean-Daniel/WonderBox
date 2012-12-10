@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBIOKitFunctions.h)
+#include <WonderBox/WBIOKitFunctions.h>
 
 #include <pthread.h>
 

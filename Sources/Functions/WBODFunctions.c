@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBODFunctions.h)
+#include <WonderBox/WBODFunctions.h>
 
 #include <pwd.h>
 #include <grp.h>

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSButton+WonderBox.h)
+#import <WonderBox/NSButton+WonderBox.h>
 
 @implementation NSButton (WBImageButton)
 

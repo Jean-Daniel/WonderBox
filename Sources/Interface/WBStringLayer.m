@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBStringLayer.h)
+#import <WonderBox/WBStringLayer.h>
 
 @interface WBStringLayer ()
 - (NSLayoutManager *)layoutManager;
@@ -27,30 +27,30 @@
     wb_manager = [[NSLayoutManager alloc] init];
     wb_container = [[NSTextContainer alloc] initWithContainerSize:aSize];
     [wb_manager addTextContainer:wb_container];
-    wb_release(wb_container);
+    spx_release(wb_container);
 
-    NSTextStorage *storage = aStorage ? wb_retain(aStorage) : [[NSTextStorage alloc] init];
+    NSTextStorage *storage = aStorage ? spx_retain(aStorage) : [[NSTextStorage alloc] init];
     [storage addLayoutManager:wb_manager];
-    wb_release(wb_manager);
+    spx_release(wb_manager);
 
     [self setTextStorage:storage];
-    wb_release(storage);
+    spx_release(storage);
   }
   return self;
 }
 
 - (id)initWithSize:(NSSize)aSize attributedString:(NSAttributedString *)aString {
-  return [self initWithSize:aSize textStorage:aString ? wb_autorelease([[NSTextStorage alloc] initWithAttributedString:aString]) : nil];
+  return [self initWithSize:aSize textStorage:aString ? spx_autorelease([[NSTextStorage alloc] initWithAttributedString:aString]) : nil];
 }
 
 - (id)initWithSize:(NSSize)aSize string:(NSString *)aString attributes:(NSDictionary *)attributes {
-  return [self initWithSize:aSize textStorage:aString ? wb_autorelease([[NSTextStorage alloc] initWithString:aString
+  return [self initWithSize:aSize textStorage:aString ? spx_autorelease([[NSTextStorage alloc] initWithString:aString
                                                                                                   attributes:attributes]) : nil];
 }
 
 - (void)dealloc {
-  wb_release(wb_storage);
-  wb_dealloc();
+  spx_release(wb_storage);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -58,7 +58,7 @@
   return !wb_slFlags.clip;
 }
 - (void)setWraps:(BOOL)wrap {
-  BOOL previous = WBFlagTestAndSet(wb_slFlags.clip, !wrap);
+  BOOL previous = SPXFlagTestAndSet(wb_slFlags.clip, !wrap);
   if (wb_slFlags.clip != previous) {
     if (wb_slFlags.clip)
       [[self textContainer] setContainerSize:NSMakeSize(64000, 64000)];
@@ -70,7 +70,7 @@
   return wb_storage;
 }
 - (void)setTextStorage:(NSTextStorage *)aStorage {
-  WBSetterRetain(wb_storage, aStorage);
+  SPXSetterRetain(wb_storage, aStorage);
 }
 
 - (NSTextContainer *)textContainer {
@@ -88,7 +88,7 @@
   if (!attribs) attribs = [wb_storage attributesAtIndex:0 effectiveRange:nil];
   NSAttributedString *astr = [[NSAttributedString alloc] initWithString:aString attributes:attribs];
   [self setAttributedString:astr];
-  wb_release(astr);
+  spx_release(astr);
 }
 
 #pragma mark -

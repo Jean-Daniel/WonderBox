@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBWizardPage.h)
+#import <WonderBox/WBWizardPage.h>
 
 @implementation WBWizardPage
 
@@ -21,14 +21,14 @@
 }
 
 - (id)init {
-  if (self = [super initWithNibName:[[self class] pageNibName] bundle:WBCurrentBundle()]) {
+  if (self = [super initWithNibName:[[self class] pageNibName] bundle:SPXCurrentBundle()]) {
 
   }
   return self;
 }
 
 - (void)dealloc {
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (NSImage *)image {

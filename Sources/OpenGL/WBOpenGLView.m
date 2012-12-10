@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBOpenGLView.h)
-#import WBHEADER(WBGeometry.h)
+#import <WonderBox/WBOpenGLView.h>
+#import <WonderBox/WBGeometry.h>
 
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/CGLMacro.h>
@@ -22,7 +22,7 @@
 }
 - (void)setOpaque:(BOOL)isOpaque {
   GLint opacity = isOpaque ? 1 : 0;
-  WBFlagSet(wb_glvFlags.transparent, !isOpaque);
+  SPXFlagSet(wb_glvFlags.transparent, !isOpaque);
   CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
   CGLLockContext(glctxt);
   [[self openGLContext] setValues:&opacity forParameter:NSOpenGLCPSurfaceOpacity];
@@ -34,7 +34,7 @@
 }
 - (void)setSupportsSubview:(BOOL)flag {
   GLint order = flag ? -1 : 1;
-  WBFlagSet(wb_glvFlags.subview, flag);
+  SPXFlagSet(wb_glvFlags.subview, flag);
   CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
   CGLLockContext(glctxt);
   [[self openGLContext] setValues:&order forParameter:NSOpenGLCPSurfaceOrder];
@@ -45,7 +45,7 @@
   return !wb_glvFlags.scales;
 }
 - (void)setIgnoresUserScaleFactor:(BOOL)flag {
-  WBFlagSet(wb_glvFlags.scales, !flag);
+  SPXFlagSet(wb_glvFlags.scales, !flag);
 }
 
 #pragma mark Live resizing
@@ -58,7 +58,7 @@
     CGLContextObj glctxt = [[self openGLContext] CGLContextObj];
     CGLLockContext(glctxt);
     [[self openGLContext] getValues:&swap forParameter:NSOpenGLCPSwapInterval];
-    WBFlagSet(wb_glvFlags.syncSwap, swap);
+    SPXFlagSet(wb_glvFlags.syncSwap, swap);
     if (swap) {
       swap = 0;
       [[self openGLContext] setValues:&swap forParameter:NSOpenGLCPSwapInterval];

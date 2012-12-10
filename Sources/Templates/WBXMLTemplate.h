@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTemplate.h)
+#import <WonderBox/WBTemplate.h>
 
 WB_OBJC_EXPORT
 @interface WBXMLTemplate : WBTemplate {

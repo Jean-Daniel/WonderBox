@@ -11,7 +11,7 @@
 #if !defined(__WB_CDSA_FUNCTIONS_H)
 #define __WB_CDSA_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #include <Security/cssmtype.h>
 

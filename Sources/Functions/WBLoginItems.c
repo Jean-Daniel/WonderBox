@@ -10,8 +10,8 @@
 
 #include <Carbon/Carbon.h>
 
-#include WBHEADER(WBLoginItems.h)
-#include WBHEADER(WBAEFunctions.h)
+#include <WonderBox/WBLoginItems.h>
+#include <WonderBox/WBAEFunctions.h>
 
 #pragma mark ***** Apple event utilities
 enum {

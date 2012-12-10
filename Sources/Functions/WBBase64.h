@@ -11,9 +11,7 @@
 #if !defined (__WB_BASE64_H)
 #define __WB_BASE64_H 1
 
-#include WBHEADER(WBBase.h)
-
-__BEGIN_DECLS
+#include <WonderBox/WBBase.h>
 
 // WBBase64
 //
@@ -182,7 +180,5 @@ CFStringRef WBWSBase64CreateStringByEncodingBytes(const void *bytes, CFIndex len
 //
 WB_EXPORT
 CFDataRef WBWSBase64CreateDataByDecodingString(CFStringRef string);
-
-__END_DECLS
 
 #endif /* __WB_BASE64_H */

@@ -11,7 +11,7 @@
 #if !defined (__WB_GEOMETRY_H)
 #define __WB_GEOMETRY_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #include <ApplicationServices/ApplicationServices.h>
 

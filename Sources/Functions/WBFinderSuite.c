@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBFinderSuite.h)
-#include WBHEADER(WBAEFunctions.h)
+#include <WonderBox/WBFinderSuite.h>
+#include <WonderBox/WBAEFunctions.h>
 
 OSStatus WBAEFinderGetSelection(AEDescList *items) {
   OSStatus err = noErr;

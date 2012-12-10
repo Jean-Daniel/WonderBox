@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <GHUnit/GHUnit.h>
+#import <SenTestingKit/SenTestingKit.h>
 
-@interface WBMacroTests : GHTestCase {
+@interface WBMacroTests : SenTestCase {
 
 }
 
@@ -23,28 +23,28 @@
     unsigned int foo:1;
   } test;
   test.foo = 0;
-  GHAssertFalse(test.foo, @"sanity check");
-  WBFlagSet(test.foo, 1);
-  GHAssertTrue(test.foo, @"WBFlagSet");
+  STAssertFalse(test.foo, @"sanity check");
+  SPXFlagSet(test.foo, 1);
+  STAssertTrue(test.foo, @"SPXFlagSet");
   /* true => true */
-  bool eval = WBFlagTestAndSet(test.foo, 1);
-  GHAssertTrue(test.foo, @"WBFlagTestAndSet");
-  GHAssertTrue(eval, @"WBFlagTestAndSet");
+  bool eval = SPXFlagTestAndSet(test.foo, 1);
+  STAssertTrue(test.foo, @"WBFlagTestAndSet");
+  STAssertTrue(eval, @"WBFlagTestAndSet");
 
   /* true => false */
-  eval = WBFlagTestAndSet(test.foo, 0);
-  GHAssertFalse(test.foo, @"WBFlagTestAndSet");
-  GHAssertTrue(eval, @"WBFlagTestAndSet");
+  eval = SPXFlagTestAndSet(test.foo, 0);
+  STAssertFalse(test.foo, @"WBFlagTestAndSet");
+  STAssertTrue(eval, @"WBFlagTestAndSet");
 
   /* false => false */
-  eval = WBFlagTestAndSet(test.foo, 0);
-  GHAssertFalse(test.foo, @"WBFlagTestAndSet");
-  GHAssertFalse(eval, @"WBFlagTestAndSet");
+  eval = SPXFlagTestAndSet(test.foo, 0);
+  STAssertFalse(test.foo, @"WBFlagTestAndSet");
+  STAssertFalse(eval, @"WBFlagTestAndSet");
 
   /* false => true */
-  eval = WBFlagTestAndSet(test.foo, 1);
-  GHAssertTrue(test.foo, @"WBFlagTestAndSet");
-  GHAssertFalse(eval, @"WBFlagTestAndSet");
+  eval = SPXFlagTestAndSet(test.foo, 1);
+  STAssertTrue(test.foo, @"WBFlagTestAndSet");
+  STAssertFalse(eval, @"WBFlagTestAndSet");
 }
 
 

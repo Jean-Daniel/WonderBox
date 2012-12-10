@@ -6,7 +6,7 @@
  *  Copyright © 2009 - 2010 Ninsight. All rights reserved.
  */
 
-#import WBHEADER(RSEditorView.h)
+#import <WonderBox/RSEditorView.h>
 
 @implementation RSEditorEffectView
 
@@ -28,7 +28,7 @@
     dict = [attributes mutableCopy];
     [dict removeObjectForKey:NSStrokeColorAttributeName];
   }
-  return dict ? wb_autorelease(dict) : attributes;
+  return dict ? spx_autorelease(dict) : attributes;
 }
 
 @end
@@ -43,8 +43,8 @@
 }
 
 - (void)dealloc {
-  wb_release(ibView); // root object
-  wb_dealloc();
+  spx_release(ibView); // root object
+  spx_dealloc();
 }
 
 - (NSView *)view {
@@ -52,7 +52,7 @@
 }
 
 - (void)changeColor:(id)sender {
-  WBTrace();
+  SPXTrace();
 }
 
 - (IBAction)changeStrokeWidth:(id)sender {
@@ -70,7 +70,7 @@
 - (NSDictionary *)convertAttributes:(NSDictionary *)attributes {
   NSMutableDictionary *dict = nil;
   if (rs_swidth > 0) {
-    NSNumber *current = WBCGFloat(-rs_swidth);
+    NSNumber *current = SPXCGFloat(-rs_swidth);
     NSNumber *previous = [attributes objectForKey:NSStrokeWidthAttributeName];
     if (!previous || ![previous isEqualToNumber:current]) {
       dict = [attributes mutableCopy];
@@ -80,7 +80,7 @@
     dict = [attributes mutableCopy];
     [dict removeObjectForKey:NSStrokeWidthAttributeName];
   }
-  return dict ? wb_autorelease(dict) : attributes;
+  return dict ? spx_autorelease(dict) : attributes;
 }
 
 - (void)updateAttributes:(NSTextView *)sender {

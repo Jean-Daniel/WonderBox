@@ -10,7 +10,7 @@
 
 #include <objc/objc-runtime.h> // must be before WBObjCRuntime.h
 
-#include WBHEADER(WBObjCRuntime.h)
+#include <WonderBox/WBObjCRuntime.h>
 
 #pragma mark Objective-C Runtime
 

@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBInterpolationFunction.h)
-#import WBHEADER(WBClassCluster.h)
+#import <WonderBox/WBInterpolationFunction.h>
+#import <WonderBox/WBClassCluster.h>
 
 @interface _WBInterpolationFunctionCB : WBInterpolationFunction {
 @private
@@ -61,10 +61,10 @@ WBClassCluster(WBInterpolationFunction)
 @implementation WBInterpolationFunction
 
 + (WBInterpolationFunction *)circularInterpolation {
-  return wb_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackCircular]);
+  return spx_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackCircular]);
 }
 + (WBInterpolationFunction *)sinusoidalInterpolation {
-  return wb_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackSin]);
+  return spx_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackSin]);
 }
 
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
@@ -99,7 +99,7 @@ WBClassCluster(WBInterpolationFunction)
 - (void)dealloc {
   if (wb_ctxt.releaseInfo)
     wb_ctxt.releaseInfo(wb_ctxt.info);
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (CGFloat)valueForInput:(CGFloat)input {

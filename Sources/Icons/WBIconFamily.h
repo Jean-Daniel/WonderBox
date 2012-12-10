@@ -13,7 +13,7 @@
     @discussion (description)
 */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 #pragma mark -
 /*!

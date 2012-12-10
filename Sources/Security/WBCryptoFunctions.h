@@ -11,7 +11,7 @@
 #if !defined(__WBCRYPTO_FUNCTIONS_H)
 #define __WBCRYPTO_FUNCTIONS_H 1
 
-#include WBHEADER(WBCDSAFunctions.h)
+#include <WonderBox/WBCDSAFunctions.h>
 
 #pragma mark -
 /*!

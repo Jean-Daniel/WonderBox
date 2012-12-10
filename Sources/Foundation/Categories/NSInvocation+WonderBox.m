@@ -8,13 +8,13 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSInvocation+WonderBox.h)
+#import <WonderBox/NSInvocation+WonderBox.h>
 
 @implementation NSInvocation (WBExtensions)
 
 + (id)invocationWithTarget:(id)target selector:(SEL)action {
   if (![target respondsToSelector:action])
-		WBThrowException(NSInvalidArgumentException, @"%@ does not responds to selector %@",
+		SPXThrowException(NSInvalidArgumentException, @"%@ does not responds to selector %@",
 										 target, NSStringFromSelector(action));
 
   NSMethodSignature *sign = [target methodSignatureForSelector:action];

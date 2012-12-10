@@ -10,28 +10,8 @@
 
 #import "WBSerialQueue.h"
 
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 #include <dispatch/dispatch.h>
-#else
-#warning GCD not available with 10.5 SDK
-#endif
 
-// FIXME: does not support too many operations.
-@interface _WBSerialOperationQueue : WBSerialQueue {
-@private
-  NSOperation *wb_last;
-  NSCondition *wb_event;
-  NSOperationQueue *wb_queue;
-}
-
-- (void)addOperation:(NSOperation *)op;
-- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait;
-
-- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
-
-@end
-
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
 @interface _WBGCDSerialQueue : WBSerialQueue {
 @private
   dispatch_queue_t wb_queue;
@@ -40,17 +20,12 @@
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait;
 
 @end
-#endif
 
 @implementation WBSerialQueue
 
 + (id)allocWithZone:(NSZone *)zone {
   if ([WBSerialQueue class] == self) {
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-    if (dispatch_sync_f)
-      return [_WBGCDSerialQueue allocWithZone:zone];
-#endif
-    return [_WBSerialOperationQueue allocWithZone:zone];
+    return [_WBGCDSerialQueue allocWithZone:zone];
   }
   return [super allocWithZone:zone];
 }
@@ -60,84 +35,7 @@
 }
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
-  WBAbstractMethodException();
-}
-
-@end
-
-@implementation _WBSerialOperationQueue
-
-- (id)init {
-  if (self = [super init]) {
-    if (![NSOperation instancesRespondToSelector:@selector(waitUntilFinished)])
-      wb_event = [[NSCondition alloc] init];
-
-    wb_queue = [[NSOperationQueue alloc] init];
-    [wb_queue setMaxConcurrentOperationCount:1];
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-    if ([wb_queue respondsToSelector:@selector(setName:)])
-      [wb_queue setName:@"org.shadowlab.serial-queue"];
-#endif
-  }
-  return self;
-}
-
-- (void)dealloc {
-  wb_release(wb_queue);
-  wb_release(wb_event);
-  wb_release(wb_last);
-  wb_dealloc();
-}
-
-- (void)addOperation:(NSOperation *)op {
-  @synchronized(self) {
-    if (wb_last)
-      [op addDependency:wb_last];
-
-    WBSetterRetain(wb_last, op);
-    [op addObserver:self forKeyPath:@"isFinished" 
-            options:0 context:(__bridge void *)[_WBSerialOperationQueue class]];
-  }
-  [wb_queue addOperation:op];
-}
-
-- (void)addOperation:(NSOperation *)op waitUntilFinished:(BOOL)shouldWait {
-  NSParameterAssert(op);
-  [self addOperation:op];
-  if (shouldWait) {
-    if (wb_event) {
-      [wb_event lock];
-      while (![op isFinished])
-        [wb_event wait];
-      [wb_event unlock];
-    } else {
-      [op waitUntilFinished];
-    }
-  }
-}
-
-- (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
-  NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:target selector:sel object:arg];
-  [self addOperation:op waitUntilFinished:shouldWait];
-  wb_release(op);
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if (context == (__bridge void *)[_WBSerialOperationQueue class]) {
-    @synchronized(self) {
-      [object removeObserver:self forKeyPath:@"isFinished"];
-      if (wb_last == object)
-        WBSetterRetain(wb_last, nil);
-    }
-    // an op is finished, tell it to all 'synchronous op' waiter.
-    [wb_event lock];
-    // MUST lock to prevent race condition
-    [wb_event broadcast];
-    [wb_event unlock];
-  }
-  else {
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-  }
+  SPXAbstractMethodException();
 }
 
 @end
@@ -155,7 +53,7 @@
 @property(nonatomic, retain) id argument;
 
 @end
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
+
 @implementation _WBGCDSerialQueue
 
 - (id)init {
@@ -168,7 +66,7 @@
 - (void)dealloc {
   if (wb_queue)
     dispatch_release(wb_queue);
-  wb_dealloc();
+  spx_dealloc();
 }
 
 static
@@ -177,9 +75,9 @@ void wb_dispatch_execute(void *ctxt) {
   @try {
     [block.target performSelector:block.action withObject:block.argument];
   } @catch (id exception) {
-    WBLogException(exception);
+    SPXLogException(exception);
   }
-  wb_release(block);
+  spx_release(block);
 }
 
 - (void)addOperationWithTarget:(id)target selector:(SEL)sel object:(id)arg waitUntilFinished:(BOOL)shouldWait {
@@ -195,7 +93,7 @@ void wb_dispatch_execute(void *ctxt) {
 }
 
 @end
-#endif
+
 @implementation _WBSerialQueueBlock
 
 @synthesize target = wb_target;
@@ -203,9 +101,9 @@ void wb_dispatch_execute(void *ctxt) {
 @synthesize argument = wb_argument;
 
 - (void)dealloc {
-  wb_release(wb_argument);
-  wb_release(wb_target);
-  wb_dealloc();
+  spx_release(wb_argument);
+  spx_release(wb_target);
+  spx_dealloc();
 }
 
 

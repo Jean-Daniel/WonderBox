@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBTextFunctions.h)
+#include <WonderBox/WBTextFunctions.h>
 
 CFIndex WBTextGetCountOfLines(CFStringRef str) {
   CFIndex lines = 0;

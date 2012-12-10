@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBIndexSetIterator.h)
+#import <WonderBox/WBIndexSetIterator.h>
 
 WB_INLINE
 void __WBIndexIteratorInitialize(WBIndexIterator *iter) {

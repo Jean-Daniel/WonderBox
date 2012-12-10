@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBCollapseView.h)
-#import WBHEADER(WBCollapseViewItem.h)
+#import <WonderBox/WBCollapseView.h>
+#import <WonderBox/WBCollapseViewItem.h>
 
 @class _WBCollapseItemView;
 @interface WBCollapseView (WBInternal)

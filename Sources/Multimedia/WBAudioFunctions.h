@@ -13,7 +13,7 @@
 
 #import <CoreAudio/CoreAudio.h>
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 WB_EXPORT
 void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame,

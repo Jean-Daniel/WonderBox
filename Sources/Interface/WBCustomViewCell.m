@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBCustomViewCell.h)
+#import <WonderBox/WBCustomViewCell.h>
 
 @implementation WBCustomViewCell
 

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBGLFrameBuffer.h)
+#import <WonderBox/WBGLFrameBuffer.h>
 
 #import <OpenGL/CGLMacro.h>
 #import <OpenGL/glu.h>
@@ -34,9 +34,9 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 
 - (void)delete:(CGLContextObj)CGL_MACRO_CONTEXT {
   NSParameterAssert(CGL_MACRO_CONTEXT);
-  wb_release(wb_stencil);
+  spx_release(wb_stencil);
   wb_stencil = nil;
-  wb_release(wb_depth);
+  spx_release(wb_depth);
   wb_depth = nil;
   if (wb_attachements) {
     NSFreeMapTable(wb_attachements);
@@ -50,8 +50,8 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 
 - (void)dealloc {
   if (wb_fbo)
-    WBCLogError("Release undeleted FBO. Leaks OpenGL objects !");
-  wb_dealloc();
+    spx_log_error("Release undeleted FBO. Leaks OpenGL objects !");
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -68,7 +68,7 @@ GLenum __WBGLFBOBindingForMode(GLenum mode) {
     case GL_READ_FRAMEBUFFER_EXT:
       return GL_READ_FRAMEBUFFER_BINDING_EXT;
   }
-  WBThrowException(NSInvalidArgumentException, @"Invalid FBO mode");
+  SPXThrowException(NSInvalidArgumentException, @"Invalid FBO mode");
 }
 
 WB_INLINE
@@ -79,7 +79,7 @@ void __WBGLFrameBufferCheck(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo, GLenum 
   NSCAssert(GL_ZERO == err, @"glGetError() -> 0x%x (%s)", err, _WBGLFrameBufferGetErrorString(err));
 
   if (save != fbo)
-    WBThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
+    SPXThrowException(NSInvalidArgumentException, @"You MUST bind the FBO accessing it properties");
 }
 #else
 #define __WBGLFrameBufferCheck(ctxt, fbo, mode)
@@ -121,7 +121,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setDepthBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (wb_depth != aBuffer) {
-    WBSetterRetain(wb_depth, aBuffer);
+    SPXSetterRetain(wb_depth, aBuffer);
     __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_DEPTH_ATTACHMENT_EXT, aBuffer);
   }
@@ -131,7 +131,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
 - (void)setStencilBuffer:(WBGLFrameBufferAttachement *)aBuffer context:(CGLContextObj)aContext {
   NSParameterAssert(aContext);
   if (wb_stencil != aBuffer) {
-    WBSetterRetain(wb_stencil, aBuffer);
+    SPXSetterRetain(wb_stencil, aBuffer);
     __WBGLFrameBufferAttach(aContext, wb_fbo,
                             GL_STENCIL_ATTACHMENT_EXT, aBuffer);
   }
@@ -268,7 +268,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, save);
   }
   if (name) {
-    buffer = wb_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
+    buffer = spx_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
     if (!buffer)
       glDeleteRenderbuffersEXT(1, &name);
   }
@@ -295,7 +295,7 @@ void __WBGLFrameBufferAttach(CGLContextObj CGL_MACRO_CONTEXT, GLuint fbo,
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, save);
   }
   if (name) {
-    buffer = wb_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
+    buffer = spx_autorelease([[WBGLFrameBufferAttachement alloc] initWithRendererBuffer:name width:w height:h]);
     if (!buffer)
       glDeleteRenderbuffersEXT(1, &name);
   }

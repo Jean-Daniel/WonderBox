@@ -8,13 +8,13 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBHeaderView.h)
+#import <WonderBox/WBHeaderView.h>
 
-#import WBHEADER(WBGeometry.h)
+#import <WonderBox/WBGeometry.h>
 
-#import WBHEADER(NSColor+WonderBox.h)
-#import WBHEADER(NSImage+WonderBox.h)
-#import WBHEADER(NSButton+WonderBox.h)
+#import <WonderBox/NSColor+WonderBox.h>
+#import <WonderBox/NSImage+WonderBox.h>
+#import <WonderBox/NSButton+WonderBox.h>
 
 static NSColor *kWBHeaderTopLineColor = nil;
 static NSImage *kWBHeaderViewBackground = nil;
@@ -41,8 +41,8 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
 + (void)initialize {
   if ([WBHeaderView class] == self) {
     kWBHeaderTopLineColor = [[NSColor colorWithCalibratedWhite:.549 alpha:1] retain];
-    kWBHeaderViewBackground = [[NSImage imageNamed:@"WBHeader" inBundle:WBCurrentBundle()] retain];
-    kWBHeaderViewGrayBackground = [[NSImage imageNamed:@"WBHeader-down" inBundle:WBCurrentBundle()] retain];
+    kWBHeaderViewBackground = [[NSImage imageNamed:@"WBHeader" inBundle:SPXCurrentBundle()] retain];
+    kWBHeaderViewGrayBackground = [[NSImage imageNamed:@"WBHeader-down" inBundle:SPXCurrentBundle()] retain];
   }
 }
 
@@ -275,7 +275,7 @@ static NSImage *kWBHeaderMenuImage = nil;
 
 + (void)initialize {
   if ([WBHeaderMenuCell class] == self) {
-    kWBHeaderMenuImage = [[NSImage imageNamed:@"WBHeaderMenu" inBundle:WBCurrentBundle()] retain];
+    kWBHeaderMenuImage = [[NSImage imageNamed:@"WBHeaderMenu" inBundle:SPXCurrentBundle()] retain];
   }
 }
 

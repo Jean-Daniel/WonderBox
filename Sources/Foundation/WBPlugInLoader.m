@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBPlugInLoader.h)
+#import <WonderBox/WBPlugInLoader.h>
 
-#import WBHEADER(WBFSFunctions.h)
+#import <WonderBox/WBFSFunctions.h>
 
 NSString * const WBPlugInLoaderDidLoadPlugInNotification = @"WBPlugInLoaderDidLoadPlugIn";
 NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDidRemovePlugIn";
@@ -76,7 +76,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     while ((domain = va_arg(args, NSUInteger))) {
       if (nil != [self domainWithName:domain]) {
         [self release];
-        WBThrowException(NSInvalidArgumentException, @"domain %u is defined twice", domain);
+        SPXThrowException(NSInvalidArgumentException, @"domain %u is defined twice", domain);
       }
       [wb_domains addObject:[_WBPlugInDomain domainWithName:domain]];
     }
@@ -244,7 +244,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (WBPlugInBundle *)resolveConflict:(NSArray *)plugins {
   // use first found
-  WBLogWarning(@"plugins have the same identifier: %@", plugins);
+  SPXLogWarning(@"plugins have the same identifier: %@", plugins);
   return nil;
 }
 
@@ -288,10 +288,10 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
       if (plugin)
         [self registerPlugIn:plugin withIdentifier:[aBundle bundleIdentifier] domain:aName];
     } else {
-      WBLogWarning(@"PlugIn already loaded: %@", [aBundle bundleIdentifier]);
+      SPXLogWarning(@"PlugIn already loaded: %@", [aBundle bundleIdentifier]);
     }
   } @catch (id exception) {
-    WBLogException(exception);
+    SPXLogException(exception);
   }
   return plugin;
 }
@@ -300,7 +300,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier domain:(WBPlugInDomain)aDomain {
   NSAssert(![wb_plugins objectForKey:identifier], @"plugin already loaded");
 
-  DLog(@"Register plugin: %@", plugin);
+  SPXDebug(@"Register plugin: %@", plugin);
   [wb_plugins setObject:plugin forKey:identifier];
   NSAssert([self domainWithName:aDomain], @"domain does not exists");
   [[self domainWithName:aDomain] addPlugIn:plugin];
@@ -311,7 +311,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 #pragma mark Built-in PlugIns
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier {
   if ([wb_plugins objectForKey:identifier])
-    WBThrowException(NSInvalidArgumentException, @"PlugIn %@ already loaded", identifier);
+    SPXThrowException(NSInvalidArgumentException, @"PlugIn %@ already loaded", identifier);
 
   [self registerPlugIn:plugin withIdentifier:identifier domain:kWBPlugInDomainBuiltIn];
 }
@@ -319,7 +319,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 - (void)unregisterPlugIn:(NSString *)identifier {
   id plugin = [wb_plugins objectForKey:identifier];
   if (!plugin)
-    WBThrowException(NSInvalidArgumentException, @"plugin %@ not found", identifier);
+    SPXThrowException(NSInvalidArgumentException, @"plugin %@ not found", identifier);
 
   [plugin retain];
   [wb_plugins removeObjectForKey:identifier];
@@ -357,7 +357,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   return wb_path;
 }
 - (void)setPath:(NSString *)aPath {
-  WBSetterCopy(wb_path, [aPath stringByStandardizingPath]);
+  SPXSetterCopy(wb_path, [aPath stringByStandardizingPath]);
 }
 
 - (WBPlugInDomain)name {

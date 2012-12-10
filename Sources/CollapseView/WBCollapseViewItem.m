@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBCollapseViewItem.h)
+#import <WonderBox/WBCollapseViewItem.h>
 
 #import "WBCollapseViewInternal.h"
 
@@ -30,13 +30,13 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super init]) {
-    wb_view = wb_retain([aCoder decodeObjectForKey:@"item.view"]);
-    wb_title = wb_retain([aCoder decodeObjectForKey:@"item.title"]);
-    wb_uid = wb_retain([aCoder decodeObjectForKey:@"item.identifier"]);
+    wb_view = spx_retain([aCoder decodeObjectForKey:@"item.view"]);
+    wb_title = spx_retain([aCoder decodeObjectForKey:@"item.title"]);
+    wb_uid = spx_retain([aCoder decodeObjectForKey:@"item.identifier"]);
     wb_owner = [aCoder decodeObjectForKey:@"item.owner"];
 
-    WBFlagSet(wb_cviFlags.animates, [aCoder decodeBoolForKey:@"item.flags.animates"]);
-    WBFlagSet(wb_cviFlags.expanded, [aCoder decodeBoolForKey:@"item.flags.expanded"]);
+    SPXFlagSet(wb_cviFlags.animates, [aCoder decodeBoolForKey:@"item.flags.animates"]);
+    SPXFlagSet(wb_cviFlags.expanded, [aCoder decodeBoolForKey:@"item.flags.expanded"]);
   }
   return self;
 }
@@ -58,10 +58,10 @@
 }
 
 - (void)dealloc {
-  wb_release(wb_title);
-  wb_release(wb_view);
-  wb_release(wb_uid);
-  wb_dealloc();
+  spx_release(wb_title);
+  spx_release(wb_view);
+  spx_release(wb_uid);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -77,7 +77,7 @@
   return wb_cviFlags.animates;
 }
 - (void)setAnimates:(BOOL)aFlags {
-  WBFlagSet(wb_cviFlags.animates, aFlags);
+  SPXFlagSet(wb_cviFlags.animates, aFlags);
 }
 
 - (BOOL)isExpanded {
@@ -95,7 +95,7 @@
   if (wb_owner)
     [wb_owner _setExpanded:expanded forItem:self animate:flag];
   else
-    WBFlagSet(wb_cviFlags.expanded, expanded);
+    SPXFlagSet(wb_cviFlags.expanded, expanded);
 }
 
 @end
@@ -104,7 +104,7 @@
 
 - (void)willSetExpanded:(BOOL)expanded {}
 - (void)didSetExpanded:(BOOL)expanded {
-  WBFlagSet(wb_cviFlags.expanded, expanded);
+  SPXFlagSet(wb_cviFlags.expanded, expanded);
 }
 
 @end

@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBezelItemContent.h)
-#import WBHEADER(WBClassCluster.h)
+#import <WonderBox/WBBezelItemContent.h>
+#import <WonderBox/WBClassCluster.h>
 
 WBClassCluster(WBBezelItemContent)
 
@@ -56,7 +56,7 @@ WBClassCluster(WBBezelItemContent)
   } else if ([content isKindOfClass:[NSView class]]) {
     return [[WBBezelItemCustomView alloc] initWithContent:content];
   } else {
-		WBThrowException(NSInvalidArgumentException, @"WBBezelItem does not support content of type %@", [content class]);
+		SPXThrowException(NSInvalidArgumentException, @"WBBezelItem does not support content of type %@", [content class]);
   }
 }
 
@@ -70,11 +70,11 @@ WBClassCluster(WBBezelItemContent)
 }
 
 - (NSSize)size {
-  WBAbstractMethodException();
+  SPXAbstractMethodException();
 }
 
 - (id)content {
-  WBAbstractMethodException();
+  SPXAbstractMethodException();
 }
 
 @end
@@ -143,7 +143,7 @@ WBClassCluster(WBBezelItemContent)
   } else if ([text isKindOfClass:[NSString class]]) {
     str = [[NSAttributedString alloc] initWithString:text];
   } else {
-		WBThrowException(NSInvalidArgumentException, @"Invalid content class");
+		SPXThrowException(NSInvalidArgumentException, @"Invalid content class");
   }
 
   [[self content] setAttributedString:[str autorelease]];

@@ -9,12 +9,12 @@
  */
 
 #import "WBIcnsCodec.h"
-#import WBHEADER(WBIconFamily.h)
-#import WBHEADER(WBIconFunctions.h)
+#import <WonderBox/WBIconFamily.h>
+#import <WonderBox/WBIconFunctions.h>
 
-#import WBHEADER(WBFSFunctions.h)
-#import WBHEADER(NSData+WonderBox.h)
-// #import WBHEADER(WBImageFunctions.h)
+#import <WonderBox/WBFSFunctions.h>
+#import <WonderBox/NSData+WonderBox.h>
+// #import <WonderBox/WBImageFunctions.h>
 
 #pragma mark -
 static NSMutableArray *WBIconFamilyFindVariants(IconFamilyResource *rsrc);
@@ -182,14 +182,14 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 - (BOOL)setIconFamilyVariant:(WBIconFamily *)aFamily forType:(OSType)aVariant {
   OSStatus err;
   if (!WBIsIconVariantType(aVariant)) {
-    WBThrowException(NSInvalidArgumentException, @"%@ isn't a valid Variant type", NSFileTypeForHFSTypeCode(aVariant));
+    SPXThrowException(NSInvalidArgumentException, @"%@ isn't a valid Variant type", NSFileTypeForHFSTypeCode(aVariant));
   }
   if (!aFamily) {
-    WBThrowException(NSInvalidArgumentException, @"aFamily cannot be nil");
+    SPXThrowException(NSInvalidArgumentException, @"aFamily cannot be nil");
   }
   if ([self containsVariant:aVariant]) {
     if (![self removeVariant:aVariant]) {
-      DLog(@"Unable to remove old variant");
+      SPXDebug(@"Unable to remove old variant");
       return NO;
     }
   }
@@ -243,7 +243,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 
 - (void)setFamilyHandle:(IconFamilyHandle)newIconFamily {
   if (!newIconFamily) {
-    WBThrowException(NSInvalidArgumentException, @"iconfamily Handle cannot be nil");
+    SPXThrowException(NSInvalidArgumentException, @"iconfamily Handle cannot be nil");
   }
   if (nil != wb_family) {
     DisposeHandle((Handle)wb_family);
@@ -252,7 +252,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
   OSErr err = HandToHand((Handle *)&wb_family);
   if (noErr != err) {
     wb_family = nil;
-    WBThrowException(NSMallocException, @"Exception while copying Handle: %d", err);
+    SPXThrowException(NSMallocException, @"Exception while copying Handle: %d", err);
   }
   WBIconFamilyResourceSetType(WBIconFamilyGetFamilyResource(wb_family), kIconFamilyType);
 }
@@ -439,7 +439,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
       samples = WBIconFamilyBitmapDataFor1BitMask(data, size, planes);
       break;
     default:
-      WBThrowException(NSInvalidArgumentException, @"Unsupported Element type: %@", NSFileTypeForHFSTypeCode(anElement));
+      SPXThrowException(NSInvalidArgumentException, @"Unsupported Element type: %@", NSFileTypeForHFSTypeCode(anElement));
   }
   if (samples > 0) {
     if (useAlpha && ((samples == 1) || (samples == 3))) {
@@ -578,7 +578,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
       selector = kWBSelectorMini1BitMask;
       break;
     default:
-      WBThrowException(NSInvalidArgumentException, @"Invalid element %@", NSFileTypeForHFSTypeCode(anElement));
+      SPXThrowException(NSInvalidArgumentException, @"Invalid element %@", NSFileTypeForHFSTypeCode(anElement));
   }
   return [self setIconFamilyElements:selector fromImage:anImage] > 0;
 }
@@ -773,17 +773,17 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
       }
       break;
     default:
-      WBThrowException(NSInvalidArgumentException, @"Invalid element %@", NSFileTypeForHFSTypeCode(anElement));
+      SPXThrowException(NSInvalidArgumentException, @"Invalid element %@", NSFileTypeForHFSTypeCode(anElement));
   }
 
   if (handle == NULL) {
-    DLog(@"Unable to retreive data from image.");
+    SPXDebug(@"Unable to retreive data from image.");
     return NO;
   }
 
   OSStatus err = SetIconFamilyData(wb_family, anElement, handle);
   DisposeHandle(handle);
-  DLog(@"Set Icon FamilyElement: %@ => returns: %d", NSFileTypeForHFSTypeCode(anElement), err);
+  SPXDebug(@"Set Icon FamilyElement: %@ => returns: %d", NSFileTypeForHFSTypeCode(anElement), err);
   return noErr == err;
 }
 
@@ -848,7 +848,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 
 - (NSBitmapImageRep *)scaleImage:(NSImage *)anImage toSize:(NSSize)size {
   NSBitmapImageRep *bitmap = nil;
-  if (WBDelegateHandle(wb_delegate, iconFamily:shouldScaleImage:toSize:)) {
+  if (SPXDelegateHandle(wb_delegate, iconFamily:shouldScaleImage:toSize:)) {
     bitmap = [wb_delegate iconFamily:self shouldScaleImage:anImage toSize:size];
   }
 //  if (!bitmap)
@@ -871,7 +871,7 @@ static NSMutableArray *WBIconFamilyFindVariants(IconFamilyResource *rsrc) {
     OSType type = WBIconFamilyElementGetType(elt);
     if (WBIsIconVariantType(type)) {
       if (rsrcType == kIconFamilyType || type != kTileIconVariant) {
-        [variants addObject:WBUInteger(type)];
+        [variants addObject:SPXUInteger(type)];
       }
       [variants addObjectsFromArray:WBIconFamilyFindVariants((IconFamilyResource *)elt)];
     }

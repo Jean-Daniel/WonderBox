@@ -13,7 +13,7 @@
     @discussion (description)
 */
 
-#import WBHEADER(WBTreeNode.h)
+#import <WonderBox/WBTreeNode.h>
 
 /*!
     @class

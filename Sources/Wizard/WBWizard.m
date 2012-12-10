@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBWizard.h)
-#import WBHEADER(NSImage+WonderBox.h)
+#import <WonderBox/WBWizard.h>
+#import <WonderBox/NSImage+WonderBox.h>
 
 @interface WBWizard (PageLoading)
 - (void)loadPage:(NSObject<WBWizardPage> *)aPage;
@@ -45,7 +45,7 @@
   [wb_object release];
   [wb_wTitle release];
   [wb_pageTitle release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -75,7 +75,7 @@
   [wizardTitle setStringValue:title ? : [self defaultTitle]];
 
   NSView *view = [aPage pageView];
-  WBAssert(view != nil, @"Warning: %@ return nil view", aPage);
+  NSAssert(view != nil, @"Warning: %@ return nil view", aPage);
 
   [view setFrameOrigin:NSZeroPoint];
   [view setFrameSize:[pageView frame].size];
@@ -84,14 +84,14 @@
 
   [next setEnabled:[aPage isComplete]];
   if ([self hasNext]) {
-    [next setTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"WBWizard", WBCurrentBundle(), @"Conitnue - Button")];
+    [next setTitle:NSLocalizedStringFromTableInBundle(@"Continue", @"WBWizard", SPXCurrentBundle(), @"Conitnue - Button")];
     [next setAction:@selector(next:)];
   } else {
-    [next setTitle:NSLocalizedStringFromTableInBundle(@"Finish", @"WBWizard", WBCurrentBundle(), @"Finish - Button")];
+    [next setTitle:NSLocalizedStringFromTableInBundle(@"Finish", @"WBWizard", SPXCurrentBundle(), @"Finish - Button")];
     [next setAction:@selector(finish:)];
   }
 
-  [previous setTitle:NSLocalizedStringFromTableInBundle(@"Go Back", @"WBWizard", WBCurrentBundle(), @"Go Back - Button")];
+  [previous setTitle:NSLocalizedStringFromTableInBundle(@"Go Back", @"WBWizard", SPXCurrentBundle(), @"Go Back - Button")];
   [previous setEnabled:[self hasPrevious]];
   [previous setHidden:![self hasPrevious]];
 }
@@ -102,26 +102,26 @@
 
 #pragma mark -
 - (NSImage *)defaultImage {
-  return wb_image ? : [NSImage imageNamed:@"WBWizard" inBundle:WBCurrentBundle()];
+  return wb_image ? : [NSImage imageNamed:@"WBWizard" inBundle:SPXCurrentBundle()];
 }
 
 - (void)setDefaultImage:(NSImage *)anImage {
-  WBSetterRetain(wb_image, anImage);
+  SPXSetterRetain(wb_image, anImage);
 }
 
 - (NSString *)defaultTitle {
-  return wb_pageTitle ? : NSLocalizedStringFromTableInBundle(@"Assistant", @"WBWizard", WBCurrentBundle(), @"Default Title");
+  return wb_pageTitle ? : NSLocalizedStringFromTableInBundle(@"Assistant", @"WBWizard", SPXCurrentBundle(), @"Default Title");
 }
 
 - (void)setDefaultTitle:(NSString *)aTitle {
-  WBSetterCopy(wb_pageTitle, aTitle);
+  SPXSetterCopy(wb_pageTitle, aTitle);
 }
 
 - (id)object {
   return wb_object;
 }
 - (void)setObject:(id)anObject {
-  WBSetterRetain(wb_object, anObject);
+  SPXSetterRetain(wb_object, anObject);
 }
 
 - (id)delegate {
@@ -138,13 +138,13 @@
     NSBeep();
     return;
   }
-  WBAssert([self hasNext], @"Cannot call next: on last page.");
+  NSAssert([self hasNext], @"Cannot call next: on last page.");
   NSObject<WBWizardPage> *current = [self page];
 
   if ([current wizard:self shouldChangePage:WBWizardLeaveToNextPage]) {
     NSObject<WBWizardPage> *nextPage = [current nextPage];
 
-    WBAssert(nextPage != nil, @"Invalid Next page.");
+    NSAssert(nextPage != nil, @"Invalid Next page.");
     wb_idx++;
     /* Check if next page is always the same and if not, flush all pages following the current page */
     if (wb_idx < [wb_pages count] && [wb_pages objectAtIndex:wb_idx] != nextPage) {
@@ -166,7 +166,7 @@
 }
 
 - (IBAction)previous:(id)sender {
-  WBAssert(wb_idx > 0, @"Cannot call previous when first page is loaded");
+  NSAssert(wb_idx > 0, @"Cannot call previous when first page is loaded");
   NSObject<WBWizardPage> *current = [self page];
   if ([current wizard:self shouldChangePage:WBWizardLeaveToPreviousPage]) {
     /* Should decrement after getting current page because we use idx in -page method. */
@@ -187,7 +187,7 @@
   if ([[self page] wizard:self shouldChangePage:WBWizardFinish]) {
     [[self page] wizard:self willChangePage:WBWizardFinish];
     [self setModalResultCode:NSOKButton];
-    if (WBDelegateHandle(wb_delegate, wizard:willClose:))
+    if (SPXDelegateHandle(wb_delegate, wizard:willClose:))
       [wb_delegate wizard:self willClose:WBWizardFinish];
     [self close:sender];
   }
@@ -197,7 +197,7 @@
   if ([[self page] wizard:self shouldChangePage:WBWizardCancel]) {
     [[self page] wizard:self willChangePage:WBWizardCancel];
     [self setModalResultCode:NSCancelButton];
-    if (WBDelegateHandle(wb_delegate, wizard:willClose:))
+    if (SPXDelegateHandle(wb_delegate, wizard:willClose:))
       [wb_delegate wizard:self willClose:WBWizardCancel];
     [self close:sender];
   }

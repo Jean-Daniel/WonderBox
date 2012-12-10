@@ -51,7 +51,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
     wb_first = -1;
     wb_tcFlags.useTcTrack = 1;
     wb_movie = [aMovie retain];
-    WBFlagSet(wb_tcFlags.tcTrack, hasTC);
+    SPXFlagSet(wb_tcFlags.tcTrack, hasTC);
     wb_tcFlags.hdMode = kWBQTTimecodeMode24FPS;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(wb_didEditMovie:)
@@ -63,7 +63,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieEditedNotification object:nil];
   [wb_movie release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -71,7 +71,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
   return wb_tcFlags.useTcTrack;
 }
 - (void)setUsesTimeCodeTrack:(BOOL)flag {
-  WBFlagSet(wb_tcFlags.useTcTrack, flag);
+  SPXFlagSet(wb_tcFlags.useTcTrack, flag);
   wb_first = -1;
 }
 
@@ -198,7 +198,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
           [str autorelease];
         }
       } else {
-        DCLog("warning, fail to use timecode track: %d", GetMoviesError());
+        spx_debug("warning, fail to use timecode track: %d", GetMoviesError());
       }
     }
   }

@@ -11,7 +11,7 @@
 #if !defined(__WB_ICNS_CODEC_H)
 #define __WB_ICNS_CODEC_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 WB_PRIVATE
 Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap);

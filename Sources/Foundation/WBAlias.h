@@ -13,7 +13,7 @@
     @discussion (description)
 */
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 /*!
     @class WBAlias

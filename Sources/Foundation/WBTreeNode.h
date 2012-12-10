@@ -11,7 +11,7 @@
     @header WBTreeNode
 */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 /*!
     @class

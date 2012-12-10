@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBGLStringBox.h)
+#import <WonderBox/WBGLStringBox.h>
 
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/CGLMacro.h>
@@ -38,7 +38,7 @@
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self setOpenGLContext:nil];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -47,7 +47,7 @@
   return wb_gslFlags.dirty;
 }
 - (void)setNeedsUpdateTexture:(BOOL)update {
-  WBFlagSet(wb_gslFlags.dirty, update);
+  SPXFlagSet(wb_gslFlags.dirty, update);
 }
 
 - (void)setTextStorage:(NSTextStorage *)aStorage {
@@ -92,7 +92,7 @@
   return !wb_gslFlags.sharp;
 }
 - (void)setShouldAntialias:(BOOL)shouldAntialias {
-  WBFlagSet(wb_gslFlags.sharp, !shouldAntialias);
+  SPXFlagSet(wb_gslFlags.sharp, !shouldAntialias);
   [self setNeedsUpdateTexture:YES];
 }
 
@@ -157,7 +157,7 @@
     if (wb_buffer) wb_buffer = reallocf(wb_buffer, wb_blength);
     else wb_buffer = malloc(wb_blength);
     if (!wb_buffer) {
-      WBCLogError("Invalid buffer size. cannot allocate memory: %s", strerror(errno));
+      spx_log_error("Invalid buffer size. cannot allocate memory: %s", strerror(errno));
       [self deleteTexture]; // cleanup cache
       return;
     }

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBLSFunctions.h)
+#import <WonderBox/WBLSFunctions.h>
 
 #pragma mark -
 #pragma mark Launch Service
@@ -146,19 +146,19 @@ NSString *WBLSFindApplicationForSignature(OSType signature) {
   NSString *path = nil;
   CFURLRef url = WBLSCopyApplicationURLForSignature(signature);
   if (url) {
-    path = WBCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
+    path = SPXCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? wb_autorelease(path) : nil;
+  return path ? spx_autorelease(path) : nil;
 }
 
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) {
   NSString *path = nil;
-  CFURLRef url = WBLSCopyApplicationURLForBundleIdentifier(WBNSToCFString(bundle));
+  CFURLRef url = WBLSCopyApplicationURLForBundleIdentifier(SPXNSToCFString(bundle));
   if (url) {
-    path = WBCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
+    path = SPXCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? wb_autorelease(path) : nil;
+  return path ? spx_autorelease(path) : nil;
 }
 

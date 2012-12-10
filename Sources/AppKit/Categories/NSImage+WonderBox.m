@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSImage+WonderBox.h)
+#import <WonderBox/NSImage+WonderBox.h>
 
 // cache missing image to avoid disk lookup and warning log for each call.
 static NSMutableSet *sMissingImages = nil;
@@ -27,11 +27,11 @@ static NSMutableSet *sMissingImages = nil;
   if (!image) {
     /* Then search bundle resource */
     NSString *path = bundle ? [bundle pathForImageResource:name] : nil;
-    image = path ? wb_autorelease([[NSImage alloc] initWithContentsOfFile:path]) : nil;
+    image = path ? spx_autorelease([[NSImage alloc] initWithContentsOfFile:path]) : nil;
     if (image) {
       [image setName:name];
     } else {
-      WBLogWarning(@"Unable to find image named '%@' in bundle '%@'", name, [bundle bundleIdentifier]);
+      SPXLogWarning(@"Unable to find image named '%@' in bundle '%@'", name, [bundle bundleIdentifier]);
       if (!sMissingImages)
         sMissingImages = [[NSMutableSet alloc] init];
       [sMissingImages addObject:name];

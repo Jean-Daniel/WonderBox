@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBImageAndTextView.h)
+#import <WonderBox/WBImageAndTextView.h>
 
 @class WBApplication;
 WB_OBJC_EXPORT

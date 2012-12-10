@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBApplication.h)
+#import <WonderBox/WBApplication.h>
 
 @class WBAlias;
 WB_OBJC_EXPORT

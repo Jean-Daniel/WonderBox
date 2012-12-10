@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase.h)
-#import WBHEADER(WBBoxLayer.h)
+#import <WonderBox/WBBase.h>
+#import <WonderBox/WBBoxLayer.h>
 
 WB_OBJC_EXPORT
 @interface WBStringLayer : WBBoxLayer {

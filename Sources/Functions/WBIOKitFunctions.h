@@ -11,7 +11,7 @@
 #if !defined(__WB_IOKIT_FUNCTIONS_H)
 #define __WB_IOKIT_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #include <IOKit/IOTypes.h>
 #include <ApplicationServices/ApplicationServices.h>

@@ -6,7 +6,7 @@
  *  Copyright © 2009 - 2010 Ninsight. All rights reserved.
  */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 WB_OBJC_EXPORT
 @interface RSEditorView : NSObject {

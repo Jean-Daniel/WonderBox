@@ -11,7 +11,7 @@
 #if !defined (__WB_RUNTIME_FUNCTIONS_H)
 #define __WB_RUNTIME_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 WB_EXPORT
 Class WBRuntimeSetObjectClass(id anObject, Class newClass);

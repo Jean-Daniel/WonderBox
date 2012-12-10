@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBExtendedTreeNode.h)
+#import <WonderBox/WBExtendedTreeNode.h>
 
 @implementation WBExtendedTreeNode
 #pragma mark Protocol Implementation

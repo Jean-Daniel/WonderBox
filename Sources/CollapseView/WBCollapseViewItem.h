@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 @class WBCollapseView;
 WB_OBJC_EXPORT

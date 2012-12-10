@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBFunctions.h)
+#import <WonderBox/WBFunctions.h>
 
 CFStringRef WBCreateStringForOSType(OSType type) {
   type = OSSwapHostToBigInt32(type);

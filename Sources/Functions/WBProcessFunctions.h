@@ -11,7 +11,7 @@
 #if !defined(__WB_PROCESS_FUNCTIONS_H)
 #define __WB_PROCESS_FUNCTIONS_H
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #pragma mark Process
 WB_EXPORT

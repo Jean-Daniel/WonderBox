@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBCDSAFunctions.h)
+#include <WonderBox/WBCDSAFunctions.h>
 
 #include <Security/cssm.h>
 #include <Security/cssmapple.h>

@@ -15,7 +15,7 @@
 #if !defined(__WBDIGEST_FUNCTIONS_H)
 #define __WBDIGEST_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 __BEGIN_DECLS
 

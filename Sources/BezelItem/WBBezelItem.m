@@ -8,10 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBezelItem.h)
+#import <WonderBox/WBBezelItem.h>
 
-#import WBHEADER(WBCGFunctions.h)
-#import WBHEADER(WBBezelItemContent.h)
+#import <WonderBox/WBCGFunctions.h>
+#import <WonderBox/WBBezelItemContent.h>
 
 @interface WBBezelItem ()
 - (void)didChangeScreen:(NSNotification *)aNotification;

@@ -8,12 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBCGFunctions.h)
+#import <WonderBox/WBCGFunctions.h>
 
 #pragma mark -
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
   if (radius <= 0) {
-    DCLog("Negative or nil radius -> fall back to rect.");
+    spx_debug("Negative or nil radius -> fall back to rect.");
     CGContextAddRect(context, rect);
     return;
   }
@@ -23,7 +23,7 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
   CGFloat maxRadius = MIN(width, height) / 2;
   if (radius > maxRadius) {
     /* radius to big, use a smaller one */
-    DCLog("radius to big -> adjust it.");
+    spx_debug("radius to big -> adjust it.");
     radius = maxRadius;
   }
 
@@ -64,7 +64,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
   // NOTE: At this point you may want to verify that your radius is no more than half
   // the width and height of your rectangle, as this technique degenerates for those cases.
   if (radius <= 0) {
-    DCLog("Negative or nil radius -> fall back to rect.");
+    spx_debug("Negative or nil radius -> fall back to rect.");
     CGPathAddRect(path, transform, rect);
     return;
   }
@@ -74,7 +74,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
   CGFloat maxRadius = MIN(width, height) / 2;
   if (radius > maxRadius) {
     /* radius to big, use a smaller one */
-    DCLog("radius to big -> adjust it.");
+    spx_debug("radius to big -> adjust it.");
     radius = maxRadius;
   }
 
@@ -124,11 +124,11 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
   }
 
   if (radius.width <= 0 || (radius.width * 2) > width) {
-    DCLog("Invalid Radius Width.");
+    spx_debug("Invalid Radius Width.");
     radius.width = 0;
   }
   if (radius.height <= 0 || (radius.height * 2) > height) {
-    DCLog("Invalid Radius Height.");
+    spx_debug("Invalid Radius Height.");
     radius.height = 0;
   }
 
@@ -175,11 +175,11 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
   }
 
   if (radius.width <= 0 || (radius.width * 2) > width) {
-    DCLog("Invalid Radius Width.");
+    spx_debug("Invalid Radius Width.");
     radius.width = 0;
   }
   if (radius.height <= 0 || (radius.height * 2) > height) {
-    DCLog("Invalid Radius Height.");
+    spx_debug("Invalid Radius Height.");
     radius.height = 0;
   }
 
@@ -419,16 +419,16 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
     CFDictionaryRef properties = NULL;
     if (CFEqual(type, kUTTypeTIFF)) {
       NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                                SPXUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                                 [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                                 nil];
-      CFDictionaryRef cfdict = WBNSToCFDictionary(tiffDict);
+      CFDictionaryRef cfdict = SPXNSToCFDictionary(tiffDict);
       properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&cfdict, 1,
                                       &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // leak: WBCFRelease
     }
     CGImageDestinationAddImage(dest, image, properties);
     result = CGImageDestinationFinalize(dest);
-    WBCFRelease(properties);
+    SPXCFRelease(properties);
     CFRelease(dest);
   }
   return result;
@@ -447,10 +447,10 @@ bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type) 
 
 CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
   NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                            WBUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                            SPXUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                             [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                             nil];
-  CFDictionaryRef properties = WBNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
+  CFDictionaryRef properties = SPXNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
                                                                               forKey:(id)kCGImagePropertyTIFFDictionary]);
 
   CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBDigestFunctions.h)
+#include <WonderBox/WBDigestFunctions.h>
 
 #include <CommonCrypto/CommonDigest.h>
 #include <Security/Security.h> // for CSSM Algorithms

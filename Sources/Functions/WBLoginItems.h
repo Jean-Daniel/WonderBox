@@ -11,7 +11,7 @@
 #if !defined(__WB_LOGIN_ITEMS_H)
 #define __WB_LOGIN_ITEMS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 #include <ApplicationServices/ApplicationServices.h>
 
 // Keys for the dictionary return by WBLoginItemCopyItems.

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBSerialization.h)
+#import <WonderBox/WBSerialization.h>
 
 NSString *const kWBSerializationIsaKey = @"isa";
 
@@ -31,7 +31,7 @@ id WBSerializeObjectWithFunction(id object, OSStatus *error, WBSerializeInstance
   @try {
     ok = serialize(object, plist, ctxt);
   } @catch (id exception) {
-    WBCLogException(exception);
+    SPXCLogException(exception);
   }
   if (ok) {
     [plist autorelease];
@@ -69,7 +69,7 @@ id WBDeserializeObjectWithFunction(NSDictionary *plist, OSStatus *error, WBDeser
         object = deserialize(class, plist, ctxt);
       } @catch (id exception) {
         object = nil;
-        WBCLogException(exception);
+        SPXCLogException(exception);
       }
       if (!object) {
         err = kWBInstanceCreationError;

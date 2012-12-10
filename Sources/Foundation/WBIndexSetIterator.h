@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 /* FIXME: ARC not supported.
  10.6: Support block. Use NSIndexSet API to iterate indexes.

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBUnixFunctions.h)
+#include <WonderBox/WBUnixFunctions.h>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -22,8 +22,9 @@ int WBIOSetNonBlocking(int fd) {
   // According to the man page, F_GETFL can't error!
   int flags = fcntl(fd, F_GETFL, NULL);
 
-  int err = fcntl(fd, F_SETFL, flags | O_NONBLOCK);
-  return WBErrno(err);
+  if (-1 == fcntl(fd, F_SETFL, flags | O_NONBLOCK))
+    return errno;
+  return 0;
 }
 
 size_t WBIORead(int fd, uint8_t *buffer, size_t length, size_t *bytesRead) {
@@ -115,7 +116,7 @@ ssize_t WBIOSendFileDescriptor(int sockfd, int fd) {
   *((int *)CMSG_DATA(cmsghdrp)) = fd;
 
   if ((ret = sendmsg(sockfd, &msg, 0)) < 0) {
-    DCLog("sendmsg: %s", strerror(errno));
+    spx_debug("sendmsg: %s", strerror(errno));
     return ret;
   }
 
@@ -143,7 +144,7 @@ ssize_t WBIOReceiveFileDescriptor(int sockfd, int *fd) {
   msg.msg_flags = 0;
 
   if ((ret = recvmsg(sockfd, &msg, 0)) <= 0) {
-    DCLog("recvmsg: %s", strerror(errno));
+    spx_debug("recvmsg: %s", strerror(errno));
     return ret;
   }
 
@@ -164,7 +165,7 @@ ssize_t WBIOReceiveFileDescriptor(int sockfd, int *fd) {
     errcond++;
 
   if (errcond) {
-    DCLog("%d errors in received message\n", errcond);
+    spx_debug("%d errors in received message\n", errcond);
     *fd = -1;
   } else
     *fd = *((int *)CMSG_DATA(cmsghdrp));
@@ -317,16 +318,14 @@ void WBIODumpDescriptorTable(FILE *f) {
 // MARK: -
 int WBSignalIgnoreSIGPIPE(void) {
   struct sigaction signalState;
-  int err = sigaction(SIGPIPE, NULL, &signalState);
-  err = WBErrno(err);
-  if (err == 0) {
-    signalState.sa_handler = SIG_IGN;
+  if (sigaction(SIGPIPE, NULL, &signalState) == -1)
+    return errno;
 
-    err = sigaction(SIGPIPE, &signalState, NULL);
-    err = WBErrno(err);
-  }
+  signalState.sa_handler = SIG_IGN;
+  if (sigaction(SIGPIPE, &signalState, NULL) == -1)
+    return errno;
 
-  return err;
+  return 0;
 }
 
 static struct {
@@ -392,8 +391,9 @@ int WBSignalInstallHandler(CFRunLoopRef runLoop,
   // sink (where the signal handler writes the information) and
   // source variables (where the runloop callback reads it).
   int sockets[2];
-  int err = socketpair(AF_UNIX, SOCK_STREAM, 0, sockets);
-  err = WBErrno(err);
+  int err = 0;
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) < 0)
+    err = errno;
   // gSignalSinkFD  = sockets[0];
 
   gSignalHandler.sink = sockets[0];
@@ -465,7 +465,7 @@ int WBSignalInstallHandler(CFRunLoopRef runLoop,
 
     // We don't need the runloop source from here on, so release our
     // reference to it.  It still exists because the runloop knows about it.
-    WBCFRelease(rls);
+    SPXCFRelease(rls);
   }
 
   // Clean up.

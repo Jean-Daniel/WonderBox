@@ -7,7 +7,7 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
-#import WBHEADER(WBAudioFunctions.h)
+#import <WonderBox/WBAudioFunctions.h>
 
 void WBAudioStreamDescriptionInitializeLPCM(AudioStreamBasicDescription *outASBD, Float64 inSampleRate, UInt32 inChannelsPerFrame,
                                             UInt32 inValidBitsPerChannel, UInt32 inTotalBitsPerChannel, bool inIsFloat,

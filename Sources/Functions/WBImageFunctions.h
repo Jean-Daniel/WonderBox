@@ -11,7 +11,7 @@
 #if !defined(__WB_IMAGE_FUNCTIONS_H)
 #define __WB_IMAGE_FUNCTIONS_H 1
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 WB_EXPORT
 void WBImageSetRepresentationsSize(NSImage *image, NSSize size);

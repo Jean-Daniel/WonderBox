@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBWindowController.h)
+#import <WonderBox/WBWindowController.h>
 
 @interface WBWindowController ()
 - (void)wb_windowWillClose:(NSNotification *)aNotification;
@@ -59,7 +59,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:NSWindowWillCloseNotification
                                                 object:nil];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -101,7 +101,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
       [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
   }
 #else
-  WBFlagSet(wb_wcFlags.autorelease, release);
+  SPXFlagSet(wb_wcFlags.autorelease, release);
 #endif
 }
 
@@ -148,7 +148,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 #if (__OBJC_GC__)
     [[NSGarbageCollector defaultCollector] enableCollectorForPointer:self];
 #endif
-    (void)wb_autorelease(self);
+    (void)spx_autorelease(self);
   }
 }
 

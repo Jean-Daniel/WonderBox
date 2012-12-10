@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSData+WonderBox.h)
+#import <WonderBox/NSData+WonderBox.h>
 
 @implementation NSData (WBHandleUtils)
 

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSArrayController+WonderBox.h)
+#import <WonderBox/NSArrayController+WonderBox.h>
 
 @implementation NSArrayController (WBExtensions)
 

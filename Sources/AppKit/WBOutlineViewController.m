@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBOutlineViewController.h)
-#import WBHEADER(WBUITreeNode.h)
+#import <WonderBox/WBOutlineViewController.h>
+#import <WonderBox/WBUITreeNode.h>
 
 #define _ContainsNode(item)         ({(nil != item) && ([item findRoot] == wb_root);})
 
@@ -36,7 +36,7 @@
 - (void)dealloc {
   [self setRoot:nil];
   [wb_outline release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -52,14 +52,14 @@
 }
 
 - (void)setAutoSelect:(BOOL)flag {
-  WBFlagSet(wb_ocFlags.autoselect, flag);
+  SPXFlagSet(wb_ocFlags.autoselect, flag);
 }
 
 - (BOOL)displayRoot {
   return wb_ocFlags.displayRoot;
 }
 - (void)setDisplayRoot:(BOOL)flag {
-  WBFlagSet(wb_ocFlags.displayRoot, flag);
+  SPXFlagSet(wb_ocFlags.displayRoot, flag);
 }
 
 - (id)root {
@@ -70,7 +70,7 @@
   if (wb_root) {
     [[wb_root notificationCenter] removeObserver:self];
   }
-  WBSetterRetain(wb_root, root);
+  SPXSetterRetain(wb_root, root);
   if (wb_root) {
     NSNotificationCenter *notify = [wb_root notificationCenter];
     [notify addObserver:self selector:@selector(didChangeNodeName:)
@@ -273,7 +273,7 @@
         [(WBBaseUITreeNode *)item setName:object];
       }
     } @catch (id exception) {
-      WBLogException(exception);
+      SPXLogException(exception);
     }
   }
 }
@@ -340,7 +340,7 @@
     [insert release];
     return YES;
   }
-  DLog(@"ERROR: Undefine error while dropping item. Cannot copy item");
+  SPXDebug(@"ERROR: Undefine error while dropping item. Cannot copy item");
   return NO;
 }
 

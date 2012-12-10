@@ -13,7 +13,7 @@
 #if !defined(__WBSECURITY_FUNCTIONS_H)
 #define __WBSECURITY_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #pragma mark Keys
 WB_EXPORT

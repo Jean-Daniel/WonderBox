@@ -27,7 +27,7 @@ void _WBDaemonCleanup(void) {
   NSArray *daemons = [sDaemons copy];
   for (WBDaemonTask *task in daemons)
     [task _cleanup:NO];
-  wb_release(daemons);
+  spx_release(daemons);
 }
 
 static
@@ -49,10 +49,10 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   if (self = [self init]) {
     self.name = aName;
     _unregister = YES; // by default, cleanup at exit
-    CFDictionaryRef properties = WBServiceCopyJob(WBNSToCFString(aName), NULL);
+    CFDictionaryRef properties = WBServiceCopyJob(SPXNSToCFString(aName), NULL);
     if (properties) {
       _registred = YES;
-      _properties = [WBCFToNSDictionary(properties) mutableCopy];
+      _properties = [SPXCFToNSDictionary(properties) mutableCopy];
       // remove volatile properties
       [_properties removeObjectForKey:@LAUNCH_JOBKEY_PID];
       [_properties removeObjectForKey:@"TransactionCount"];
@@ -69,8 +69,8 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 
 - (void)dealloc {
   [self _cleanup:NO];
-  wb_release(_properties);
-  wb_dealloc();
+  spx_release(_properties);
+  spx_dealloc();
 }
 
 // MARK: -
@@ -81,7 +81,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return _unregister;
 }
 - (void)setUnregisterAtExit:(BOOL)flag {
-  if (XOR(_unregister, flag)) {
+  if (spx_xor(_unregister, flag)) {
     _unregister = flag;
     if (_registred) {
       if (_unregister) {
@@ -97,14 +97,14 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return [self valueForProperty:@LAUNCH_JOBKEY_LABEL];
 }
 - (void)setName:(NSString *)aName {
-  [self setValue:wb_autorelease([aName copy]) forProperty:@LAUNCH_JOBKEY_LABEL];
+  [self setValue:spx_autorelease([aName copy]) forProperty:@LAUNCH_JOBKEY_LABEL];
 }
 
 - (NSString *)launchPath {
   return [self valueForProperty:@LAUNCH_JOBKEY_PROGRAM];
 }
 - (void)setLaunchPath:(NSString *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_PROGRAM];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_PROGRAM];
 }
 
 - (BOOL)isDisabled {
@@ -118,7 +118,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return [self valueForProperty:@LAUNCH_JOBKEY_KEEPALIVE];
 }
 - (void)setKeepAlive:(NSObject<NSCopying> *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_KEEPALIVE];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_KEEPALIVE];
 }
 
 - (BOOL)debug {
@@ -175,34 +175,34 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return [self valueForProperty:@LAUNCH_JOBKEY_STANDARDERRORPATH];
 }
 - (void)setStandardError:(NSString *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_STANDARDERRORPATH];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_STANDARDERRORPATH];
 }
 - (NSString *)standardOutput {
   return [self valueForProperty:@LAUNCH_JOBKEY_STANDARDOUTPATH];
 }
 - (void)setStandardOutput:(NSString *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_STANDARDOUTPATH];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_STANDARDOUTPATH];
 }
 
 - (NSString *)rootDirectoryPath {
   return [self valueForProperty:@LAUNCH_JOBKEY_ROOTDIRECTORY];
 }
 - (void)setRootDirectoryPath:(NSString *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_ROOTDIRECTORY];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_ROOTDIRECTORY];
 }
 
 - (NSString *)workingDirectoryPath {
   return [self valueForProperty:@LAUNCH_JOBKEY_WORKINGDIRECTORY];
 }
 - (void)setWorkingDirectoryPath:(NSString *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_WORKINGDIRECTORY];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_WORKINGDIRECTORY];
 }
 
 - (NSArray *)arguments {
   return [self valueForProperty:@LAUNCH_JOBKEY_PROGRAMARGUMENTS];
 }
 - (void)setArguments:(NSArray *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_PROGRAMARGUMENTS];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_PROGRAMARGUMENTS];
 }
 - (BOOL)globArguments {
   return [[self valueForProperty:@LAUNCH_JOBKEY_ENABLEGLOBBING] boolValue];
@@ -215,7 +215,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
   return [self valueForProperty:@LAUNCH_JOBKEY_ENVIRONMENTVARIABLES];
 }
 - (void)setEnvironment:(NSDictionary *)aValue {
-  [self setValue:wb_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_ENVIRONMENTVARIABLES];
+  [self setValue:spx_autorelease([aValue copy]) forProperty:@LAUNCH_JOBKEY_ENVIRONMENTVARIABLES];
 }
 
 - (id)valueForProperty:(NSString *)aProperty {
@@ -257,11 +257,11 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   @synchronized(self) {
     if (self->_ports) {
       // Not very efficient but good enough for this task.
-      for (NSString *key in WBCFToNSDictionary(self->_ports)) {
+      for (NSString *key in SPXCFToNSDictionary(self->_ports)) {
         CFMachPortRef value = (CFMachPortRef)CFDictionaryGetValue(self->_ports, (__bridge void *)key);
         if (value == port) {
-          service = wb_retain(key);
-          DLog(@"death of port %@", key);
+          service = spx_retain(key);
+          SPXDebug(@"death of port %@", key);
           CFDictionaryRemoveValue(self->_ports, (__bridge void *)key);
           break;
         }
@@ -272,7 +272,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   if (service) {
     if (self->wb_delegate && [self->wb_delegate respondsToSelector:@selector(task:didTerminateService:)])
       [self->wb_delegate task:self didTerminateService:service];
-    wb_release(service);
+    spx_release(service);
   }
 }
 
@@ -313,7 +313,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
     }
     return port;
   } else {
-    WBLogWarning(@"bootstrap_look_up: %s", bootstrap_strerror(kr));
+    SPXLogWarning(@"bootstrap_look_up: %s", bootstrap_strerror(kr));
   }
 
   return MACH_PORT_NULL;
@@ -326,14 +326,14 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   }
   if (_registred && (_unregister || force)) {
     CFErrorRef error;
-    bool unregistred = WBServiceUnregisterJob(WBNSToCFString(self.name), &error);
+    bool unregistred = WBServiceUnregisterJob(SPXNSToCFString(self.name), &error);
     if (!unregistred) {
       if ((CFErrorGetDomain(error) == kCFErrorDomainPOSIX && CFErrorGetCode(error) == ESRCH) ||
           (CFErrorGetDomain(error) == kCFErrorDomainOSStatus && CFErrorGetCode(error) == kPOSIXErrorESRCH)) {
         // No such process mean the service is not registred:
         unregistred = true;
       } else {
-        WBLogWarning(@"Error while unregistring daemon: %@, %@", self.name, (id)error);
+        SPXLogWarning(@"Error while unregistring daemon: %@, %@", self.name, (id)error);
       }
       CFRelease(error);
     }
@@ -346,7 +346,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 
   @synchronized(self) {
     if (_ports) {
-      for (NSString *key in WBCFToNSDictionary(_ports)) {
+      for (NSString *key in SPXCFToNSDictionary(_ports)) {
         CFMachPortRef port = (CFMachPortRef)CFDictionaryGetValue(_ports, (__bridge void *)key);
         CFMachPortSetInvalidationCallBack(port, NULL);
       }
@@ -358,12 +358,12 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
 
 - (BOOL)registerDaemon:(NSError **)outError {
   if (_registred)
-    WBThrowException(NSInvalidArgumentException, @"already registred !");
+    SPXThrowException(NSInvalidArgumentException, @"already registred !");
 
   CFErrorRef error;
-  if (!WBServiceRegisterJob(WBNSToCFDictionary(_properties), &error)) {
+  if (!WBServiceRegisterJob(SPXNSToCFDictionary(_properties), &error)) {
     if (outError)
-      *outError = wb_autorelease(wb_retain(WBCFToNSError(error)));
+      *outError = spx_autorelease(spx_retain(SPXCFToNSError(error)));
     
     CFRelease(error);
     return NO;

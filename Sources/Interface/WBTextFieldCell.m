@@ -8,12 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTextFieldCell.h)
+#import <WonderBox/WBTextFieldCell.h>
 
 @implementation WBTextFieldCell
 
 + (id)cell {
-  return wb_autorelease([[self alloc] init]);
+  return spx_autorelease([[self alloc] init]);
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -41,21 +41,21 @@
   return wb_tfFlags.line;
 }
 - (void)setDrawsLineOver:(BOOL)flag {
-  WBFlagSet(wb_tfFlags.line, flag);
+  SPXFlagSet(wb_tfFlags.line, flag);
 }
 
 - (BOOL)centersVertically {
   return wb_tfFlags.middle;
 }
 - (void)setCentersVertically:(BOOL)flag {
-  WBFlagSet(wb_tfFlags.middle, flag);
+  SPXFlagSet(wb_tfFlags.middle, flag);
 }
 
 - (BOOL)isHighlightingEnabled {
   return !wb_tfFlags.noHighlight;
 }
 - (void)setHighlightingEnabled:(BOOL)flag {
-  WBFlagSet(wb_tfFlags.noHighlight, !flag);
+  SPXFlagSet(wb_tfFlags.noHighlight, !flag);
 }
 
 #pragma mark -

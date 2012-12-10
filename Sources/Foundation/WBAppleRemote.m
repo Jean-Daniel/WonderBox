@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBAppleRemote.h)
+#import <WonderBox/WBAppleRemote.h>
 
 #include <IOKit/IOCFPlugIn.h>
 #include <IOKit/hid/IOHIDLib.h>
@@ -79,7 +79,7 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
   CFMutableDictionaryRef hidMatchDictionary = IOServiceNameMatching("AppleIRController");
   io_service_t hidService = IOServiceGetMatchingService(kIOMasterPortDefault, hidMatchDictionary);
   if (!hidService) {
-    WBCLogWarning("%s", "Apple Infrared Remote not found.");
+    spx_log_warning("%s", "Apple Infrared Remote not found.");
     [self release];
     return nil;
   }
@@ -96,14 +96,14 @@ NSString *__WBAppleRemoteButtonName(WBAppleRemoteButton button) {
 
 - (void)dealloc {
   [wb_listeners release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
 - (void)handleEvent:(IOHIDElementCookie)aCookie value:(CFIndex)aValue {
   for (NSUInteger idx = 0; idx < kWBAppleRemoteButtonCount; idx++) {
     if (wb_cookies[idx] == aCookie) {
-      //DLog(@"handle event: %@", __WBAppleRemoteButtonName(idx));
+      //SPXDebug(@"handle event: %@", __WBAppleRemoteButtonName(idx));
       for (NSUInteger jdx = 0, count = [wb_listeners count]; jdx < count; jdx++) {
         if (aValue)
           [[wb_listeners objectAtIndex:jdx] remoteButtonDown:idx];
@@ -149,13 +149,13 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
   if (self = [super initWithService:service options:(IOOptionBits)options]) {
     wb_device = IOHIDDeviceCreate(kCFAllocatorDefault, service);
     if (!wb_device) {
-      WBCLogWarning("Failed to create Apple Remote device");
+      spx_log_warning("Failed to create Apple Remote device");
       [self release];
       return nil;
     }
     IOReturn result = IOHIDDeviceOpen(wb_device, options); // kIOHIDOptionsTypeSeizeDevice
     if (kIOReturnSuccess != result) {
-      WBCLogWarning("Error while opening remote: %s", mach_error_string(result));
+      spx_log_warning("Error while opening remote: %s", mach_error_string(result));
       CFRelease(wb_device);
       wb_device = NULL;
       [self release];
@@ -205,9 +205,9 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
               break;
               //          case kHIDUsage_Csmr_Menu:
               //            wb_cookies[kWBAppleRemoteButtonApplicationMenu] = IOHIDElementGetCookie(element);
-              break;
+              // break;
               //          default:
-              //            DLog(@"ignore consumer: %lx, %lx", IOHIDElementGetCookie(element), IOHIDElementGetUsage(element));
+              //            SPXDebug(@"ignore consumer: %lx, %lx", IOHIDElementGetCookie(element), IOHIDElementGetUsage(element));
           }
         }
       }
@@ -224,7 +224,7 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
     CFRelease(wb_device);
     wb_device = NULL;
   }
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -398,7 +398,7 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
     (*wb_plugin)->Release(wb_plugin);
     wb_plugin = NULL;
   }
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -412,7 +412,7 @@ bool _WBAppleRemoteTigerGetCookies(IOHIDDeviceInterface122 **hdi, IOHIDElementCo
   }
 
   if (S_OK != err) {
-    WBCLogWarning("Error while starting remote event listener.");
+    spx_log_warning("Error while starting remote event listener.");
     [self removeFromRunLoop:aRunLoop];
   }
 }

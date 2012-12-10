@@ -8,13 +8,12 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBViewController.h)
-#import WBHEADER(WBWizard.h)
+#import <WonderBox/WBWizard.h>
 
 @class WBWizard;
 WB_OBJC_EXPORT
-@interface WBWizardPage : WBViewController <WBWizardPage> {
-  @private
+@interface WBWizardPage : NSViewController <WBWizardPage> {
+@private
   WBWizard *wb_wizard;
 }
 

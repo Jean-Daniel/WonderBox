@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBIconView.h)
+#import <WonderBox/WBIconView.h>
 
 #include <Carbon/Carbon.h>
 

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSError+WonderBox.h)
+#import <WonderBox/NSError+WonderBox.h>
 
 @implementation NSError (WBExtensions)
 
@@ -56,7 +56,7 @@
   NSString *str = [[NSString alloc] initWithFormat:message arguments:args];
   va_end(args);
   NSError *error = [NSError errorWithDomain:aDomain code:code reason:str];
-  wb_release(str);
+  spx_release(str);
   return error;
 }
 

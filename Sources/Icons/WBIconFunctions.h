@@ -16,7 +16,7 @@
 #if !defined(__WB_ICON_FUNCTIONS_H)
 #define __WB_ICON_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 #pragma mark Miscellaneous Functions
 /*!

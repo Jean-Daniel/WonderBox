@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSText+WonderBox.h)
+#import <WonderBox/NSText+WonderBox.h>
 
 @implementation NSText (WBExtensions)
 

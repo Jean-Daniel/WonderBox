@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTreeNode.h)
+#import <WonderBox/WBTreeNode.h>
 
 @interface _WBTreeChildEnumerator : NSEnumerator {
   @protected
@@ -81,13 +81,13 @@
 - (void)dealloc {
   [wb_child release];
   [wb_sibling release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"<%@ %p>{parent = %p, children = %u, sibling = %p}",
+  return [NSString stringWithFormat:@"<%@ %p>{parent = %p, children = %lu, sibling = %p}",
     NSStringFromClass([self class]), self,
-    wb_parent, [self count], wb_sibling];
+    wb_parent, (unsigned long)[self count], wb_sibling];
 }
 
 #pragma mark -
@@ -183,7 +183,8 @@
     idx--;
     node = node->wb_sibling;
   }
-  WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+  SPXThrowException(NSRangeException, @"index (%lu) beyond bounds (%lu)",
+                    (unsigned long)anIndex, (unsigned long)[self count]);
 }
 
 - (NSUInteger)indexOfChild:(WBTreeNode *)aChild {
@@ -241,7 +242,7 @@
 
 - (void)performOperation:(WBTreeOperation)op atIndex:(NSUInteger)anIndex withChild:(WBTreeNode *)child {
   if (child && child->wb_parent) {
-    WBThrowException(NSInvalidArgumentException, @"Cannot append node with parent.");
+    SPXThrowException(NSInvalidArgumentException, @"Cannot append node with parent.");
   }
 
   /* If child is a subtree, find last node and set parents */
@@ -264,7 +265,8 @@
       case kWBTreeOperationRemove:
       case kWBTreeOperationReplace:
         if (!wb_child) {
-          WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+          SPXThrowException(NSRangeException, @"index (%lu) beyond bounds (%lu)",
+                            (unsigned long)anIndex, (unsigned long)[self count]);
         } else {
           if (!child) {
             /* child is retain just below, so we have to release it here */
@@ -289,7 +291,8 @@
       case kWBTreeOperationRemove:
       case kWBTreeOperationReplace:
         if (!current) {
-          WBThrowException(NSRangeException, @"index (%u) beyond bounds (%u)", anIndex, [self count]);
+          SPXThrowException(NSRangeException, @"index (%lu) beyond bounds (%lu)",
+                            (unsigned long)anIndex, (unsigned long)[self count]);
         } else {
           if (last) {
             last->wb_sibling = current->wb_sibling;
@@ -354,7 +357,7 @@
   NSParameterAssert(wb_parent);
   NSAssert(nil == sibling->wb_sibling, @"Must remove sibling from newChild first");
   if (sibling->wb_parent) {
-    WBThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
+    SPXThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
   }
   [sibling retain];
   [sibling setParent:self->wb_parent];
@@ -436,7 +439,7 @@
 
 - (void)dealloc {
   [wb_root release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (id)nextObject {

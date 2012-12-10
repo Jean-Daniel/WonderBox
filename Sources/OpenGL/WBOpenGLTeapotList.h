@@ -49,7 +49,7 @@
 #ifndef _OPENGL_TEAPOT_LIST_H_
 #define _OPENGL_TEAPOT_LIST_H_
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 __BEGIN_DECLS
 

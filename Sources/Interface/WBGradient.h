@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBInterpolationFunction.h)
+#import <WonderBox/WBInterpolationFunction.h>
 
 // Folowing macros and struxt are not design to be setup at runtime, but at compile time.
 // To create a gradient at runtime, it's easier to directly use the WBGradientBuilder class.

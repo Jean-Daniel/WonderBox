@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBSplitview.h)
-#import WBHEADER(NSImage+WonderBox.h)
+#import <WonderBox/WBSplitview.h>
+#import <WonderBox/NSImage+WonderBox.h>
 
 @implementation WBSplitView
 
@@ -20,7 +20,7 @@
 - (NSImage *)wb_centerDividerImage {
   static NSImage *WBCenterDividerImage = nil;
   if (!WBCenterDividerImage) {
-    WBCenterDividerImage = [[NSImage imageNamed:@"WBSplitDot" inBundle:WBBundleForClass([WBSplitView class])] retain];
+    WBCenterDividerImage = [[NSImage imageNamed:@"WBSplitDot" inBundle:SPXBundleForClass([WBSplitView class])] retain];
   }
   return WBCenterDividerImage;
 }
@@ -28,7 +28,7 @@
 - (NSImage *)wb_verticalDividerImage {
   static NSImage *WBVerticalDividerImage = nil;
   if (!WBVerticalDividerImage) {
-    WBVerticalDividerImage = [[NSImage imageNamed:@"WBVSplitBar" inBundle:WBBundleForClass([WBSplitView class])] retain];
+    WBVerticalDividerImage = [[NSImage imageNamed:@"WBVSplitBar" inBundle:SPXBundleForClass([WBSplitView class])] retain];
   }
   return WBVerticalDividerImage;
 }
@@ -36,7 +36,7 @@
 - (NSImage *)wb_horizontalDividerImage {
   static NSImage *WBHorizontalDividerImage = nil;
   if (!WBHorizontalDividerImage) {
-    WBHorizontalDividerImage = [[NSImage imageNamed:@"WBHSplitBar" inBundle:WBBundleForClass([WBSplitView class])] retain];
+    WBHorizontalDividerImage = [[NSImage imageNamed:@"WBHSplitBar" inBundle:SPXBundleForClass([WBSplitView class])] retain];
   }
   return WBHorizontalDividerImage;
 }
@@ -78,7 +78,7 @@
   return wb_svFlags.gray;
 }
 - (void)setGray:(BOOL)flag {
-  WBFlagSet(wb_svFlags.gray, flag);
+  SPXFlagSet(wb_svFlags.gray, flag);
 }
 
 - (void)drawDividerInRect:(NSRect)aRect {

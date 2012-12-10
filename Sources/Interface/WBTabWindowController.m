@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTabWindowController.h)
+#import <WonderBox/WBTabWindowController.h>
 
 @interface WBTabWindowController (NSToolbarDelegate)
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
@@ -34,16 +34,16 @@
   for (WBTabWindowItem *item in [wb_items allValues])
     item.tabWindow = nil;
 
-  wb_release(wb_identifiers);
-  wb_release(wb_classes);
-  wb_release(wb_current);
-  wb_release(wb_items);
-  wb_dealloc();
+  spx_release(wb_identifiers);
+  spx_release(wb_classes);
+  spx_release(wb_current);
+  spx_release(wb_items);
+  spx_dealloc();
 }
 
 #pragma mark -
-- (NSArray *)classes { WBAbstractMethodException(); }
-- (NSArray *)identifiers { WBAbstractMethodException(); }
+- (NSArray *)classes { SPXAbstractMethodException(); }
+- (NSArray *)identifiers { SPXAbstractMethodException(); }
 
 - (NSString *)toolbarIdentifier {
   return [NSString stringWithFormat:@"%@.toolbar", [self class]];
@@ -81,7 +81,7 @@
   [tb setVisible:YES];
 
   [[self window] setToolbar:tb];
-  wb_release(tb);
+  spx_release(tb);
 
   [self setSelectedItemIdentifier:[self defaultTabWindowItem]];
 }
@@ -163,8 +163,8 @@
   [self setNextResponder:anItem];
 
   [[window toolbar] setSelectedItemIdentifier:anItem.identifier];
-  wb_release(wb_current);
-  wb_current = wb_retain(anItem.identifier);
+  spx_release(wb_current);
+  wb_current = spx_retain(anItem.identifier);
   [self didSelectItem:anItem];
 }
 
@@ -173,7 +173,7 @@
 
   Class cls = [wb_classes objectForKey:aPanel];
   if (!cls)
-    WBThrowException(NSInvalidArgumentException, @"invalid panel identifier: %@", aPanel);
+    SPXThrowException(NSInvalidArgumentException, @"invalid panel identifier: %@", aPanel);
 
   WBTabWindowItem *item = [wb_items objectForKey:aPanel];
   if (!item) {
@@ -183,7 +183,7 @@
     [wb_items setObject:item forKey:aPanel];
     item.identifier = aPanel;
     item.tabWindow = self;
-    wb_release(item);
+    spx_release(item);
   }
   [self selectItem:item];
 }
@@ -230,7 +230,7 @@
     [item setLabel:[cls label]];
     [item setImage:[cls image]];
     [item setTarget:self];
-    (void)wb_autorelease(item);
+    (void)spx_autorelease(item);
   }
 
   return item;
@@ -243,8 +243,8 @@
 @synthesize tabWindow = wb_ctrl;
 @synthesize identifier = wb_identifier;
 
-+ (NSImage *)image { WBAbstractMethodException(); }
-+ (NSString *)label { WBAbstractMethodException(); }
++ (NSImage *)image { SPXAbstractMethodException(); }
++ (NSString *)label { SPXAbstractMethodException(); }
 
 + (NSString *)nibName { return NSStringFromClass(self); }
 
@@ -259,8 +259,8 @@
 }
 
 - (void)dealloc {
-  wb_release(wb_identifier);
-  wb_dealloc();
+  spx_release(wb_identifier);
+  spx_dealloc();
 }
 
 - (void)loadView {

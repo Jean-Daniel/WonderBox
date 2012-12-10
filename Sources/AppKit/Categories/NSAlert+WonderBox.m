@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSAlert+WonderBox.h)
+#import <WonderBox/NSAlert+WonderBox.h>
 
 @implementation NSAlert (WBUserDefaultCheckBox)
 

@@ -8,13 +8,13 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTableDataSource.h)
+#import <WonderBox/WBTableDataSource.h>
 
 @implementation WBTableDataSource
 
 - (void)dealloc {
-  wb_release(wb_searchString);
-  wb_dealloc();
+  spx_release(wb_searchString);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -42,8 +42,8 @@
 
 - (void)setSearchString:(NSString *)aString {
   if (![aString isEqualToString:wb_searchString]) {
-    wb_release(wb_searchString);
-    wb_searchString = [aString length] > 0 ? wb_retain(aString) : nil;
+    spx_release(wb_searchString);
+    wb_searchString = [aString length] > 0 ? spx_retain(aString) : nil;
     [self rearrangeObjects];
   }
 }

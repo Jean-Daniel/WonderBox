@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBKeychainFunctions.h)
+#include <WonderBox/WBKeychainFunctions.h>
 
 WB_INLINE
 UTF8Char *__WBCFStringCopyUTF8Characters(CFStringRef string) {

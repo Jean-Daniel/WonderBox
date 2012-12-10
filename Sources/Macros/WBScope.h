@@ -23,7 +23,7 @@
 
 
 #define __WBScopeAutoreleasePool(line) \
-  NSAutoreleasePool *$wb_autoreleasePool_##line __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
+  NSAutoreleasePool *$spx_autoreleasePool_##line __attribute__((cleanup($wb_scopeDrainAutoreleasePool))) = [[NSAutoreleasePool alloc] init]
 // FIXME: find a cleaner way to tell the preprocessor to expand __LINE__
 #define _WBScopeAutoreleasePool(line) __WBScopeAutoreleasePool(line)
 #define WBScopeAutoreleasePool() _WBScopeAutoreleasePool(__LINE__)
@@ -31,7 +31,7 @@
 /* Internal functions */
 static __inline__
 void $wb_scopeReleaseObject(id *scopeReleasedObject) {
-  wb_release(*scopeReleasedObject);
+  spx_release(*scopeReleasedObject);
 }
 
 static __inline__
@@ -42,6 +42,6 @@ void $wb_scopeCFReleaseObject(CFTypeRef **scopeReleasedObject) {
 
 static __inline__
 void $wb_scopeDrainAutoreleasePool(NSAutoreleasePool **pool) {
-  WBAutoreleasePoolDrain(*pool);
+  [*pool drain];
 }
 

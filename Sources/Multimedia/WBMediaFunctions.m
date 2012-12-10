@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBMediaFunctions.h)
+#import <WonderBox/WBMediaFunctions.h>
 
 #if !defined(__LP64__) || !__LP64__
 static const char sBlank[48] = {
@@ -97,7 +97,7 @@ CFStringRef WBMediaCopyStringForPixelFormat(OSType format) {
 }
 
 NSString *WBMediaStringForPixelFormat(OSType format) {
-  return WBCFAutorelease(NSString, WBMediaCopyStringForPixelFormat(format));
+  return SPXCFAutorelease(NSString, WBMediaCopyStringForPixelFormat(format));
 }
 
 QTTime WBCVBufferGetMovieTime(CVBufferRef buffer) {

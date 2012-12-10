@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBIOFunctions.h)
+#include <WonderBox/WBIOFunctions.h>
 
 CFIndex WBCFStreamRead(CFReadStreamRef stream, UInt8 *buffer, CFIndex length) {
   check(length > 0);

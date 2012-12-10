@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBWindowController.h)
+#import <WonderBox/WBWindowController.h>
 
 enum {
   WBWizardCancel,

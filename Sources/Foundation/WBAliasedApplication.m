@@ -8,10 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBAliasedApplication.h)
+#import <WonderBox/WBAliasedApplication.h>
 
-#import WBHEADER(WBAlias.h)
-#import WBHEADER(WBLSFunctions.h)
+#import <WonderBox/WBAlias.h>
+#import <WonderBox/WBLSFunctions.h>
 
 @implementation WBAliasedApplication
 

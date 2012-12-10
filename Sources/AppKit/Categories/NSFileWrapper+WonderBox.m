@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSFileWrapper+WonderBox.h)
+#import <WonderBox/NSFileWrapper+WonderBox.h>
 
 @implementation NSFileWrapper (WBExtensions)
 

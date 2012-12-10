@@ -8,14 +8,14 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBTableView.h)
+#import <WonderBox/WBTableView.h>
 
 @implementation WBTableView
 
 - (void)dealloc {
   if (wb_noPadding)
     NSFreeHashTable(wb_noPadding);
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
@@ -33,9 +33,9 @@
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem {
   if ([anItem action] == @selector(delete:)) {
-    if (WBDelegateHandle([self delegate], canDeleteSelectionInTableView:))
+    if (SPXDelegateHandle([self delegate], canDeleteSelectionInTableView:))
       return [[self delegate] canDeleteSelectionInTableView:self];
-    return [self numberOfSelectedRows] > 0 && WBDelegateHandle([self delegate], deleteSelectionInTableView:);
+    return [self numberOfSelectedRows] > 0 && SPXDelegateHandle([self delegate], deleteSelectionInTableView:);
   } else if ([anItem action] == @selector(selectAll:)) {
     // Disable selectAll: when multi-selection is not allowed
     return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
@@ -44,7 +44,7 @@
 }
 
 - (void)wb_deleteSelection {
-  if (WBDelegateHandle([self delegate], deleteSelectionInTableView:)) {
+  if (SPXDelegateHandle([self delegate], deleteSelectionInTableView:)) {
     [[self delegate] deleteSelectionInTableView:self];
   } else {
     NSBeep();
@@ -88,7 +88,7 @@
   id delegate = [self delegate];
   if (wb_tvFlags.editOnClick && [theEvent clickCount] == 1) {
     /* If is maybe editable */
-    if (WBDelegateHandle(delegate, tableView:shouldEditTableColumn:row:)
+    if (SPXDelegateHandle(delegate, tableView:shouldEditTableColumn:row:)
         && [[self dataSource] respondsToSelector:@selector(tableView:setObjectValue:forTableColumn:row:)]) {
       // If option key down when click => edit clicked cell
       if ([self shouldEditCellForEvent:theEvent]) {
@@ -135,7 +135,7 @@
 }
 
 - (void)setContinueEditing:(BOOL)flag {
-  WBFlagSet(wb_tvFlags.edit, !flag);
+  SPXFlagSet(wb_tvFlags.edit, !flag);
 }
 
 - (void)textDidEndEditing:(NSNotification *)notification {
@@ -164,7 +164,7 @@
       NSHashRemove(wb_noPadding, (__bridge void *)column);
     }
   } else {
-    WBThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
+    SPXThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
   }
 }
 

@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#include WBHEADER(WBCryptoFunctions.h)
+#include <WonderBox/WBCryptoFunctions.h>
 
 #include <unistd.h>
 #include <Security/cssm.h>

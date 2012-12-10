@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBCollapseView.h)
-#import WBHEADER(WBCollapseViewItem.h)
+#import <WonderBox/WBCollapseView.h>
+#import <WonderBox/WBCollapseViewItem.h>
 
 #import "WBCollapseViewInternal.h"
 
@@ -35,8 +35,8 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_views = wb_retain([aCoder decodeObjectForKey:@"collapse.views"]);
-    wb_items = wb_retain([aCoder decodeObjectForKey:@"collapse.items"]);
+    wb_views = spx_retain([aCoder decodeObjectForKey:@"collapse.views"]);
+    wb_items = spx_retain([aCoder decodeObjectForKey:@"collapse.items"]);
   }
   return self;
 }
@@ -53,9 +53,9 @@
 }
 
 - (void)dealloc {
-  wb_release(wb_views);
-  wb_release(wb_items);
-  wb_dealloc();
+  spx_release(wb_views);
+  spx_release(wb_items);
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -78,7 +78,7 @@
 
 // MARK: Query
 - (NSArray *)items {
-  return wb_autorelease([wb_items copy]);
+  return spx_autorelease([wb_items copy]);
 }
 
 - (NSUInteger)numberOfItems {
@@ -133,9 +133,9 @@
 
 - (void)insertItem:(WBCollapseViewItem *)anItem atIndex:(NSUInteger)anIndex {
   if (!anItem)
-    WBThrowException(NSInvalidArgumentException, @"try to insert nil in collapse view");
+    SPXThrowException(NSInvalidArgumentException, @"try to insert nil in collapse view");
   if ([anItem collapseView])
-    WBThrowException(NSInvalidArgumentException, @"try to insert an item that is already in a collapse view");
+    SPXThrowException(NSInvalidArgumentException, @"try to insert an item that is already in a collapse view");
   [self _insertItem:anItem atIndex:anIndex resize:YES];
 }
 
@@ -172,9 +172,9 @@
   [wb_views insertObject:view atIndex:anIndex];
   [wb_items insertObject:anItem atIndex:anIndex];
   [self addSubview:view];
-  wb_release(view);
+  spx_release(view);
 
-  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+  if (SPXDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
@@ -194,14 +194,14 @@
   [wb_views removeAllObjects];
   [wb_items removeAllObjects];
   // Notify
-  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+  if (SPXDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
 - (void)removeItem:(WBCollapseViewItem *)anItem {
   NSUInteger idx = [self indexOfItem:anItem];
   if (NSNotFound == idx)
-    WBThrowException(NSInvalidArgumentException, @"%@ is not an item of this view", anItem);
+    SPXThrowException(NSInvalidArgumentException, @"%@ is not an item of this view", anItem);
 
   [self removeItemAtIndex:idx];
 }
@@ -225,7 +225,7 @@
   [view invalidate];
   [wb_views removeObjectAtIndex:anIndex];
   [wb_items removeObjectAtIndex:anIndex];
-  if (WBDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
+  if (SPXDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
 }
 
@@ -281,7 +281,7 @@
                            nil];
     [animation setViewAnimations:[NSArray arrayWithObject:props]];
     [animation startAnimation];
-    wb_release(animation);
+    spx_release(animation);
   } else {
     [self setFrame:frame];
   }
@@ -355,12 +355,12 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
            @"invalid operation for this item state");
 
   // Let the delegate cancel the action
-  if (WBDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
+  if (SPXDelegateHandle(wb_delegate, collapseView:shouldSetExpanded:forItem:))
     if (![wb_delegate collapseView:self shouldSetExpanded:expands forItem:anItem])
       return;
 
   // tell the delegate…
-  if (WBDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
+  if (SPXDelegateHandle(wb_delegate, collapseView:willSetExpanded:forItem:))
     [wb_delegate collapseView:self willSetExpanded:expands forItem:anItem];
 
   // Then compute delta. It let a chance to the delegate to adjust item size before display
@@ -376,7 +376,7 @@ NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
 
   [view didSetExpanded:expands];
 
-  if (WBDelegateHandle(wb_delegate, collapseView:didSetExpanded:forItem:))
+  if (SPXDelegateHandle(wb_delegate, collapseView:didSetExpanded:forItem:))
     [wb_delegate collapseView:self didSetExpanded:expands forItem:anItem];
 }
 

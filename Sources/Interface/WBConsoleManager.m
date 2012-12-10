@@ -8,10 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBConsoleManager.h)
+#import <WonderBox/WBConsoleManager.h>
 
-#import WBHEADER(WBObjCRuntime.h)
-#import WBHEADER(NSCharacterSet+WonderBox.h)
+#import <WonderBox/WBObjCRuntime.h>
 
 @interface _WBConsoleTextView : NSTextView {
 }
@@ -108,7 +107,7 @@
 
 - (void)appendUserString:(NSString *)str {
   if (wb_cmFlags.lock || wb_cmFlags.disabled) {
-    DLog(@"Cannot append string into a locked or disabled console");
+    SPXDebug(@"Cannot append string into a locked or disabled console");
     return;
   }
   /* Select end text */
@@ -257,7 +256,7 @@
   return !wb_cmFlags.disabled;
 }
 - (void)setEnabled:(BOOL)flag {
-  WBFlagSet(wb_cmFlags.disabled, !flag);
+  SPXFlagSet(wb_cmFlags.disabled, !flag);
 }
 
 - (BOOL)isLocked {
@@ -267,7 +266,7 @@
   if (wb_cmFlags.execute && !wb_cmFlags.lock) {
     wb_cmFlags.lock = 1;
   } else {
-		WBThrowException(NSInternalInconsistencyException, @"Trying to lock a console that is not executing a command or already locked.");
+		SPXThrowException(NSInternalInconsistencyException, @"Trying to lock a console that is not executing a command or already locked.");
   }
 }
 - (void)unlock {
@@ -276,8 +275,8 @@
     wb_cmFlags.execute = 0;
     [self executionDidFinish];
   } else {
-    DLog(@"Trying to unlock a console that is not executing a command or already unlocked.");
-		//WBThrowException(NSInternalInconsistencyException, @"Trying to unlock a console that is not executing a command or already unlocked.");
+    SPXDebug(@"Trying to unlock a console that is not executing a command or already unlocked.");
+		//SPXThrowException(NSInternalInconsistencyException, @"Trying to unlock a console that is not executing a command or already unlocked.");
   }
 }
 
@@ -304,10 +303,10 @@
 #pragma mark -
 #pragma mark Internal Methods
 - (IBAction)stop:(id)sender {
-  WBTrace();
+  SPXTrace();
 }
 - (IBAction)exit:(id)sender {
-  WBTrace();
+  SPXTrace();
 }
 
 - (NSString *)currentLine {
@@ -359,7 +358,7 @@
   wb_uneditable = [[wb_text textStorage] length];
 
   /* === Delegate === */
-  if (WBDelegateHandle(wb_delegate, console:executeUserCommand:)) {
+  if (SPXDelegateHandle(wb_delegate, console:executeUserCommand:)) {
     cmd = [wb_delegate console:self executeUserCommand:cmd];
   }
   if (![self isLocked]) {
@@ -375,7 +374,7 @@
 
 - (void)execute {
   if ([self isLocked]) {
-		WBThrowException(NSInternalInconsistencyException, @"Request line execution in a locked console.");
+		SPXThrowException(NSInternalInconsistencyException, @"Request line execution in a locked console.");
   }
   NSString *storage = [[wb_text textStorage] string];
   // WARNING: does not handle Windows new line
@@ -432,7 +431,7 @@
 }
 
 - (BOOL)textView:(NSTextView *)textView clickedOnLink:(id)aLink atIndex:(NSUInteger)charIndex {
-  if (WBDelegateHandle(wb_delegate, console:clickedOnLink:)) {
+  if (SPXDelegateHandle(wb_delegate, console:clickedOnLink:)) {
     return [wb_delegate console:self clickedOnLink:aLink];
   }
   return NO;

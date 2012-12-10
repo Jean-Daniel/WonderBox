@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBComponent.h)
+#import <WonderBox/WBComponent.h>
 
 @implementation WBComponent
 
@@ -103,7 +103,7 @@
   [_name release];
   [_manu release];
   [_info release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 - (NSString *)description {

@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBImageAndTextView.h)
+#import <WonderBox/WBImageAndTextView.h>
 
-#import WBHEADER(WBCGFunctions.h)
+#import <WonderBox/WBCGFunctions.h>
 
 static CGColorRef sShadowColor;
 
@@ -31,7 +31,7 @@ static const CGFloat kAVImageRightMargin = 6;
 - (void)dealloc {
   [wb_icon release];
   [wb_title release];
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -78,14 +78,14 @@ static const CGFloat kAVImageRightMargin = 6;
 - (void)viewDidMoveToWindow {
   /* Set dark if window is not textured */
   BOOL flag = ([[self window] styleMask] & NSTexturedBackgroundWindowMask) == 0;
-  WBFlagSet(wb_saFlags.dark, flag);
+  SPXFlagSet(wb_saFlags.dark, flag);
 }
 
 - (NSImage *)icon {
   return wb_icon;
 }
 - (void)setIcon:(NSImage *)anImage {
-  WBSetterRetain(wb_icon, anImage);
+  SPXSetterRetain(wb_icon, anImage);
 }
 - (NSString *)title {
   return wb_title;
@@ -213,7 +213,7 @@ static const CGFloat kAVImageRightMargin = 6;
 }
 
 - (void)highlight:(BOOL)flag {
-  bool previous = WBFlagTestAndSet(wb_saFlags.highlight, flag);
+  bool previous = SPXFlagTestAndSet(wb_saFlags.highlight, flag);
   if (previous != wb_saFlags.highlight) {
     [self setNeedsDisplay:YES];
   }
@@ -329,7 +329,7 @@ static const CGFloat kAVImageRightMargin = 6;
   else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
     return [self title];
   } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
-    return WBBool(wb_action != NULL);
+    return SPXBool(wb_action != NULL);
   }
   else return [super accessibilityAttributeValue:attribute];
 }

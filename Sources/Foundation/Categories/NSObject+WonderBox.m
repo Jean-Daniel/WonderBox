@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSObject+WonderBox.h)
+#import <WonderBox/NSObject+WonderBox.h>
 
 @implementation NSObject (WonderBox)
 

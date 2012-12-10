@@ -11,7 +11,7 @@
 #if !defined(__WB_UNIX_FUNCTIONS_H)
 #define __WB_UNIX_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 
 // MARK: File Descriptor Functions
 WB_EXPORT

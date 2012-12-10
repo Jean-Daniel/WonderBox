@@ -11,9 +11,7 @@
 #if !defined (__WB_FUNCTIONS_H)
 #define __WB_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
-
-__BEGIN_DECLS
+#include <WonderBox/WBBase.h>
 
 WB_EXPORT
 OSType WBGetOSTypeFromString(CFStringRef str);
@@ -48,11 +46,11 @@ CFHashCode WBHashBytes(const uint8_t *bytes, size_t length);
 #if defined(__OBJC__)
 WB_INLINE
 NSString *WBStringForOSType(OSType type) {
-  return WBCFAutorelease(NSString, WBCreateStringForOSType(type));
+  return SPXCFAutorelease(NSString, WBCreateStringForOSType(type));
 }
 WB_INLINE
 OSType WBOSTypeFromString(NSString *type) {
-  return type ? WBGetOSTypeFromString(WBNSToCFString(type)) : 0;
+  return type ? WBGetOSTypeFromString(SPXNSToCFString(type)) : 0;
 }
 WB_INLINE
 NSString *WBApplicationGetName(void) {
@@ -60,7 +58,5 @@ NSString *WBApplicationGetName(void) {
           [[NSProcessInfo processInfo] processName];
 }
 #endif
-
-__END_DECLS
 
 #endif /* __WB_FUNCTIONS_H */

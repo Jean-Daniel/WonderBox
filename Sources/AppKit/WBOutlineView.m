@@ -8,14 +8,14 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBOutlineView.h)
+#import <WonderBox/WBOutlineView.h>
 
 @implementation WBOutlineView
 
 - (void)dealloc {
   if (wb_noPadding)
     NSFreeHashTable(wb_noPadding);
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -
@@ -25,7 +25,7 @@
 }
 - (void)setDelegate:(id<WBOutlineViewDelegate>)aDelegate {
   [super setDelegate:aDelegate];
-  wb_ovFlags.drawOutline = WBDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
+  wb_ovFlags.drawOutline = SPXDelegateHandle(aDelegate, outlineView:shouldDrawOutlineCellAtRow:);
 }
 #else
 - (void)setDelegate:(id)aDelegate {
@@ -40,9 +40,9 @@
 
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem {
   if ([anItem action] == @selector(delete:)) {
-    if (WBDelegateHandle([self delegate], canDeleteSelectionInOutlineView:))
+    if (SPXDelegateHandle([self delegate], canDeleteSelectionInOutlineView:))
       return [[self delegate] canDeleteSelectionInOutlineView:self];
-    return [self numberOfSelectedRows] != 0 && WBDelegateHandle([self delegate], deleteSelectionInOutlineView:);
+    return [self numberOfSelectedRows] != 0 && SPXDelegateHandle([self delegate], deleteSelectionInOutlineView:);
   } else if ([anItem action] == @selector(selectAll:)) {
     // Disable selectAll: when multi-selection is not allowed
     return [self allowsMultipleSelection] || ([self numberOfSelectedRows] == 0 && [self numberOfRows] > 0);
@@ -52,7 +52,7 @@
 }
 
 - (void)wb_deleteSelection {
-  if (WBDelegateHandle([self delegate], deleteSelectionInOutlineView:)) {
+  if (SPXDelegateHandle([self delegate], deleteSelectionInOutlineView:)) {
     [[self delegate] deleteSelectionInOutlineView:self];
   } else {
     NSBeep();
@@ -96,7 +96,7 @@
   id delegate = [self delegate];
   if (wb_ovFlags.editOnClick && [theEvent clickCount] == 1) {
     /* If is maybe editable */
-    if (WBDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) &&
+    if (SPXDelegateHandle(delegate, outlineView:shouldEditTableColumn:item:) &&
         [[self dataSource] respondsToSelector:@selector(outlineView:setObjectValue:forTableColumn:byItem:)]) {
       // If option key down when click => edit clicked cell
       if ([self shouldEditCellForEvent:theEvent]) {
@@ -157,7 +157,7 @@
 }
 
 - (void)setContinueEditing:(BOOL)flag {
-  WBFlagSet(wb_ovFlags.edit, !flag);
+  SPXFlagSet(wb_ovFlags.edit, !flag);
 }
 
 - (void)textDidEndEditing:(NSNotification *)notification {
@@ -186,7 +186,7 @@
       NSHashRemove(wb_noPadding, (__bridge void *)column);
     }
   } else {
-    WBThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
+    SPXThrowException(NSInvalidArgumentException, @"Table column %@ does not exist", columnIdentifier);
   }
 }
 

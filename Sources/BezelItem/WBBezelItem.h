@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBNotificationWindow.h)
+#import <WonderBox/WBNotificationWindow.h>
 
 WB_OBJC_EXPORT
 @interface WBBezelItem : WBNotificationWindow {

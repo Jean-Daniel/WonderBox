@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBMovieTextureInternal.h)
-#import WBHEADER(WBQTVisualContext.h)
+#import <WonderBox/WBMovieTextureInternal.h>
+#import <WonderBox/WBQTVisualContext.h>
 
 #if !__LP64__
 static

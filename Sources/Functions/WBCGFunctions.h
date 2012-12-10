@@ -11,8 +11,8 @@
 #if !defined(__WB_CG_FUNCTIONS_H)
 #define __WB_CG_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
-#include WBHEADER(WBGeometry.h)
+#include <WonderBox/WBBase.h>
+#include <WonderBox/WBGeometry.h>
 
 #include <ApplicationServices/ApplicationServices.h>
 

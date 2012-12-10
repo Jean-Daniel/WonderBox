@@ -71,7 +71,7 @@ void _WBImageAvailableCallBack(QTVisualContextRef visualContext, const CVTimeSta
   [self setDelegate:nil];
   //pthread_mutex_destroy(&wb_lock);
   if (wb_ctxt) QTVisualContextRelease(wb_ctxt);
-  wb_dealloc();
+  spx_dealloc();
 }
 
 #pragma mark -

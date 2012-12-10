@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBBase.h)
+#import <WonderBox/WBBase.h>
 
 typedef CGFloat (*WBInterpolationEvaluateCallBack)(CGFloat input, void *info);
 typedef void (*WBInterpolationReleaseInfoCallBack)(void *info);

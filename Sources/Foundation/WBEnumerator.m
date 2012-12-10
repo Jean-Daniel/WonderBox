@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBEnumerator.h)
+#import <WonderBox/WBEnumerator.h>
 
 @interface WBMapEnumerator : NSEnumerator {
   BOOL wb_key;

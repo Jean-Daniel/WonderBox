@@ -11,7 +11,7 @@
 #if !defined(__WB_KEYCHAIN_FUNCTIONS_H)
 #define __WB_KEYCHAIN_FUNCTIONS_H 1
 
-#include WBHEADER(WBBase.h)
+#include <WonderBox/WBBase.h>
 #include <Security/Security.h>
 
 WB_EXPORT

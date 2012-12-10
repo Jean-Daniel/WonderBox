@@ -10,7 +10,7 @@
 
 #include <pthread.h>
 
-#include WBHEADER(WBAEFunctions.h)
+#include <WonderBox/WBAEFunctions.h>
 
 Boolean WBAEDebug = false;
 OSType WBAEFinderSignature = 'MACS';

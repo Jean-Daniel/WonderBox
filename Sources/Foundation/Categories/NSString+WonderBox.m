@@ -8,7 +8,7 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(NSString+WonderBox.h)
+#import <WonderBox/NSString+WonderBox.h>
 
 @implementation NSString (WBStringComparaison)
 
@@ -63,7 +63,7 @@
   NSUInteger lineNumber = 0;
   NSUInteger maximum = NSMaxRange(aRange);
   if (maximum > [self length])
-		WBThrowException(NSRangeException, @"Range out of string limit.");
+		SPXThrowException(NSRangeException, @"Range out of string limit.");
 
   NSRange (*GetLineRange)(id, SEL, NSRange);
   SEL selector = @selector(lineRangeForRange:);
@@ -100,21 +100,21 @@
 
   /* Kilo */
   if (size < ((UInt64)1 << 20))
-    return [NSString localizedStringWithFormat:@"%.*f K%@", precision, (double)size / ((UInt64)1 << 10), unit];
+    return [NSString localizedStringWithFormat:@"%.*f K%@", (int)precision, (double)size / ((UInt64)1 << 10), unit];
   /* Mega */
   if (size < ((UInt64)1 << 30))
-    return [NSString localizedStringWithFormat:@"%.*f M%@", precision, (double)size / ((UInt64)1 << 20), unit];
+    return [NSString localizedStringWithFormat:@"%.*f M%@", (int)precision, (double)size / ((UInt64)1 << 20), unit];
   /* Giga */
   if (size < ((UInt64)1 << 40))
-    return [NSString localizedStringWithFormat:@"%.*f G%@", precision, (double)size / ((UInt64)1 << 30), unit];
+    return [NSString localizedStringWithFormat:@"%.*f G%@", (int)precision, (double)size / ((UInt64)1 << 30), unit];
   /* Tera */
   if (size < ((UInt64)1 << 50))
-    return [NSString localizedStringWithFormat:@"%.*f T%@", precision, (double)size / ((UInt64)1 << 40), unit];
+    return [NSString localizedStringWithFormat:@"%.*f T%@", (int)precision, (double)size / ((UInt64)1 << 40), unit];
   /* Peta */
   if (size < ((UInt64)1 << 60))
-    return [NSString localizedStringWithFormat:@"%.*f P%@", precision, (double)size / ((UInt64)1 << 50), unit];
+    return [NSString localizedStringWithFormat:@"%.*f P%@", (int)precision, (double)size / ((UInt64)1 << 50), unit];
   /* Exa */
-  return [NSString localizedStringWithFormat:@"%.*f E%@", precision, (double)size / ((UInt64)1 << 60), unit];
+  return [NSString localizedStringWithFormat:@"%.*f E%@", (int)precision, (double)size / ((UInt64)1 << 60), unit];
 }
 
 @end

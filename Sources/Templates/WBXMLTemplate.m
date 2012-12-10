@@ -8,8 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import WBHEADER(WBXMLTemplate.h)
-#import WBHEADER(WBTemplateParser.h)
+#import <WonderBox/WBXMLTemplate.h>
+#import <WonderBox/WBTemplateParser.h>
 
 @implementation WBXMLTemplate
 
