@@ -149,7 +149,7 @@ NSString *WBLSFindApplicationForSignature(OSType signature) {
     path = SPXCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? spx_autorelease(path) : nil;
+  return path;
 }
 
 NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) {
@@ -159,6 +159,6 @@ NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) {
     path = SPXCFStringBridgingRelease(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
     CFRelease(url);
   }
-  return path ? spx_autorelease(path) : nil;
+  return path;
 }
 
