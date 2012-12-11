@@ -21,7 +21,7 @@
  @result
  */
 WB_EXPORT
-CSSM_RETURN WBCryptoCspAttach(CSSM_CSP_HANDLE *cspHandle);
+CSSM_RETURN WBCryptoCspAttach(CSSM_CSP_HANDLE *cspHandle) WB_DEPRECATED("CDSA is deprecated");
 
 /*!
  @function
@@ -30,7 +30,7 @@ CSSM_RETURN WBCryptoCspAttach(CSSM_CSP_HANDLE *cspHandle);
  @result
  */
 WB_EXPORT
-CSSM_RETURN WBCryptoCspDetach(CSSM_CSP_HANDLE cspHandle);
+CSSM_RETURN WBCryptoCspDetach(CSSM_CSP_HANDLE cspHandle) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark -
 
@@ -58,7 +58,7 @@ CSSM_RETURN WBCryptoDeriveKey(CSSM_CSP_HANDLE cspHandle,
                               uint32 iteration,
                               uint32 keySizeInBits,
                               CSSM_ALGORITHMS inKeyAlg,			// e.g., CSSM_ALGID_AES
-                              CSSM_KEY_PTR outKey);
+                              CSSM_KEY_PTR outKey) WB_DEPRECATED("CDSA is deprecated");
 
 /*
  * Generate asymmetric key pair. Currently supported algorithms
@@ -69,14 +69,14 @@ CSSM_RETURN WBCryptoGenerateKeyPair(CSSM_CSP_HANDLE 	cspHandle,
                                     CSSM_ALGORITHMS		keyAlg,			// e.g., CSSM_ALGID_RSA
                                     uint32			keySizeInBits,
                                     CSSM_KEY_PTR		publicKey,
-                                    CSSM_KEY_PTR		privateKey);
+                                    CSSM_KEY_PTR		privateKey) WB_DEPRECATED("CDSA is deprecated");
 
 /*
  * Free resources allocated in WBCryptoDeriveKey and WBCryptoGenerateKeyPair().
  */
 WB_EXPORT
 CSSM_RETURN WBCryptoFreeKey(CSSM_CSP_HANDLE		cspHandle,		// from WBCryptoCspAttach()
-                            CSSM_KEY_PTR		key);			// from WBCryptoDeriveKey()
+                            CSSM_KEY_PTR		key) WB_DEPRECATED("CDSA is deprecated");			// from WBCryptoDeriveKey()
 
 #pragma mark -
 /*!
@@ -94,7 +94,7 @@ CSSM_RETURN WBCryptoDhGenerateKeyPair(CSSM_CSP_HANDLE	cspHandle,
                                       CSSM_KEY_PTR	privateKey,
                                       uint32			keySizeInBits,
                                       const CSSM_DATA	*inParams,			// optional
-                                      CSSM_DATA *outParams);			// optional, we malloc
+                                      CSSM_DATA *outParams) WB_DEPRECATED("CDSA is deprecated");			// optional, we malloc
 
 /*
  * Perform Diffie-Hellman key exchange.
@@ -108,7 +108,7 @@ CSSM_RETURN WBCryptoDhKeyExchange(CSSM_CSP_HANDLE	cspHandle,
                                   uint32			theirPubKeyLen,
                                   CSSM_KEY_PTR	derivedKey,			// RETURNED
                                   uint32			deriveKeySizeInBits,
-                                  CSSM_ALGORITHMS	derivedKeyAlg);		// e.g., CSSM_ALGID_AES
+                                  CSSM_ALGORITHMS	derivedKeyAlg) WB_DEPRECATED("CDSA is deprecated");		// e.g., CSSM_ALGID_AES
 
 #pragma mark -
 /*!
@@ -130,7 +130,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoEncrypt(CSSM_CSP_HANDLE		cspHandle,		// from WBCryptoCspAttach()
                             const CSSM_KEY		*key,			// from WBCryptoDeriveKey()
                             const CSSM_DATA		*plainText,
-                            CSSM_DATA *cipherText);
+                            CSSM_DATA *cipherText) WB_DEPRECATED("CDSA is deprecated");
 
 /*
  * Decrypt.
@@ -140,7 +140,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoDecrypt(CSSM_CSP_HANDLE cspHandle,		// from WBCryptoCspAttach()
                             const CSSM_KEY *key,			// from WBCryptoDeriveKey()
                             const CSSM_DATA *cipherText,
-                            CSSM_DATA *plainText);
+                            CSSM_DATA *plainText) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark -
 /*!
@@ -174,7 +174,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoStagedEncDecrInit(CSSM_CSP_HANDLE	cspHandle,		// from WBCryptoCspAttach()
                                       const CSSM_KEY		*key,			// from WBCryptoDeriveKey()
                                       StagedOpType		opType,			// SO_Encrypt, SO_Decrypt
-                                      CSSM_CC_HANDLE		*ccHandle);		// RETURNED
+                                      CSSM_CC_HANDLE		*ccHandle) WB_DEPRECATED("CDSA is deprecated");		// RETURNED
 
 /*
  * Encrypt.
@@ -186,7 +186,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoStagedEncrypt(CSSM_CC_HANDLE		ccHandle,		// from WBCryptoStagedEncDecrInit()
                                   CSSM_BOOL			final,			// CSSM_TRUE on last call
                                   const CSSM_DATA	*plainText,
-                                  CSSM_DATA *cipherText);
+                                  CSSM_DATA *cipherText) WB_DEPRECATED("CDSA is deprecated");
 
 /*
  * Decrypt.
@@ -198,7 +198,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoStagedDecrypt(CSSM_CC_HANDLE		ccHandle,		// from WBCryptoStagedEncDecrInit()
                                   CSSM_BOOL			final,			// CSSM_TRUE on last call
                                   const CSSM_DATA	*cipherText,
-                                  CSSM_DATA *plainText);
+                                  CSSM_DATA *plainText) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark -
 /*!
@@ -219,7 +219,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoDigest(CSSM_CSP_HANDLE		cspHandle,
                            CSSM_ALGORITHMS		digestAlg,
                            const CSSM_DATA		*inData,
-                           CSSM_DATA *outDigestData);
+                           CSSM_DATA *outDigestData) WB_DEPRECATED("CDSA is deprecated");
 
 /*!
  @function
@@ -232,7 +232,7 @@ CSSM_RETURN WBCryptoDigest(CSSM_CSP_HANDLE		cspHandle,
 WB_EXPORT
 CSSM_RETURN WBCryptoStagedDigestInit(CSSM_CSP_HANDLE	cspHandle,
                                      CSSM_ALGORITHMS	digestAlg,
-                                     CSSM_CC_HANDLE		*ccHandle);
+                                     CSSM_CC_HANDLE		*ccHandle) WB_DEPRECATED("CDSA is deprecated");
 
 /*!
  @function
@@ -248,7 +248,7 @@ WB_EXPORT
 CSSM_RETURN WBCryptoStagedDigest(CSSM_CC_HANDLE		ccHandle,
                                  CSSM_BOOL			final,
                                  const CSSM_DATA		*inData,
-                                 CSSM_DATA *digestData);
+                                 CSSM_DATA *digestData) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark -
 /*!
@@ -265,7 +265,7 @@ CSSM_RETURN WBCryptoSign(CSSM_CSP_HANDLE	cspHandle,		// from WBCryptoCspAttach()
                          const CSSM_KEY		*key,			// from WBCryptoGenerateKeyPair()
                          CSSM_ALGORITHMS	sigAlg,			// e.g., CSSM_ALGID_SHA1WithRSA
                          const CSSM_DATA		*dataToSign,
-                         CSSM_DATA *signature);
+                         CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");
 
 /*
  * Verify a digital signature, one-shot version. To be
@@ -276,7 +276,7 @@ CSSM_RETURN WBCryptoVerify(CSSM_CSP_HANDLE cspHandle,		// from WBCryptoCspAttach
                            const CSSM_KEY *key,			// from WBCryptoGenerateKeyPair()
                            CSSM_ALGORITHMS sigAlg,			// e.g., CSSM_ALGID_SHA1WithRSA
                            const CSSM_DATA *dataToSign,
-                           const CSSM_DATA *signature);
+                           const CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark -
 /*!
@@ -301,7 +301,7 @@ CSSM_RETURN WBCryptoStagedSignVerifyInit(CSSM_CSP_HANDLE	cspHandle,		// from WBC
                                          const CSSM_KEY		*key,			// from WBCryptoDeriveKey()
                                          CSSM_ALGORITHMS	sigAlg,			// e.g., CSSM_ALGID_SHA1WithRSA
                                          StagedOpType		opType,			// SO_Sign, SO_Verify
-                                         CSSM_CC_HANDLE		*ccHandle);		// RETURNED
+                                         CSSM_CC_HANDLE		*ccHandle) WB_DEPRECATED("CDSA is deprecated");		// RETURNED
 
 /*
  * Sign.
@@ -314,7 +314,7 @@ CSSM_RETURN WBCryptoStagedSignVerifyInit(CSSM_CSP_HANDLE	cspHandle,		// from WBC
 WB_EXPORT
 CSSM_RETURN WBCryptoStagedSign(CSSM_CC_HANDLE ccHandle,		// from WBCryptoStagedSignVerifyInit()
                                const CSSM_DATA	*dataToSign,
-                               CSSM_DATA *signature);		// non-NULL on final call only
+                               CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");		// non-NULL on final call only
 
 /*
  * Verify.
@@ -326,6 +326,6 @@ CSSM_RETURN WBCryptoStagedSign(CSSM_CC_HANDLE ccHandle,		// from WBCryptoStagedS
 WB_EXPORT
 CSSM_RETURN WBCryptoStagedVerify(CSSM_CC_HANDLE ccHandle,		// from WBCryptoStagedSignVerifyInit()
                                  const CSSM_DATA *dataToVerify,
-                                 const CSSM_DATA *signature);	// non-NULL on final call only
+                                 const CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");	// non-NULL on final call only
 
 #endif	/* __WBCRYPTO_FUNCTIONS_H */

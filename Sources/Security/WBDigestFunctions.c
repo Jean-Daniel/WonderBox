@@ -11,13 +11,11 @@
 #include <WonderBox/WBDigestFunctions.h>
 
 #include <CommonCrypto/CommonDigest.h>
-#include <Security/Security.h> // for CSSM Algorithms
 #include <unistd.h>
 
 typedef struct _WBDigestInfo {
   uint8_t algo;
   uint8_t length;
-  CSSM_ALGORITHMS cssm;
   const char *name;
   /* functions */
   int (*init)(void *c);
@@ -40,7 +38,6 @@ typedef struct _WBPrivateDigestContext {
 #define DEFINE_DIGEST_INFO(str, algorithm) { \
   .algo = kWBDigest##algorithm, \
   .length = CC_##algorithm##_DIGEST_LENGTH, \
-  .cssm = CSSM_ALGID_##algorithm, \
   .name = str, \
   .init = (int (*)(void *))CC_##algorithm##_Init, \
   .update = (int (*)(void *, const void *, CC_LONG))CC_##algorithm##_Update, \
@@ -64,7 +61,7 @@ static const WBDigestInfo _WBDigestInfos[] = {
   /* SHA 512 */
   DEFINE_DIGEST_INFO("sha512", SHA512),
   /* Sentinel */
-  { kWBDigestUndefined, 0, 0, NULL, NULL, NULL, NULL }
+  { kWBDigestUndefined, 0, NULL, NULL, NULL, NULL }
 };
 
 WB_INLINE
@@ -89,15 +86,11 @@ size_t WBDigestGetLengthForAlgorithm(WBDigestAlgorithm algo) {
   return digest ? digest->length : 0;
 }
 
-uint32_t WBDigestCSSMAlgorithmForDigest(WBDigestAlgorithm algo) {
-  const WBDigestInfo *digest = __WBDigestInfoForAlgoritm(algo);
-  return digest ? digest->cssm : 0;
-}
-
 #pragma mark Digest
 int WBDigestInit(WBDigestContext *c, WBDigestAlgorithm algo) {
-  memset(c, 0, sizeof(*c));
+  static_assert(sizeof(*c) >= sizeof(WBPrivateDigestContext), "inconsistent declaration");
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
+  memset(ctxt, 0, sizeof(*ctxt));
   ctxt->digest = __WBDigestInfoForAlgoritm(algo);
   if (!ctxt->digest) return 0; // error ?
 

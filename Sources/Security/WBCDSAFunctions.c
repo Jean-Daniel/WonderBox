@@ -42,13 +42,15 @@ static CSSM_API_MEMORY_FUNCS memFuncs = {
   NULL
 };
 
+WB_DEPRECATED("CDSA is deprecated")
 static CSSM_VERSION vers = {2, 0};
+WB_DEPRECATED("CDSA is deprecated")
 static const CSSM_GUID testGuid = { 0xFADE, 0, 0, { 1,2,3,4,5,6,7,0 }};
 
 /*
  * Init CSSM; returns CSSM_FALSE on error. Reusable.
  */
-static
+static WB_DEPRECATED("CDSA is deprecated")
 CSSM_BOOL cssmStartup(void) {
   static CSSM_BOOL cssmInitd = CSSM_FALSE;
   CSSM_RETURN  crtn;

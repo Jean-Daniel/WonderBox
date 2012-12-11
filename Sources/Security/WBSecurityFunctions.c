@@ -55,7 +55,7 @@ bail:
   return err;
 }
 
-static
+static WB_DEPRECATED("CDSA is deprecated")
 OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypts, CSSM_CC_HANDLE *ccHandle) {
   const CSSM_KEY *ckey;
   CSSM_CSP_HANDLE cspHandle;

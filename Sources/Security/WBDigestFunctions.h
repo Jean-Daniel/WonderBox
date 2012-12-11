@@ -17,8 +17,6 @@
 
 #include <WonderBox/WBBase.h>
 
-__BEGIN_DECLS
-
 typedef struct _WBDigestContext {
   char opaque[240];
 } WBDigestContext;
@@ -34,7 +32,7 @@ enum {
   kWBDigestSHA384,
   kWBDigestSHA512,
 };
-typedef UInt32 WBDigestAlgorithm;
+typedef uint32_t WBDigestAlgorithm;
 
 /* Macro for static stack array creation (digest length in bytes) */
 #define WB_MD2_DIGEST_LENGTH    16
@@ -53,9 +51,6 @@ size_t WBDigestGetLengthForAlgorithm(WBDigestAlgorithm algo);
 
 WB_EXPORT
 WBDigestAlgorithm WBDigestGetAlgorithmByName(const char *name);
-
-WB_EXPORT // CSSM Bridge
-uint32_t WBDigestCSSMAlgorithmForDigest(WBDigestAlgorithm algo);
 
 WB_EXPORT
 int WBDigestInit(WBDigestContext *ctxt, WBDigestAlgorithm algo);
@@ -81,7 +76,5 @@ WB_EXPORT
 int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md);
 WB_EXPORT
 int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsigned char *md);
-
-__END_DECLS
 
 #endif /* __WBDIGEST_FUNCTIONS_H */

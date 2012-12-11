@@ -17,7 +17,7 @@
 
 #pragma mark Keys
 WB_EXPORT
-OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght);
+OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
 OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) WB_DEPRECATED("not accurate. do not rely on this function");
 
@@ -27,33 +27,33 @@ OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label);
 
 #pragma mark Identities
 WB_EXPORT
-CFArrayRef WBSecurityCopyIdentities(CFTypeRef keychainOrArray, CSSM_KEYUSE usage);
+CFArrayRef WBSecurityCopyIdentities(CFTypeRef keychainOrArray, CSSM_KEYUSE usage) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *policyOID, const CSSM_DATA *value);
+CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *policyOID, const CSSM_DATA *value) WB_DEPRECATED("CDSA is deprecated");
 
 WB_EXPORT
 OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, SecIdentityRef *identity);
 
 #pragma mark Signature
 WB_EXPORT
-OSStatus WBSecurityCreateVerifyContext(SecKeyRef pubKey, CSSM_ALGORITHMS algid, CSSM_CC_HANDLE *ccHandle);
+OSStatus WBSecurityCreateVerifyContext(SecKeyRef pubKey, CSSM_ALGORITHMS algid, CSSM_CC_HANDLE *ccHandle) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_CC_HANDLE *ccHandle);
+OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_CC_HANDLE *ccHandle) WB_DEPRECATED("CDSA is deprecated");
 
 WB_EXPORT
-OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, const CSSM_DATA *data, CSSM_ALGORITHMS digestAlg, CSSM_DATA *signature);
+OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, const CSSM_DATA *data, CSSM_ALGORITHMS digestAlg, CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *digest, CSSM_ALGORITHMS digestAlg, const CSSM_DATA *signature, Boolean *valid);
+OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *digest, CSSM_ALGORITHMS digestAlg, const CSSM_DATA *signature, Boolean *valid) WB_DEPRECATED("CDSA is deprecated");
 
 WB_EXPORT
-CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature);
+CSSM_RETURN WBSecuritySignFile(const char *path, SecKeyRef pkey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *signature, SecKeyRef pkey, CSSM_ALGORITHMS algid, bool *outValid);
+CSSM_RETURN WBSecurityVerifyFileSignature(const char *path, const CSSM_DATA *signature, SecKeyRef pkey, CSSM_ALGORITHMS algid, bool *outValid) WB_DEPRECATED("CDSA is deprecated");
 
 WB_EXPORT
-CSSM_RETURN WBSecuritySignFileWithIdentity(const char *path, SecIdentityRef identity, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature);
+CSSM_RETURN WBSecuritySignFileWithIdentity(const char *path, SecIdentityRef identity, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_DATA *signature) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CSSM_DATA *signature, SecIdentityRef identity, CSSM_ALGORITHMS algid, bool *outValid);
+CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CSSM_DATA *signature, SecIdentityRef identity, CSSM_ALGORITHMS algid, bool *outValid) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark Developement
 

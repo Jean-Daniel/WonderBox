@@ -292,7 +292,9 @@ CSSM_RETURN WBCryptoDhKeyExchange(CSSM_CSP_HANDLE cspHandle,
  * each encryption op (e.g., disk block number, IP packet number,
  * etc.) but that is outside the scope of this library.
  */
+WB_DEPRECATED("CDSA is deprecated")
 static uint8 iv[16] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+WB_DEPRECATED("CDSA is deprecated")
 static const CSSM_DATA ivCommon = {16, iv};
 
 /*
@@ -421,7 +423,7 @@ CSSM_RETURN WBCryptoStagedEncDecrInit(CSSM_CSP_HANDLE cspHandle,		// from WBCryp
   return CSSM_OK;
 }
 
-WB_INLINE
+WB_INLINE WB_DEPRECATED("CDSA is deprecated")
 CSSM_CSP_HANDLE __WBCSSM_GetCSPFromContext(CSSM_CC_HANDLE ccHandle) {
   CSSM_CONTEXT *ctxt;
   if (CSSM_OK == CSSM_GetContext(ccHandle, &ctxt))

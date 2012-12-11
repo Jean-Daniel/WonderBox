@@ -15,29 +15,29 @@
 
 #include <Security/cssmtype.h>
 
-WB_EXPORT CSSM_BOOL WBCDSADataEqual(const CSSM_DATA *d1, const CSSM_DATA *d2);
+WB_EXPORT CSSM_BOOL WBCDSADataEqual(const CSSM_DATA *d1, const CSSM_DATA *d2) WB_DEPRECATED("CDSA is deprecated");
 
-WB_EXPORT const char *WBCDSAGetErrorString(CSSM_RETURN error);
+WB_EXPORT const char *WBCDSAGetErrorString(CSSM_RETURN error) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT CFStringRef WBCDSACopyErrorMessageString(OSStatus status) DEPRECATED_IN_MAC_OS_X_VERSION_10_5_AND_LATER;
-WB_EXPORT void WBCDSAPrintError(const char *op, CSSM_RETURN err);
+WB_EXPORT void WBCDSAPrintError(const char *op, CSSM_RETURN err) WB_DEPRECATED("CDSA is deprecated");
 
 WB_EXPORT
-CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service, CSSM_MODULE_HANDLE *handle);
+CSSM_RETURN WBCDSAStartupModule(const CSSM_GUID *guid, CSSM_SERVICE_TYPE service, CSSM_MODULE_HANDLE *handle) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-CSSM_RETURN WBCDSAShutdownModule(CSSM_MODULE_HANDLE handle);
+CSSM_RETURN WBCDSAShutdownModule(CSSM_MODULE_HANDLE handle) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark Helper
 WB_EXPORT
-CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *key, const CSSM_DATA *ivPtr, CSSM_CC_HANDLE *ccHandle);
+CSSM_RETURN WBCDSACreateCryptContext(CSSM_CSP_HANDLE cspHandle, const CSSM_KEY *key, const CSSM_DATA *ivPtr, CSSM_CC_HANDLE *ccHandle) WB_DEPRECATED("CDSA is deprecated");
 
 #pragma mark Memory functions
 WB_EXPORT
-void *WBCDSAMalloc(CSSM_MODULE_HANDLE handle, CSSM_SIZE size);
+void *WBCDSAMalloc(CSSM_MODULE_HANDLE handle, CSSM_SIZE size) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-void *WBCDSACalloc(CSSM_MODULE_HANDLE handle, uint32 count, CSSM_SIZE size);
+void *WBCDSACalloc(CSSM_MODULE_HANDLE handle, uint32 count, CSSM_SIZE size) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-void *WBCDSARealloc(CSSM_MODULE_HANDLE handle, void *ptr, CSSM_SIZE length);
+void *WBCDSARealloc(CSSM_MODULE_HANDLE handle, void *ptr, CSSM_SIZE length) WB_DEPRECATED("CDSA is deprecated");
 WB_EXPORT
-void WBCDSAFree(CSSM_MODULE_HANDLE handle, void *ptr);
+void WBCDSAFree(CSSM_MODULE_HANDLE handle, void *ptr) WB_DEPRECATED("CDSA is deprecated");
 
 #endif  /* __WB_CDSA_FUNCTIONS_H */
