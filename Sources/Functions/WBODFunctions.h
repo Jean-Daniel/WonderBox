@@ -36,4 +36,7 @@ CFArrayRef WBODCopyVisibleUsersAttributes(ODAttributeType attribute, ...) WB_REQ
 WB_EXPORT
 CFTypeRef WBODCopyUserAttribute(CFStringRef username, ODAttributeType attribute);
 
+WB_EXPORT
+CFDictionaryRef WBODCopyUserAttributes(CFStringRef username, ODAttributeType attribute, ...) WB_REQUIRES_NIL_TERMINATION;
+
 #endif /* __WB_DS_FUNCTIONS_H */

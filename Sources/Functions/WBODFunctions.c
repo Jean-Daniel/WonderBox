@@ -168,6 +168,8 @@ CFArrayRef WBODCopyVisibleUsersAttributes(ODAttributeType attribute, ...) {
 
 CFTypeRef WBODCopyUserAttribute(CFStringRef username, ODAttributeType attribute) {
   assert(username && attribute);
+  if (!username || !attribute)
+    return NULL;
 
   CFErrorRef error;
   ODQueryRef query = ODQueryCreateWithNodeType(kCFAllocatorDefault, kODNodeTypeLocalNodes, kODRecordTypeUsers,
@@ -192,5 +194,57 @@ CFTypeRef WBODCopyUserAttribute(CFStringRef username, ODAttributeType attribute)
   return result;
 }
 
+CFDictionaryRef WBODCopyUserAttributes(CFStringRef username, ODAttributeType attribute, ...) {
+  assert(username && attribute);
+  if (!username || !attribute)
+    return NULL;
 
+  CFMutableArrayRef attributes = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
+  if (!attributes)
+    return NULL;
 
+  va_list args;
+  va_start(args, attribute);
+  do {
+    CFArrayAppendValue(attributes, attribute);
+    attribute = va_arg(args, ODAttributeType);
+  } while (attribute);
+  va_end(args);
+
+  CFErrorRef error;
+  ODQueryRef query = ODQueryCreateWithNodeType(kCFAllocatorDefault, kODNodeTypeLocalNodes, kODRecordTypeUsers,
+                                               kODAttributeTypeRecordName, kODMatchInsensitiveEqualTo, username,
+                                               attributes, 0, &error);
+
+  CFArrayRef records = ODQueryCopyResults(query, false, &error);
+  CFRelease(query);
+  if (!records) {
+    CFRelease(attributes);
+    if (error)
+      CFRelease(error);
+    return NULL;
+  }
+
+  CFMutableDictionaryRef result = NULL;
+  if (CFArrayGetCount(records) >= 1) {
+    result = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                                       &kCFCopyStringDictionaryKeyCallBacks,
+                                       &kCFTypeDictionaryValueCallBacks);
+
+    ODRecordRef user = (ODRecordRef)CFArrayGetValueAtIndex(records, 0);
+
+    for (CFIndex idx = 0, count = CFArrayGetCount(attributes); idx < count; ++idx) {
+      CFStringRef attr = CFArrayGetValueAtIndex(attributes, idx);
+      CFTypeRef value = WBODRecordCopyFirstValue(user, attr);
+      if (value) {
+        CFDictionarySetValue(result, attr, value);
+        CFRelease(value);
+      }
+    }
+  }
+  CFRelease(records);
+
+  CFRelease(attributes);
+
+  return result;
+}
