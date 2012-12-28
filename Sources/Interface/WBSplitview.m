@@ -127,7 +127,11 @@
     /* Draw the center image */
     center.x = round(center.x);
     center.y = round(center.y);
-    [dot compositeToPoint:center operation:NSCompositeSourceOver];
+    NSRect from = { NSZeroPoint, [dot size] };
+    NSRect dest = { center, from.size };
+    [dot drawInRect:dest fromRect:from
+          operation:NSCompositeSourceOver
+           fraction:1 respectFlipped:YES hints:nil];
   } else {
     [super drawDividerInRect:aRect];
   }
