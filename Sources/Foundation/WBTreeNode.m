@@ -260,6 +260,8 @@
     switch (op) {
       case kWBTreeOperationInsert:
       case kWBTreeOperationAppend:
+        if (!last)
+          SPXThrowException(NSInvalidArgumentException, @"Trying to insert nil node.");
         last->wb_sibling = wb_child;
         break;
       case kWBTreeOperationRemove:
@@ -286,6 +288,8 @@
     WBTreeNode *current = previous ? previous->wb_sibling : nil;
     switch (op) {
       case kWBTreeOperationInsert:
+        if (!last)
+          SPXThrowException(NSInvalidArgumentException, @"Trying to insert nil node.");
         last->wb_sibling = current;
         break;
       case kWBTreeOperationRemove:
