@@ -20,7 +20,7 @@ WB_OBJC_EXPORT
   __unsafe_unretained id <WBCollapseViewDelegate> wb_delegate;
 }
 
-@property(nonatomic, assign) id <WBCollapseViewDelegate> delegate;
+@property(nonatomic, assign) IBOutlet id <WBCollapseViewDelegate> delegate;
 
 - (void)expandAllItems;
 - (void)collapseAllItems;
