@@ -7,18 +7,9 @@
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
-/*!
-    @header WBAlias
-    @abstract   (description)
-    @discussion (description)
-*/
 
 #include <WonderBox/WBBase.h>
 
-/*!
-    @class WBAlias
-    @abstract WBAlias class is a wrapper on Carbon AliasHandle.
-*/
 WB_OBJC_EXPORT
 @interface WBAlias : NSObject <NSCoding, NSCopying> {
   @private

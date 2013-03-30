@@ -114,21 +114,21 @@ WB_EXPORT OSStatus WBAECreatePropertyObjectSpecifier(DescType desiredType, AEKey
 #pragma mark Create AppleEvents
 /**************************** Create AppleEvents ****************************/
 WB_EXPORT
-OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
+OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
 /*!
  @function
  @abstract   Create an AppleEvent with target a "typeApplSignature" AEDesc.
  @param      targetSign The signature of target application.
  @param      eventClass The event class of the Apple event to create.
  @param      eventType The event ID of the Apple event to create.
- @param      theEvent A pointer to an Apple event.
+ @param      pAppleEvent A pointer to an Apple event.
  On successful return, the new Apple event. On error, a null descriptor.
  If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
  function to dispose of the resulting Apple event after it has finished using it.
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
+OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
 
 /*!
  @function
@@ -136,14 +136,14 @@ OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass even
  @param      targetId The bundle identifier of target application.
  @param      eventClass The event class of the Apple event to create.
  @param      eventType The event ID of the Apple event to create.
- @param      theEvent A pointer to an Apple event.
+ @param      pAppleEvent A pointer to an Apple event.
  On successful return, the new Apple event. On error, a null descriptor.
  If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
  function to dispose of the resulting Apple event after it has finished using it.
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
+OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
 WB_EXPORT
@@ -334,10 +334,8 @@ OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, Des
 
 /*!
  @abstract   Send an AppleEvent. Check in reply if it contains an error code and return this code.
- @param     theEvent A pointer to the Apple event to be sent.
- @param     sendMode
- @param     timeoutms
- @param     theEvent On return, contains the result descriptor if function returns noErr or {typeNull, NULL}.
+ @param     pAppleEvent A pointer to the Apple event to be sent.
+ @param     theReply On return, contains the result descriptor if function returns noErr or {typeNull, NULL}.
 
  @result    A result code. If reply contains an error code, returns this code.
  */
@@ -347,11 +345,11 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
 /*!
  @function
  @abstract   Send an AppleEvent and ignore return value.
- @param      theEvent A pointer to the Apple event to be sent.
+ @param      pAppleEvent A pointer to the Apple event to be sent.
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAESendEventNoReply(AppleEvent* theEvent);
+OSStatus WBAESendEventNoReply(AppleEvent* pAppleEvent);
 
 /*!
  @function
@@ -359,7 +357,7 @@ OSStatus WBAESendEventNoReply(AppleEvent* theEvent);
  @discussion Return the direct object as a AEDesc of pAEDescType.
  @param      pAppleEvent ==> The event to be sent.
  @param      pDescType ==> The type of value returned by the event.
- @param      pAEDescList <== The value returned by the event.
+ @param      pAEDesc <== The value returned by the event.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
  */
@@ -396,7 +394,7 @@ OSStatus WBAESendEventReturnAEDescList(AppleEvent* pAppleEvent, AEDescList* pAED
            The size in bytes must be at least as large as the value you pass in the <i>maximumSize</i> parameter.
            On return, contains the parameter data. Specify NULL if you do not care about this return value.
  @param   maximumSize The maximum length, in bytes, of the expected Apple event parameter data.
- @param   actualSize A pointer to a variable of type Size. On return, the length, in bytes, of the
+ @param   pActualSize A pointer to a variable of type Size. On return, the length, in bytes, of the
            data for the specified Apple event parameter. If this value is larger than the value you
            passed in the <i>maximumSize</i> parameter, the buffer pointed to by dataPtr was not large enough to contain
            all of the data for the parameter, though AEGetParamPtr does not write beyond the end of the buffer.
@@ -412,33 +410,33 @@ OSStatus WBAESendEventReturnData(AppleEvent *pAppleEvent, DescType desiredType, 
  @function
  @abstract   Send the provided AppleEvent.
  @discussion Return the direct object as a Boolean.
- @param      theEvent The event to be sent.
+ @param      pAppleEvent The event to be sent.
  @param      value On return, contains the Boolean extract from the event response.
  @result     noErr and any other error that can be returned by AESendMessage
               or the handler in the application that gets the event.
  */
 WB_EXPORT
-OSStatus WBAESendEventReturnBoolean(AppleEvent* theEvent, Boolean* value);
+OSStatus WBAESendEventReturnBoolean(AppleEvent* pAppleEvent, Boolean* value);
 
 
 /*!
  @function
  @abstract   Send the provided AppleEvent.
  @discussion Return the direct object as a SInt16.
- @param      theEvent The event to be sent.
+ @param      pAppleEvent The event to be sent.
  @param      value On return, contains the SInt16 extract from the event response.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
  */
 WB_EXPORT
-OSStatus WBAESendEventReturnSInt16(AppleEvent* theEvent, SInt16* value);
+OSStatus WBAESendEventReturnSInt16(AppleEvent* pAppleEvent, SInt16* value);
 
 /*!
  @function
  @abstract   Send the provided AppleEvent.
  @discussion Return the direct object as a SInt32.
- @param      theEvent The event to be sent.
- @param      value On return, contains the SInt32 extract from the event response.
+ @param      pAppleEvent The event to be sent.
+ @param      pValue On return, contains the SInt32 extract from the event response.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
  */
@@ -449,8 +447,8 @@ OSStatus WBAESendEventReturnSInt32(AppleEvent* pAppleEvent, SInt32* pValue);
  @function
  @abstract   Send the provided AppleEvent.
  @discussion Return the direct object as a UInt32.
- @param      theEvent The event to be sent.
- @param      value On return, contains the UInt32 extract from the event response.
+ @param      pAppleEvent The event to be sent.
+ @param      pValue On return, contains the UInt32 extract from the event response.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
  */
@@ -467,8 +465,8 @@ OSStatus WBAESendEventReturnUInt64(AppleEvent* pAppleEvent, UInt64* pValue);
  @function
  @abstract   Send the provided AppleEvent.
  @discussion Return the direct object as a CFDataRef. Caller must release data.
- @param      theEvent The event to be sent.
- @param    resulType The type of result you request. If you don't want a specific type, pass <code>typeWildCard</code>.
+ @param      pAppleEvent The event to be sent.
+ @param    resultType The type of result you request. If you don't want a specific type, pass <code>typeWildCard</code>.
  @param      data On return, contains the CFDataRef extract from the event response. Caller must release data.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
@@ -480,7 +478,7 @@ OSStatus WBAESendEventReturnCFData(AppleEvent *pAppleEvent, DescType resultType,
  @function
  @abstract  Send the provided AppleEvent
  @discussion Return the direct object as a CFStringRef. Caller must release string.
- @param      theEvent The event to be sent.
+ @param      pAppleEvent The event to be sent.
  @result     noErr and any other error that can be returned by AESendMessage
  or the handler in the application that gets the event.
  */

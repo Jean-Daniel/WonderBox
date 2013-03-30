@@ -55,12 +55,11 @@ NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
 // So, we have to declare either the iterator, or the index out of the for scope.
 // We can't hide it adding a level of bracket, else the user would have to close it,
 // or we would have to declare a WBIndexesEndIterator() macros.
-// To avoid name collision, we create an unique var name using the line number.
-#define __WBIndexesIterator(var, indexes, line) \
+// To avoid name collision, we create an unique var name using __COUNTER__ macro.
+#define _WBIndexesIterator(var, indexes, line) \
+  __attribute__((objc_precise_lifetime)) id __indexes##line = indexes; \
   WBIndexIterator __idxIter##line; WBIndexIteratorInitialize(indexes, &__idxIter##line); \
   for (NSUInteger var; (var = WBIndexIteratorNext(&__idxIter##line)) != NSNotFound;)
-// Traditional hack to use __LINE__ in a macro.
-#define _WBIndexesIterator(var, indexes, line) __WBIndexesIterator(var, indexes, line)
 
 /*!
  @abstract
@@ -69,7 +68,7 @@ NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
      // do something with idx
    }
  */
-#define WBIndexesIterator(var, indexes) _WBIndexesIterator(var, indexes, __LINE__)
+#define WBIndexesIterator(var, indexes) _WBIndexesIterator(var, indexes, __COUNTER__)
 
 // We can't use fast iteration for reverse iterator.
 #define WBIndexesReverseIterator(var, indexes) for (NSUInteger var = [indexes lastIndex]; indexes != nil && var != NSNotFound; var = [indexes indexLessThanIndex:var])

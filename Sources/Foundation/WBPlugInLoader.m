@@ -76,7 +76,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     while ((domain = va_arg(args, NSUInteger))) {
       if (nil != [self domainWithName:domain]) {
         [self release];
-        SPXThrowException(NSInvalidArgumentException, @"domain %u is defined twice", domain);
+        SPXThrowException(NSInvalidArgumentException, @"domain %lu is defined twice", (long)domain);
       }
       [wb_domains addObject:[_WBPlugInDomain domainWithName:domain]];
     }
@@ -290,7 +290,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     } else {
       SPXLogWarning(@"PlugIn already loaded: %@", [aBundle bundleIdentifier]);
     }
-  } @catch (id exception) {
+  } @catch (NSException *exception) {
     SPXLogException(exception);
   }
   return plugin;

@@ -15,14 +15,13 @@
 
 #import <WonderBox/WBBase.h>
 
-enum _WBPlugInDomains {
+typedef NS_ENUM(NSUInteger, WBPlugInDomain) {
   kWBPlugInDomainUser = 1,
   kWBPlugInDomainLocal,
   kWBPlugInDomainNetwork,
   kWBPlugInDomainBuiltIn,
   kWBPlugInDomainUserDefined,
 };
-typedef NSUInteger WBPlugInDomain;
 
 WB_EXPORT
 NSString * const WBPlugInLoaderDidLoadPlugInNotification;
@@ -30,7 +29,6 @@ WB_EXPORT
 NSString * const WBPlugInLoaderDidRemovePlugInNotification;
 
 /*!
- @class
  @abstract    A generic PlugIn loader.
  @discussion  Should be subclassed.
  */
