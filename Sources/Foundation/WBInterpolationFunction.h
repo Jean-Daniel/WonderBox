@@ -19,8 +19,8 @@ typedef struct _WBInterpolationCallBackContext {
   WBInterpolationReleaseInfoCallBack releaseInfo;
 } WBInterpolationCallBack;
 
-WB_EXPORT const WBInterpolationCallBack const WBInterpolationCallBackSin;
-WB_EXPORT const WBInterpolationCallBack const WBInterpolationCallBackCircular;
+WB_EXPORT const WBInterpolationCallBack WBInterpolationCallBackSin;
+WB_EXPORT const WBInterpolationCallBack WBInterpolationCallBackCircular;
 
 WB_EXPORT CGFloat WBInterpolationSin(CGFloat factor, void *info);
 WB_EXPORT CGFloat WBInterpolationCircular(CGFloat factor, void *info);
