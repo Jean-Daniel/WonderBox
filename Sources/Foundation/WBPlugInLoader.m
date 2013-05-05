@@ -226,19 +226,21 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 /* Discover new PlugIns */
 - (NSArray *)findPlugInsAtPath:(NSString *)folder {
   NSParameterAssert(folder);
-  NSString *name;
   NSString *ext = [self extension];
   NSMutableArray *plugins = [NSMutableArray array];
-  // 10.4 compat
-  NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:folder] objectEnumerator];
-  while (name = [e nextObject]) {
-    if ([[name pathExtension] caseInsensitiveCompare:ext] == NSOrderedSame) {
-      NSBundle *plugin = [NSBundle bundleWithPath:[folder stringByAppendingPathComponent:name]];
-      if (plugin) {
+
+  NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:folder]
+                                                includingPropertiesForKeys:nil
+                                                                   options:NSDirectoryEnumerationSkipsSubdirectoryDescendants
+                                                                     error:NULL];
+  for (NSURL *url in urls) {
+    if ([[url pathExtension] caseInsensitiveCompare:ext] == NSOrderedSame) {
+      NSBundle *plugin = [NSBundle bundleWithURL:url];
+      if (plugin)
         [plugins addObject:plugin];
-      }
     }
   }
+
   return plugins;
 }
 
