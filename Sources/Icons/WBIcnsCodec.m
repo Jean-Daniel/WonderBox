@@ -212,7 +212,7 @@ Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap) {
           color.red 	= (float)(MAX(0, (1 - *(src[0]++) - black)) * oneOverAlpha) / 255; /* red = (1 - cyan) - black */
           color.green	= (float)(MAX(0, (1 - ((isPlanar) ? *(src[1]++) : *(src[0]++)) - black)) * oneOverAlpha) / 255; /* green  = (1 - magenta) - black */
           color.blue 	= (float)(MAX(0, (1 - ((isPlanar) ? *(src[2]++) : *(src[0]++)) - black)) * oneOverAlpha) / 255; /* blue  = (1 - yellow) - black */
-          (isPlanar) ? *(src[3]++) : *(src[0]++); // ignore black component
+          (isPlanar) ? src[3]++ : src[0]++; // ignore black component
           if (alpha && !alphaFirst) src[0]++; // ignore alpha
           *(dest++) = CGPaletteGetIndexForColor(palette, color);
         }
@@ -340,7 +340,7 @@ Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap) {
           color.red 	= (float)(MAX(0, (1 - *(src[0]++) - black)) * oneOverAlpha) / 255; /* red = (1 - cyan) - black */
           color.green = (float)(MAX(0, (1 - ((isPlanar) ? *(src[1]++) : *(src[0]++)) - black)) * oneOverAlpha) / 255; /* green  = (1 - magenta) - black */
           color.blue 	= (float)(MAX(0, (1 - ((isPlanar) ? *(src[2]++) : *(src[0]++)) - black)) * oneOverAlpha) / 255; /* blue  = (1 - yellow) - black */
-          (isPlanar) ? *(src[3]++) : *(src[0]++); // ignore black component
+          (isPlanar) ? src[3]++ : src[0]++; // ignore black component
           if (alpha && !alphaFirst) src[0]++; // ignore alpha
           if (idx % 2) {
             *(dest++) |= CGPaletteGetIndexForColor(palette, color);
@@ -529,7 +529,7 @@ Handle WBIconFamilyGet1BitDataAndMaskForBitmap(NSBitmapImageRep *bitmap) {
           r = (MAX(0, (1 - *(src[0]++) - black)) * oneOverAlpha); /* red = (1 - cyan) - black */
           g = (MAX(0, (1 - ((isPlanar) ? *(src[1]++) : *(src[0]++)) - black)) * oneOverAlpha); /* green  = (1 - magenta) - black */
           b = (MAX(0, (1 - ((isPlanar) ? *(src[2]++) : *(src[0]++)) - black)) * oneOverAlpha); /* blue  = (1 - yellow) - black */
-          (isPlanar) ? *(src[3]++) : *(src[0]++); // ignore black component
+          (isPlanar) ? src[3]++ : src[0]++; // ignore black component
           /* skip alpha if needed */
           if (alpha && !alphaFirst) src[0]++;
           *dest |= ((((r+g+b) / 3) < 127) ? 1 : 0) << (7 - (idx % 8)) ;

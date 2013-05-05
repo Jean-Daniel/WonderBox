@@ -1,4 +1,4 @@
 
-#include "../../hadron/xcconfigs/project/lion-debug.xcconfig"
+#include "../../hadron/xcconfigs/project/snowleopard-debug.xcconfig"
 
 #include "project.xcconfig"

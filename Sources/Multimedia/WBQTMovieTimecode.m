@@ -10,8 +10,8 @@
 
 #if !defined(__LP64__) || !__LP64__
 
-#import WBHEADER(WBQTMovieTimecode.h)
-#import WBHEADER(WBMediaFunctions.h)
+#import <WonderBox/WBQTMovieTimecode.h>
+#import <WonderBox/WBMediaFunctions.h>
 
 #define   kCharacteristicHasVideoFrameRate 'vfrr'
 
@@ -63,7 +63,7 @@ Media _WBMovieGetTimecodeMedia(QTMovie *aMovie, BOOL *hasTimecode) {
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:QTMovieEditedNotification object:nil];
   [wb_movie release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

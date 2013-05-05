@@ -46,7 +46,7 @@ CFHashCode WBHashBytes(const uint8_t *bytes, size_t length);
 #if defined(__OBJC__)
 WB_INLINE
 NSString *WBStringForOSType(OSType type) {
-  return SPXCFAutorelease(NSString, WBCreateStringForOSType(type));
+  return SPXCFStringBridgingRelease(WBCreateStringForOSType(type));
 }
 WB_INLINE
 OSType WBOSTypeFromString(NSString *type) {

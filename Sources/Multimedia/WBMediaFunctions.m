@@ -97,7 +97,7 @@ CFStringRef WBMediaCopyStringForPixelFormat(OSType format) {
 }
 
 NSString *WBMediaStringForPixelFormat(OSType format) {
-  return SPXCFAutorelease(NSString, WBMediaCopyStringForPixelFormat(format));
+  return SPXCFStringBridgingRelease(WBMediaCopyStringForPixelFormat(format));
 }
 
 QTTime WBCVBufferGetMovieTime(CVBufferRef buffer) {

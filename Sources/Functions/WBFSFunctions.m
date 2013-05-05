@@ -20,7 +20,7 @@
 + (NSString *)stringFromFSRef:(const FSRef *)ref {
   CFStringRef str = NULL;
   if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return SPXCFAutorelease(NSString, str);
+    return SPXCFStringBridgingRelease(str);
   return nil;
 }
 

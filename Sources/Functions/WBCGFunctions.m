@@ -424,7 +424,7 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
                                 nil];
       CFDictionaryRef cfdict = SPXNSToCFDictionary(tiffDict);
       properties = CFDictionaryCreate(kCFAllocatorDefault, (const void **)&kCGImagePropertyTIFFDictionary, (const void **)&cfdict, 1,
-                                      &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // leak: WBCFRelease
+                                      &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks); // leak: SPXCFRelease
     }
     CGImageDestinationAddImage(dest, image, properties);
     result = CGImageDestinationFinalize(dest);

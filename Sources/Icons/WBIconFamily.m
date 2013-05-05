@@ -466,7 +466,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
                                                                   samplesPerPixel:samples
                                                                          hasAlpha:(samples == 4) || (samples == 2)
                                                                          isPlanar:YES
-                                                                   colorSpaceName:(samples <= 2) ? NSCalibratedBlackColorSpace : NSDeviceRGBColorSpace
+                                                                   colorSpaceName:(samples <= 2) ? NSDeviceBlackColorSpace : NSDeviceRGBColorSpace
                                                                       bytesPerRow:size.width
                                                                      bitsPerPixel:8];
     if (!bitmap) {

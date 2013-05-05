@@ -179,7 +179,7 @@
 		1B0DC0131673F695006174C8 /* WBTabWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF131673F694006174C8 /* WBTabWindowController.m */; };
 		1B0DC0141673F695006174C8 /* WBTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF141673F694006174C8 /* WBTextFieldCell.h */; };
 		1B0DC0151673F695006174C8 /* WBTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF151673F694006174C8 /* WBTextFieldCell.m */; };
-		1B0DC0161673F695006174C8 /* WBDaemonTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF171673F694006174C8 /* WBDaemonTask.h */; };
+		1B0DC0161673F695006174C8 /* WBDaemonTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF171673F694006174C8 /* WBDaemonTask.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B0DC0171673F695006174C8 /* WBDaemonTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF181673F694006174C8 /* WBDaemonTask.m */; };
 		1B0DC0181673F695006174C8 /* WBMachDispatch.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF191673F694006174C8 /* WBMachDispatch.c */; };
 		1B0DC0191673F695006174C8 /* WBMachDispatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF1A1673F694006174C8 /* WBMachDispatch.h */; };
@@ -187,7 +187,7 @@
 		1B0DC01B1673F695006174C8 /* WBService.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF1C1673F694006174C8 /* WBService.h */; };
 		1B0DC01C1673F695006174C8 /* WBServiceManagement.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF1D1673F694006174C8 /* WBServiceManagement.c */; };
 		1B0DC01D1673F695006174C8 /* WBServiceManagement.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF1E1673F694006174C8 /* WBServiceManagement.h */; };
-		1B0DC01E1673F695006174C8 /* WBClassCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF201673F694006174C8 /* WBClassCluster.h */; };
+		1B0DC01E1673F695006174C8 /* WBClassCluster.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF201673F694006174C8 /* WBClassCluster.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B0DC01F1673F695006174C8 /* WBForwarding.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF211673F694006174C8 /* WBForwarding.h */; };
 		1B0DC0201673F695006174C8 /* WBKeyValueCoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF221673F694006174C8 /* WBKeyValueCoding.h */; };
 		1B0DC0211673F695006174C8 /* WBScope.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF231673F694006174C8 /* WBScope.h */; };
