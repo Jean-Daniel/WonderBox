@@ -155,7 +155,7 @@ OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventC
 #pragma mark Build variants
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTarget(const AEDesc *target, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
-                             AEBuildError *outError, const char *paramsFmt, ...);
+                                       AEBuildError *outError, const char *paramsFmt, ...);
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
                                                 AEBuildError *outError, const char *paramsFmt, ...);

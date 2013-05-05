@@ -12,6 +12,9 @@
 
 #include <WonderBox/WBAEFunctions.h>
 
+// To workaround bug in AppleEvent dispatching in 10.8
+#include <WonderBox/WBProcessFunctions.h>
+
 Boolean WBAEDebug = false;
 OSType WBAEFinderSignature = 'MACS';
 
@@ -285,12 +288,24 @@ OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass
   return err;
 }
 
+static
+OSStatus _WBAECreateTargetByResolvingSignature(OSType targetSign, AEDesc *target) {
+  ProcessSerialNumber psn = WBProcessGetProcessWithSignature(targetSign);
+  if (psn.lowLongOfPSN == kNoProcess)
+    return procNotFound;
+
+  return WBAECreateTargetWithProcess(&psn, target);
+}
+
 OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
   if (!targetSign || !theEvent) return paramErr;
-
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
-  err = WBAECreateTargetWithSignature(targetSign, &target);
+  if (kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber10_7_4) {
+    err = _WBAECreateTargetByResolvingSignature(targetSign, &target);
+  } else {
+    err = WBAECreateTargetWithSignature(targetSign, &target);
+  }
   if (noErr == err) {
     err = WBAECreateEventWithTarget(&target, eventClass, eventType, theEvent);
     WBAEDisposeDesc(&target);
@@ -298,12 +313,25 @@ OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass even
   return err;
 }
 
+static
+OSStatus _WBAECreateTargetByResolvingBundleID(CFStringRef targetId, AEDesc *target) {
+  ProcessSerialNumber psn = WBProcessGetProcessWithBundleIdentifier(targetId);
+  if (psn.lowLongOfPSN == kNoProcess)
+    return procNotFound;
+
+  return WBAECreateTargetWithProcess(&psn, target);
+}
+
 OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) {
   if (!targetId || !theEvent) return paramErr;
 
   OSStatus err = noErr;
   AEDesc target = WBAEEmptyDesc();
-  err = WBAECreateTargetWithBundleID(targetId, &target);
+  if (kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber10_7_4) {
+    err = _WBAECreateTargetByResolvingBundleID(targetId, &target);
+  } else {
+    err = WBAECreateTargetWithBundleID(targetId, &target);
+  }
   if (noErr == err) {
     err = WBAECreateEventWithTarget(&target, eventClass, eventType, theEvent);
     WBAEDisposeDesc(&target);
