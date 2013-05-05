@@ -122,13 +122,19 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
 //-----------------------------------------------------------------------------
 
 - (void)drawInteriorWithFrame:(NSRect)frame inView:(NSView *)view {
-  [super drawInteriorWithFrame:[self contentRectForBounds:frame] inView:view];
+  NSRect content = [self contentRectForBounds:frame];
+  [super drawInteriorWithFrame:content inView:view];
   if ([self drawsLineOver]) {
     NSRect title = [self titleRectForBounds:frame];
     // FIXME: userspace scale factor
     CGFloat y = NSMidY(title);
-    CGFloat twidth = MIN(NSWidth(frame) - NSMinX(title) - 2, NSWidth(title));
-    [NSBezierPath strokeLineFromPoint:NSMakePoint(NSMinX(title), y) toPoint:NSMakePoint(NSMinX(title) + twidth, y)];
+    CGFloat twidth = [[self attributedStringValue] size].width;
+    CGPoint points[] = {
+      CGPointMake(NSMinX(content) + 2, y),
+      CGPointMake(NSMinX(content) + 2 + twidth, y)
+    };
+    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextStrokeLineSegments(ctxt, points, 2);
   }
 }
 

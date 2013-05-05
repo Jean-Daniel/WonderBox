@@ -99,9 +99,10 @@
   NSRect imageFrame;
   NSSize imageSize = [self wb_imageSize:cellRect.size];
 
-  NSDivideRect(cellRect, &imageFrame, &cellRect, kWBImageMargin + imageSize.width, NSMinXEdge);
+  NSRect cell;
+  NSDivideRect(cellRect, &imageFrame, &cell, kWBImageMargin + imageSize.width, NSMinXEdge);
 
-  return cellRect;
+  return cell;
 }
 
 // -------------------------------------------------------------------------------
@@ -139,13 +140,13 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-  NSSize textSize = [[self attributedStringValue] size];
-
   if (wb_image) {
     NSRect imageFrame = cellFrame;
     NSSize imageSize = [self wb_imageSize:cellFrame.size];
 
     if ([self alignment] == NSCenterTextAlignment || [self alignment] == NSRightTextAlignment) {
+      NSSize textSize = [[self attributedStringValue] size];
+
       CGFloat twidth = textSize.width;
       imageFrame.origin.x = (NSWidth(cellFrame) - twidth) / 2; // - imageSize.width;
       imageFrame.origin.x -= (5 + imageSize.width);
