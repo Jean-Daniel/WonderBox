@@ -56,11 +56,11 @@ NSUInteger WBIndexIteratorNext(WBIndexIterator *iter) {
 // We can't hide it adding a level of bracket, else the user would have to close it,
 // or we would have to declare a WBIndexesEndIterator() macros.
 // To avoid name collision, we create an unique var name using __COUNTER__ macro.
-#define _WBIndexesIterator(var, indexes, line) \
-  __attribute__((objc_precise_lifetime)) id __indexes##line = indexes; \
+#define __WBIndexesIterator(var, indexes, line) \
+  __attribute__((objc_precise_lifetime, unused)) id __indexes##line = indexes; \
   WBIndexIterator __idxIter##line; WBIndexIteratorInitialize(indexes, &__idxIter##line); \
   for (NSUInteger var; (var = WBIndexIteratorNext(&__idxIter##line)) != NSNotFound;)
-
+#define _WBIndexesIterator(var, indexes, cnt) __WBIndexesIterator(var, indexes, cnt)
 /*!
  @abstract
    NSIndexSet *indexes;
