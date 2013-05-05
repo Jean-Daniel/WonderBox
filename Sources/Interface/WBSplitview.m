@@ -69,7 +69,7 @@
 }
 
 - (void)setBorders:(NSUInteger)mask {
-  wb_svFlags.border = mask;
+  wb_svFlags.border = (unsigned int)mask;
 }
 
 #pragma mark -

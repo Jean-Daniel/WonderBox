@@ -131,7 +131,7 @@
       //        return NO;
       //      } else
       if ([self numberOfSelectedRows] == 0 || [self allowsMultipleSelection]) {
-        //if (WBDelegateHandle([self delegate],
+        //if (SPXDelegateHandle([self delegate],
         [self selectRowIndexes:[NSIndexSet indexSetWithIndex:(NSUInteger)row] byExtendingSelection:YES];
       }
       return NO;
