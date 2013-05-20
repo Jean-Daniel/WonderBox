@@ -229,10 +229,12 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   NSString *ext = [self extension];
   NSMutableArray *plugins = [NSMutableArray array];
 
-  NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:folder]
-                                                includingPropertiesForKeys:nil
-                                                                   options:NSDirectoryEnumerationSkipsSubdirectoryDescendants
-                                                                     error:NULL];
+  NSError *error;
+  NSURL *src = [NSURL fileURLWithPath:folder isDirectory:YES];
+  NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[src URLByResolvingSymlinksInPath]
+                                                includingPropertiesForKeys:@[]
+                                                                   options:0
+                                                                     error:&error];
   for (NSURL *url in urls) {
     if ([[url pathExtension] caseInsensitiveCompare:ext] == NSOrderedSame) {
       NSBundle *plugin = [NSBundle bundleWithURL:url];
