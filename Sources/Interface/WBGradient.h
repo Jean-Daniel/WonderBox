@@ -37,7 +37,6 @@ typedef struct {
 #define WBInterpolationCallBackDef(function) { kWBInterpolationTypeCallBack, { .cb = function } }
 #define WBInterpolationBezierDef(x1, y1, x2, y2, l) { kWBInterpolationTypeBezier, { .bezier = { { { x1, y1 }, { x2, y2 } }, l } } }
 
-@class WBInterpolationFunction;
 #define WBShadingColorRGB(r, g, b, a) {r, g, b, a, 0}
 #define WBShadingColorGray(w, a) { w, a, 0, 0, 0 }
 
@@ -58,6 +57,11 @@ typedef struct {
   } stops[];
 } WBGradientDefinition;
 
+@class WBInterpolationFunction;
+/*!
+ @abstract You should use this class when you want to use custom interpolation function,
+ as they are not supported by CGGradient API.
+ */
 WB_OBJC_EXPORT
 @interface WBGradientBuilder : NSObject {
 @private

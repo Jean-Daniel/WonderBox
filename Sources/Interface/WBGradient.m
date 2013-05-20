@@ -33,9 +33,8 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
 @end
 
-@interface WBInterpolationFunction (WBGradientExtensions)
-+ (id)functionFromDefinition:(const WBInterpolationDefinition *)def;
-@end
+static
+WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDefinition *def);
 
 // MARK: -
 @implementation WBGradientBuilder
@@ -46,13 +45,15 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
 - (id)initWithColorSpace:(NSColorSpace *)aColorSpace {
   if (self = [super init]) {
-    _cs = spx_retain(aColorSpace ? : [NSColorSpace genericRGBColorSpace]);
-    CFIndex count = [_cs numberOfColorComponents] + 1; // add one for alpha
+    if (!aColorSpace)
+      aColorSpace = [NSColorSpace genericRGBColorSpace];
+    CFIndex count = [aColorSpace numberOfColorComponents] + 1; // add one for alpha
     if (count < 2 || count > 5) {
-      SPXLogError(@"WBGradient: Unsupported color space: %@", _cs);
+      SPXLogError(@"WBGradient: Unsupported color space: %@", aColorSpace);
       spx_release(self);
       return nil;
     }
+    _cs = spx_retain(aColorSpace);
     _steps = [[NSMutableArray alloc] init];
   }
   return self;
@@ -95,7 +96,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 - (id)initWithDefinition:(const WBGradientDefinition *)def {
   NSParameterAssert(def);
   if (self = [self initWithColorSpace:GetColorSpace(def->cs)]) {
-    WBInterpolationFunction *base = [WBInterpolationFunction functionFromDefinition:&def->fct];
+    WBInterpolationFunction *base = WBFunctionCreateFromDefinition(&def->fct);
     
     CFIndex idx = 0;
     do {
@@ -107,7 +108,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
         if (kWBInterpolationTypeDefault == def->stops[idx].fct.type) {
           fct = base;
         } else
-          fct = [WBInterpolationFunction functionFromDefinition:&def->stops[idx].fct];
+          fct = WBFunctionCreateFromDefinition(&def->stops[idx].fct);
       }
 
       [self addColorStop:def->stops[idx].location startingColorComponents:startColor endingColorComponents:endColor interpolation:fct];
@@ -199,7 +200,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 }
 
 - (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
-                                     to:(CGPoint)to radius:(CGFloat)toRadius {
+                                  to:(CGPoint)to radius:(CGFloat)toRadius {
   CGFunctionRef fct = [self newFunction];
   CGShadingRef shading = CGShadingCreateRadial([_cs CGColorSpace], from, fromRadius, to, toRadius, fct, (_extends & 1) != 0, (_extends & 2) != 0);
   CGFunctionRelease(fct);
@@ -275,9 +276,8 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 
 @end
 
-@implementation WBInterpolationFunction (WBGradientExtensions)
-
-+ (id)functionFromDefinition:(const WBInterpolationDefinition *)def {
+// MARK: -
+WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDefinition *def) {
   if (!def) return nil;
 
   switch (def->type) {
@@ -294,8 +294,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   }
 }
 
-@end
-
+// MARK: -
 @implementation WBGradientStep
 
 @synthesize start = _start, end = _end;

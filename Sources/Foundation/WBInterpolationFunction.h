@@ -34,7 +34,7 @@ WB_OBJC_EXPORT
 + (WBInterpolationFunction *)circularInterpolation;
 + (WBInterpolationFunction *)sinusoidalInterpolation;
 
-// Calback based
+// Callback based
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback;
 
 // Bezier
