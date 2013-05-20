@@ -70,7 +70,7 @@
 - (NSDictionary *)convertAttributes:(NSDictionary *)attributes {
   NSMutableDictionary *dict = nil;
   if (rs_swidth > 0) {
-    NSNumber *current = SPXCGFloat(-rs_swidth);
+    NSNumber *current = @(-rs_swidth);
     NSNumber *previous = [attributes objectForKey:NSStrokeWidthAttributeName];
     if (!previous || ![previous isEqualToNumber:current]) {
       dict = [attributes mutableCopy];

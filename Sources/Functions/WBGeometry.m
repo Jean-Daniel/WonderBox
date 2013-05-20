@@ -117,11 +117,3 @@ void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width) {
   CGContextSetLineWidth(context, width);
 }
 
-@implementation NSGraphicsContext (WBCGContextRef)
-
-+ (CGContextRef)currentGraphicsPort {
-  return [[self currentContext] graphicsPort];
-}
-
-@end
-

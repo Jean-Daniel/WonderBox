@@ -329,7 +329,7 @@ static const CGFloat kAVImageRightMargin = 6;
   else if ([attribute isEqualToString:NSAccessibilityValueAttribute]) {
     return [self title];
   } else if ([attribute isEqualToString:NSAccessibilityEnabledAttribute]) {
-    return SPXBool(wb_action != NULL);
+    return @(wb_action != NULL);
   }
   else return [super accessibilityAttributeValue:attribute];
 }

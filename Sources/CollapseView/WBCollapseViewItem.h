@@ -19,9 +19,9 @@ WB_OBJC_EXPORT
   NSString *wb_title;
   __unsafe_unretained WBCollapseView *wb_owner; // back pointer to the parent view. Could be nil.
   struct _wb_cviFlags {
-    unsigned int animates:1;
-    unsigned int expanded:1;
-    unsigned int reserved:6;
+    uint8_t animates:1;
+    uint8_t expanded:1;
+    uint8_t reserved:6;
   } wb_cviFlags;
 }
 

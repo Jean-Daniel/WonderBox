@@ -779,10 +779,10 @@
 			children = (
 				1B0DBE8A1673F694006174C8 /* WBCollapseView.h */,
 				1B0DBE8B1673F694006174C8 /* WBCollapseView.m */,
-				1B0DBE8C1673F694006174C8 /* WBCollapseViewInternal.h */,
-				1B0DBE8D1673F694006174C8 /* WBCollapseViewInternal.m */,
 				1B0DBE8E1673F694006174C8 /* WBCollapseViewItem.h */,
 				1B0DBE8F1673F694006174C8 /* WBCollapseViewItem.m */,
+				1B0DBE8C1673F694006174C8 /* WBCollapseViewInternal.h */,
+				1B0DBE8D1673F694006174C8 /* WBCollapseViewInternal.m */,
 			);
 			path = CollapseView;
 			sourceTree = "<group>";

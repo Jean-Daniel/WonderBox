@@ -446,11 +446,10 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
       if (alpha && WBIconFamilyBitmapDataFor1BitMask(alpha, size, planes + samples)) {
         samples++;
       }
-      NSUInteger i, j;
       NSUInteger pixels = size.width * size.height;
-      for (i=0; i<pixels; i++) {
+      for (NSUInteger i=0; i<pixels; i++) {
         unsigned char a = (planes[samples-1][i] == 255) ? 1 : 0;
-        for (j=0; j<(samples -1); j++) {
+        for (NSUInteger j=0; j<(samples -1); j++) {
           /* Premultiply Alpha */
           planes[j][i] *= a;
         }
@@ -871,7 +870,7 @@ static NSMutableArray *WBIconFamilyFindVariants(IconFamilyResource *rsrc) {
     OSType type = WBIconFamilyElementGetType(elt);
     if (WBIsIconVariantType(type)) {
       if (rsrcType == kIconFamilyType || type != kTileIconVariant) {
-        [variants addObject:SPXUInteger(type)];
+        [variants addObject:@(type)];
       }
       [variants addObjectsFromArray:WBIconFamilyFindVariants((IconFamilyResource *)elt)];
     }

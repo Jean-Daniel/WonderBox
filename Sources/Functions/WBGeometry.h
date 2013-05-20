@@ -131,10 +131,6 @@ CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
 
 #if (__OBJC__)
 
-@interface NSGraphicsContext (WBCGContextRef)
-+ (CGContextRef)currentGraphicsPort;
-@end
-
 WB_INLINE
 CGFloat WBWindowUserSpaceScaleFactor(NSWindow *window) {
   return window ? [window userSpaceScaleFactor] : 1;

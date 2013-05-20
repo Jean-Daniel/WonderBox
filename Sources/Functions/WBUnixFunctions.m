@@ -361,7 +361,7 @@ void _WBSignalToSocketHandler(int sig, siginfo_t *sigInfo, void *uap) {
 static
 void _WBSignalCFSocketCallBack(CFSocketRef s, CFSocketCallBackType type,
                                CFDataRef address, const void *data, void *info) {
-  int err;
+  ssize_t err;
   siginfo_t	sigInfo;
 
   assert(gSignalHandler.socket != NULL);

@@ -9,7 +9,7 @@
  */
 
 #import <WonderBox/WBImageAndTextCell.h>
-#import <WonderBox/WBGeometry.h>
+#import <WonderBox/WBCGFunctions.h>
 
 #define kWBImageMargin 5
 

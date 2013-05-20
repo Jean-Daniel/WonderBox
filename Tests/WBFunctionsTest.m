@@ -95,13 +95,13 @@ bool _CFArrayContainsClass(CFArrayRef classes, Class cls) {
   CFArrayRef classes = WBRuntimeCopySubclasses([self class], YES);
   STAssertTrue(CFArrayGetCount(classes) == 0, @"invalid sublclass result");
   CFRelease(classes);
-  
+
   classes = WBRuntimeCopySubclasses([NSArray class], YES);
   STAssertTrue(CFArrayGetCount(classes) > 1, @"invalid sublclass result: %@", classes);
   STAssertTrue(_CFArrayContainsClass(classes, [NSMutableArray class]), @"invalid sublclass result");
   STAssertTrue(!_CFArrayContainsClass(classes, NSClassFromString(@"NSCFArray")), @"invalid sublclass result");
   CFRelease(classes);
-  
+
   classes = WBRuntimeCopySubclasses([NSArray class], NO);
   STAssertTrue(CFArrayGetCount(classes) > 1, @"invalid sublclass result");
   STAssertTrue(_CFArrayContainsClass(classes, NSClassFromString(@"NSCFArray")), @"invalid sublclass result");

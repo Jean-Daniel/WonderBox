@@ -364,7 +364,7 @@ void _CFMachPortInvalidation(CFMachPortRef port, void *info) {
   if (!WBServiceRegisterJob(SPXNSToCFDictionary(_properties), &error)) {
     if (outError)
       *outError = spx_autorelease(spx_retain(SPXCFToNSError(error)));
-    
+
     CFRelease(error);
     return NO;
   }

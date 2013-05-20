@@ -9,7 +9,7 @@
  */
 
 #import <WonderBox/WBOpenGLView.h>
-#import <WonderBox/WBGeometry.h>
+#import <WonderBox/WBCGFunctions.h>
 
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/CGLMacro.h>

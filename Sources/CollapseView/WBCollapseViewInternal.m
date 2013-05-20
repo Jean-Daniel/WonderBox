@@ -11,7 +11,7 @@
 #import "WBCollapseViewInternal.h"
 
 #import <WonderBox/WBGradient.h>
-#import <WonderBox/WBGeometry.h>
+#import <WonderBox/WBCGFunctions.h>
 #import <WonderBox/WBCollapseView.h>
 #import <WonderBox/WBCollapseViewItem.h>
 
@@ -37,7 +37,7 @@
 @private
   SEL wb_action;
   __unsafe_unretained id wb_target;
-  
+
   NSTextField *wb_title;
   NSButton *wb_disclose;
 
@@ -437,13 +437,13 @@
 
 static const
 WBGradientDefinition sHeaderGradient = {
-  1,
+  kWBGradientColorSpace_RGB,
   WBInterpolationCallBackDef(WBInterpolationSin),
   {
-    /* step 1 */
     {
-      0.0, WBShadingColorRGB(.700, .707, .777, 1), // 808
-      1.0, WBShadingColorRGB(.926, .929, .973, 1), // 647
+      1,
+      WBShadingColorRGB(.700, .707, .777, 1), // 808
+      WBShadingColorRGB(.926, .929, .973, 1), // 647
       kWBInterpolationDefault,
     },
   }
@@ -461,8 +461,7 @@ WBGradientDefinition sHeaderGradient = {
   background.origin.y += 1;
 
   if (!sHeaderBackground) {
-    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithColorSpace:[NSColorSpace genericRGBColorSpace]
-                                                              definition:&sHeaderGradient];
+    WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithDefinition:&sHeaderGradient];
     sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
     spx_release(b);
   }

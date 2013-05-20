@@ -10,7 +10,6 @@
 
 #import <WonderBox/WBCGFunctions.h>
 
-#pragma mark -
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
   if (radius <= 0) {
     spx_debug("Negative or nil radius -> fall back to rect.");
@@ -214,7 +213,7 @@ void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize
                            x + radius.width - lx, y, x + radius.width, y);
 }
 
-#pragma mark Stars
+// MARK: Stars
 void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
   check(sides >= 5);
   if (sides < 5) return;
@@ -261,7 +260,7 @@ void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, 
   }
 }
 
-#pragma mark Waves
+// MARK: Waves
 void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   CGContextSaveGState(context);
   CGContextClipToRect(context,rect);
@@ -303,7 +302,7 @@ void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, 
   CGContextStrokeLineSegments(ctxt, p, 2);
 }
 
-#pragma mark Colors Spaces
+// MARK: Colors Spaces
 CGColorSpaceRef WBCGColorSpaceCreateGray(void) {
   return CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
 }
@@ -316,7 +315,7 @@ CGColorSpaceRef WBCGColorSpaceCreateCMYK(void) {
   return CGColorSpaceCreateWithName(kCGColorSpaceGenericCMYK);
 }
 
-#pragma mark Colors
+// MARK: Colors
 CGColorRef WBCGColorCreateGray(CGFloat white, CGFloat alpha) {
   CGColorRef color = NULL;
   CGColorSpaceRef space = WBCGColorSpaceCreateGray();
@@ -350,7 +349,7 @@ CGColorRef WBCGColorCreateCMYK(CGFloat cyan, CGFloat magenta, CGFloat yellow, CG
   return color;
 }
 
-#pragma mark Layer
+// MARK: Layer
 CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictionaryRef auxiliaryInfo, bool scaleToUserSpace) {
   CGFloat factor = 1;
   if (scaleToUserSpace) {
@@ -369,11 +368,11 @@ CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictiona
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   CGImageRef result = NULL;
   CGSize size = CGLayerGetSize(layer);
-  if (size.width <= 1 || size.height <= 1)
+  if (size.width < 1 || size.height < 1)
     return NULL;
 
   // Probably useless as it contains Layer Size which is already limited
-  if (size.width * sizeof(UInt32) > SIZE_T_MAX || size.height > SIZE_T_MAX)
+  if (size.width > SIZE_T_MAX / sizeof(UInt32) || size.height > SIZE_T_MAX)
     return NULL;
 
   // Check buffer overflow in malloc
@@ -398,7 +397,7 @@ CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   return result;
 }
 
-#pragma mark Images
+// MARK: Images
 CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options) {
   if (!url) return NULL;
 
@@ -419,7 +418,7 @@ bool WBCGImageWriteToURL(CGImageRef image, CFURLRef url, CFStringRef type) {
     CFDictionaryRef properties = NULL;
     if (CFEqual(type, kUTTypeTIFF)) {
       NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                SPXUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                                @(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                                 [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                                 nil];
       CFDictionaryRef cfdict = SPXNSToCFDictionary(tiffDict);
@@ -447,7 +446,7 @@ bool WBCGImageWriteToFile(CGImageRef image, CFStringRef file, CFStringRef type) 
 
 CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
   NSDictionary *tiffDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                            SPXUInteger(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
+                            @(NSTIFFCompressionLZW), kCGImagePropertyTIFFCompression,
                             [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                             nil];
   CFDictionaryRef properties = SPXNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
@@ -465,3 +464,12 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
   }
   return data;
 }
+
+@implementation NSGraphicsContext (WBCGContextRef)
+
++ (CGContextRef)currentGraphicsPort {
+  return [[self currentContext] graphicsPort];
+}
+
+@end
+

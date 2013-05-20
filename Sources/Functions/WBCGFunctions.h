@@ -18,7 +18,7 @@
 
 __BEGIN_DECLS
 
-#pragma mark Shapes
+// MARK: Shapes
 WB_EXPORT
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius);
 
@@ -44,7 +44,7 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period);
 WB_EXPORT
 void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, CGFloat y2);
 
-#pragma mark Color Spaces
+// MARK: Color Spaces
 WB_EXPORT
 CGColorSpaceRef WBCGColorSpaceCreateGray(void);
 WB_EXPORT
@@ -52,7 +52,7 @@ CGColorSpaceRef WBCGColorSpaceCreateRGB(void);
 WB_EXPORT
 CGColorSpaceRef WBCGColorSpaceCreateCMYK(void);
 
-#pragma mark Color
+// MARK: Color
 WB_EXPORT
 CGColorRef WBCGColorCreateGray(CGFloat white, CGFloat alpha);
 WB_EXPORT
@@ -60,14 +60,14 @@ CGColorRef WBCGColorCreateRGB(CGFloat red, CGFloat green, CGFloat blue, CGFloat 
 WB_EXPORT
 CGColorRef WBCGColorCreateCMYK(CGFloat cyan, CGFloat magenta, CGFloat yellow, CGFloat black, CGFloat alpha);
 
-#pragma mark Layer
+// MARK: Layer
 WB_EXPORT
 CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictionaryRef auxiliaryInfo, bool scaleToUserSpace);
 
 WB_EXPORT
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer);
 
-#pragma mark Images
+// MARK: Images
 /*!
  @param type The UTI (uniform type identifier) of the resulting image file.
  */
@@ -80,6 +80,14 @@ CGImageRef WBCGImageCreateFromURL(CFURLRef url, CFDictionaryRef options);
 
 WB_EXPORT
 CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage);
+
+#if (__OBJC__)
+
+@interface NSGraphicsContext (WBCGContextRef)
++ (CGContextRef)currentGraphicsPort;
+@end
+
+#endif
 
 __END_DECLS
 
