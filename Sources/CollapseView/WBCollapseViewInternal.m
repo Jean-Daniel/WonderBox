@@ -462,7 +462,7 @@ WBGradientDefinition sHeaderGradient = {
 
   if (!sHeaderBackground) {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithDefinition:&sHeaderGradient];
-    sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(64, background.size.height) scale:true context:ctxt];
+    sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(1, background.size.height) scale:true context:ctxt];
     spx_release(b);
   }
   // draw background gradient

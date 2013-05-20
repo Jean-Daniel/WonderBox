@@ -297,8 +297,8 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
 // MARK: -
 @implementation WBGradientStep
 
+@synthesize interpolation = _fct;
 @synthesize start = _start, end = _end;
-@synthesize interpolation = _interpolation;
 
 - (id)initWithComponents:(NSUInteger)count startColor:(const CGFloat *)startColor endColor:(const CGFloat *)endColor {
   NSParameterAssert(count > 0 && count <= 5);
