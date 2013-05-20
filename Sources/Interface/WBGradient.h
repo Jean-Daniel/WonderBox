@@ -38,12 +38,8 @@ typedef struct {
 #define WBInterpolationBezierDef(x1, y1, x2, y2, l) { kWBInterpolationTypeBezier, { .bezier = { { { x1, y1 }, { x2, y2 } }, l } } }
 
 @class WBInterpolationFunction;
-typedef union _WBShadingColor {
-  CGFloat components[5];
-} WBShadingColor;
-
-#define WBShadingColorRGB(r, g, b, a) { .components = {r, g, b, a, 0} }
-#define WBShadingColorGray(w, a) { .components = { w, a, 0, 0, 0 } }
+#define WBShadingColorRGB(r, g, b, a) {r, g, b, a, 0}
+#define WBShadingColorGray(w, a) { w, a, 0, 0, 0 }
 
 typedef NS_ENUM(uint8_t, WBGradientColorSpace) {
   kWBGradientColorSpace_RGB,
@@ -56,8 +52,8 @@ typedef struct {
   WBInterpolationDefinition fct; // Default Interpolation function. Must not be kWBInterpolationDefault
   struct {
     CGFloat location; // end location. Must be in ]0; 1]. Last step MUST have location set to 1
-    WBShadingColor startColor;
-    WBShadingColor endColor;
+    CGFloat startColor[5];
+    CGFloat endColor[5];
     WBInterpolationDefinition fct; // set to kWBInterpolationDefault to use default function
   } stops[];
 } WBGradientDefinition;

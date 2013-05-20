@@ -99,11 +99,11 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
     
     CFIndex idx = 0;
     do {
-      WBInterpolationFunction *fct;
+      WBInterpolationFunction *fct = nil;
       const CGFloat *startColor = NULL, *endColor = NULL;
       if (kWBInterpolationTypeNull != def->stops[idx].fct.type) {
-        startColor = def->stops[idx].startColor.components;
-        endColor = def->stops[idx].endColor.components;
+        startColor = def->stops[idx].startColor;
+        endColor = def->stops[idx].endColor;
         if (kWBInterpolationTypeDefault == def->stops[idx].fct.type) {
           fct = base;
         } else
@@ -117,8 +117,8 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 }
 
 - (void)dealloc {
-  spx_release(wb_steps);
-  spx_release(wb_cs);
+  spx_release(_steps);
+  spx_release(_cs);
   spx_dealloc();
 }
 
@@ -314,7 +314,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 }
 
 - (void)dealloc {
-  spx_release(wb_fct);
+  spx_release(_fct);
   spx_dealloc();
 }
 
