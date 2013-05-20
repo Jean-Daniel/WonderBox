@@ -12,10 +12,10 @@
 #import <WonderBox/WBCGFunctions.h>
 
 @interface WBGradientStep : NSObject {
-  uint8_t wb_cnt;
-  CGFloat wb_start, wb_end;
-  WBInterpolationFunction *wb_fct;
-  CGFloat wb_cStart[5], wb_cEnd[5];
+  uint8_t _cnt;
+  CGFloat _start, _end;
+  WBInterpolationFunction *_fct;
+  CGFloat _colorStart[5], _colorEnd[5];
 }
 
 static
@@ -25,23 +25,19 @@ void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out);
 static
 void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
-@property(nonatomic) CGFloat start, end;
+@property(nonatomic, readonly) CGFloat start, end;
 @property(nonatomic, retain) WBInterpolationFunction *interpolation;
 
-- (id)initWithComponents:(NSUInteger)count;
-
-- (void)setStartColor:(const CGFloat *)aColor;
-- (void)setEndColor:(const CGFloat *)aColor;
+- (id)initWithComponents:(NSUInteger)count startColor:(const CGFloat *)startColor endColor:(const CGFloat *)endColor;
+- (void)setRange:(CGFloat)start end:(CGFloat)end;
 
 @end
-
 
 @interface WBInterpolationFunction (WBGradientExtensions)
-
 + (id)functionFromDefinition:(const WBInterpolationDefinition *)def;
-
 @end
 
+// MARK: -
 @implementation WBGradientBuilder
 
 - (id)init {
@@ -50,14 +46,14 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
 - (id)initWithColorSpace:(NSColorSpace *)aColorSpace {
   if (self = [super init]) {
-    wb_cs = spx_retain(aColorSpace ? : [NSColorSpace genericRGBColorSpace]);
-    NSUInteger count = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // add one for alpha
+    _cs = spx_retain(aColorSpace ? : [NSColorSpace genericRGBColorSpace]);
+    CFIndex count = [_cs numberOfColorComponents] + 1; // add one for alpha
     if (count < 2 || count > 5) {
-      SPXLogError(@"WBGradient: Unsupported color space: %@", wb_cs);
+      SPXLogError(@"WBGradient: Unsupported color space: %@", _cs);
       spx_release(self);
       return nil;
     }
-    wb_steps = [[NSMutableArray alloc] init];
+    _steps = [[NSMutableArray alloc] init];
   }
   return self;
 }
@@ -65,40 +61,57 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 // MARK: Helpers
 - (id)initWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor {
   if (self = [self initWithColorSpace:nil]) {
-    [self addStepFrom:0 color:startingColor to:1 color:endingColor interpolation:nil];
+    [self addColorStop:1 startingColor:startingColor endingColor:endingColor interpolation:nil];
   }
   return self;
 }
 
-- (id)initWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor interpolation:(WBInterpolationFunction *)fct {
-  if (self = [self initWithColorSpace:nil]) {
-    [self addStepFrom:0 color:startingColor to:1 color:endingColor interpolation:fct];
-  }
-  return self;
-}
-
-- (id)initWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor interpolation:(WBInterpolationFunction *)fct colorSpace:(NSColorSpace *)aColorSpace {
+- (id)initWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor colorSpace:(NSColorSpace *)aColorSpace {
   if (self = [self initWithColorSpace:aColorSpace]) {
-    [self addStepFrom:0 color:startingColor to:1 color:endingColor interpolation:fct];
+    [self addColorStop:1 startingColor:startingColor endingColor:endingColor interpolation:nil];
   }
   return self;
 }
 
-- (id)initWithColorSpace:(NSColorSpace *)aColorSpace definition:(const WBGradientDefinition *)def {
+- (id)initWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor colorSpace:(NSColorSpace *)aColorSpace interpolation:(WBInterpolationFunction *)fct {
   if (self = [self initWithColorSpace:aColorSpace]) {
+    [self addColorStop:1 startingColor:startingColor endingColor:endingColor interpolation:fct];
+  }
+  return self;
+}
+
+static inline
+NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
+  switch (space) {
+    case kWBGradientColorSpace_RGB:
+      return [NSColorSpace genericRGBColorSpace];
+    case kWBGradientColorSpace_Gray:
+      return [NSColorSpace genericGrayColorSpace];
+    default:
+      SPXThrowException(NSInvalidArgumentException, @"Unsupported colorspace");
+  }
+}
+
+- (id)initWithDefinition:(const WBGradientDefinition *)def {
+  NSParameterAssert(def);
+  if (self = [self initWithColorSpace:GetColorSpace(def->cs)]) {
     WBInterpolationFunction *base = [WBInterpolationFunction functionFromDefinition:&def->fct];
-
-    for (NSUInteger idx = 0; idx < def->count; idx++) {
+    
+    CFIndex idx = 0;
+    do {
       WBInterpolationFunction *fct;
-      if (kWBInterpolationTypeDefault == def->steps[idx].fct.type)
-        fct = base;
-      else
-        fct = [WBInterpolationFunction functionFromDefinition:&def->steps[idx].fct];
+      const CGFloat *startColor = NULL, *endColor = NULL;
+      if (kWBInterpolationTypeNull != def->stops[idx].fct.type) {
+        startColor = def->stops[idx].startColor.components;
+        endColor = def->stops[idx].endColor.components;
+        if (kWBInterpolationTypeDefault == def->stops[idx].fct.type) {
+          fct = base;
+        } else
+          fct = [WBInterpolationFunction functionFromDefinition:&def->stops[idx].fct];
+      }
 
-      [self addStepFrom:def->steps[idx].start components:def->steps[idx].startColor.rgba
-                     to:def->steps[idx].end components:def->steps[idx].endColor.rgba
-          interpolation:fct];
-    }
+      [self addColorStop:def->stops[idx].location startingColorComponents:startColor endingColorComponents:endColor interpolation:fct];
+    } while (def->stops[idx++].location < 1);
   }
   return self;
 }
@@ -110,77 +123,68 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 }
 
 #pragma mark -
-- (void)wb_checkLocation:(CGFloat)start end:(CGFloat)end {
-  if (start >= end)
-    SPXThrowException(NSInvalidArgumentException, @"invalid range. 'start' must be less than 'end'");
-
-  if (start < 0 || start >= 1)
-    SPXThrowException(NSInvalidArgumentException, @"start must be in the range [0; 1[");
-  if (end <= 0 || end > 1)
-    SPXThrowException(NSInvalidArgumentException, @"end must be in the range ]0; 1]");
-
-  for (WBGradientStep *step in wb_steps) {
-    // if (start >= step.end || end <= step.start) continue;
-    if (start < step.end && end > step.start)
-      SPXThrowException(NSInvalidArgumentException, @"overlapping step: [%.2f; %.2f] and [%.2f; %.2f[", start, end, step.start, step.end);
-  }
-}
-
-- (void)addStepFrom:(CGFloat)startLocation color:(NSColor *)startColor
-                 to:(CGFloat)endLocation color:(NSColor *)endColor interpolation:(WBInterpolationFunction  *)fct {
-  CGFloat start[5], end[5];
+- (void)addColorStop:(CGFloat)location startingColor:(NSColor *)startColor endingColor:(NSColor *)endColor interpolation:(WBInterpolationFunction  *)fct {
+  CGFloat start[5];
   // Start Color
-  NSColor *color = [startColor colorUsingColorSpace:wb_cs];
+  NSColor *color = [startColor colorUsingColorSpace:_cs];
   if (!color)
-    SPXThrowException(NSInvalidArgumentException, @"cannot use %@ in gradient with color space %@", startColor, wb_cs);
+    SPXThrowException(NSInvalidArgumentException, @"cannot use %@ in gradient with color space %@", startColor, _cs);
   [color getComponents:start];
   // End color
-  color = [endColor colorUsingColorSpace:wb_cs];
+  CGFloat end[5];
+  color = [endColor colorUsingColorSpace:_cs];
   if (!color)
-    SPXThrowException(NSInvalidArgumentException, @"cannot use %@ in gradient with color space %@", endColor, wb_cs);
+    SPXThrowException(NSInvalidArgumentException, @"cannot use %@ in gradient with color space %@", endColor, _cs);
   [color getComponents:end];
 
-  [self addStepFrom:startLocation components:start
-                 to:endLocation components:end interpolation:fct];
+  [self addColorStop:location startingColorComponents:start endingColorComponents:end interpolation:fct];
 }
 
-- (void)addStepFrom:(CGFloat)startLocation components:(const CGFloat *)startColor
-                 to:(CGFloat)endLocation components:(const CGFloat *)endColor interpolation:(WBInterpolationFunction *)fct {
-  [self wb_checkLocation:startLocation end:endLocation];
+- (void)addColorStop:(CGFloat)location startingColorComponents:(const CGFloat *)startColor endingColorComponents:(const CGFloat *)endColor
+       interpolation:(WBInterpolationFunction *)fct {
 
-  NSUInteger cnt = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // + one for alpha
-  WBGradientStep *step = [[WBGradientStep alloc] initWithComponents:cnt];
-  [step setStartColor:startColor];
-  [step setEndColor:endColor];
-  step.start = startLocation;
-  step.end = endLocation;
+  // Make sure the location is valid
+  if (location > 1)
+    SPXThrowException(NSInvalidArgumentException, @"location must be in the range ]0; 1]");
+  
+  WBGradientStep *last = [_steps lastObject];
+  CGFloat start = last ? last.end : 0;
+  if (location < start)
+    SPXThrowException(NSInvalidArgumentException, @"overlapping color stop: %.2f < %.2f", location, start);
+  
+  // TODO: is !startColor || !endColor -> add empty colorStop.
+  CFIndex cnt = [_cs numberOfColorComponents] + 1; // + one for alpha
+  WBGradientStep *step = [[WBGradientStep alloc] initWithComponents:cnt startColor:startColor endColor:endColor];
+  [step setRange:start end:location];
   step.interpolation = fct;
-  [wb_steps addObject:step];
+  [_steps addObject:step];
   spx_release(step);
 }
 
 // MARK: -
 // MARK: Generator
 - (CGFunctionRef)newFunction {
-  if ([wb_steps count] == 0)
+  if ([_steps count] == 0)
     SPXThrowException(NSInvalidArgumentException, @"cannot create empty shading");
 
-  size_t components = (NSUInteger)[wb_cs numberOfColorComponents] + 1; // + one for alpha
+  CFIndex components = [_cs numberOfColorComponents] + 1; // + one for alpha
   CGFloat input_value_range [2] = { 0, 1 }; // on input, value varying in [0; 1]
   CGFloat output_value_ranges [components * 2]; // on output, color components
-  for (NSUInteger idx = 0; idx < components; idx++) {
+  for (CFIndex idx = 0; idx < components; idx++) {
     output_value_ranges[idx * 2] = 0;
     output_value_ranges[idx * 2 + 1] = 1;
   }
 
   void *info = NULL;
   CGFunctionCallbacks callbacks = { 0, NULL, _WBGradientRelease };
-  if ([wb_steps count] == 1) {
-    info = (void *)CFRetain(SPXNSToCFType([wb_steps objectAtIndex:0])); // leak: Released by _WBGradientRelease
+  if ([_steps count] == 1) {
+    info = (void *)SPXCFTypeBridgingRetain([_steps objectAtIndex:0]); // leak: Released by _WBGradientRelease
     callbacks.evaluate = _WBGradientDrawStep;
   } else {
-    info = (void *)CFRetain(SPXNSToCFType([wb_steps sortedArrayUsingSelector:@selector(compare:)])); // leak: Released by _WBGradientRelease
+    NSArray *steps = [_steps copy];
+    info = (void *)SPXCFTypeBridgingRetain(steps); // leak: Released by _WBGradientRelease
     callbacks.evaluate = _WBGradientDrawSteps;
+    spx_release(steps);
   }
 
   return CGFunctionCreate(info, 1, input_value_range, components, output_value_ranges, &callbacks);
@@ -189,7 +193,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 // MARK: Shadings
 - (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to {
   CGFunctionRef fct = [self newFunction];
-  CGShadingRef shading = CGShadingCreateAxial([wb_cs CGColorSpace], from, to, fct, (wb_extends & 1) != 0, (wb_extends & 2) != 0);
+  CGShadingRef shading = CGShadingCreateAxial([_cs CGColorSpace], from, to, fct, (_extends & 1) != 0, (_extends & 2) != 0);
   CGFunctionRelease(fct);
   return shading;
 }
@@ -197,7 +201,7 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 - (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
                                      to:(CGPoint)to radius:(CGFloat)toRadius {
   CGFunctionRef fct = [self newFunction];
-  CGShadingRef shading = CGShadingCreateRadial([wb_cs CGColorSpace], from, fromRadius, to, toRadius, fct, (wb_extends & 1) != 0, (wb_extends & 2) != 0);
+  CGShadingRef shading = CGShadingCreateRadial([_cs CGColorSpace], from, fromRadius, to, toRadius, fct, (_extends & 1) != 0, (_extends & 2) != 0);
   CGFunctionRelease(fct);
   return shading;
 }
@@ -277,6 +281,8 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
   if (!def) return nil;
 
   switch (def->type) {
+    default:
+      return nil;
     case kWBInterpolationTypeCallBack: {
       WBInterpolationCallBack cb = { NULL, def->value.cb, NULL };
       return spx_autorelease([[WBInterpolationFunction alloc] initWithCallBack:&cb]);
@@ -286,20 +292,23 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
                                                                                   :def->value.bezier.points[1].x :def->value.bezier.points[1].y
                                                                             length:def->value.bezier.length]);
   }
-  return nil;
 }
 
 @end
 
 @implementation WBGradientStep
 
-@synthesize start = wb_start, end = wb_end;
-@synthesize interpolation = wb_fct;
+@synthesize start = _start, end = _end;
+@synthesize interpolation = _interpolation;
 
-- (id)initWithComponents:(NSUInteger)count {
+- (id)initWithComponents:(NSUInteger)count startColor:(const CGFloat *)startColor endColor:(const CGFloat *)endColor {
   NSParameterAssert(count > 0 && count <= 5);
   if (self = [super init]) {
-    wb_cnt = (uint8_t)count;
+    _cnt = (uint8_t)count;
+    if (startColor)
+      memcpy(_colorStart, startColor, _cnt * sizeof(CGFloat));
+    if (endColor)
+      memcpy(_colorEnd, endColor, _cnt * sizeof(CGFloat));
   }
   return self;
 }
@@ -311,36 +320,35 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out);
 
 - (NSString *)description {
   return [NSString stringWithFormat:@"<%@ %p> { start: %.2f, end: %.2f }",
-          self.class, self, wb_start, wb_end];
+          self.class, self, _start, _end];
+}
+
+- (void)setRange:(CGFloat)start end:(CGFloat)end {
+  _start = start;
+  _end = end;
 }
 
 - (NSComparisonResult)compare:(WBGradientStep *)aStep {
-  if (wb_start > aStep.start) return NSOrderedDescending;
-  if (aStep.start > wb_start) return NSOrderedAscending;
+  if (!aStep)
+    return NSOrderedDescending;
+  
+  if (_start > aStep->_start) return NSOrderedDescending;
+  if (aStep->_start > _start) return NSOrderedAscending;
   return NSOrderedSame;
 }
 
-- (void)setStartColor:(const CGFloat *)aColor {
-  memcpy(wb_cStart, aColor, wb_cnt * sizeof(CGFloat));
-}
-
-- (void)setEndColor:(const CGFloat *)aColor {
-  memcpy(wb_cEnd, aColor, wb_cnt * sizeof(CGFloat));
-}
-
 - (void)getColor:(CGFloat *)outColor atPoint:(CGFloat)input {
-  if (input <= wb_start) {
-    memcpy(outColor, wb_cStart, wb_cnt * sizeof(CGFloat));
-  } else if (input >= wb_end) {
-    memcpy(outColor, wb_cEnd, wb_cnt * sizeof(CGFloat));
+  if (input <= _start) {
+    memcpy(outColor, _colorStart, _cnt * sizeof(CGFloat));
+  } else if (input >= _end) {
+    memcpy(outColor, _colorEnd, _cnt * sizeof(CGFloat));
   } else {
     // interpolate
-    input = (input - wb_start) / (wb_end - wb_start);
+    input = (input - _start) / (_end - _start);
     // clamp factor
-    CGFloat factor = wb_fct ? MAX(MIN(1, [wb_fct valueForInput:input]), 0) : input;
-
-    for (NSUInteger k = 0; k < wb_cnt; k++)
-      *outColor++ = wb_cStart[k] - (wb_cStart[k] - wb_cEnd[k]) * factor;
+    CGFloat factor = _fct ? MAX(MIN(1, [_fct valueForInput:input]), 0) : input;
+    for (uint8_t k = 0; k < _cnt; k++)
+      *outColor++ = _colorStart[k] - (_colorStart[k] - _colorEnd[k]) * factor;
   }
 }
 
@@ -357,12 +365,12 @@ void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out) {
 
 void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out) {
   NSArray *steps = (__bridge NSArray *)info;
-
+  
   CGFloat input = *in;
   WBGradientStep *first = nil;
   for (WBGradientStep *step in steps) {
     if (first) {
-      // we already have a step, we just want to check if the next step start point overrlap.
+      // we already have a step, we just want to check if the next step start point overlap.
       if (step.start <= input)
         first = step;
       break;
@@ -372,7 +380,6 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out) {
   }
   if (!first)
     first = [steps lastObject];
-
+  
   [first getColor:out atPoint:input];
 }
-
