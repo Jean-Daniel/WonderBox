@@ -45,12 +45,18 @@ WB_EXPORT
 void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, CGFloat y2);
 
 // MARK: Color Spaces
-WB_EXPORT
-CGColorSpaceRef WBCGColorSpaceCreateGray(void);
-WB_EXPORT
-CGColorSpaceRef WBCGColorSpaceCreateRGB(void);
-WB_EXPORT
-CGColorSpaceRef WBCGColorSpaceCreateCMYK(void);
+WB_INLINE
+CGColorSpaceRef WBCGColorSpaceCreateGray(void) {
+  return CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+}
+WB_INLINE
+CGColorSpaceRef WBCGColorSpaceCreateRGB(void) {
+  return CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+}
+WB_INLINE
+CGColorSpaceRef WBCGColorSpaceCreateCMYK(void) {
+  return CGColorSpaceCreateWithName(kCGColorSpaceGenericCMYK);
+}
 
 // MARK: Color
 WB_EXPORT

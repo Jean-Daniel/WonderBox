@@ -97,7 +97,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   NSParameterAssert(def);
   if (self = [self initWithColorSpace:GetColorSpace(def->cs)]) {
     WBInterpolationFunction *base = WBFunctionCreateFromDefinition(&def->fct);
-    
+
     CFIndex idx = 0;
     do {
       WBInterpolationFunction *fct = nil;
@@ -147,12 +147,12 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   // Make sure the location is valid
   if (location > 1)
     SPXThrowException(NSInvalidArgumentException, @"location must be in the range ]0; 1]");
-  
+
   WBGradientStep *last = [_steps lastObject];
   CGFloat start = last ? last.end : 0;
   if (location < start)
     SPXThrowException(NSInvalidArgumentException, @"overlapping color stop: %.2f < %.2f", location, start);
-  
+
   // TODO: is !startColor || !endColor -> add empty colorStop.
   CFIndex cnt = [_cs numberOfColorComponents] + 1; // + one for alpha
   WBGradientStep *step = [[WBGradientStep alloc] initWithComponents:cnt startColor:startColor endColor:endColor];
@@ -330,7 +330,7 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
 - (NSComparisonResult)compare:(WBGradientStep *)aStep {
   if (!aStep)
     return NSOrderedDescending;
-  
+
   if (_start > aStep->_start) return NSOrderedDescending;
   if (aStep->_start > _start) return NSOrderedAscending;
   return NSOrderedSame;
@@ -364,7 +364,7 @@ void _WBGradientDrawStep(void * info, const CGFloat * in, CGFloat * out) {
 
 void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out) {
   NSArray *steps = (__bridge NSArray *)info;
-  
+
   CGFloat input = *in;
   WBGradientStep *first = nil;
   for (WBGradientStep *step in steps) {
@@ -379,6 +379,6 @@ void _WBGradientDrawSteps(void * info, const CGFloat * in, CGFloat * out) {
   }
   if (!first)
     first = [steps lastObject];
-  
+
   [first getColor:out atPoint:input];
 }

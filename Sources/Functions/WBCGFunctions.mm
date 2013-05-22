@@ -10,13 +10,72 @@
 
 #import <WonderBox/WBCGFunctions.h>
 
-void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
+namespace {
+  WB_INLINE
+  void MoveToPoint(CGContextRef path, const CGAffineTransform *transform, CGFloat x, CGFloat y) {
+    CGContextMoveToPoint(path, x, y);
+  }
+  WB_INLINE
+  void MoveToPoint(CGMutablePathRef path, const CGAffineTransform *transform, CGFloat x, CGFloat y) {
+    CGPathMoveToPoint(path, transform, x, y);
+  }
+
+  WB_INLINE
+  void AddLineToPoint(CGContextRef path, const CGAffineTransform *transform, CGFloat x, CGFloat y) {
+    CGContextAddLineToPoint(path, x, y);
+  }
+  WB_INLINE
+  void AddLineToPoint(CGMutablePathRef path, const CGAffineTransform *transform, CGFloat x, CGFloat y) {
+    CGPathAddLineToPoint(path, transform, x, y);
+  }
+
+  WB_INLINE
+  void AddArcToPoint(CGContextRef path, const CGAffineTransform *transform, CGFloat x1, CGFloat y1, CGFloat x2, CGFloat y2, CGFloat radius) {
+    CGContextAddArcToPoint(path, x1, y1, x2, y2, radius);
+  }
+  WB_INLINE
+  void AddArcToPoint(CGMutablePathRef path, const CGAffineTransform *transform, CGFloat x1, CGFloat y1, CGFloat x2, CGFloat y2, CGFloat radius) {
+    CGPathAddArcToPoint(path, transform, x1, y1, x2, y2, radius);
+  }
+
+  WB_INLINE
+  void AddCurveToPoint(CGContextRef path, const CGAffineTransform *m, CGFloat cp1x, CGFloat cp1y, CGFloat cp2x, CGFloat cp2y, CGFloat x, CGFloat y) {
+    CGContextAddCurveToPoint(path, cp1x, cp1y, cp2x, cp2y, x, y);
+  }
+  WB_INLINE
+  void AddCurveToPoint(CGMutablePathRef path, const CGAffineTransform *m, CGFloat cp1x, CGFloat cp1y, CGFloat cp2x, CGFloat cp2y, CGFloat x, CGFloat y) {
+    CGPathAddCurveToPoint(path, m, cp1x, cp1y, cp2x, cp2y, x, y);
+  }
+
+  WB_INLINE
+  void AddRect(CGContextRef path, const CGAffineTransform *transform, CGRect rect) {
+    CGContextAddRect(path, rect);
+  }
+  WB_INLINE
+  void AddRect(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect) {
+    CGPathAddRect(path, transform, rect);
+  }
+
+  WB_INLINE
+  void ClosePath(CGContextRef path) {
+    CGContextClosePath(path);
+  }
+  WB_INLINE
+  void ClosePath(CGMutablePathRef path) {
+    CGPathCloseSubpath(path);
+  }
+}
+
+template<class Path> WB_INLINE
+void AddRoundRect(Path path, const CGAffineTransform *transform, CGRect rect, CGFloat radius) {
   if (radius <= 0) {
     spx_debug("Negative or nil radius -> fall back to rect.");
-    CGContextAddRect(context, rect);
+    AddRect(path, transform, rect);
     return;
   }
 
+  // NOTE: At this point you may want to verify that your radius is no more than half
+  // the width and height of your rectangle, as this technique degenerates for those cases.
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
   CGFloat maxRadius = MIN(width, height) / 2;
@@ -46,79 +105,37 @@ void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) 
   // You could use a similar tecgnique to create any shape with rounded corners.
 
   // Start at 1
-  CGContextMoveToPoint(context, minx, midy);
+  MoveToPoint(path, transform, minx, midy);
   // Add an arc through 2 to 3
-  CGContextAddArcToPoint(context, minx, miny, midx, miny, radius);
+  AddArcToPoint(path, transform, minx, miny, midx, miny, radius);
   // Add an arc through 4 to 5
-  CGContextAddArcToPoint(context, maxx, miny, maxx, midy, radius);
+  AddArcToPoint(path, transform, maxx, miny, maxx, midy, radius);
   // Add an arc through 6 to 7
-  CGContextAddArcToPoint(context, maxx, maxy, midx, maxy, radius);
+  AddArcToPoint(path, transform, maxx, maxy, midx, maxy, radius);
   // Add an arc through 8 to 9
-  CGContextAddArcToPoint(context, minx, maxy, minx, midy, radius);
+  AddArcToPoint(path, transform, minx, maxy, minx, midy, radius);
   // Close the path
-  CGContextClosePath(context);
+  ClosePath(path);
+}
+
+void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
+  AddRoundRect(context, nullptr, rect, radius);
 }
 
 void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGFloat radius) {
-  // NOTE: At this point you may want to verify that your radius is no more than half
-  // the width and height of your rectangle, as this technique degenerates for those cases.
-  if (radius <= 0) {
-    spx_debug("Negative or nil radius -> fall back to rect.");
-    CGPathAddRect(path, transform, rect);
-    return;
-  }
-
-  CGFloat width = CGRectGetWidth(rect);
-  CGFloat height = CGRectGetHeight(rect);
-  CGFloat maxRadius = MIN(width, height) / 2;
-  if (radius > maxRadius) {
-    /* radius to big, use a smaller one */
-    spx_debug("radius to big -> adjust it.");
-    radius = maxRadius;
-  }
-
-  // In order to draw a rounded rectangle, we will take advantage of the fact that
-  // CGContextAddArcToPoint will draw straight lines past the start and end of the arc
-  // in order to create the path from the current position and the destination position.
-
-  // In order to create the 4 arcs correctly, we need to know the min, mid and max positions
-  // on the x and y lengths of the given rectangle.
-  CGFloat minx = CGRectGetMinX(rect), midx = CGRectGetMidX(rect), maxx = CGRectGetMaxX(rect);
-  CGFloat miny = CGRectGetMinY(rect), midy = CGRectGetMidY(rect), maxy = CGRectGetMaxY(rect);
-
-  // Next, we will go around the rectangle in the order given by the figure below.
-  //       minx    midx    maxx
-  // miny    2       3       4
-  // midy   1 9              5
-  // maxy    8       7       6
-  // Which gives us a coincident start and end point, which is incidental to this technique, but still doesn't
-  // form a closed path, so we still need to close the path to connect the ends correctly.
-  // Thus we start by moving to point 1, then adding arcs through each pair of points that follows.
-  // You could use a similar tecgnique to create any shape with rounded corners.
-
-  // Start at 1
-  CGPathMoveToPoint(path, transform, minx, midy);
-  // Add an arc through 2 to 3
-  CGPathAddArcToPoint(path, transform, minx, miny, midx, miny, radius);
-  // Add an arc through 4 to 5
-  CGPathAddArcToPoint(path, transform, maxx, miny, maxx, midy, radius);
-  // Add an arc through 6 to 7
-  CGPathAddArcToPoint(path, transform, maxx, maxy, midx, maxy, radius);
-  // Add an arc through 8 to 9
-  CGPathAddArcToPoint(path, transform, minx, maxy, minx, midy, radius);
-  // Close the path
-  CGPathCloseSubpath(path);
+  AddRoundRect(path, transform, rect, radius);
 }
 
 #define KAPPA (CGFloat)0.5522847498
-void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
+template<class Path> WB_INLINE
+void AddRoundRectWithRadius(Path path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
   CGFloat x = CGRectGetMinX(rect);
   CGFloat y = CGRectGetMinY(rect);
   CGFloat width = CGRectGetWidth(rect);
   CGFloat height = CGRectGetHeight(rect);
 
   if (fequal(radius.width, radius.height)) {
-    WBCGPathAddRoundRect(path, transform, rect, radius.width);
+    AddRoundRect(path, transform, rect, radius.width);
     return;
   }
 
@@ -132,89 +149,47 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
   }
 
   if (radius.width <= 0 && radius.height <= 0) {
-    CGPathAddRect(path, transform, rect);
+    AddRect(path, transform, rect);
     return;
   }
 
   CGFloat lx = KAPPA * radius.width;
   CGFloat ly = KAPPA * radius.height;
 
-  CGPathMoveToPoint(path, transform, x + radius.width, y);
+  MoveToPoint(path, transform, x + radius.width, y);
   /* Bottom */
-  CGPathAddLineToPoint(path, transform, CGRectGetMaxX(rect) - radius.width, y);
+  AddLineToPoint(path, transform, CGRectGetMaxX(rect) - radius.width, y);
   /* Bottom right */
-  CGPathAddCurveToPoint(path, transform, CGRectGetMaxX(rect) - radius.width + lx, y,
-                        CGRectGetMaxX(rect), y + radius.height - ly, CGRectGetMaxX(rect), y + radius.height);
+  AddCurveToPoint(path, transform, CGRectGetMaxX(rect) - radius.width + lx, y,
+                  CGRectGetMaxX(rect), y + radius.height - ly, CGRectGetMaxX(rect), y + radius.height);
   /* Right */
-  CGPathAddLineToPoint(path, transform, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height);
+  AddLineToPoint(path, transform, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height);
   /* Top - Right */
-  CGPathAddCurveToPoint(path, transform, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height + ly,
-                        CGRectGetMaxX(rect) - radius.width + lx, CGRectGetMaxY(rect), CGRectGetMaxX(rect) - radius.width, CGRectGetMaxY(rect));
+  AddCurveToPoint(path, transform, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height + ly,
+                  CGRectGetMaxX(rect) - radius.width + lx, CGRectGetMaxY(rect), CGRectGetMaxX(rect) - radius.width, CGRectGetMaxY(rect));
   /* Top */
-  CGPathAddLineToPoint(path, transform, x + radius.width, CGRectGetMaxY(rect));
+  AddLineToPoint(path, transform, x + radius.width, CGRectGetMaxY(rect));
   /* Top - Left */
-  CGPathAddCurveToPoint(path, transform, x + radius.width - lx, CGRectGetMaxY(rect),
-                        x, CGRectGetMaxY(rect) - radius.height + ly, x, CGRectGetMaxY(rect) - radius.height);
+  AddCurveToPoint(path, transform, x + radius.width - lx, CGRectGetMaxY(rect),
+                  x, CGRectGetMaxY(rect) - radius.height + ly, x, CGRectGetMaxY(rect) - radius.height);
   /* Left */
-  CGPathAddLineToPoint(path, transform, x, y + radius.height);
+  AddLineToPoint(path, transform, x, y + radius.height);
   /* Bottom - Left */
-  CGPathAddCurveToPoint(path, transform, x, y + radius.height - ly,
-                        x + radius.width - lx, y, x + radius.width, y);
+  AddCurveToPoint(path, transform, x, y + radius.height - ly,
+                  x + radius.width - lx, y, x + radius.width, y);
 }
 
 void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize radius) {
-  CGFloat x = CGRectGetMinX(rect);
-  CGFloat y = CGRectGetMinY(rect);
-  CGFloat width = CGRectGetWidth(rect);
-  CGFloat height = CGRectGetHeight(rect);
+  AddRoundRectWithRadius(context, nullptr, rect, radius);
+}
 
-  if (fequal(radius.width, radius.height)) {
-    WBCGContextAddRoundRect(context, rect, radius.width);
-    return;
-  }
-
-  if (radius.width <= 0 || (radius.width * 2) > width) {
-    spx_debug("Invalid Radius Width.");
-    radius.width = 0;
-  }
-  if (radius.height <= 0 || (radius.height * 2) > height) {
-    spx_debug("Invalid Radius Height.");
-    radius.height = 0;
-  }
-
-  if (radius.width <= 0 && radius.height <= 0) {
-    CGContextAddRect(context, rect);
-    return;
-  }
-
-  CGFloat lx = KAPPA * radius.width;
-  CGFloat ly = KAPPA * radius.height;
-
-  CGContextMoveToPoint(context, x + radius.width, y);
-  /* Bottom */
-  CGContextAddLineToPoint(context, CGRectGetMaxX(rect) - radius.width, y);
-  /* Bottom right */
-  CGContextAddCurveToPoint(context, CGRectGetMaxX(rect) - radius.width + lx, y,
-                           CGRectGetMaxX(rect), y + radius.height - ly, CGRectGetMaxX(rect), y + radius.height);
-  /* Right */
-  CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height);
-  /* Top - Right */
-  CGContextAddCurveToPoint(context, CGRectGetMaxX(rect), CGRectGetMaxY(rect) - radius.height + ly,
-                           CGRectGetMaxX(rect) - radius.width + lx, CGRectGetMaxY(rect), CGRectGetMaxX(rect) - radius.width, CGRectGetMaxY(rect));
-  /* Top */
-  CGContextAddLineToPoint(context, x + radius.width, CGRectGetMaxY(rect));
-  /* Top - Left */
-  CGContextAddCurveToPoint(context, x + radius.width - lx, CGRectGetMaxY(rect),
-                           x, CGRectGetMaxY(rect) - radius.height + ly,  x, CGRectGetMaxY(rect) - radius.height);
-  /* Left */
-  CGContextAddLineToPoint(context, x, y + radius.height);
-  /* Bottom - Left */
-  CGContextAddCurveToPoint(context, x, y + radius.height - ly,
-                           x + radius.width - lx, y, x + radius.width, y);
+void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
+  AddRoundRectWithRadius(path, transform, rect, radius);
 }
 
 // MARK: Stars
-void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
+template<class Path> WB_INLINE
+void AddStart(Path path, const CGAffineTransform *transform, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
   check(sides >= 5);
   if (sides < 5) return;
 
@@ -226,38 +201,23 @@ void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloa
   if (ir <= 0)
     ir = (CGFloat)(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
 
-  CGContextMoveToPoint(ctxt, center.x, center.y + r);
+  MoveToPoint(path, transform, center.x, center.y + r);
   omega -= delta;
-  CGContextAddLineToPoint(ctxt, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
+  AddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
   for (CFIndex idx = 0; idx < sides - 1; ++idx) {
     omega -= delta;
-    CGContextAddLineToPoint(ctxt, r * cos(omega) + center.x, r * sin(omega) + center.y);
+    AddLineToPoint(path, transform, r * cos(omega) + center.x, r * sin(omega) + center.y);
     omega -= delta;
-    CGContextAddLineToPoint(ctxt, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
+    AddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
   }
 }
 
+void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
+  AddStart(ctxt, nullptr, center, sides, r, ir);
+}
+
 void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
-  check(sides >= 5);
-  if (sides < 5) return;
-
-  /* angles */
-  CGFloat omega = (CGFloat)M_PI_2;
-  CGFloat delta = (CGFloat)M_PI / sides;
-
-  /* Internal rayon */
-  if (ir <= 0)
-    ir = (CGFloat)(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
-
-  CGPathMoveToPoint(path, transform, center.x, center.y + r);
-  omega -= delta;
-  CGPathAddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
-  for (CFIndex idx = 0; idx < sides - 1; ++idx) {
-    omega -= delta;
-    CGPathAddLineToPoint(path, transform, r * cos(omega) + center.x, r * sin(omega) + center.y);
-    omega -= delta;
-    CGPathAddLineToPoint(path, transform, ir * cos(omega) + center.x, ir * sin(omega) + center.y);
-  }
+  AddStart(path, transform, center, sides, r, ir);
 }
 
 // MARK: Waves
@@ -282,10 +242,10 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   while (end < width) {
     center = end + step;
     end = center + step;
-    CGContextAddCurveToPoint (context,
-                              center, middle + delta,
-                              center, middle - delta,
-                              end, middle);
+    CGContextAddCurveToPoint(context,
+                             center, middle + delta,
+                             center, middle - delta,
+                             end, middle);
   }
 
   CGContextStrokePath(context);
@@ -300,19 +260,6 @@ void WBCGContextStrokeLine(CGContextRef ctxt, CGFloat x, CGFloat y, CGFloat x2, 
     CGPointMake(x2, y2),
   };
   CGContextStrokeLineSegments(ctxt, p, 2);
-}
-
-// MARK: Colors Spaces
-CGColorSpaceRef WBCGColorSpaceCreateGray(void) {
-  return CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
-}
-
-CGColorSpaceRef WBCGColorSpaceCreateRGB(void) {
-  return CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-}
-
-CGColorSpaceRef WBCGColorSpaceCreateCMYK(void) {
-  return CGColorSpaceCreateWithName(kCGColorSpaceGenericCMYK);
 }
 
 // MARK: Colors
@@ -450,7 +397,7 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
                             [[NSProcessInfo processInfo] processName], kCGImagePropertyTIFFSoftware,
                             nil];
   CFDictionaryRef properties = SPXNSToCFDictionary([NSDictionary dictionaryWithObject:tiffDict
-                                                                              forKey:(id)kCGImagePropertyTIFFDictionary]);
+                                                                              forKey:SPXCFToNSString(kCGImagePropertyTIFFDictionary)]);
 
   CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
   CGImageDestinationRef dest = CGImageDestinationCreateWithData(data, kUTTypeTIFF, 1, NULL);
@@ -468,7 +415,7 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
 @implementation NSGraphicsContext (WBCGContextRef)
 
 + (CGContextRef)currentGraphicsPort {
-  return [[self currentContext] graphicsPort];
+  return static_cast<CGContextRef>([[self currentContext] graphicsPort]);
 }
 
 @end
