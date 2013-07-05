@@ -11,8 +11,6 @@
 #import <WonderBox/WBOutlineViewController.h>
 #import <WonderBox/WBUITreeNode.h>
 
-#define _ContainsNode(item)         ({(nil != item) && ([item findRoot] == wb_root);})
-
 @interface WBOutlineViewController () <NSOutlineViewDataSource>
 
 @end
@@ -129,12 +127,17 @@
   }
 }
 
+static inline
+BOOL _ContainsNode(WBOutlineViewController *self, id item) {
+  return (nil != item) && ([item findRoot] == self->wb_root);
+}
+
 - (BOOL)containsNode:(id)aNode {
-  return _ContainsNode(aNode);
+  return _ContainsNode(self, aNode);
 }
 
 - (void)displayNode:(WBBaseUITreeNode *)aNode {
-  if (_ContainsNode(aNode)) {
+  if (_ContainsNode(self, aNode)) {
     // Expand all parents
     WBBaseUITreeNode *parent = [aNode parent];
     if (parent) {
@@ -170,7 +173,7 @@
 
 #pragma mark Internal Methods
 - (void)setSelectedNode:(WBBaseUITreeNode *)anObject display:(BOOL)display {
-  if (_ContainsNode(anObject)) {
+  if (_ContainsNode(self, anObject)) {
     if (display) [self displayNode:anObject];
     // Select Row
     NSInteger row = [wb_outline rowForItem:anObject];
@@ -188,14 +191,14 @@
 #pragma mark Notifications
 - (void)didChangeNodeName:(NSNotification *)aNotification {
   id item = [aNotification object];
-  if (_ContainsNode(item))
+  if (_ContainsNode(self, item))
     [wb_outline reloadItem:item];
 }
 
 - (void)willSetChildren:(NSNotification *)aNotification {
   id item = [aNotification object];
 
-  if (_ContainsNode(item)) {
+  if (_ContainsNode(self, item)) {
     /* If remove all children (~ "Set Children" with nil user info) ... */
     BOOL collapse = ![aNotification userInfo];
     if (!collapse) {
@@ -210,7 +213,7 @@
 
 - (void)didUpdateChildren:(NSNotification *)aNotification {
   id item = [aNotification object];
-  if (_ContainsNode(item)) {
+  if (_ContainsNode(self, item)) {
     if (wb_root == item && ![self displayRoot])
       [wb_outline reloadItem:nil reloadChildren:YES];
     else
@@ -283,7 +286,7 @@
   NSParameterAssert(anObject);
 
   /* Only accept copy if not owner */
-  if (!_ContainsNode(anObject)) {
+  if (!_ContainsNode(self, anObject)) {
     if (op & NSDragOperationCopy) {
       op = NSDragOperationCopy;
     } else {
