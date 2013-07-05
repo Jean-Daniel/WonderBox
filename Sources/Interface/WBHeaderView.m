@@ -165,7 +165,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
 }
 
 - (void)wb_addButton:(NSButton *)aButton position:(WBHeaderPosition)position {
-  NSUInteger x = 0;
+  CGFloat x = 0;
   NSUInteger mask = 0;
   if (position == kWBHeaderLeft) {
     mask = NSViewMaxXMargin;

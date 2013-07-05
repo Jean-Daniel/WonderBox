@@ -37,8 +37,8 @@ typedef struct {
 #define WBInterpolationCallBackDef(function) { kWBInterpolationTypeCallBack, { .cb = function } }
 #define WBInterpolationBezierDef(x1, y1, x2, y2, l) { kWBInterpolationTypeBezier, { .bezier = { { { x1, y1 }, { x2, y2 } }, l } } }
 
-#define WBShadingColorRGB(r, g, b, a) {r, g, b, a, 0}
-#define WBShadingColorGray(w, a) { w, a, 0, 0, 0 }
+#define WBGradientColorRGB(r, g, b, a) {r, g, b, a, 0}
+#define WBGradientColorGray(w, a) { w, a, 0, 0, 0 }
 
 typedef NS_ENUM(uint8_t, WBGradientColorSpace) {
   kWBGradientColorSpace_RGB,
@@ -86,24 +86,21 @@ WB_OBJC_EXPORT
 - (void)addColorStop:(CGFloat)location startingColorComponents:(const CGFloat *)startColor endingColorComponents:(const CGFloat *)endColor
        interpolation:(WBInterpolationFunction *)fct;
 
-// output
+// All following methods conform to Cocoa Memory Management rule: methods that begin with new return a not-autoreleased object.
 - (CGFunctionRef)newFunction CF_RETURNS_RETAINED;
 
-// All following methods conform to Cocoa Memory Management rule: methods that begin with new return a not-autoreleased object.
-// caller MUST release it when over
 - (CGShadingRef)newAxialShadingFrom:(CGPoint)from to:(CGPoint)to CF_RETURNS_RETAINED;
 
-// caller MUST release it when over
 - (CGShadingRef)newRadialShadingFrom:(CGPoint)from radius:(CGFloat)fromRadius
                                   to:(CGPoint)to radius:(CGFloat)toRadius CF_RETURNS_RETAINED;
 
 // from bottom to top
-- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
+- (CGLayerRef)newLayerWithVerticalGradient:(CGFloat)height context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 // from left to right
-- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
+- (CGLayerRef)newLayerWithHorizontalGradient:(CGFloat)width context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)endPoint scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext CF_RETURNS_RETAINED;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle context:(CGContextRef)aContext CF_RETURNS_RETAINED;
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)aPoint to:(CGPoint)endPoint context:(CGContextRef)aContext CF_RETURNS_RETAINED;
 
 @end
 

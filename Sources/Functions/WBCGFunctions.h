@@ -68,9 +68,6 @@ CGColorRef WBCGColorCreateCMYK(CGFloat cyan, CGFloat magenta, CGFloat yellow, CG
 
 // MARK: Layer
 WB_EXPORT
-CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictionaryRef auxiliaryInfo, bool scaleToUserSpace);
-
-WB_EXPORT
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer);
 
 // MARK: Images

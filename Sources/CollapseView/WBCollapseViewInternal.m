@@ -442,8 +442,8 @@ WBGradientDefinition sHeaderGradient = {
   {
     {
       1,
-      WBShadingColorRGB(.700, .707, .777, 1), // 808
-      WBShadingColorRGB(.926, .929, .973, 1), // 647
+      WBGradientColorRGB(.700, .707, .777, 1), // 808
+      WBGradientColorRGB(.926, .929, .973, 1), // 647
       kWBInterpolationDefault,
     },
   }
@@ -462,7 +462,7 @@ WBGradientDefinition sHeaderGradient = {
 
   if (!sHeaderBackground) {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithDefinition:&sHeaderGradient];
-    sHeaderBackground = [b newLayerWithVerticalGradient:CGSizeMake(1, background.size.height) scale:true context:ctxt];
+    sHeaderBackground = [b newLayerWithVerticalGradient:background.size.height context:ctxt];
     spx_release(b);
   }
   // draw background gradient

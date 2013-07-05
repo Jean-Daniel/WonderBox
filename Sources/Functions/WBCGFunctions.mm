@@ -119,7 +119,7 @@ void AddRoundRect(Path path, const CGAffineTransform *transform, CGRect rect, CG
 }
 
 void WBCGContextAddRoundRect(CGContextRef context, CGRect rect, CGFloat radius) {
-  AddRoundRect(context, nullptr, rect, radius);
+  AddRoundRect(context, NULL, rect, radius);
 }
 
 void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGFloat radius) {
@@ -180,7 +180,7 @@ void AddRoundRectWithRadius(Path path, const CGAffineTransform *transform, CGRec
 }
 
 void WBCGContextAddRoundRectWithRadius(CGContextRef context, CGRect rect, CGSize radius) {
-  AddRoundRectWithRadius(context, nullptr, rect, radius);
+  AddRoundRectWithRadius(context, NULL, rect, radius);
 }
 
 void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
@@ -213,7 +213,7 @@ void AddStart(Path path, const CGAffineTransform *transform, CGPoint center, CFI
 }
 
 void WBCGContextAddStar(CGContextRef ctxt, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
-  AddStart(ctxt, nullptr, center, sides, r, ir);
+  AddStart(ctxt, NULL, center, sides, r, ir);
 }
 
 void WBCGPathAddStar(CGMutablePathRef path, const CGAffineTransform *transform, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
@@ -297,21 +297,6 @@ CGColorRef WBCGColorCreateCMYK(CGFloat cyan, CGFloat magenta, CGFloat yellow, CG
 }
 
 // MARK: Layer
-CGLayerRef WBCGLayerCreateWithContext(CGContextRef ctxt, CGSize size, CFDictionaryRef auxiliaryInfo, bool scaleToUserSpace) {
-  CGFloat factor = 1;
-  if (scaleToUserSpace) {
-    factor = WBCGContextGetUserSpaceScaleFactor(ctxt);
-    size.width *= factor;
-    size.height *= factor;
-  }
-  CGLayerRef layer = CGLayerCreateWithContext(ctxt, size, auxiliaryInfo);
-  if (layer && scaleToUserSpace) {
-    CGContextRef lctxt = CGLayerGetContext(layer);
-    CGContextScaleCTM(lctxt, factor, factor);
-  }
-  return layer;
-}
-
 CGImageRef WBCGLayerCreateImage(CGLayerRef layer) {
   CGImageRef result = NULL;
   CGSize size = CGLayerGetSize(layer);

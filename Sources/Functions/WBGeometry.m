@@ -102,9 +102,9 @@ CGRect WBRectAlignToRect(CGRect alignee, CGRect aligner, WBRectAlignment alignme
 }
 
 #pragma mark -
-CGFloat WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt) {
+CGSize WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt) {
   CGAffineTransform trans = CGContextGetUserSpaceToDeviceSpaceTransform(ctxt);
-  return ABS(trans.a);
+  return CGSizeMake(ABS(trans.a), ABS(trans.d));
 }
 
 void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width) {

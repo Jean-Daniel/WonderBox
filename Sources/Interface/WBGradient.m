@@ -123,7 +123,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   spx_dealloc();
 }
 
-#pragma mark -
+// MARK: -
 - (void)addColorStop:(CGFloat)location startingColor:(NSColor *)startColor endingColor:(NSColor *)endColor interpolation:(WBInterpolationFunction  *)fct {
   CGFloat start[5];
   // Start Color
@@ -208,14 +208,18 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 }
 
 // MARK: Layers
-- (CGLayerRef)newLayerWithVerticalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
-  return [self newLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(0, size.height) scale:scaleToUserSpace context:aContext];
+- (CGLayerRef)newLayerWithVerticalGradient:(CGFloat)height context:(CGContextRef)aContext {
+  CGSize scale = WBCGContextGetUserSpaceScaleFactor(aContext);
+  return [self newLayerWithAxialGradient:CGSizeMake(1, scale.height * height)
+                                    from:CGPointZero to:CGPointMake(0, scale.height * height) context:aContext];
 }
-- (CGLayerRef)newLayerWithHorizontalGradient:(CGSize)size scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
-  return [self newLayerWithAxialGradient:size from:CGPointZero to:CGPointMake(size.width, 0) scale:scaleToUserSpace context:aContext];
+- (CGLayerRef)newLayerWithHorizontalGradient:(CGFloat)width context:(CGContextRef)aContext {
+  CGSize scale = WBCGContextGetUserSpaceScaleFactor(aContext);
+  return [self newLayerWithAxialGradient:CGSizeMake(scale.width * width, 1)
+                                    from:CGPointZero to:CGPointMake(scale.width * width, 0) context:aContext];
 }
 
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size angle:(CGFloat)anAngle context:(CGContextRef)aContext {
   double angle = fmod(anAngle, 360);
   if (angle > 180) angle =  180 - angle;
   angle = angle * M_PI / 180;
@@ -240,7 +244,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
     // resolve for f2(size.width) = size.height (so the gradient fills the whole layer).
 
     double a = fabs(tan(angle));
-    double b = size.height + size.width/a;
+    double b = size.height + size.width / a;
 
     p2.x = (CGFloat)((a * b) / (a * a + 1)); // x = (a * b) / (a^2 + 1)
     p2.y = (CGFloat)(a * p2.x);              // y = a * x
@@ -259,14 +263,14 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
     p2.y = size.height - p2.y;
   }
 
-  return [self newLayerWithAxialGradient:size from:p1 to:p2 scale:scaleToUserSpace context:aContext];
+  return [self newLayerWithAxialGradient:size from:p1 to:p2 context:aContext];
 }
 
-- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)from to:(CGPoint)to scale:(BOOL)scaleToUserSpace context:(CGContextRef)aContext {
+- (CGLayerRef)newLayerWithAxialGradient:(CGSize)size from:(CGPoint)from to:(CGPoint)to context:(CGContextRef)aContext {
   CGShadingRef shading = [self newAxialShadingFrom:from to:to];
   if (!shading) return nil;
 
-  CGLayerRef layer = WBCGLayerCreateWithContext(aContext, size, NULL, scaleToUserSpace);
+  CGLayerRef layer = CGLayerCreateWithContext(aContext, size, NULL);
   if (layer)
     CGContextDrawShading(CGLayerGetContext(layer), shading);
   CGShadingRelease(shading);

@@ -96,7 +96,7 @@ CGRect WBSizeScaleToRect(CGSize source, CGRect dest, WBScalingMode mode, WBRectA
 
 #pragma mark -
 WB_EXPORT
-CGFloat WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt);
+CGSize WBCGContextGetUserSpaceScaleFactor(CGContextRef ctxt);
 WB_EXPORT
 void WBCGContextSetLinePixelWidth(CGContextRef context, CGFloat width);
 
