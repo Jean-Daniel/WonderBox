@@ -73,7 +73,13 @@ const WBDigestInfo *__WBDigestInfoForAlgoritm(WBDigestAlgorithm algo) {
   return digest->algo ? digest : NULL;
 }
 
-#pragma mark Algorithms
+// MARK: -
+// MARK: Algorithms
+size_t WBDigestGetOutputSize(WBDigestAlgorithm algo) {
+  const WBDigestInfo *digest = __WBDigestInfoForAlgoritm(algo);
+  return digest ? digest->length : 0;
+}
+
 WBDigestAlgorithm WBDigestGetAlgorithmByName(const char *name) {
   const WBDigestInfo *digest = _WBDigestInfos;
   while ((kWBDigestUndefined != digest->algo) && (0 != strcasecmp(name, digest->name))) {
@@ -81,13 +87,9 @@ WBDigestAlgorithm WBDigestGetAlgorithmByName(const char *name) {
   }
   return digest->algo;
 }
-size_t WBDigestGetLengthForAlgorithm(WBDigestAlgorithm algo) {
-  const WBDigestInfo *digest = __WBDigestInfoForAlgoritm(algo);
-  return digest ? digest->length : 0;
-}
 
-#pragma mark Digest
-int WBDigestInit(WBDigestContext *c, WBDigestAlgorithm algo) {
+// MARK: Digest
+int WBDigestInit(WBDigestAlgorithm algo, WBDigestRef c) {
   static_assert(sizeof(*c) >= sizeof(WBPrivateDigestContext), "inconsistent declaration");
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   memset(ctxt, 0, sizeof(*ctxt));
@@ -97,47 +99,47 @@ int WBDigestInit(WBDigestContext *c, WBDigestAlgorithm algo) {
   return ctxt->digest->init(&ctxt->ctxt);
 }
 
-int WBDigestUpdate(WBDigestContext *c, const void *data, size_t len) {
+int WBDigestUpdate(WBDigestRef c, const void *data, size_t len) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return 0; // error ?
   assert(len < UINT32_MAX && "integer overflow");
   return ctxt->digest->update(&ctxt->ctxt, data, (CC_LONG)len);
 }
 
-int WBDigestFinal(unsigned char *md, WBDigestContext *c) {
+int WBDigestFinal(WBDigestRef c, uint8_t *md) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return 0; // error ?
   int err = ctxt->digest->final(md, &ctxt->ctxt);
   return err > 0 ? ctxt->digest->length : 0;
 }
 
-#pragma mark Context
-size_t WBDigestContextGetLength(WBDigestContext *c) {
+// MARK: Context
+size_t WBDigestGetOutputSizeFromRef(WBDigestRef c) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return 0;
   return ctxt->digest->length;
 }
 
-const char *WBDigestContextGetName(WBDigestContext *c) {
+const char *WBDigestGetAlgorithmNameFromRef(WBDigestRef c) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return NULL;
   return ctxt->digest->name;
 }
 
-WBDigestAlgorithm WBDigestContextGetAlgorithm(WBDigestContext *c) {
+WBDigestAlgorithm WBDigestGetAlgorithmFromRef(WBDigestRef c) {
   WBPrivateDigestContext *ctxt = (WBPrivateDigestContext *)c;
   if (!ctxt->digest) return 0;
   return ctxt->digest->algo;
 }
 
-#pragma mark Utilities
+// MARK: Utilities
 int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsigned char *md) {
   WBDigestContext ctxt;
   int err = WBDigestInit(&ctxt, algo);
   if (err > 0) {
     err = WBDigestUpdate(&ctxt, data, length);
     if (err > 0) {
-      err = WBDigestFinal(md, &ctxt);
+      err = WBDigestFinal(&ctxt, md);
     } else {
       /* cleanup context */
       memset(&ctxt, 0, sizeof(ctxt));
@@ -171,7 +173,7 @@ int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
     }
 
     if (err > 0) {
-      err = WBDigestFinal(md, &ctxt);
+      err = WBDigestFinal(&ctxt, md);
     } else {
       /* cleanup context */
       memset(&ctxt, 0, sizeof(ctxt));

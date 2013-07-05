@@ -21,6 +21,8 @@ typedef struct _WBDigestContext {
   char opaque[240];
 } WBDigestContext;
 
+typedef WBDigestContext *WBDigestRef;
+
 enum {
   kWBDigestUndefined = 0,
   kWBDigestMD2,
@@ -47,29 +49,29 @@ typedef uint32_t WBDigestAlgorithm;
 #define WB_DIGEST_MAX_LENGTH WB_SHA512_DIGEST_LENGTH
 
 WB_EXPORT
-size_t WBDigestGetLengthForAlgorithm(WBDigestAlgorithm algo);
+size_t WBDigestGetOutputSize(WBDigestAlgorithm algo);
 
 WB_EXPORT
 WBDigestAlgorithm WBDigestGetAlgorithmByName(const char *name);
 
 WB_EXPORT
-int WBDigestInit(WBDigestContext *ctxt, WBDigestAlgorithm algo);
+int WBDigestInit(WBDigestAlgorithm algo, WBDigestRef ctxt);
 WB_EXPORT
-int WBDigestUpdate(WBDigestContext *ctxt, const void *data, size_t len);
+int WBDigestUpdate(WBDigestRef ctxt, const void *data, size_t len);
 /*!
 @function
  @result Returns the digest length on success, 0 if an error occured
  */
 WB_EXPORT
-int WBDigestFinal(unsigned char *md, WBDigestContext *ctxt);
+int WBDigestFinal(WBDigestRef ctxt, uint8_t *md);
 
 /* Context Properties */
 WB_EXPORT
-size_t WBDigestContextGetLength(WBDigestContext *ctxt);
+size_t WBDigestGetOutputSizeFromRef(WBDigestRef ctxt);
 WB_EXPORT
-const char *WBDigestContextGetName(WBDigestContext *ctxt);
+const char *WBDigestGetAlgorithmNameFromRef(WBDigestRef ctxt);
 WB_EXPORT
-WBDigestAlgorithm WBDigestContextGetAlgorithm(WBDigestContext *ctxt);
+WBDigestAlgorithm WBDigestGetAlgorithmFromRef(WBDigestRef ctxt);
 
 /* convenient functions */
 WB_EXPORT
