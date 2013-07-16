@@ -32,7 +32,6 @@ WB_OBJC_EXPORT
  @method    keyDown:
  @abstract  informe the delegate if delete backward or forward is pressed
  and send target doubleAction message if Enter is pressed.
- @param     theEvent
  */
 - (void)keyDown:(NSEvent *)theEvent;
 - (void)editColumn:(NSInteger)column item:(id)anItem;

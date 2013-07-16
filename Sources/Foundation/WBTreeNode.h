@@ -59,7 +59,6 @@ WB_OBJC_EXPORT
  @method
  @abstract   Check if receiver contains child or not.
  @discussion This method search only in the first level.
- @param      aChild
  @result     Returns YES of contains <code>aChild</code>.
  */
 - (BOOL)containsChild:(WBTreeNode *)aChild;
