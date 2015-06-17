@@ -34,16 +34,11 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification;
  */
 @class WBPlugInBundle;
 WB_OBJC_EXPORT
-@interface WBPlugInLoader : NSObject {
-@private
-  NSMutableArray *wb_domains;
-  NSMutableDictionary *wb_plugins;
-}
+@interface WBPlugInLoader : NSObject
 
 /*!
  @method
  @abstract   Init with kWBDefaultDomains, without subscription.
- @discussion
  @result     Returns a new PlugIn Loader.
  */
 - (id)init;
@@ -56,7 +51,8 @@ WB_OBJC_EXPORT
 /* bundle */
 - (NSString *)extension;
 /* Main bundle, builtInPath */
-- (NSString *)buildInPath;
+- (NSURL *)buildInURL;
+
 /*!
  @method
  @result Returns module folder name (PlugIns by default).
@@ -69,11 +65,10 @@ WB_OBJC_EXPORT
  @result Returns process name by default.
  */
 - (NSString *)supportFolderName;
-- (NSString *)pathForDomain:(WBPlugInDomain)domain;
+- (NSURL *)URLForDomain:(WBPlugInDomain)domain;
 
 #pragma mark PlugIns
 - (NSArray *)plugIns;
-- (NSEnumerator *)plugInEnumerator;
 - (NSArray *)plugInsForDomain:(WBPlugInDomain)domain;
 
 /* Accessing PlugIns */
@@ -82,7 +77,7 @@ WB_OBJC_EXPORT
 - (id)plugInForIdentifier:(NSString *)anIdentifier;
 
 - (id)loadPlugIn:(NSBundle *)aBundle;
-- (id)loadPlugInAtPath:(NSString *)aPath; // call loadPlugIn:
+- (id)loadPlugInAtURL:(NSURL *)anURL;
 
 /* Built-in PlugIns support */
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier;
@@ -91,6 +86,15 @@ WB_OBJC_EXPORT
 /* Protected */
 - (id)createPlugInForBundle:(NSBundle *)bundle;
 - (WBPlugInBundle *)resolveConflict:(NSArray *)plugins;
+
+@end
+
+@interface WBPlugInLoader (Deprecated)
+
+- (NSString *)buildInPath WB_DEPRECATED("NSURL API");
+- (NSString *)pathForDomain:(WBPlugInDomain)domain WB_DEPRECATED("NSURL API");
+
+- (id)loadPlugInAtPath:(NSString *)aPath WB_DEPRECATED("URL API"); // call loadPlugIn:
 
 @end
 

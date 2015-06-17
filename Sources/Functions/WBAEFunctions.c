@@ -16,7 +16,6 @@
 #include <WonderBox/WBProcessFunctions.h>
 
 Boolean WBAEDebug = false;
-OSType WBAEFinderSignature = 'MACS';
 
 static
 OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event, AppleEvent *reply,

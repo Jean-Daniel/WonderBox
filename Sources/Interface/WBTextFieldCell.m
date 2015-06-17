@@ -77,7 +77,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
   return [super titleRectForBounds:[self contentRectForBounds:theRect]];
 }
 
-- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
   return [super hitTestForEvent:event inRect:[self contentRectForBounds:cellFrame] ofView:controlView];
 }
 

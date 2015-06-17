@@ -17,7 +17,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 @interface _WBPlugInDomain : NSObject {
 @private
-  NSString *wb_path;
+  NSURL *wb_url;
   WBPlugInDomain wb_domain;
   NSMutableArray *wb_plugins;
 }
@@ -26,15 +26,14 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (id)initWithDomainName:(WBPlugInDomain)aDomain;
 
-- (NSString *)path;
+@property(nonatomic, retain) NSURL *URL;
+
 - (NSArray *)plugIns;
 - (WBPlugInDomain)name;
 
 - (void)addPlugIn:(id)aPlugin;
 - (void)removePlugIn:(id)aPlugin;
 - (BOOL)containsPlugIn:(id)aPlugin;
-
-- (void)setPath:(NSString *)aPath;
 
 @end
 
@@ -47,7 +46,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 @interface WBPlugInLoader ()
 
-- (NSArray *)findPlugInsAtPath:(NSString *)folder;
+- (NSArray *)findPlugInsAtURL:(NSURL *)anURL;
 
 - (_WBPlugInDomain *)domainForPlugIn:(id)aPlugIn;
 - (_WBPlugInDomain *)domainWithName:(WBPlugInDomain)aName;
@@ -58,7 +57,11 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 @end
 
-@implementation WBPlugInLoader
+@implementation WBPlugInLoader {
+@private
+  NSMutableArray *wb_domains;
+  NSMutableDictionary *wb_plugins;
+}
 
 - (id)init {
   return [self initWithDomains:kWBPlugInDomainUser, kWBPlugInDomainLocal, kWBPlugInDomainBuiltIn, nil];
@@ -104,28 +107,28 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   return [[NSProcessInfo processInfo] processName];
 }
 
-- (NSString *)buildInPath {
+- (NSURL *)buildInURL {
   NSString *folder = [self plugInFolderName];
-  NSString *builtin = [[NSBundle mainBundle] builtInPlugInsPath];
+  NSURL *builtin = [[NSBundle mainBundle] builtInPlugInsURL];
   if (![folder isEqualToString:[builtin lastPathComponent]]) {
-    return [[builtin stringByDeletingLastPathComponent] stringByAppendingPathComponent:folder];
+    return [[builtin URLByDeletingLastPathComponent] URLByAppendingPathComponent:folder];
   } else {
     return builtin;
   }
 }
 
-- (NSString *)pathForDomain:(WBPlugInDomain)domain {
+- (NSURL *)URLForDomain:(WBPlugInDomain)domain {
   NSString *base = [[self supportFolderName] stringByAppendingPathComponent:[self plugInFolderName]];
   switch (domain) {
     default: return nil;
     case kWBPlugInDomainUser:
-      return [[WBFSFindFolder(kApplicationSupportFolderType, kUserDomain, false) path] stringByAppendingPathComponent:base];
+      return [WBFSFindFolder(kApplicationSupportFolderType, kUserDomain, false) URLByAppendingPathComponent:base];
     case kWBPlugInDomainLocal:
-      return [[WBFSFindFolder(kApplicationSupportFolderType, kLocalDomain, false) path] stringByAppendingPathComponent:base];
+      return [WBFSFindFolder(kApplicationSupportFolderType, kLocalDomain, false) URLByAppendingPathComponent:base];
     case kWBPlugInDomainNetwork:
-      return [[WBFSFindFolder(kApplicationSupportFolderType, kNetworkDomain, false) path] stringByAppendingPathComponent:base];
+      return [WBFSFindFolder(kApplicationSupportFolderType, kNetworkDomain, false) URLByAppendingPathComponent:base];
     case kWBPlugInDomainBuiltIn:
-      return [self buildInPath];
+      return [self buildInURL];
   }
 }
 
@@ -151,9 +154,10 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   return [wb_plugins allValues];
 }
 
-- (NSEnumerator *)plugInEnumerator {
-  return [wb_plugins objectEnumerator];
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)len {
+  return [wb_plugins countByEnumeratingWithState:state objects:buffer count:len];
 }
+
 - (NSArray *)plugInsForDomain:(WBPlugInDomain)domain {
   return [[self domainWithName:domain] plugIns];
 }
@@ -183,8 +187,8 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
   for (NSUInteger idx = 0; idx < [wb_domains count]; idx++) {
     _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
-    [domain setPath:[self pathForDomain:[domain name]]];
-    NSArray *plugins = [self findPlugInsAtPath:[domain path]];
+    domain.URL = [self URLForDomain:[domain name]];
+    NSArray *plugins = [self findPlugInsAtURL:domain.URL];
     if (plugins) {
       for (NSUInteger idx2 = 0; idx2 < [plugins count]; idx2++) {
         NSBundle *bundle = [plugins objectAtIndex:idx2];
@@ -224,14 +228,13 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 }
 
 /* Discover new PlugIns */
-- (NSArray *)findPlugInsAtPath:(NSString *)folder {
-  NSParameterAssert(folder);
+- (NSArray *)findPlugInsAtURL:(NSURL *)anURL {
+  NSParameterAssert(anURL);
   NSString *ext = [self extension];
   NSMutableArray *plugins = [NSMutableArray array];
 
   NSError *error;
-  NSURL *src = [NSURL fileURLWithPath:folder isDirectory:YES];
-  NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[src URLByResolvingSymlinksInPath]
+  NSArray *urls = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[anURL URLByResolvingSymlinksInPath]
                                                 includingPropertiesForKeys:@[]
                                                                    options:0
                                                                      error:&error];
@@ -268,7 +271,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
   for (NSUInteger idx = 0; idx < [wb_domains count]; idx++) {
     _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
-    if ([domain path] && [path hasPrefix:[domain path]]) {
+    if (domain.URL && [path hasPrefix:[domain.URL path]]) {
       return [self loadPlugIn:aBundle domain:[domain name]];
     }
   }
@@ -278,8 +281,8 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   return [self loadPlugIn:aBundle domain:kWBPlugInDomainUserDefined];
 }
 
-- (id)loadPlugInAtPath:(NSString *)aPath {
-  NSBundle *bundle = [NSBundle bundleWithPath:aPath];
+- (id)loadPlugInAtURL:(NSURL *)anURL {
+  NSBundle *bundle = [NSBundle bundleWithURL:anURL];
   return bundle ? [self loadPlugIn:bundle] : nil;
 }
 
@@ -351,17 +354,17 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 }
 
 - (void)dealloc {
-  [wb_path release];
+  [wb_url release];
   [wb_plugins release];
   [super dealloc];
 }
 
 #pragma mark -
-- (NSString *)path {
-  return wb_path;
+- (NSURL *)URL {
+  return wb_url;
 }
-- (void)setPath:(NSString *)aPath {
-  SPXSetterCopy(wb_path, [aPath stringByStandardizingPath]);
+- (void)setURL:(NSURL *)anURL {
+  SPXSetterRetain(wb_url, [anURL URLByStandardizingPath]);
 }
 
 - (WBPlugInDomain)name {
@@ -379,6 +382,23 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 }
 - (BOOL)containsPlugIn:(id)aPlugin {
   return [wb_plugins indexOfObjectIdenticalTo:aPlugin] != NSNotFound;
+}
+
+@end
+
+@implementation WBPlugInLoader (Deprecated)
+
+- (NSString *)buildInPath {
+  return [[self buildInURL] path];
+}
+
+- (NSString *)pathForDomain:(WBPlugInDomain)domain {
+  return [[self URLForDomain:domain] path];
+}
+
+- (id)loadPlugInAtPath:(NSString *)aPath {
+  NSBundle *bundle = [NSBundle bundleWithPath:aPath];
+  return bundle ? [self loadPlugIn:bundle] : nil;
 }
 
 @end

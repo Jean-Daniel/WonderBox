@@ -14,9 +14,14 @@
 #import <WonderBox/WBBase.h>
 
 WB_EXPORT
-OSType WBLSGetSignatureForPath(CFStringRef path);
+OSType WBLSGetSignatureForURL(CFURLRef url);
 WB_EXPORT
-CFStringRef WBLSCopyBundleIdentifierForPath(CFStringRef path);
+CFStringRef WBLSCopyBundleIdentifierForURL(CFURLRef url);
+
+WB_EXPORT
+OSType WBLSGetSignatureForPath(CFStringRef path) WB_DEPRECATED("URL API");
+WB_EXPORT
+CFStringRef WBLSCopyBundleIdentifierForPath(CFStringRef path) WB_DEPRECATED("URL API");
 
 WB_EXPORT
 CFURLRef WBLSCopyApplicationURLForSignature(OSType sign);
@@ -47,9 +52,9 @@ OSStatus WBLSLaunchApplicationWithBundleIdentifier(CFStringRef bundle, LSLaunchF
 #if defined(__OBJC__)
 
 WB_EXPORT
-NSString *WBLSFindApplicationForSignature(OSType signature);
+NSString *WBLSFindApplicationForSignature(OSType signature) WB_DEPRECATED("URL API");
 WB_EXPORT
-NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle);
+NSString *WBLSFindApplicationForBundleIdentifier(NSString *bundle) WB_DEPRECATED("URL API");
 
 #endif /* __OBJC__ */
 

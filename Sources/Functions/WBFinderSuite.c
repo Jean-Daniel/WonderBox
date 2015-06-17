@@ -11,6 +11,8 @@
 #include <WonderBox/WBFinderSuite.h>
 #include <WonderBox/WBAEFunctions.h>
 
+OSType WBAEFinderSignature = 'MACS';
+
 OSStatus WBAEFinderGetSelection(AEDescList *items) {
   OSStatus err = noErr;
   AEDesc theEvent = WBAEEmptyDesc();

@@ -96,19 +96,6 @@ bail:
   return err;
 }
 
-WB_INLINE
-OSStatus __WBGetUInt32Attr(const SecKeychainAttributeList *list, SecKeychainAttrType name, UInt32 *value) {
-  for (UInt32 idx = 0; idx < list->count; idx++) {
-    if (name == list->attr[idx].tag) {
-      if (list->attr[idx].length != sizeof(UInt32))
-        return -1;
-      if (value) *value = *(UInt32 *)list->attr[idx].data;
-      return noErr;
-    }
-  }
-  return errSecNoSuchAttr;
-}
-
 OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
   if (!label) return paramErr;
   *label = NULL;

@@ -13,7 +13,7 @@
 @class WBAlias;
 WB_OBJC_EXPORT
 @interface WBAliasedApplication : WBApplication <NSCoding, NSCopying> {
-  @private
+@private
   WBAlias *wb_alias;
 }
 

@@ -22,7 +22,7 @@ enum {
 
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
-  WBApplication *copy = NSAllocateObject([self class], 0, zone);
+  WBApplication *copy = [[[self class] allocWithZone:zone] init];
   copy->wb_name = [wb_name copyWithZone:zone];
   copy->wb_signature = wb_signature;
   copy->wb_identifier = [wb_identifier copyWithZone:zone];
