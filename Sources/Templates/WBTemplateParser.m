@@ -52,7 +52,7 @@ BOOL WBTemplateLogMessage = NO;
     tpimp.endTemplate = [wb_delegate respondsToSelector:@selector(templateParser:didEndTemplate:)] ? 1 : 0;
     tpimp.warning  = [wb_delegate respondsToSelector:@selector(templateParser:warningOccured:)] ? 1 : 0;
   } else {
-    bzero(&tpimp, sizeof(tpimp));
+    memset(&tpimp, 0, sizeof(tpimp));
   }
 }
 

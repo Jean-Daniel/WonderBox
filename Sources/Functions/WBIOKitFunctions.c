@@ -56,11 +56,9 @@ io_connect_t WBHIDGetEventDriver(void) {
 
 
 kern_return_t WBHIDPostAuxKey(const UInt8 auxKeyCode ) {
-  NXEventData event;
   kern_return_t kr;
+  NXEventData event = {};
   IOGPoint loc = { 0, 0 };
-
-  bzero(&event, sizeof(NXEventData));
 
   event.compound.subType = NX_SUBTYPE_AUX_CONTROL_BUTTONS;
   event.compound.misc.S[0] = auxKeyCode;
@@ -77,11 +75,9 @@ kern_return_t WBHIDPostAuxKey(const UInt8 auxKeyCode ) {
 }
 
 kern_return_t WBHIDPostSystemDefinedEvent(const UInt8 inSysKeyCode) {
-  NXEventData event;
   kern_return_t kr;
+  NXEventData event = {};
   IOGPoint loc = { 0, 0 };
-
-  bzero(&event, sizeof(NXEventData));
 
   event.compound.subType = inSysKeyCode;
 
