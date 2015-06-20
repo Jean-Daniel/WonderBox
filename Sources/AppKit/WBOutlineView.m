@@ -31,6 +31,10 @@
   return flag ? NSDragOperationEvery : NSDragOperationNone;
 }
 
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+  return context == NSDraggingContextWithinApplication ? NSDragOperationEvery : NSDragOperationNone;
+}
+
 - (BOOL)validateUserInterfaceItem:(id<NSValidatedUserInterfaceItem>)anItem {
   if ([anItem action] == @selector(delete:)) {
     if (SPXDelegateHandle([self delegate], canDeleteSelectionInOutlineView:))
