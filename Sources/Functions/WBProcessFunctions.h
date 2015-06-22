@@ -15,24 +15,27 @@
 
 #pragma mark Process
 WB_EXPORT
-OSType WBProcessGetSignature(ProcessSerialNumber *psn);
+OSType WBProcessGetSignature(ProcessSerialNumber *psn) WB_DEPRECATED("ProcessSerialNumber is obsolete");
 WB_EXPORT
-CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn);
+CFStringRef WBProcessCopyBundleIdentifier(ProcessSerialNumber *psn) WB_DEPRECATED("ProcessSerialNumber is obsolete");
 
 WB_EXPORT
-bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn);
+bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn) WB_DEPRECATED("ProcessSerialNumber is obsolete");
 
 WB_EXPORT
-OSType WBProcessGetFrontProcessSignature(void);
+OSType WBProcessGetFrontProcessSignature(void) WB_DEPRECATED("Signature is obsolete");
 WB_EXPORT
 CFStringRef WBProcessCopyFrontProcessBundleIdentifier(void);
 
 WB_EXPORT
-ProcessSerialNumber WBProcessGetProcessWithSignature(OSType type);
+pid_t WBProcessGetProcessIdentifierForBundleIdentifier(CFStringRef bundleId);
+
 WB_EXPORT
-ProcessSerialNumber WBProcessGetProcessWithBundleIdentifier(CFStringRef bundleId);
+ProcessSerialNumber WBProcessGetProcessWithSignature(OSType type) WB_DEPRECATED("ProcessSerialNumber is obsolete");
 WB_EXPORT
-ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFPropertyListRef value);
+ProcessSerialNumber WBProcessGetProcessWithBundleIdentifier(CFStringRef bundleId) WB_DEPRECATED("ProcessSerialNumber is obsolete");
+WB_EXPORT
+ProcessSerialNumber WBProcessGetProcessWithProperty(CFStringRef property, CFPropertyListRef value) WB_DEPRECATED("ProcessSerialNumber is obsolete");
 
 #pragma mark BSD
 WB_EXPORT

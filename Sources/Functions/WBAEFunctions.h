@@ -88,19 +88,16 @@ CFStringRef WBAEDescCopyDescription(const AEDesc *desc);
 #pragma mark -
 #pragma mark Find Target for AppleEvents
 /**************************** Find Target for AppleEvents ****************************/
-WB_EXPORT OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target);
 WB_EXPORT OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target);
-WB_EXPORT OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target);
+WB_EXPORT OSStatus WBAECreateTargetWithProcessIdentifier(pid_t pid, AEDesc *target);
 /* additional targets */
 WB_EXPORT OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target);
-WB_EXPORT OSStatus WBAECreateTargetWithKernelProcessID(pid_t pid, AEDesc *target);
 
 #pragma mark -
 #pragma mark Create Complex Desc
- // returns an alias desc as it's not safe to exchange fsref between processes
-WB_EXPORT OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc);
-WB_EXPORT OSStatus WBAECreateDescFromAlias(AliasHandle alias, AEDesc *desc);
-WB_EXPORT OSStatus WBAECreateDescFromCFString(CFStringRef string, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromURL(CFURLRef anURL, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromString(CFStringRef string, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromBookmarkData(CFDataRef bookmark, AEDesc *desc);
 
 #pragma mark Create Object Specifier
 WB_EXPORT OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDesc *keyData, AEDesc *container, AEDesc *specifier);
@@ -115,20 +112,6 @@ WB_EXPORT OSStatus WBAECreatePropertyObjectSpecifier(DescType desiredType, AEKey
 /**************************** Create AppleEvents ****************************/
 WB_EXPORT
 OSStatus WBAECreateEventWithTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
-/*!
- @function
- @abstract   Create an AppleEvent with target a "typeApplSignature" AEDesc.
- @param      targetSign The signature of target application.
- @param      eventClass The event class of the Apple event to create.
- @param      eventType The event ID of the Apple event to create.
- @param      pAppleEvent A pointer to an Apple event.
- On successful return, the new Apple event. On error, a null descriptor.
- If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
- function to dispose of the resulting Apple event after it has finished using it.
- @result     A result code.
- */
-WB_EXPORT
-OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
 
 /*!
  @function
@@ -144,10 +127,9 @@ OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass even
  */
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent);
+
 WB_EXPORT
-OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
-WB_EXPORT
-OSStatus WBAECreateEventWithTargetKernelProcessID(pid_t pid, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
+OSStatus WBAECreateEventWithTargetProcessIdentifier(pid_t pid, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
 
 WB_EXPORT
 OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent);
@@ -156,32 +138,24 @@ OSStatus WBAECreateEventWithTargetMachPort(mach_port_t port, AEEventClass eventC
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTarget(const AEDesc *target, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
                                        AEBuildError *outError, const char *paramsFmt, ...);
+
 WB_EXPORT
-OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+OSStatus WBAEBuildAppleEventWithTargetBundleID(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
                                                 AEBuildError *outError, const char *paramsFmt, ...);
+
 WB_EXPORT
-OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
-                                              AEBuildError *outError, const char *paramsFmt, ...);
+OSStatus WBAEBuildAppleEventWithTargetProcessIdentifier(pid_t pid, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                                        AEBuildError *outError, const char *paramsFmt, ...);
+
 #pragma mark -
 #pragma mark Add Param & Attr
 /**************************** Add Param & Attr ****************************/
-/*!
- @function
- @abstract   Add Subjet attribute with value <i>nil</i> and set <i>enumConsidsAndIgnores</i> to ignore all.
- @param      theEvent A pointer to the Apple event to add an attribute to.
- @result     A result code.
- */
-WB_EXPORT
-OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_DEPRECATED("Add subject and consideration explicitly instead");
-WB_EXPORT
-OSStatus WBAESetEventSubject(AppleEvent *theEvent, const AEDesc *subject);
-WB_EXPORT
-OSStatus WBAESetEventConsiderations(AppleEvent *theEvent, UInt32 flags);
 
 WB_INLINE
 OSStatus WBAEAddAEDesc(AppleEvent *theEvent, AEKeyword keyword, const AEDesc *desc) {
   return AEPutParamDesc(theEvent, keyword, desc);
 }
+
 WB_INLINE
 OSStatus WBAEAddParameter(AppleEvent *theEvent, AEKeyword keyword, DescType typeCode, const void *dataPtr, Size dataSize) {
   return AEPutParamPtr(theEvent, keyword, typeCode, dataPtr, dataSize);
@@ -254,18 +228,6 @@ OSStatus WBAEAddBoolean(AppleEvent *theEvent, AEKeyword keyword, Boolean flag) {
 }
 
 WB_INLINE
-OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
-  if (alias) {
-    return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
-  } else {
-    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
-  }
-}
-
-WB_EXPORT
-OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef);
-
-WB_INLINE
 OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, CFDataRef data) {
   if (data)
     return WBAEAddParameter(theEvent, keyword, type ? : typeData, CFDataGetBytePtr(data), CFDataGetLength(data));
@@ -273,21 +235,12 @@ OSStatus WBAEAddCFData(AppleEvent *theEvent, AEKeyword keyword, DescType type, C
     return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
 }
 
+WB_EXPORT
+OSStatus WBAEAddFileURL(AppleEvent *theEvent, AEKeyword keyword, CFURLRef url);
+
 WB_INLINE
-OSStatus WBAESetReplyPort(AppleEvent *theEvent, mach_port_t port) {
-  if (!MACH_PORT_VALID(port)) return paramErr;
-  return AEPutAttributePtr(theEvent, keyReplyPortAttr, typeMachPort, &port, sizeof(port));
-}
-/*!
- @function
- @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a rtype.
- @param      theEvent A pointer to the Apple event to add an attribute to.
- @param      requestType type you resquest in result.
- @result     A result code.
- */
-WB_INLINE
-OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
-  return WBAEAddParameter(theEvent, keyAERequestedType, typeType, &requestType, sizeof(DescType));
+OSStatus WBAEAddBookmarkData(AppleEvent *theEvent, AEKeyword keyword, CFDataRef data) {
+  return WBAEAddCFData(theEvent, keyword, typeBookmarkData, data);
 }
 
 /*!
@@ -299,7 +252,7 @@ OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAEAddCFStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, CFStringRef str);
+OSStatus WBAEAddStringAsUnicodeText(AppleEvent *theEvent, AEKeyword keyword, CFStringRef str);
 
 WB_EXPORT
 OSStatus WBAEAddIndexObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, DescType desiredType, CFIndex idx, AEDesc *container);
@@ -327,6 +280,34 @@ OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword,
  */
 WB_EXPORT
 OSStatus WBAEAddAEDescWithData(AppleEvent *theEvent, AEKeyword theAEKeyword, DescType typeCode, const void * dataPtr, Size dataSize);
+
+/*!
+ @function
+ @abstract   Add Subjet attribute with value <i>nil</i> and set <i>enumConsidsAndIgnores</i> to ignore all.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @result     A result code.
+ */
+WB_EXPORT
+OSStatus WBAESetEventSubject(AppleEvent *theEvent, const AEDesc *subject);
+WB_EXPORT
+OSStatus WBAESetEventConsiderations(AppleEvent *theEvent, UInt32 flags);
+
+WB_INLINE
+OSStatus WBAESetReplyPort(AppleEvent *theEvent, mach_port_t port) {
+  if (!MACH_PORT_VALID(port)) return paramErr;
+  return AEPutAttributePtr(theEvent, keyReplyPortAttr, typeMachPort, &port, sizeof(port));
+}
+/*!
+ @function
+ @abstract   Simple wrapper on <i>AEPutParamPtr</i> to add a rtype.
+ @param      theEvent A pointer to the Apple event to add an attribute to.
+ @param      requestType type you resquest in result.
+ @result     A result code.
+ */
+WB_INLINE
+OSStatus WBAESetRequestType(AppleEvent *theEvent, DescType requestType) {
+  return WBAEAddParameter(theEvent, keyAERequestedType, typeType, &requestType, sizeof(DescType));
+}
 
 #pragma mark -
 #pragma mark Send AppleEvents
@@ -483,7 +464,7 @@ OSStatus WBAESendEventReturnCFData(AppleEvent *pAppleEvent, DescType resultType,
  or the handler in the application that gets the event.
  */
 WB_EXPORT
-OSStatus WBAESendEventReturnCFString(AppleEvent* pAppleEvent, CFStringRef* string);
+OSStatus WBAESendEventReturnString(AppleEvent* pAppleEvent, CFStringRef* string);
 
 /*!
  @function
@@ -613,9 +594,9 @@ WB_EXPORT OSStatus WBAECopyAliasFromAppleEvent(const AppleEvent* anEvent, AEKeyw
 WB_EXPORT OSStatus WBAECopyNthAliasFromDescList(const AEDescList *aList, CFIndex idx, AliasHandle *pAlias);
 
 /* CF Types */
-WB_EXPORT OSStatus WBAECopyCFStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* pCFStringRef);
-WB_EXPORT OSStatus WBAECopyCFStringFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, CFStringRef* aString);
-WB_EXPORT OSStatus WBAECopyNthCFStringFromDescList(const AEDescList *aList, CFIndex idx, CFStringRef *aString);
+WB_EXPORT OSStatus WBAECopyStringFromDescriptor(const AEDesc* pAEDesc, CFStringRef* pCFStringRef);
+WB_EXPORT OSStatus WBAECopyStringFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, CFStringRef* aString);
+WB_EXPORT OSStatus WBAECopyNthStringFromDescList(const AEDescList *aList, CFIndex idx, CFStringRef *aString);
 
 WB_EXPORT OSStatus WBAECopyCFDataFromDescriptor(const AEDesc* aDesc, CFDataRef* data);
 WB_EXPORT OSStatus WBAECopyCFDataFromAppleEvent(const AppleEvent *anEvent, AEKeyword aKey, DescType aType, DescType *actualType, CFDataRef *data);
@@ -676,6 +657,53 @@ WB_EXPORT
 OSStatus WBAECopyHandleFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, DescType desiredType, Handle *aHandle);
 WB_EXPORT
 OSStatus WBAECopyNthHandleFromDescList(const AEDescList *aList, CFIndex idx, DescType aType, Handle *pHandle);
+
+// MARK: Deprecated Functions
+WB_EXPORT OSStatus WBAECreateTargetWithSignature(OSType sign, AEDesc *target) WB_DEPRECATED("Use Bundle Identifier");
+WB_EXPORT OSStatus WBAECreateTargetWithProcess(ProcessSerialNumber *psn, AEDesc *target) WB_DEPRECATED("Use Process Identifier");;
+
+WB_EXPORT OSStatus WBAECreateDescFromFSRef(const FSRef *aRef, AEDesc *desc) WB_DEPRECATED("Use URL");
+WB_EXPORT OSStatus WBAECreateDescFromAlias(AliasHandle alias, AEDesc *desc) WB_DEPRECATED("Use Bookmark");
+
+/*!
+ @function
+ @abstract   Create an AppleEvent with target a "typeApplSignature" AEDesc.
+ @param      targetSign The signature of target application.
+ @param      eventClass The event class of the Apple event to create.
+ @param      eventType The event ID of the Apple event to create.
+ @param      pAppleEvent A pointer to an Apple event.
+ On successful return, the new Apple event. On error, a null descriptor.
+ If the function returns successfully, your application should call the <i>AEDisposeDesc</i>
+ function to dispose of the resulting Apple event after it has finished using it.
+ @result     A result code.
+ */
+WB_EXPORT
+OSStatus WBAECreateEventWithTargetSignature(OSType targetSign, AEEventClass eventClass, AEEventID eventType, AppleEvent *pAppleEvent) WB_DEPRECATED("Use Bundle Identifier");
+
+WB_EXPORT
+OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType, AppleEvent *theEvent) WB_DEPRECATED("Use Process Identifier");
+
+WB_EXPORT
+OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                                AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Bundle Identifier");;
+WB_EXPORT
+OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                              AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Process Identifier");;
+
+WB_EXPORT
+OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_DEPRECATED("Add subject and consideration explicitly instead");
+
+WB_INLINE
+OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
+  if (alias) {
+    return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
+  } else {
+    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
+  }
+}
+
+WB_EXPORT
+OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) WB_DEPRECATED("Use Bookmark");
 
 __END_DECLS
 

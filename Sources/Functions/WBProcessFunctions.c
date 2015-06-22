@@ -85,6 +85,14 @@ ProcessSerialNumber WBProcessGetProcessWithSignature(OSType type) {
   return serialNumber;
 }
 
+pid_t WBProcessGetProcessIdentifierForBundleIdentifier(CFStringRef bundleId) {
+  pid_t pid = 0;
+  ProcessSerialNumber psn = WBProcessGetProcessWithBundleIdentifier(bundleId);
+  if (psn.lowLongOfPSN != kNoProcess && noErr == GetProcessPID(&psn, &pid))
+    return pid;
+  return 0;
+}
+
 ProcessSerialNumber WBProcessGetProcessWithBundleIdentifier(CFStringRef bundleId) {
   return WBProcessGetProcessWithProperty(kCFBundleIdentifierKey, bundleId);
 }
