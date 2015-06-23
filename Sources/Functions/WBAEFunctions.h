@@ -140,8 +140,8 @@ OSStatus WBAEBuildAppleEventWithTarget(const AEDesc *target, AEEventClass theCla
                                        AEBuildError *outError, const char *paramsFmt, ...);
 
 WB_EXPORT
-OSStatus WBAEBuildAppleEventWithTargetBundleID(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
-                                                AEBuildError *outError, const char *paramsFmt, ...);
+OSStatus WBAEBuildAppleEventWithTargetBundleID(CFStringRef bundleID, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                               AEBuildError *outError, const char *paramsFmt, ...);
 
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTargetProcessIdentifier(pid_t pid, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
@@ -471,14 +471,14 @@ OSStatus WBAESendEventReturnString(AppleEvent* pAppleEvent, CFStringRef* string)
  @abstract   Send a simple AppleEvent to an application.
  @discussion This methode is a convenient methode to send an AppleEvent to an Application, without param nor return value.
  It is very usefull to send a simple command action.
- @param      targetSign The Target Application signature.
+ @param      pid The Target Application pid.
  @param      eventClass Class of the event.
  @param      eventType Type of Event.
  @result     A result code.
  */
-WB_EXPORT OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType);
+WB_EXPORT OSStatus WBAESendSimpleEventTo(pid_t pid, AEEventClass eventClass, AEEventID eventType);
 WB_EXPORT OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventClass, AEEventID eventType);
-WB_EXPORT OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType);
+
 
 #pragma mark -
 #pragma mark Retreive AEDesc Data
@@ -685,10 +685,10 @@ OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass
 
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTargetSignature(OSType sign, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
-                                                AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Bundle Identifier");;
+                                                AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Bundle Identifier");
 WB_EXPORT
 OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
-                                              AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Process Identifier");;
+                                              AEBuildError *outError, const char *paramsFmt, ...) WB_DEPRECATED("Use Process Identifier");
 
 WB_EXPORT
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_DEPRECATED("Add subject and consideration explicitly instead");
@@ -704,6 +704,12 @@ OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias
 
 WB_EXPORT
 OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) WB_DEPRECATED("Use Bookmark");
+
+WB_EXPORT
+OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType) WB_DEPRECATED("Use Bundle Identifier");
+
+WB_EXPORT
+OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType) WB_DEPRECATED("Use Process Identifier");
 
 __END_DECLS
 

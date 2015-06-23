@@ -293,7 +293,7 @@ OSStatus WBAECreateEventWithTargetProcess(ProcessSerialNumber *psn, AEEventClass
   return err;
 }
 
-static
+static inline
 OSStatus _WBAECreateTargetByResolvingSignature(OSType targetSign, AEDesc *target) {
   ProcessSerialNumber psn = WBProcessGetProcessWithSignature(targetSign);
   if (psn.lowLongOfPSN == kNoProcess)
@@ -609,9 +609,10 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
 }
 
 #pragma mark Simple Events
-OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType) {
+template<class Ty, OSStatus(*CreateTarget)(Ty, AEEventClass, AEEventID, AppleEvent *)>
+static inline OSStatus _WBAESendSimpleEvent(Ty target, AEEventClass eventClass, AEEventID eventType) {
   WBAEDesc theEvent;
-  OSStatus err = WBAECreateEventWithTargetSignature(targetSign, eventClass, eventType, &theEvent);
+  OSStatus err = CreateTarget(target, eventClass, eventType, &theEvent);
   if (noErr == err) {
     //WBAESetStandardAttributes(&theEvent);
     err = WBAESendEventNoReply(&theEvent);
@@ -619,27 +620,23 @@ OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEvent
   return err;
 }
 
+OSStatus WBAESendSimpleEvent(OSType targetSign, AEEventClass eventClass, AEEventID eventType) {
+  return _WBAESendSimpleEvent<OSType, WBAECreateEventWithTargetSignature>(targetSign, eventClass, eventType);
+}
+
+OSStatus WBAESendSimpleEventTo(pid_t pid, AEEventClass eventClass, AEEventID eventType) {
+  return _WBAESendSimpleEvent<pid_t, WBAECreateEventWithTargetProcessIdentifier>(pid, eventClass, eventType);
+}
+
 OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventClass, AEEventID eventType) {
-  WBAEDesc theEvent;
-  OSStatus err = WBAECreateEventWithTargetBundleID(bundleID, eventClass, eventType, &theEvent);
-  if (noErr == err) {
-    //WBAESetStandardAttributes(&theEvent);
-    err = WBAESendEventNoReply(&theEvent);
-  }
-  return err;
+  return _WBAESendSimpleEvent<CFStringRef, WBAECreateEventWithTargetBundleID>(bundleID, eventClass, eventType);
 }
 
 OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType) {
   if (!psn)
     return paramErr;
 
-  WBAEDesc theEvent;
-  OSStatus err = WBAECreateEventWithTargetProcess(psn, eventClass, eventType, &theEvent);
-  if (noErr == err) {
-    //WBAESetStandardAttributes(&theEvent);
-    err = WBAESendEventNoReply(&theEvent);
-  }
-  return err;
+  return _WBAESendSimpleEvent<ProcessSerialNumber *, WBAECreateEventWithTargetProcess>(psn, eventClass, eventType);
 }
 
 #pragma mark Primitive Reply
