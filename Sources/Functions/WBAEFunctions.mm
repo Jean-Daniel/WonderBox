@@ -536,7 +536,7 @@ OSStatus WBAEAddIndexObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, De
 }
 
 OSStatus WBAEAddUniqueIDObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, DescType desiredType, SInt32 uid, AEDesc *container) {
-  if (!theEvent || !container)
+  if (!theEvent)
     return paramErr;
 
   WBAEDesc specifier;
@@ -548,7 +548,7 @@ OSStatus WBAEAddUniqueIDObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword,
 }
 
 OSStatus WBAEAddNameObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, DescType desiredType, CFStringRef name, AEDesc *container) {
-  if (!theEvent || !container)
+  if (!theEvent)
     return paramErr;
 
   WBAEDesc specifier;
@@ -560,7 +560,7 @@ OSStatus WBAEAddNameObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, Des
 }
 
 OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword, DescType desiredType, AEKeyword property, AEDesc *container) {
-  if (!theEvent || !container)
+  if (!theEvent)
     return paramErr;
 
   WBAEDesc specifier;
