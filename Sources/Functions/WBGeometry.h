@@ -133,12 +133,12 @@ CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
 
 WB_INLINE
 CGFloat WBWindowUserSpaceScaleFactor(NSWindow *window) {
-  return window ? [window userSpaceScaleFactor] : 1;
+  return window ? [window backingScaleFactor] : 1;
 }
 
 WB_INLINE
 CGFloat WBScreenUserSpaceScaleFactor(NSScreen *screen) {
-  return screen ? [screen userSpaceScaleFactor] : 1;
+  return screen ? [screen backingScaleFactor] : 1;
 }
 
 #endif

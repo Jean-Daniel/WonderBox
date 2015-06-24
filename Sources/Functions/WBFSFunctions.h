@@ -25,13 +25,19 @@ enum {
   kIsExtensionHidden = 0x0010,
 };
 
-WB_EXPORT OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder);
-WB_EXPORT OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible);
-WB_EXPORT OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon);
-WB_EXPORT OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot);
+/*!
+ @return true if both URL points to the same file.
+ */
+WB_EXPORT
+bool WBFSCompareURLs(CFURLRef url1, CFURLRef url2);
 
-WB_EXPORT OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *path);
-WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory);
+WB_EXPORT OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder) WB_DEPRECATED("Use URL API");
+WB_EXPORT OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible) WB_DEPRECATED("Use URL API");
+WB_EXPORT OSStatus WBFSRefHasCustomIcon(const FSRef *objRef, Boolean *hasIcon) WB_DEPRECATED("Use URL API");
+WB_EXPORT OSStatus WBFSRefIsRootDirectory(const FSRef *objRef, Boolean *isRoot) WB_DEPRECATED("Use URL API");
+
+WB_EXPORT OSStatus WBFSRefCopyFileSystemPath(const FSRef *ref, CFStringRef *path) WB_DEPRECATED("Use URL API");
+WB_EXPORT OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options, FSRef *ref, Boolean *isDirectory) WB_DEPRECATED("Use URL API");
 
 // same as FSGetHFSUniStrFromString, but convert ':' into '/'
 WB_EXPORT OSStatus WBFSGetHFSUniStrFromString(CFStringRef string, HFSUniStr255 *filename);
@@ -60,15 +66,15 @@ WB_EXPORT OSStatus WBFSCopyFolderPathForURL(OSType folderType, CFURLRef anURL, b
 /* Format a size and return buffer used length */
 WB_EXPORT ssize_t WBFSFormatSize(UInt64 size, CFIndex precision, const char *unit, char *buffer, size_t length);
 
-WB_EXPORT OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder);
+WB_EXPORT OSStatus WBFSDeleteEmptyFolder(const FSRef *aFolder) WB_DEPRECATED("Use URL API");
 WB_EXPORT OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL);
 
 /*!
  @function
  @param willDeleteObject return <code>false</code> to abort operation, <code>true</code> to continue.
  */
-WB_EXPORT OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt);
-WB_EXPORT OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt);
+WB_EXPORT OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) WB_DEPRECATED("Use NSWorkspace async API");
+WB_EXPORT OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) WB_DEPRECATED("Use NSWorkspace async API");
 /* delete an object using the posix convention (ignore busy files), and unlock it if needed */
 WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
 
@@ -92,15 +98,15 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef alias, CFStringRef 
 WB_EXPORT
 OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, UInt32 *files, UInt32 *folders);
 WB_EXPORT
-OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *files, UInt32 *folders);
+OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *files, UInt32 *folders) WB_DEPRECATED("Use URL API");
 
 WB_EXPORT
 OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
-                           FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory);
+                           FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory) WB_DEPRECATED("Use URL API");
 
 /* OSTypes */
 WB_EXPORT
-OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator);
+OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) WB_DEPRECATED("Use URL API");
 WB_EXPORT
 OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator);
 WB_EXPORT
@@ -110,17 +116,16 @@ OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *cre
 
 /* pass kWBFSOSTypeIgnore to keep previous value */
 WB_EXPORT
-OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator);
+OSStatus WBFSSetTypeAndCreator(const FSRef *ref, OSType type, OSType creator) WB_DEPRECATED("Creator is obsolete");
 WB_EXPORT
-OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator);
+OSStatus WBFSSetTypeAndCreatorAtURL(CFURLRef url, OSType type, OSType creator) WB_DEPRECATED("Creator is obsolete");
 WB_EXPORT
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_DEPRECATED("WBFSSetTypeAndCreatorAtURL");
 
 #if defined(__OBJC__)
 
 @interface NSString (WBFileSystem)
-+ (NSString *)stringFromFSRef:(const FSRef *)ref;
-- (NSString *)initFromFSRef:(const FSRef *)ref;
++ (NSString *)stringFromFSRef:(const FSRef *)ref WB_DEPRECATED("Use URL API");
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length;
 
@@ -128,8 +133,8 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 - (const char *)safeFileSystemRepresentation;
 
 /* traverse link by default */
-- (BOOL)getFSRef:(FSRef *)ref;
-- (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag;
+- (BOOL)getFSRef:(FSRef *)ref WB_DEPRECATED("Use URL API");
+- (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag WB_DEPRECATED("Use URL API");
 
 @end
 

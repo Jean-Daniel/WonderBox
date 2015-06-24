@@ -24,17 +24,6 @@
   return nil;
 }
 
-- (NSString *)initFromFSRef:(const FSRef *)ref {
-  /*
-  Is it safe to release the string cluster placeholder ?
-   [self release];
-   */
-  CFStringRef str = NULL;
-  if (noErr == WBFSRefCopyFileSystemPath(ref, &str))
-    return SPXCFStringBridgingRelease(str);
-  return nil;
-}
-
 + (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length {
   return [[NSFileManager defaultManager] stringWithFileSystemRepresentation:path length:length];
 }
@@ -95,6 +84,21 @@
 
 #pragma mark -
 #pragma mark File System
+
+bool WBFSCompareURLs(CFURLRef url1, CFURLRef url2) {
+  if (!url1)
+    return !url2;
+  if (!url2)
+    return false;
+
+  CFTypeRef fsref1, fsref2;
+  if (CFURLCopyResourcePropertyForKey(url1, kCFURLFileResourceIdentifierKey, &fsref1, NULL) &&
+      CFURLCopyResourcePropertyForKey(url2, kCFURLFileResourceIdentifierKey, &fsref2, NULL))
+    return CFEqual(fsref1, fsref2);
+  // Something went wrong
+  return false;
+}
+
 static
 OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path, void *ctxt), void *ctxt) {
   /* facility to get a path from a fsref */

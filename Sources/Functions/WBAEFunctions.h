@@ -88,6 +88,9 @@ CFStringRef WBAEDescCopyDescription(const AEDesc *desc);
 #pragma mark -
 #pragma mark Find Target for AppleEvents
 /**************************** Find Target for AppleEvents ****************************/
+WB_EXPORT const AEDesc *WBAESystemTarget();
+WB_EXPORT const AEDesc *WBAECurrentProcessTarget();
+
 WB_EXPORT OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target);
 WB_EXPORT OSStatus WBAECreateTargetWithProcessIdentifier(pid_t pid, AEDesc *target);
 /* additional targets */
@@ -330,7 +333,7 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAESendEventNoReply(AppleEvent* pAppleEvent);
+OSStatus WBAESendEventNoReply(const AppleEvent* pAppleEvent);
 
 /*!
  @function
@@ -478,7 +481,7 @@ OSStatus WBAESendEventReturnString(AppleEvent* pAppleEvent, CFStringRef* string)
  */
 WB_EXPORT OSStatus WBAESendSimpleEventTo(pid_t pid, AEEventClass eventClass, AEEventID eventType);
 WB_EXPORT OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventClass, AEEventID eventType);
-
+WB_EXPORT OSStatus WBAESendSimpleEventToTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType);
 
 #pragma mark -
 #pragma mark Retreive AEDesc Data

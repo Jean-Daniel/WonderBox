@@ -128,6 +128,26 @@ OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target) {
   return err;
 }
 
+const AEDesc *WBAESystemTarget() {
+  static AEDesc system;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    static ProcessSerialNumber psn = { 0, kSystemProcess };
+    AECreateDesc(typeProcessSerialNumber, &psn, sizeof(psn), &system);
+  });
+  return &system;
+}
+
+const AEDesc *WBAECurrentProcessTarget() {
+  static AEDesc current;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    static ProcessSerialNumber psn = { 0, kCurrentProcess };
+    AECreateDesc(typeProcessSerialNumber, &psn, sizeof(psn), &current);
+  });
+  return &current;
+}
+
 OSStatus WBAECreateTargetWithProcessIdentifier(pid_t pid, AEDesc *target) {
   if (!pid || !target) return paramErr;
   return AECreateDesc(typeKernelProcessID, &pid, sizeof(pid), target);
@@ -561,7 +581,7 @@ OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias
 
 #pragma mark -
 #pragma mark Send AppleEvents
-OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
+OSStatus WBAESendEventNoReply(const AppleEvent* theEvent) {
   if (!theEvent)
     return paramErr;
 
@@ -617,10 +637,10 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
 }
 
 #pragma mark Simple Events
-template<class Ty, OSStatus(*CreateTarget)(Ty, AEEventClass, AEEventID, AppleEvent *)>
+template<class Ty, OSStatus(*CreateEvent)(Ty, AEEventClass, AEEventID, AppleEvent *)>
 static inline OSStatus _WBAESendSimpleEvent(Ty target, AEEventClass eventClass, AEEventID eventType) {
   WBAEDesc theEvent;
-  OSStatus err = CreateTarget(target, eventClass, eventType, &theEvent);
+  OSStatus err = CreateEvent(target, eventClass, eventType, &theEvent);
   if (noErr == err) {
     //WBAESetStandardAttributes(&theEvent);
     err = WBAESendEventNoReply(&theEvent);
@@ -638,6 +658,10 @@ OSStatus WBAESendSimpleEventTo(pid_t pid, AEEventClass eventClass, AEEventID eve
 
 OSStatus WBAESendSimpleEventToBundle(CFStringRef bundleID, AEEventClass eventClass, AEEventID eventType) {
   return _WBAESendSimpleEvent<CFStringRef, WBAECreateEventWithTargetBundleID>(bundleID, eventClass, eventType);
+}
+
+OSStatus WBAESendSimpleEventToTarget(const AEDesc *target, AEEventClass eventClass, AEEventID eventType) {
+  return _WBAESendSimpleEvent<const AEDesc *, WBAECreateEventWithTarget>(target, eventClass, eventType);
 }
 
 OSStatus WBAESendSimpleEventToProcess(ProcessSerialNumber *psn, AEEventClass eventClass, AEEventID eventType) {
