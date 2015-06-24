@@ -18,7 +18,12 @@ enum {
   kWBUndefinedSignature = kUnknownType // '????'
 };
 
-@implementation WBApplication
+@implementation WBApplication {
+@private
+  NSString *wb_name;
+  OSType wb_signature;
+  NSString *wb_identifier;
+}
 
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {

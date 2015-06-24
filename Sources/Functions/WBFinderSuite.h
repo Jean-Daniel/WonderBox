@@ -16,7 +16,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 
 WB_EXPORT
-OSType WBAEFinderSignature;
+CFStringRef const kWBAEFinderBundleIdentifier;
 
 /*!
  @function
@@ -49,7 +49,7 @@ OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFInde
  @result     A result code.
  */
 WB_EXPORT
-OSStatus WBAEFinderGetCurrentFolder(FSRef *folder);
+OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) WB_DEPRECATED("URL");
 
 /*!
  @function
@@ -63,13 +63,13 @@ CFURLRef WBAEFinderCopyCurrentFolderURL(void);
  @abstract  Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
  */
 WB_EXPORT
-CFStringRef WBAEFinderCopyCurrentFolderPath(void);
+CFStringRef WBAEFinderCopyCurrentFolderPath(void) WB_DEPRECATED("URL");
 
 #pragma mark Sync
 WB_EXPORT
 OSStatus WBAEFinderSyncItem(const AEDesc *item);
 WB_EXPORT
-OSStatus WBAEFinderSyncFSRef(const FSRef *aRef);
+OSStatus WBAEFinderSyncFSRef(const FSRef *aRef) WB_DEPRECATED("URL");
 WB_EXPORT
 OSStatus WBAEFinderSyncItemAtURL(CFURLRef url);
 
@@ -77,14 +77,14 @@ OSStatus WBAEFinderSyncItemAtURL(CFURLRef url);
 WB_EXPORT
 OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate);
 WB_EXPORT
-OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate);
+OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate) WB_DEPRECATED("URL");
 WB_EXPORT
 OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate);
 
 #pragma mark Coerce
 WB_EXPORT
-OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file);
+OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) WB_DEPRECATED("URL");
 WB_EXPORT
-OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias);
+OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) WB_DEPRECATED("Bookmark");
 
 #endif /* __WB_FINDER_SUITE_H */

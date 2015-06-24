@@ -693,14 +693,8 @@ OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventC
 WB_EXPORT
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) WB_DEPRECATED("Add subject and consideration explicitly instead");
 
-WB_INLINE
-OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
-  if (alias) {
-    return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
-  } else {
-    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
-  }
-}
+WB_EXPORT
+OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) WB_DEPRECATED("Use Bookmark");
 
 WB_EXPORT
 OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef) WB_DEPRECATED("Use Bookmark");

@@ -11,13 +11,13 @@
 #include <WonderBox/WBFinderSuite.h>
 #include <WonderBox/WBAEFunctions.h>
 
-OSType WBAEFinderSignature = 'MACS';
+CFStringRef const kWBAEFinderBundleIdentifier = CFSTR("com.apple.finder");
 
 OSStatus WBAEFinderGetSelection(AEDescList *items) {
   OSStatus err = noErr;
   AEDesc theEvent = WBAEEmptyDesc();
 
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
+  err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAECoreSuite, kAEGetData, &theEvent);
   if (noErr == err)
     err = WBAEAddPropertyObjectSpecifier(&theEvent, keyDirectObject, typeAEList, pSelection, NULL);
 
@@ -77,7 +77,7 @@ OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) {
   if (typeObjectSpecifier != pAEDesc->descriptorType)
     return paramErr;  // this has to be an object specifier
 
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
+  err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAECoreSuite, kAEGetData, &theEvent);
 
   if (noErr == err) {
     err = AEPutParamDesc(&theEvent, keyDirectObject, pAEDesc);
@@ -111,7 +111,7 @@ OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) {
   if (typeObjectSpecifier != pAEDesc->descriptorType)
     return paramErr;  // this has to be an object specifier
 
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
+  err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAECoreSuite, kAEGetData, &theEvent);
 
   if (noErr == err)
     err = WBAEAddAEDesc(&theEvent, keyDirectObject, pAEDesc);
@@ -145,7 +145,7 @@ OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) {
   AEDesc theEvent = WBAEEmptyDesc();
   AEDesc result = WBAEEmptyDesc();
 
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAECoreSuite, kAEGetData, &theEvent);
+  err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAECoreSuite, kAEGetData, &theEvent);
   if (noErr == err)
     err = WBAEAddPropertyObjectSpecifier(&theEvent, keyDirectObject, 'cfol', pInsertionLoc, NULL);
 
@@ -186,10 +186,10 @@ CFStringRef WBAEFinderCopyCurrentFolderPath(void) {
 #pragma mark Sync
 OSStatus WBAEFinderSyncItem(const AEDesc *item) {
   AppleEvent aevt = WBAEEmptyDesc();
-  OSStatus err = WBAECreateEventWithTargetSignature(WBAEFinderSignature,
-                                                    'fndr', /* kAEFinderSuite, */
-                                                    'fupd', /* kAESync, */
-                                                    &aevt);
+  OSStatus err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier,
+                                                   'fndr', /* kAEFinderSuite, */
+                                                   'fupd', /* kAESync, */
+                                                   &aevt);
   require_noerr(err, dispose);
 
   err = WBAEAddAEDesc(&aevt, keyDirectObject, item);
@@ -236,11 +236,11 @@ OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate) {
   AppleEvent aevt = WBAEEmptyDesc();
 
   if (activate) {
-    err = WBAESendSimpleEvent(WBAEFinderSignature, kAEMiscStandards, kAEActivate);
+    err = WBAESendSimpleEventToBundle(kWBAEFinderBundleIdentifier, kAEMiscStandards, kAEActivate);
     require_noerr(err, dispose);
   }
 
-  err = WBAECreateEventWithTargetSignature(WBAEFinderSignature, kAEMiscStandards, kAEMakeObjectsVisible, &aevt);
+  err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAEMiscStandards, kAEMakeObjectsVisible, &aevt);
   require_noerr(err, dispose);
 
   err = WBAEAddAEDesc(&aevt, keyDirectObject, item);

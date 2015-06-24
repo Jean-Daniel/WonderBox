@@ -21,21 +21,16 @@
     @abstract Object representation of an Application. Use application signature or Bundle Identifier as identifier.
 */
 WB_OBJC_EXPORT
-@interface WBApplication : NSObject <NSCoding, NSCopying> {
-  @private
-  NSString *wb_name;
-  OSType wb_signature;
-  NSString *wb_identifier;
-}
+@interface WBApplication : NSObject <NSCoding, NSCopying>
 
 + (NSArray *)runningApplication:(BOOL)onlyVisible;
 
-+ (id)applicationWithPath:(NSString *)path;
-+ (id)applicationWithProcessSerialNumber:(ProcessSerialNumber *)psn;
++ (instancetype)applicationWithPath:(NSString *)path;
++ (instancetype)applicationWithProcessSerialNumber:(ProcessSerialNumber *)psn;
 
-+ (id)applicationWithName:(NSString *)name;
-+ (id)applicationWithName:(NSString *)name signature:(OSType)aSignature;
-+ (id)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
++ (instancetype)applicationWithName:(NSString *)name;
++ (instancetype)applicationWithName:(NSString *)name signature:(OSType)aSignature;
++ (instancetype)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
 
 /*!
   @method
@@ -43,16 +38,15 @@ WB_OBJC_EXPORT
  @param      path An application path.
  @result     Returns a new WBApplication, or nil of path is invalid or if file at path is not an application.
  */
-- (id)initWithPath:(NSString *)path;
-- (id)initWithProcessSerialNumber:(ProcessSerialNumber *)psn;
+- (instancetype)initWithPath:(NSString *)path;
+- (instancetype)initWithProcessSerialNumber:(ProcessSerialNumber *)psn;
 
-- (id)initWithName:(NSString *)name;
-- (id)initWithName:(NSString *)name signature:(OSType)aSignature;
-- (id)initWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
-- (id)initWithName:(NSString *)name signature:(OSType)aSignature bundleIdentifier:(NSString *)anIdentifier;
+- (instancetype)initWithName:(NSString *)name;
+- (instancetype)initWithName:(NSString *)name signature:(OSType)aSignature;
+- (instancetype)initWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
+- (instancetype)initWithName:(NSString *)name signature:(OSType)aSignature bundleIdentifier:(NSString *)anIdentifier;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
+@property(nonatomic, copy) NSString *name;
 
 - (OSType)signature;
 - (void)setSignature:(OSType)aSignature; // invalidate bundle identifier

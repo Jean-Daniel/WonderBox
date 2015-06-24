@@ -551,6 +551,14 @@ OSStatus WBAEAddPropertyObjectSpecifier(AppleEvent *theEvent, AEKeyword keyword,
   return err;
 }
 
+OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias) {
+  if (alias) {
+    return WBAEAddParameter(theEvent, keyword, typeAlias, *alias, GetAliasSize(alias));
+  } else {
+    return WBAEAddParameter(theEvent, keyword, typeNull, NULL, 0);
+  }
+}
+
 #pragma mark -
 #pragma mark Send AppleEvents
 OSStatus WBAESendEventNoReply(AppleEvent* theEvent) {
