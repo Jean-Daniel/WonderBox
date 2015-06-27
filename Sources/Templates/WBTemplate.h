@@ -36,6 +36,7 @@ WB_OBJC_EXPORT
 }
 
 - (id)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding;
+- (id)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding;
 
 - (NSStringEncoding)encoding;
 - (void)setStringEncoding:(NSStringEncoding)encoding;
@@ -60,6 +61,7 @@ WB_OBJC_EXPORT
 
 - (NSString *)stringRepresentation;
 - (BOOL)writeToFile:(NSString *)file atomically:(BOOL)flag andReset:(BOOL)reset;
+- (BOOL)writeToURL:(NSURL *)Url atomically:(BOOL)flag andReset:(BOOL)reset;
 
 - (BOOL)load;
 - (BOOL)loadFile:(NSString *)aFile;

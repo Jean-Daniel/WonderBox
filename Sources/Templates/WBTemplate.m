@@ -57,6 +57,10 @@
   return self;
 }
 
+- (id)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding {
+  return [self initWithContentsOfFile:anURL.path encoding:encoding];
+}
+
 - (NSStringEncoding)encoding {
   return wb_encoding;
 }
@@ -331,25 +335,18 @@
 }
 
 - (BOOL)writeToFile:(NSString *)file atomically:(BOOL)flag andReset:(BOOL)reset {
-  id pool = [[NSAutoreleasePool alloc] init];
-  NSString *result = [self stringRepresentation];
+  @autoreleasepool {
+    NSString *result = [self stringRepresentation];
 
-  BOOL ok = NO;
-  if ([result respondsToSelector:@selector(writeToFile:atomically:encoding:error:)]) {
-    ok = [result writeToFile:file atomically:flag encoding:wb_encoding error:nil];
-  } else {
-    CFDataRef data = CFStringCreateExternalRepresentation(kCFAllocatorDefault,
-                                                          (CFStringRef)result,
-                                                          CFStringConvertNSStringEncodingToEncoding(wb_encoding),
-                                                          '?');
-    if (data) {
-      ok = [(id)data writeToFile:file atomically:flag];
-      CFRelease(data);
-    }
+    BOOL ok = [result writeToFile:file atomically:flag encoding:wb_encoding error:nil];
+    if (reset)
+      [self reset];
+    return ok;
   }
-  if (reset) [self reset];
-  [pool release];
-  return ok;
+}
+
+- (BOOL)writeToURL:(NSURL *)url atomically:(BOOL)flag andReset:(BOOL)reset {
+  return [self writeToFile:url.path atomically:flag andReset:reset];
 }
 
 #pragma mark -

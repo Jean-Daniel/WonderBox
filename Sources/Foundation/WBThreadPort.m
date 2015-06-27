@@ -154,15 +154,14 @@ static
 void _WBThreadReceivePortDestructor(void *ptr) {
   WBThreadPort *port = (__bridge_transfer WBThreadPort *)ptr;
   if (port) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    /* invalidate main thread */
-    if (port == sMainThread)
-      sMainThread = nil;
+    @autoreleasepool {
+      /* invalidate main thread */
+      if (port == sMainThread)
+        sMainThread = nil;
 
-    [port invalidate];
-    spx_release(port);
-
-    [pool drain];
+      [port invalidate];
+      spx_release(port);
+    }
   }
 }
 
@@ -426,14 +425,14 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
   id error = nil;
   NSInvocation *invocation = (__bridge_transfer NSInvocation *)(void *)msg->invocation;
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  @try {
-    [invocation invoke];
-  } @catch (id exception) {
-    // Note: we are in a local autorelease pool => must retain error
-    error = spx_retain(exception);
+  @autoreleasepool {
+    @try {
+      [invocation invoke];
+    } @catch (id exception) {
+      // Note: we are in a local autorelease pool => must retain error
+      error = spx_retain(exception);
+    }
   }
-  [pool drain];
   if (!msg->async) {
     wbreply_msg reply_msg = {};
 
@@ -515,17 +514,16 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 @synthesize condition = wb_condition;
 
 + (void)wb_ThreadPortMain:(_WBThreadArgument *)arg {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [arg.condition lock];
-  arg.port = [WBThreadPort currentPort];
-  [arg.condition signal];
-  [arg.condition unlock];
+  @autoreleasepool {
+    [arg.condition lock];
+    arg.port = [WBThreadPort currentPort];
+    [arg.condition signal];
+    [arg.condition unlock];
 
-  id target = arg.target;
-  SEL action = arg.action;
-  id argument = arg.argument;
-
-  [pool drain];
+    id target = arg.target;
+    SEL action = arg.action;
+    id argument = arg.argument;    
+  }
 
   [target performSelector:action withObject:argument];
 }
