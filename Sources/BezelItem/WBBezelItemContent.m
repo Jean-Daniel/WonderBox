@@ -11,6 +11,8 @@
 #import <WonderBox/WBBezelItemContent.h>
 #import <WonderBox/WBClassCluster.h>
 
+#import <Cocoa/Cocoa.h>
+
 WBClassCluster(WBBezelItemContent)
 
 @interface WBBezelItemCustomView : WBBezelItemContent {

@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 @protocol WBOutlineViewDelegate;
 
 WB_OBJC_EXPORT

@@ -81,7 +81,7 @@
 - (void)dealloc {
   [wb_child release];
   [wb_sibling release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (NSString *)description {
@@ -443,7 +443,7 @@
 
 - (void)dealloc {
   [wb_root release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (id)nextObject {

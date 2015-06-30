@@ -51,6 +51,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#include <sys/cdefs.h>
+
 __BEGIN_DECLS
 
 #include <OpenGL/OpenGL.h>

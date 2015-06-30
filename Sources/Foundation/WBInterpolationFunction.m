@@ -99,7 +99,7 @@ WBClassCluster(WBInterpolationFunction)
 - (void)dealloc {
   if (wb_ctxt.releaseInfo)
     wb_ctxt.releaseInfo(wb_ctxt.info);
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (CGFloat)valueForInput:(CGFloat)input {

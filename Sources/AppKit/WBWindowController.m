@@ -59,7 +59,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:NSWindowWillCloseNotification
                                                 object:nil];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

@@ -21,75 +21,38 @@
 	@abstract   Selectors are used to set icon family elements from an Image.<br />
 				Read <em>setIconFamilyElements:fromImage:</em> documentation.
 */
-enum {
-  kWBSelectorARGB512PixelData		= 0x80000000,
-  /* 256 * 256 Variant */
-  kWBSelectorARGB256PixelData		= 0x40000000,
-  /* Thumbnails */
-  kWBSelectorThumbnail32BitData		= 0x20000000,
-  kWBSelectorThumbnail8BitMask		= 0x10000000,
-  /* Huge */
-  kWBSelectorHuge32BitData			= 0x00000001,
-  kWBSelectorHuge8BitData			= 0x00000002,
-  kWBSelectorHuge4BitData			= 0x00000004,
-  kWBSelectorHuge1BitData			= 0x00000008,
-  kWBSelectorHuge8BitMask			= 0x00000010,
-  kWBSelectorHuge1BitMask			= 0x00000020,
-  /* Large */
-  kWBSelectorLarge32BitData			= 0x00000100,
-  kWBSelectorLarge8BitData			= 0x00000200,
-  kWBSelectorLarge4BitData			= 0x00000400,
-  kWBSelectorLarge1BitData			= 0x00000800,
-  kWBSelectorLarge8BitMask			= 0x00001000,
-  kWBSelectorLarge1BitMask			= 0x00002000,
-  /* Small */
-  kWBSelectorSmall32BitData			= 0x00010000,
-  kWBSelectorSmall8BitData			= 0x00020000,
-  kWBSelectorSmall4BitData			= 0x00040000,
-  kWBSelectorSmall1BitData			= 0x00080000,
-  kWBSelectorSmall8BitMask			= 0x00100000,
-  kWBSelectorSmall1BitMask			= 0x00200000,
-  /* Mini */
-  kWBSelectorMini8BitData			= 0x01000000,
-  kWBSelectorMini4BitData			= 0x02000000,
-  kWBSelectorMini1BitData			= 0x04000000,
-  kWBSelectorMini1BitMask			= 0x08000000,
-  /* All Family */
-  kWBSelectorAllThumbnail			= 0x30000000,
-  kWBSelectorAllHuge				= 0x000000ff,
-  kWBSelectorAllLarge				= 0x0000ff00,
-  kWBSelectorAllSmall				= 0x00ff0000,
-  kWBSelectorAllMini				= 0x0f000000,
-  /* All New Rsrc */
-  kWBSelectorAllNewThumbnails		= kWBSelectorAllThumbnail,
-  kWBSelectorAllNewHuge				= kWBSelectorHuge32BitData | kWBSelectorHuge8BitMask,
-  kWBSelectorAllNewLarge			= kWBSelectorLarge32BitData | kWBSelectorLarge8BitMask,
-  kWBSelectorAllNewSmall			= kWBSelectorSmall32BitData | kWBSelectorSmall8BitMask,
-  kWBSelectorAllNewMini				= 0x00000000,
-  kWBSelectorAllNewAvailable		= kWBSelectorAllNewThumbnails | kWBSelectorAllNewHuge | kWBSelectorAllNewLarge | kWBSelectorAllNewSmall | kWBSelectorAllNewMini,
-  /* All Old Rsrc */
-  kWBSelectorAllOldHuge				= kWBSelectorAllHuge & ~kWBSelectorAllNewHuge,
-  kWBSelectorAllOldLarge			= kWBSelectorAllLarge & ~kWBSelectorAllNewLarge,
-  kWBSelectorAllOldSmall			= kWBSelectorAllSmall & ~kWBSelectorAllNewSmall,
-  kWBSelectorAllOldMini				= kWBSelectorAllMini & ~kWBSelectorAllNewMini,
-  kWBSelectorAllOldAvailable		= kWBSelectorAllOldHuge | kWBSelectorAllOldLarge | kWBSelectorAllOldSmall | kWBSelectorAllOldMini,
-  /* All Type */
-  kWBSelectorAll32BitData			= kWBSelectorARGB512PixelData | kWBSelectorARGB256PixelData | kWBSelectorThumbnail32BitData | kWBSelectorHuge32BitData | kWBSelectorLarge32BitData | kWBSelectorSmall32BitData,
-  kWBSelectorAll8BitData			= kWBSelectorHuge8BitData | kWBSelectorLarge8BitData | kWBSelectorSmall8BitData | kWBSelectorMini8BitData,
-  kWBSelectorAll4BitData			= kWBSelectorHuge4BitData | kWBSelectorLarge4BitData | kWBSelectorSmall4BitData | kWBSelectorMini4BitData,
-  kWBSelectorAll1BitData			= kWBSelectorHuge1BitData | kWBSelectorLarge1BitData | kWBSelectorSmall1BitData | kWBSelectorMini1BitData,
-  kWBSelectorAll8BitMask			= kWBSelectorThumbnail8BitMask | kWBSelectorHuge8BitMask | kWBSelectorLarge8BitMask | kWBSelectorSmall8BitMask,
-  kWBSelectorAll1BitMask			= kWBSelectorHuge1BitMask | kWBSelectorLarge1BitMask | kWBSelectorSmall1BitMask | kWBSelectorMini1BitMask,
-  /* All */
-  kWBSelectorAllAvailable		= 0xffffffffU
-};
-typedef NSInteger WBIconFamilySelector;
+typedef NS_OPTIONS(NSInteger, WBIconFamilySelector) {
+  /* Small (16 x 16) */
+  kWBSelector16Data			= 1 << 0,
+  kWBSelector16Mask			= 1 << 1,
 
-enum {
-	kHuge1BitData		= 'ich1',
-	kLarge1BitData		= 'icl1',
-    kSmall1BitData		= 'ics1',
-	kMini1BitData		= 'icm1'
+  /* Large (32 x 32) */
+  kWBSelector32Data			= 1 << 2,
+  kWBSelector32Mask			= 1 << 3,
+
+  /* Huge (48 x 48) */
+  kWBSelector48Data			= 1 << 4,
+  kWBSelector48Mask			= 1 << 5,
+
+  /* Thumbnails (128 x 128) */
+  kWBSelector128Data		= 1 << 6,
+  kWBSelector128Mask		= 1 << 7,
+
+  kWBSelector256ARGB		= 1 << 8,
+  kWBSelector512ARGB		= 1 << 9,
+  kWBSelector1024ARGB	  = 1 << 10,
+
+  /* All Family */
+  kWBSelector16          = kWBSelector16Data | kWBSelector16Mask,
+  kWBSelector32          = kWBSelector32Data | kWBSelector32Mask,
+  kWBSelector48          = kWBSelector48Data | kWBSelector48Mask,
+  kWBSelector128         = kWBSelector128Data | kWBSelector128Mask,
+
+  /* All New Rsrc */
+  kWBSelectorAll         = kWBSelector16 | kWBSelector32 | kWBSelector48 | kWBSelector128 | kWBSelector256ARGB | kWBSelector512ARGB | kWBSelector1024ARGB,
+  /* All Type */
+  kWBSelectorAllData			= kWBSelector16Data | kWBSelector32Data | kWBSelector48Data | kWBSelector128Data,
+  kWBSelectorAllMask			= kWBSelector16Mask | kWBSelector32Mask | kWBSelector48Mask | kWBSelector128Mask,
 };
 
 /*!
@@ -111,11 +74,7 @@ enum {
 				</dl>
 */
 WB_OBJC_EXPORT
-@interface WBIconFamily : NSObject {
-  @private
-  id wb_delegate;
-  IconFamilyHandle wb_family;
-}
+@interface WBIconFamily : NSObject
 
 #pragma mark Convenients Initializers
 /*!
@@ -151,7 +110,6 @@ WB_OBJC_EXPORT
 /*!
     @method     iconFamilyWithSystemIcon:
 	@abstract   Initializes an IconFamily by referencing a standard system icon.
-	@param      fourByteCode
 	@result     Returns a new Icon family corresponding to <em>fourByteCode</em> System Icon.
 */
 + (id)iconFamilyWithSystemIcon:(OSType)fourByteCode;
@@ -169,7 +127,6 @@ WB_OBJC_EXPORT
   /*!
     @method     iconFamilyWithThumbnailsOfImage:forElements:
     @abstract   Create an new Icon Family, and create <em>elements</em> with contents of <em>anImage</em>.
-    @param      anImage
     @param      elements The elements you want to create.
     @result     Returns an new Icon family.
 */
@@ -212,7 +169,6 @@ WB_OBJC_EXPORT
 /*!
     @method     initWithSystemIcon:
     @abstract   Initializes an IconFamily by referencing a standard system icon.
-    @param      fourByteCode
     @result     Returns a new Icon family corresponding to <em>fourByteCode</em> System Icon.
 */
 - (id)initWithSystemIcon:(OSType)fourByteCode;
@@ -222,16 +178,13 @@ WB_OBJC_EXPORT
     @abstract   Initializes an IconFamily by creating its elements from a resampled NSImage.
 		This methods create elements for corresponding to <em>kWBSelectorAllNewAvailable</em>,
 				that is 32 bits data and 8 bits mask for each size.
-    @param      image an NSImage in any format.
+    @param      anImage an NSImage in any format.
     @result     Returns an new Icon family.
 */
 - (id)initWithThumbnailsOfImage:(NSImage *)anImage;
 
   /*!
     @method     initWithThumbnailsOfImage:forElements:
-    @abstract
-    @param      anImage
-    @param      elements
     @result     Returns an new Icon family.
 */
 - (id)initWithThumbnailsOfImage:(NSImage*)anImage forElements:(WBIconFamilySelector)elements;
@@ -275,7 +228,6 @@ WB_OBJC_EXPORT
     @method     setIconFamilyElement:fromImage:
     @abstract   Create and set icon element to <em>anImage</em> representation.
     @param      anElement An element type.
-    @param      anImage
     @result     Returns YES if element is setted without error.
 */
 - (BOOL)setIconFamilyElement:(OSType)anElement fromImage:(NSImage *)anImage;
@@ -314,7 +266,7 @@ WB_OBJC_EXPORT
 				The returned NSBitmapImageRep will have the corresponding 8-bit mask data
 				in its alpha channel, or a fully opaque alpha channel if the icon family
 				has no 8-bit mask data for the specified alpha channel.
-    @param      elementType (description)
+    @param      anElement (description)
 	@result     Returns nil if the requested element cannot be retrieved
 				(e.g. if the icon family has no such 32BitData element).
 */
@@ -377,7 +329,6 @@ WB_OBJC_EXPORT
 /*!
     @method     iconFamilyVariantForType:
     @abstract   Extracts the IconFamily corresponding to <em>aVariantType</em>.
-    @param      aVariantType
     @result     Returns the IconFamily that represents <em>aVariantType</em>, or nil if it does'nt exist.
 */
 - (WBIconFamily *)iconFamilyVariantForType:(OSType)aVariantType;
@@ -388,7 +339,6 @@ WB_OBJC_EXPORT
 				If a variant for this type is already setted, it is replaced.
 				If <em>aFamily</em> contains variants (except 'tile' variant), they are not added.
     @param      aFamily The IconFamily you want use as variant
-    @param      aVariantType
     @result     Return YES if variant is setted without error.
 */
 - (BOOL)setIconFamilyVariant:(WBIconFamily *)aFamily forType:(OSType)aVariantType;
@@ -396,7 +346,6 @@ WB_OBJC_EXPORT
 /*!
     @method     removeVariant:
     @abstract   Remove variant of type <em>aVariantType</em> from the receiver.
-    @param      aVariantType
     @result     Return YES if variant is removed without error, or if the receiver doesn't contains this variant.
 */
 - (BOOL)removeVariant:(OSType)aVariantType;

@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 /* FIXME: ARC not supported.
  10.6: Support block. Use NSIndexSet API to iterate indexes.
        TODO: Write a range iterator function that take block as parameter.

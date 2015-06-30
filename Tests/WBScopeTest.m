@@ -8,10 +8,10 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "WBScope.h"
 
-@interface WBScopeTest : SenTestCase {
+@interface WBScopeTest : XCTestCase {
 
 }
 
@@ -27,7 +27,7 @@
     tmp = [test retain];
     rc = [test retainCount];
   }
-  STAssertTrue(rc - 1 == [tmp retainCount], @"invalid retain count: %u instead of %u", [tmp retainCount], rc - 1);
+  XCTAssertTrue(rc - 1 == [tmp retainCount], @"invalid retain count: %u instead of %u", [tmp retainCount], rc - 1);
   [tmp release];
 }
 
@@ -39,7 +39,7 @@
     tmp = CFRetain(test);
     rc = CFGetRetainCount(test);
   }
-  STAssertTrue(rc - 1 == CFGetRetainCount(tmp), @"invalid retain count: %u instead of %u", CFGetRetainCount(tmp), rc - 1);
+  XCTAssertTrue(rc - 1 == CFGetRetainCount(tmp), @"invalid retain count: %u instead of %u", CFGetRetainCount(tmp), rc - 1);
   CFRelease(tmp);
 
   {
@@ -49,7 +49,7 @@
     tmp = CFRetain(test);
     rc = CFGetRetainCount(test);
   }
-  STAssertTrue(rc - 1 == CFGetRetainCount(tmp), @"invalid retain count: %u instead of %u", CFGetRetainCount(tmp), rc - 1);
+  XCTAssertTrue(rc - 1 == CFGetRetainCount(tmp), @"invalid retain count: %u instead of %u", CFGetRetainCount(tmp), rc - 1);
   CFRelease(tmp);
 }
 
@@ -64,7 +64,7 @@
     tmp = [[test retain] autorelease];
     rc = [test retainCount];
   }
-  STAssertTrue(rc - 1 == [tmp retainCount], @"invalid retain count: %u instead of %u", [tmp retainCount], rc - 1);
+  XCTAssertTrue(rc - 1 == [tmp retainCount], @"invalid retain count: %u instead of %u", [tmp retainCount], rc - 1);
 }
 
 @end

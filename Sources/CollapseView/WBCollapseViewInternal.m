@@ -122,7 +122,7 @@
 
 - (void)dealloc {
   [self wb_detachItem];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

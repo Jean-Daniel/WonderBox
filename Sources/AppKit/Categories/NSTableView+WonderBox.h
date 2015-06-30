@@ -8,7 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#pragma mark -
+#import <Cocoa/Cocoa.h>
+
 @interface NSTableView (WBExtensions)
 
 - (NSRange)visibleRows;

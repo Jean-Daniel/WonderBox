@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>054156A4-5AE1-45A3-B63E-EB3D890A0772</string>
+	<key>IDESourceControlProjectName</key>
+	<string>WonderBox</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7A36A968102EC3079874D51F5F23039BCF93C104</key>
+		<string>github.com:Jean-Daniel/WonderBox.git</string>
+		<key>96B5BEB55561DBC3F921EBB71A8AFBFFC7F1DD9D</key>
+		<string>github.com:Jean-Daniel/Spark.git</string>
+		<key>CB2597E0E0145095FF90CBFC89A4566A5B8B729B</key>
+		<string>github.com:Jean-Daniel/hadron.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>WonderBox.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7A36A968102EC3079874D51F5F23039BCF93C104</key>
+		<string>../..</string>
+		<key>96B5BEB55561DBC3F921EBB71A8AFBFFC7F1DD9D</key>
+		<string>../../..</string>
+		<key>CB2597E0E0145095FF90CBFC89A4566A5B8B729B</key>
+		<string>../../../hadron</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:Jean-Daniel/WonderBox.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7A36A968102EC3079874D51F5F23039BCF93C104</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>96B5BEB55561DBC3F921EBB71A8AFBFFC7F1DD9D</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CB2597E0E0145095FF90CBFC89A4566A5B8B729B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>hadron</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7A36A968102EC3079874D51F5F23039BCF93C104</string>
+			<key>IDESourceControlWCCName</key>
+			<string>WonderBox</string>
+		</dict>
+	</array>
+</dict>
+</plist>

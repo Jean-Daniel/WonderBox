@@ -13,6 +13,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <CoreServices/CoreServices.h>
+
 WB_EXPORT
 OSType WBLSGetSignatureForURL(CFURLRef url);
 WB_EXPORT

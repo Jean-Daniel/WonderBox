@@ -16,7 +16,7 @@
 //  the License.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 #import "WBBase64.h"
 #include <stdlib.h> // for randiom/srandomdev
@@ -39,7 +39,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   return YES;
 }
 
-@interface WBBase64Test : SenTestCase
+@interface WBBase64Test : XCTestCase
 @end
 
 @implementation WBBase64Test
@@ -53,27 +53,27 @@ static BOOL NoEqualChar(CFDataRef data) {
   // generate a range of sizes w/ random content
   for (int x = 1 ; x < 1024 ; ++x) {
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    STAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
+    XCTAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, x);
     FillWithRandom(CFDataGetMutableBytePtr(data), CFDataGetLength(data));
 
     // w/ *Bytes apis
     CFDataRef encoded = WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data), CFDataGetLength(data));
-    STAssertEquals((CFDataGetLength(encoded) % 4), (CFIndex)0,
+    XCTAssertEqual((CFDataGetLength(encoded) % 4), (CFIndex)0,
                    @"encoded size via *Bytes apis should be a multiple of 4");
     CFDataRef dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encoded),
                                                             CFDataGetLength(encoded));
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip via *Bytes apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
     // w/ *Data apis
     encoded = WBBase64CreateDataByEncodingData(data);
-    STAssertEquals((CFDataGetLength(encoded) % 4), (CFIndex)0,
+    XCTAssertEqual((CFDataGetLength(encoded) % 4), (CFIndex)0,
                    @"encoded size via *Data apis should be a multiple of 4");
 
     dataPrime = WBBase64CreateDataByDecodingData(encoded);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip via *Data apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -81,20 +81,20 @@ static BOOL NoEqualChar(CFDataRef data) {
     // Bytes to String and back
     CFStringRef encodedString = WBBase64CreateStringByEncodingBytes(CFDataGetBytePtr(data),
                                                                     CFDataGetLength(data));
-    STAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
+    XCTAssertEqual((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Bytes to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
 
     // Data to String and back
     encodedString = WBBase64CreateStringByEncodingData(data);
-    STAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
+    XCTAssertEqual((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Data to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -104,7 +104,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   {
     // now test all byte values
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    STAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
+    XCTAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, 256);
     unsigned char *scan = CFDataGetMutableBytePtr(data);
     for (int x = 0 ; x <= 255 ; ++x) {
@@ -114,22 +114,22 @@ static BOOL NoEqualChar(CFDataRef data) {
     // w/ *Bytes apis
     CFDataRef encoded = WBBase64CreateDataByEncodingBytes(CFDataGetBytePtr(data),
                                                           CFDataGetLength(data));
-    STAssertEquals((CFDataGetLength(encoded) % 4), (CFIndex)0,
+    XCTAssertEqual((CFDataGetLength(encoded) % 4), (CFIndex)0,
                    @"encoded size via *Bytes apis should be a multiple of 4");
     CFDataRef dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encoded),
                                                             CFDataGetLength(encoded));
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip via *Bytes apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
 
     // w/ *Data apis
     encoded = WBBase64CreateDataByEncodingData(data);
-    STAssertEquals((CFDataGetLength(encoded) % 4), (CFIndex)0,
+    XCTAssertEqual((CFDataGetLength(encoded) % 4), (CFIndex)0,
                    @"encoded size via *Data apis should be a multiple of 4");
 
     dataPrime = WBBase64CreateDataByDecodingData(encoded);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip via *Data apis");
     CFRelease(dataPrime);
     CFRelease(encoded);
@@ -137,20 +137,20 @@ static BOOL NoEqualChar(CFDataRef data) {
     // Bytes to String and back
     CFStringRef encodedString = WBBase64CreateStringByEncodingBytes(CFDataGetBytePtr(data),
                                                                     CFDataGetLength(data));
-    STAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
+    XCTAssertEqual((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Bytes to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
 
     // Data to String and back
     encodedString = WBBase64CreateStringByEncodingData(data);
-    STAssertEquals((CFStringGetLength(encodedString) % 4), (CFIndex)0,
+    XCTAssertEqual((CFStringGetLength(encodedString) % 4), (CFIndex)0,
                    @"encoded size for Data to Strings should be a multiple of 4");
     dataPrime = WBBase64CreateDataByDecodingString(encodedString);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed to round trip for Bytes to Strings");
     CFRelease(encodedString);
     CFRelease(dataPrime);
@@ -162,7 +162,7 @@ static BOOL NoEqualChar(CFDataRef data) {
 
     // generate some data, encode it, and add spaces
     CFMutableDataRef data = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    STAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
+    XCTAssertNotNil(SPXCFToNSData(data), @"failed to alloc data block");
     CFDataSetLength(data, 253); // should get some padding chars on the end
     FillWithRandom(CFDataGetMutableBytePtr(data), CFDataGetLength(data));
 
@@ -180,24 +180,24 @@ static BOOL NoEqualChar(CFDataRef data) {
     // we'll need it as data for apis
     CFDataRef encodedAsData = CFStringCreateExternalRepresentation(kCFAllocatorDefault, encodedAndSpaced,
                                                                    NSASCIIStringEncoding, 0);
-    STAssertNotNil(SPXCFToNSData(encodedAsData), @"failed to extract from string");
-    STAssertEquals(CFDataGetLength(encodedAsData), CFStringGetLength(encodedAndSpaced),
+    XCTAssertNotNil(SPXCFToNSData(encodedAsData), @"failed to extract from string");
+    XCTAssertEqual(CFDataGetLength(encodedAsData), CFStringGetLength(encodedAndSpaced),
                    @"lengths for encoded string and data didn't match?");
 
     // all the decode modes
     CFDataRef dataPrime = WBBase64CreateDataByDecodingData(encodedAsData);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed Data decode w/ spaces");
     CFRelease(dataPrime);
 
     dataPrime = WBBase64CreateDataByDecodingBytes(CFDataGetBytePtr(encodedAsData),
                                                   CFDataGetLength(encodedAsData));
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed Bytes decode w/ spaces");
     CFRelease(dataPrime);
 
     dataPrime = WBBase64CreateDataByDecodingString(encodedAndSpaced);
-    STAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
+    XCTAssertEqualObjects(SPXCFToNSData(data), SPXCFToNSData(dataPrime),
                          @"failed String decode w/ spaces");
 
     CFRelease(encodedAndSpaced);
@@ -403,29 +403,29 @@ static BOOL NoEqualChar(CFDataRef data) {
   const int something = 0;
   CFStringRef nonAscString = CFSTR("This test ©™®๒०᠐٧");
 
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingData(NULL)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingData(NULL)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingBytes(NULL, 10)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingBytes(&something, 0)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingBytes(NULL, 10)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingBytes(&something, 0)), @"it worked?");
-  STAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingData(NULL)), @"it worked?");
-  STAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingBytes(NULL, 10)), @"it worked?");
-  STAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingBytes(&something, 0)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(NULL)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingData(NULL)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingData(NULL)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingBytes(NULL, 10)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByEncodingBytes(&something, 0)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingBytes(NULL, 10)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingBytes(&something, 0)), @"it worked?");
+  XCTAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingData(NULL)), @"it worked?");
+  XCTAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingBytes(NULL, 10)), @"it worked?");
+  XCTAssertNil(SPXCFToNSString(WBBase64CreateStringByEncodingBytes(&something, 0)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(NULL)), @"it worked?");
   // test some pads at the end that aren't right
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("=="))), @"it worked?"); // just pads
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw="))), @"it worked?"); // missing pad (in state 2)
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw"))), @"it worked?"); // missing pad (in state 2)
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("NNw"))), @"it worked?"); // missing pad (in state 3)
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw=v"))), @"it worked?"); // missing pad, has something else
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v="))), @"it worked?"); // missing a needed char, has pad instead
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v"))), @"it worked?"); // missing a needed char
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw== vw"))), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(nonAscString)), @"it worked?");
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("@@@not valid###"))), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("=="))), @"it worked?"); // just pads
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw="))), @"it worked?"); // missing pad (in state 2)
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw"))), @"it worked?"); // missing pad (in state 2)
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("NNw"))), @"it worked?"); // missing pad (in state 3)
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw=v"))), @"it worked?"); // missing pad, has something else
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v="))), @"it worked?"); // missing a needed char, has pad instead
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("v"))), @"it worked?"); // missing a needed char
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("vw== vw"))), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(nonAscString)), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("@@@not valid###"))), @"it worked?");
   // carefully crafted bad input to make sure we don't overwalk
-  STAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("WD=="))), @"it worked?");
+  XCTAssertNil(SPXCFToNSData(WBBase64CreateDataByDecodingString(CFSTR("WD=="))), @"it worked?");
 #if 0
   STAssertNil([WBBase64 webSafeEncodeData:nil padded:YES], @"it worked?");
   STAssertNil([WBBase64 webSafeDecodeData:nil], @"it worked?");
@@ -459,7 +459,7 @@ static BOOL NoEqualChar(CFDataRef data) {
   STAssertNil([WBBase64 webSafeDecodeString:@"WD=="], @"it worked?");
 #endif
   // make sure our local helper is working right
-  STAssertFalse(NoEqualChar(SPXNSToCFData([NSData dataWithBytes:"aa=zz" length:5])), @"");
+  XCTAssertFalse(NoEqualChar(SPXNSToCFData([NSData dataWithBytes:"aa=zz" length:5])), @"");
 }
 
 @end

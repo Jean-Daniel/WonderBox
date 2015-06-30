@@ -13,6 +13,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 WB_EXPORT
 void WBImageSetRepresentationsSize(NSImage *image, NSSize size);
 

@@ -50,7 +50,7 @@
 
 - (void)dealloc {
   spx_release(wb_storage);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 WB_OBJC_EXPORT
 @interface WBComponent : NSObject <NSCopying> {
 @private

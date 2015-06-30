@@ -120,7 +120,7 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
 - (void)dealloc {
   spx_release(_steps);
   spx_release(_cs);
-  spx_dealloc();
+  [super dealloc];
 }
 
 // MARK: -
@@ -318,7 +318,7 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
 
 - (void)dealloc {
   spx_release(_fct);
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (NSString *)description {

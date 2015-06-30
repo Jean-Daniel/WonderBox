@@ -17,6 +17,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <stdint.h>
+
 typedef struct _WBDigestContext {
   char opaque[240];
 } WBDigestContext;

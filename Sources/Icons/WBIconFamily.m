@@ -23,7 +23,11 @@ static IconFamilyHandle WBIconFamilyCopyVariant(IconFamilyResource *rsrc, OSType
 static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, IconFamilyHandle result);
 
 #pragma mark -
-@implementation WBIconFamily
+@implementation WBIconFamily {
+@private
+  id wb_delegate;
+  IconFamilyHandle wb_family;
+}
 
 - (id)copyWithZone:(NSZone *)zone {
   WBIconFamily *copy = [[[self class] allocWithZone:zone] init];
@@ -120,7 +124,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 }
 
 - (id)initWithThumbnailsOfImage:(NSImage *)anImage {
-  return [self initWithThumbnailsOfImage:anImage forElements:kWBSelectorAllNewAvailable];
+  return [self initWithThumbnailsOfImage:anImage forElements:kWBSelectorAll];
 }
 
 - (id)initWithThumbnailsOfImage:(NSImage*)anImage forElements:(WBIconFamilySelector)elements {
@@ -172,7 +176,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
   IconFamilyHandle icon = nil;
   icon = WBIconFamilyCopyVariant(WBIconFamilyGetFamilyResource(wb_family), aVariant);
   if (icon) {
-    id family = [WBIconFamily iconFamilyWithIconFamilyHandle:icon];
+    WBIconFamily *family = [WBIconFamily iconFamilyWithIconFamilyHandle:icon];
     DisposeHandle((Handle)icon);
     return family;
   }
@@ -260,7 +264,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 #pragma mark -
 #pragma mark Write To File
 - (BOOL)writeToFile:(NSString *)path atomically:(BOOL)flag {
-  id data = [[NSData alloc] initWithHandle:(Handle)wb_family];
+  NSData *data = [[NSData alloc] initWithHandle:(Handle)wb_family];
   BOOL wrote = [data writeToFile:path atomically:flag];
   [data release];
   return wrote;
@@ -269,21 +273,7 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 #pragma mark -
 #pragma mark Elements Manipulation
 - (NSData *)dataForIconFamilyElement:(OSType)anElement {
-  id data = nil;
-  switch (anElement) {
-    case kHuge1BitData:
-      anElement = kHuge1BitMask;
-      break;
-    case kLarge1BitData:
-      anElement = kLarge1BitMask;
-      break;
-    case kSmall1BitData:
-      anElement = kSmall1BitMask;
-      break;
-    case kMini1BitData:
-      anElement = kMini1BitMask;
-      break;
-  }
+  NSData *data = nil;
   Handle handle = NewHandle(0);
   if (noErr == GetIconFamilyData(wb_family, anElement, handle)) {
     data = [NSData dataWithHandle:handle];
@@ -307,6 +297,11 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
     return nil;
   }
   switch (anElement) {
+    /* 1024 x 1024 */
+    case kIconServices1024PixelDataARGB:
+      size = NSMakeSize(1024, 1024);
+      samples = WBIconFamilyBitmapDataFor32BitData(data, size, planes);
+      break;
     /* 512 x 512 */
     case kIconServices512PixelDataARGB:
       size = NSMakeSize(512, 512);
@@ -327,135 +322,49 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
       size = NSMakeSize(128, 128);
       samples = WBIconFamilyBitmapDataFor8BitMask(data, size, planes);
       break;
+
       /* Huge */
     case kHuge32BitData:
       size = NSMakeSize(48, 48);
       samples = WBIconFamilyBitmapDataFor32BitData(data, size, planes);
-      break;
-    case kHuge8BitData:
-      size = NSMakeSize(48, 48);
-      samples = WBIconFamilyBitmapDataFor8BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kHuge1BitMask] : nil;
-      break;
-    case kHuge4BitData:
-      size = NSMakeSize(48, 48);
-      samples = WBIconFamilyBitmapDataFor4BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kHuge1BitMask] : nil;
-      break;
-    case kHuge1BitData:
-      size = NSMakeSize(48, 48);
-      samples = WBIconFamilyBitmapDataFor1BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kHuge1BitMask] : nil;
       break;
     case kHuge8BitMask:
       useAlpha = NO;
       size = NSMakeSize(48, 48);
       samples = WBIconFamilyBitmapDataFor8BitMask(data, size, planes);
       break;
-    case kHuge1BitMask:
-      useAlpha = NO;
-      size = NSMakeSize(48, 48);
-      samples = WBIconFamilyBitmapDataFor1BitMask(data, size, planes);
-      break;
+
       /* Large */
     case kLarge32BitData:
       size = NSMakeSize(32, 32);
       samples = WBIconFamilyBitmapDataFor32BitData(data, size, planes);
-      break;
-    case kLarge8BitData:
-      size = NSMakeSize(32, 32);
-      samples = WBIconFamilyBitmapDataFor8BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kLarge1BitMask] : nil;
-      break;
-    case kLarge4BitData:
-      size = NSMakeSize(32, 32);
-      samples = WBIconFamilyBitmapDataFor4BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kLarge1BitMask] : nil;
-      break;
-    case kLarge1BitData:
-      size = NSMakeSize(32, 32);
-      samples = WBIconFamilyBitmapDataFor1BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kLarge1BitMask] : nil;
       break;
     case kLarge8BitMask:
       useAlpha = NO;
       size = NSMakeSize(32, 32);
       samples = WBIconFamilyBitmapDataFor8BitMask(data, size, planes);
       break;
-    case kLarge1BitMask:
-      useAlpha = NO;
-      size = NSMakeSize(32, 32);
-      samples = WBIconFamilyBitmapDataFor1BitMask(data, size, planes);
-      break;
+
       /* Small */
     case kSmall32BitData:
       size = NSMakeSize(16, 16);
       samples = WBIconFamilyBitmapDataFor32BitData(data, size, planes);
-      break;
-    case kSmall8BitData:
-      size = NSMakeSize(16, 16);
-      samples = WBIconFamilyBitmapDataFor8BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kSmall1BitMask] : nil;
-      break;
-    case kSmall4BitData:
-      size = NSMakeSize(16, 16);
-      samples = WBIconFamilyBitmapDataFor4BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kSmall1BitMask] : nil;
-      break;
-    case kSmall1BitData:
-      size = NSMakeSize(16, 16);
-      samples = WBIconFamilyBitmapDataFor1BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kSmall1BitMask] : nil;
       break;
     case kSmall8BitMask:
       useAlpha = NO;
       size = NSMakeSize(16, 16);
       samples = WBIconFamilyBitmapDataFor8BitMask(data, size, planes);
       break;
-    case kSmall1BitMask:
-      useAlpha = NO;
-      size = NSMakeSize(16, 16);
-      samples = WBIconFamilyBitmapDataFor1BitMask(data, size, planes);
-      break;
-      /* Mini */
-    case kMini8BitData:
-      size = NSMakeSize(16, 12);
-      samples = WBIconFamilyBitmapDataFor8BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kMini1BitMask] : nil;
-      break;
-    case kMini4BitData:
-      size = NSMakeSize(16, 12);
-      samples = WBIconFamilyBitmapDataFor4BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kMini1BitMask] : nil;
-      break;
-    case kMini1BitData:
-      size = NSMakeSize(16, 12);
-      samples = WBIconFamilyBitmapDataFor1BitData(data, size, planes);
-      alpha = (useAlpha) ? [self dataForIconFamilyElement:kMini1BitMask] : nil;
-      break;
-    case kMini1BitMask:
-      useAlpha = NO;
-      size = NSMakeSize(16, 12);
-      samples = WBIconFamilyBitmapDataFor1BitMask(data, size, planes);
-      break;
+
     default:
       SPXThrowException(NSInvalidArgumentException, @"Unsupported Element type: %@", NSFileTypeForHFSTypeCode(anElement));
   }
   if (samples > 0) {
-    if (useAlpha && ((samples == 1) || (samples == 3))) {
-      if (alpha && WBIconFamilyBitmapDataFor1BitMask(alpha, size, planes + samples)) {
+    if (useAlpha && samples == 3) {
+      if (alpha && WBIconFamilyBitmapDataFor8BitMask(alpha, size, planes + samples))
         samples++;
-      }
-      NSUInteger pixels = size.width * size.height;
-      for (NSUInteger i=0; i<pixels; i++) {
-        unsigned char a = (planes[samples-1][i] == 255) ? 1 : 0;
-        for (NSUInteger j=0; j<(samples -1); j++) {
-          /* Premultiply Alpha */
-          planes[j][i] *= a;
-        }
-      }
     } else if (!useAlpha && samples == 4) {
-      NSZoneFree(nil, planes[3]);
+      free(planes[3]);
       samples = 3;
     }
     NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes
@@ -463,14 +372,15 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
                                                                        pixelsHigh:size.height
                                                                     bitsPerSample:8
                                                                   samplesPerPixel:samples
-                                                                         hasAlpha:(samples == 4) || (samples == 2)
+                                                                         hasAlpha:(samples == 4)
                                                                          isPlanar:YES
-                                                                   colorSpaceName:(samples <= 2) ? NSDeviceBlackColorSpace : NSDeviceRGBColorSpace
+                                                                   colorSpaceName:NSDeviceRGBColorSpace
+                                                                     bitmapFormat:(samples == 4) ? NSAlphaNonpremultipliedBitmapFormat : 0
                                                                       bytesPerRow:size.width
                                                                      bitsPerPixel:8];
     if (!bitmap) {
       for (NSUInteger i = 0; i < samples; i++) {
-        NSZoneFree(nil, planes[i]);
+        free(planes[i]);
       }
     }
     return [bitmap autorelease];
@@ -492,89 +402,43 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
 - (BOOL)setIconFamilyElement:(OSType)anElement fromImage:(NSImage *)anImage {
   WBIconFamilySelector selector = 0;
   switch (anElement) {
-    /* 512 x 512 */
-     case kIconServices512PixelDataARGB:
-       selector = kWBSelectorARGB512PixelData;
-       break;
+    case kIconServices1024PixelDataARGB:
+      selector = kWBSelector1024ARGB;
+      break;
+      /* 512 x 512 */
+    case kIconServices512PixelDataARGB:
+      selector = kWBSelector512ARGB;
+      break;
     case kIconServices256PixelDataARGB: // 'ic08' 256x256 32-bits ARGB image
-      selector = kWBSelectorARGB256PixelData;
+      selector = kWBSelector256ARGB;
       break;
       /******** Thumbnail *********/
     case kThumbnail32BitData: // 'it32' 128x128 32-bit ARGB image
-      selector = kWBSelectorThumbnail32BitData;
+      selector = kWBSelector128Data;
       break;
     case kThumbnail8BitMask: // 't8mk' 128x128 8-bit alpha mask
-      selector = kWBSelectorThumbnail8BitMask;
+      selector = kWBSelector128Mask;
       break;
       /******** Huge *********/
     case kHuge32BitData: // 'ih32' 48x48 32-bit RGB image
-      selector = kWBSelectorHuge32BitData;
-      break;
-    case kHuge8BitData:
-      selector = kWBSelectorHuge8BitData;
-      break;
-    case kHuge4BitData:
-      selector = kWBSelectorHuge4BitData;
-      break;
-    case kHuge1BitData:
-      selector = kWBSelectorHuge1BitData;
+      selector = kWBSelector48Data;
       break;
     case kHuge8BitMask:
-      selector = kWBSelectorHuge8BitMask;
-      break;
-    case kHuge1BitMask:
-      selector = kWBSelectorHuge1BitMask;
+      selector = kWBSelector48Mask;
       break;
       /******** Large *********/
     case kLarge32BitData: // 'il32' 32x32 32-bit RGB image
-      selector = kWBSelectorLarge32BitData;
-      break;
-    case kLarge8BitData: // 'icl8' 32x32 8-bit indexed image data
-      selector = kWBSelectorLarge8BitData;
-      break;
-    case kLarge4BitData: // 'icl4' 32x32 4-bit indexed image data
-      selector = kWBSelectorLarge4BitData;
-      break;
-    case kLarge1BitData:
-      selector = kWBSelectorLarge1BitData;
+      selector = kWBSelector32Data;
       break;
     case kLarge8BitMask: // 'l8mk' 32x32 8-bit alpha mask
-      selector = kWBSelectorLarge8BitMask;
-      break;
-    case kLarge1BitMask: // 'ICN#' 32x32 1-bit alpha mask
-      selector = kWBSelectorLarge1BitMask;
+      selector = kWBSelector32Mask;
       break;
       /******** Small *********/
     case kSmall32BitData: // 'is32' 16x16 32-bit RGB image
-      selector = kWBSelectorSmall32BitData;
-      break;
-    case kSmall8BitData: // 'ics8' 16x16 8-bit indexed image data
-      selector = kWBSelectorSmall8BitData;
-      break;
-    case kSmall4BitData: // 'ics4' 16x16 4-bit indexed image data
-      selector = kWBSelectorSmall4BitData;
-      break;
-    case kSmall1BitData: // 'ics4' 16x16 4-bit indexed image data
-      selector = kWBSelectorSmall1BitData;
+      selector = kWBSelector16Data;
       break;
     case kSmall8BitMask: // 's8mk' 16x16 8-bit alpha mask
-      selector = kWBSelectorSmall8BitMask;
-      break;
-    case kSmall1BitMask: // 'ics#' 16x16 1-bit alpha mask
-      selector = kWBSelectorSmall1BitMask;
-      break;
-      /******** Mini *********/
-    case kMini8BitData: // 'icm8' 16x12 8-bit indexed image data
-      selector = kWBSelectorMini8BitData;
-      break;
-    case kMini4BitData: // 'icm4' 16x12 4-bit indexed image data
-      selector = kWBSelectorMini4BitData;
-      break;
-    case kMini1BitData: // 'icm4' 16x12 4-bit indexed image data
-      selector = kWBSelectorMini1BitData;
-      break;
-    case kMini1BitMask: // 'icm#' 16x12 1-bit alpha mask
-      selector = kWBSelectorMini1BitMask;
+      selector = kWBSelector16Mask;
       break;
     default:
       SPXThrowException(NSInvalidArgumentException, @"Invalid element %@", NSFileTypeForHFSTypeCode(anElement));
@@ -586,63 +450,45 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
   id bitmap = nil;
   NSUInteger count = 0;
   /* 512 x 512 */
-  if (selector & kWBSelectorARGB512PixelData) {
+  if (selector & kWBSelector1024ARGB) {
+    bitmap = [self scaleImage:anImage toSize:NSMakeSize(1024, 1024)];
+    count += [self setIconFamilyElement:kIconServices1024PixelDataARGB fromBitmap:bitmap] ? 1 : 0;
+  }
+  /* 512 x 512 */
+  if (selector & kWBSelector512ARGB) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(512, 512)];
     count += [self setIconFamilyElement:kIconServices512PixelDataARGB fromBitmap:bitmap] ? 1 : 0;
   }
   /* 256 x 256 */
-  if (selector & kWBSelectorARGB256PixelData) {
+  if (selector & kWBSelector256ARGB) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(256, 256)];
     count += [self setIconFamilyElement:kIconServices256PixelDataARGB fromBitmap:bitmap] ? 1 : 0;
   }
   /* Thumbnails */
-  if (selector & kWBSelectorAllThumbnail) {
+  if (selector & kWBSelector128) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(128, 128)];
-    if (selector & kWBSelectorThumbnail32BitData) count += [self setIconFamilyElement:kThumbnail32BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorThumbnail8BitMask) count += [self setIconFamilyElement:kThumbnail8BitMask fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector128Data) count += [self setIconFamilyElement:kThumbnail32BitData fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector128Mask) count += [self setIconFamilyElement:kThumbnail8BitMask fromBitmap:bitmap] ? 1 : 0;
   }
 
-  if (selector & kWBSelectorAllHuge) {
+  if (selector & kWBSelector48) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(48, 48)];
-    /* Huge Data */
-    if (selector & kWBSelectorHuge32BitData) count += [self setIconFamilyElement:kHuge32BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorHuge8BitData) count += [self setIconFamilyElement:kHuge8BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorHuge4BitData) count += [self setIconFamilyElement:kHuge4BitData fromBitmap:bitmap] ? 1 : 0;
-    /* Huge Mask */
-    if (selector & kWBSelectorHuge8BitMask) count += [self setIconFamilyElement:kHuge8BitMask fromBitmap:bitmap] ? 1 : 0;
-    if (selector & (kWBSelectorHuge1BitData | kWBSelectorHuge1BitMask)) count += [self setIconFamilyElement:kHuge1BitMask fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector48Data) count += [self setIconFamilyElement:kHuge32BitData fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector48Mask) count += [self setIconFamilyElement:kHuge8BitMask fromBitmap:bitmap] ? 1 : 0;
   }
 
-  if (selector & kWBSelectorAllLarge) {
+  if (selector & kWBSelector32) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(32, 32)];
-    /* Large Data */
-    if (selector & kWBSelectorLarge32BitData) count += [self setIconFamilyElement:kLarge32BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorLarge8BitData) count += [self setIconFamilyElement:kLarge8BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorLarge4BitData) count += [self setIconFamilyElement:kLarge4BitData fromBitmap:bitmap] ? 1 : 0;
-    /* Large Mask */
-    if (selector & kWBSelectorLarge8BitMask) count += [self setIconFamilyElement:kLarge8BitMask fromBitmap:bitmap] ? 1 : 0;
-    if (selector & (kWBSelectorLarge1BitData | kWBSelectorLarge1BitMask)) count += [self setIconFamilyElement:kLarge1BitMask fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector32Data) count += [self setIconFamilyElement:kLarge32BitData fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector32Mask) count += [self setIconFamilyElement:kLarge8BitMask fromBitmap:bitmap] ? 1 : 0;
   }
 
-  if (selector & kWBSelectorAllSmall) {
+  if (selector & kWBSelector16) {
     bitmap = [self scaleImage:anImage toSize:NSMakeSize(16, 16)];
-    /* Small Data */
-    if (selector & kWBSelectorSmall32BitData) count += [self setIconFamilyElement:kSmall32BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorSmall8BitData) count += [self setIconFamilyElement:kSmall8BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorSmall4BitData) count += [self setIconFamilyElement:kSmall4BitData fromBitmap:bitmap] ? 1 : 0;
-    /* Small Mask */
-    if (selector & kWBSelectorSmall8BitMask) count += [self setIconFamilyElement:kSmall8BitMask fromBitmap:bitmap] ? 1 : 0;
-    if (selector & (kWBSelectorSmall1BitData | kWBSelectorSmall1BitMask)) count += [self setIconFamilyElement:kSmall1BitMask fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector16Data) count += [self setIconFamilyElement:kSmall32BitData fromBitmap:bitmap] ? 1 : 0;
+    if (selector & kWBSelector16Mask) count += [self setIconFamilyElement:kSmall8BitMask fromBitmap:bitmap] ? 1 : 0;
   }
 
-  if (selector & kWBSelectorAllMini) {
-    bitmap = [self scaleImage:anImage toSize:NSMakeSize(16, 12)];
-    /* Mini Data */
-    if (selector & kWBSelectorMini8BitData) count += [self setIconFamilyElement:kMini8BitData fromBitmap:bitmap] ? 1 : 0;
-    if (selector & kWBSelectorMini4BitData) count += [self setIconFamilyElement:kMini4BitData fromBitmap:bitmap] ? 1 : 0;
-    /* Mini Mask */
-    if (selector & (kWBSelectorMini1BitData | kWBSelectorMini1BitMask)) count += [self setIconFamilyElement:kMini1BitMask fromBitmap:bitmap] ? 1 : 0;
-  }
   return count;
 }
 
@@ -650,6 +496,12 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
   NSSize size = NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh]);
   Handle handle = nil;
   switch (anElement) {
+      /* 1024 x 1024 */
+    case kIconServices1024PixelDataARGB:
+      if (NSEqualSizes(size, NSMakeSize(1024, 1024))) {
+        handle = WBIconFamilyGet32BitDataForBitmap(bitmap);
+      }
+      break;
     /* 512 x 512 */
      case kIconServices512PixelDataARGB:
        if (NSEqualSizes(size, NSMakeSize(512, 512))) {
@@ -679,25 +531,9 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
         handle = WBIconFamilyGet32BitDataForBitmap(bitmap);
       }
       break;
-    case kHuge8BitData:
-      if (NSEqualSizes(size, NSMakeSize(48, 48))) {
-        handle = WBIconFamilyGet8BitDataForBitmap(bitmap);
-      }
-      break;
-    case kHuge4BitData:
-      if (NSEqualSizes(size, NSMakeSize(48, 48))) {
-        handle = WBIconFamilyGet4BitDataForBitmap(bitmap);
-      }
-      break;
     case kHuge8BitMask:
       if (NSEqualSizes(size, NSMakeSize(48, 48))) {
         handle = WBIconFamilyGet8BitMaskForBitmap(bitmap);
-      }
-      break;
-    case kHuge1BitData:
-    case kHuge1BitMask:
-      if (NSEqualSizes(size, NSMakeSize(48, 48))) {
-        handle = WBIconFamilyGet1BitDataAndMaskForBitmap(bitmap);
       }
       break;
       /******** Large *********/
@@ -706,25 +542,9 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
         handle = WBIconFamilyGet32BitDataForBitmap(bitmap);
       }
       break;
-    case kLarge8BitData: // 'icl8' 32x32 8-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(32, 32))) {
-        handle = WBIconFamilyGet8BitDataForBitmap(bitmap);
-      }
-      break;
-    case kLarge4BitData: // 'icl4' 32x32 4-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(32, 32))) {
-        handle = WBIconFamilyGet4BitDataForBitmap(bitmap);
-      }
-      break;
     case kLarge8BitMask: // 'l8mk' 32x32 8-bit alpha mask
       if (NSEqualSizes(size, NSMakeSize(32, 32))) {
         handle = WBIconFamilyGet8BitMaskForBitmap(bitmap);
-      }
-      break;
-    case kLarge1BitData:
-    case kLarge1BitMask: // 'ICN#' 32x32 1-bit alpha mask
-      if (NSEqualSizes(size, NSMakeSize(32, 32))) {
-        handle = WBIconFamilyGet1BitDataAndMaskForBitmap(bitmap);
       }
       break;
       /******** Small *********/
@@ -733,42 +553,9 @@ static BOOL WBIconFamilyRemoveVariant(IconFamilyResource *rsrc, OSType variant, 
         handle = WBIconFamilyGet32BitDataForBitmap(bitmap);
       }
       break;
-    case kSmall8BitData: // 'ics8' 16x16 8-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(16, 16))) {
-        handle = WBIconFamilyGet8BitDataForBitmap(bitmap);
-      }
-      break;
-    case kSmall4BitData: // 'ics4' 16x16 4-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(16, 16))) {
-        handle = WBIconFamilyGet4BitDataForBitmap(bitmap);
-      }
-      break;
     case kSmall8BitMask: // 's8mk' 16x16 8-bit alpha mask
       if (NSEqualSizes(size, NSMakeSize(16, 16))) {
         handle = WBIconFamilyGet8BitMaskForBitmap(bitmap);
-      }
-      break;
-    case kSmall1BitData:
-    case kSmall1BitMask: // 'ics#' 16x16 1-bit alpha mask
-      if (NSEqualSizes(size, NSMakeSize(16, 16))) {
-        handle = WBIconFamilyGet1BitDataAndMaskForBitmap(bitmap);
-      }
-      break;
-      /******** Mini *********/
-    case kMini8BitData: // 'icm8' 16x12 8-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(16, 12))) {
-        handle = WBIconFamilyGet8BitDataForBitmap(bitmap);
-      }
-      break;
-    case kMini4BitData: // 'icm4' 16x12 4-bit indexed image data
-      if (NSEqualSizes(size, NSMakeSize(16, 12))) {
-        handle = WBIconFamilyGet4BitDataForBitmap(bitmap);
-      }
-      break;
-    case kMini1BitData:
-    case kMini1BitMask: // 'icm#' 16x12 1-bit alpha mask
-      if (NSEqualSizes(size, NSMakeSize(16, 12))) {
-        handle = WBIconFamilyGet1BitDataAndMaskForBitmap(bitmap);
       }
       break;
     default:

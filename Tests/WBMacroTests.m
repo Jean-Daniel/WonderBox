@@ -8,9 +8,9 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface WBMacroTests : SenTestCase {
+@interface WBMacroTests : XCTestCase {
 
 }
 
@@ -23,28 +23,28 @@
     unsigned int foo:1;
   } test;
   test.foo = 0;
-  STAssertFalse(test.foo, @"sanity check");
+  XCTAssertFalse(test.foo, @"sanity check");
   SPXFlagSet(test.foo, 1);
-  STAssertTrue(test.foo, @"SPXFlagSet");
+  XCTAssertTrue(test.foo, @"SPXFlagSet");
   /* true => true */
   bool eval = SPXFlagTestAndSet(test.foo, 1);
-  STAssertTrue(test.foo, @"WBFlagTestAndSet");
-  STAssertTrue(eval, @"WBFlagTestAndSet");
+  XCTAssertTrue(test.foo, @"WBFlagTestAndSet");
+  XCTAssertTrue(eval, @"WBFlagTestAndSet");
 
   /* true => false */
   eval = SPXFlagTestAndSet(test.foo, 0);
-  STAssertFalse(test.foo, @"WBFlagTestAndSet");
-  STAssertTrue(eval, @"WBFlagTestAndSet");
+  XCTAssertFalse(test.foo, @"WBFlagTestAndSet");
+  XCTAssertTrue(eval, @"WBFlagTestAndSet");
 
   /* false => false */
   eval = SPXFlagTestAndSet(test.foo, 0);
-  STAssertFalse(test.foo, @"WBFlagTestAndSet");
-  STAssertFalse(eval, @"WBFlagTestAndSet");
+  XCTAssertFalse(test.foo, @"WBFlagTestAndSet");
+  XCTAssertFalse(eval, @"WBFlagTestAndSet");
 
   /* false => true */
   eval = SPXFlagTestAndSet(test.foo, 1);
-  STAssertTrue(test.foo, @"WBFlagTestAndSet");
-  STAssertFalse(eval, @"WBFlagTestAndSet");
+  XCTAssertTrue(test.foo, @"WBFlagTestAndSet");
+  XCTAssertFalse(eval, @"WBFlagTestAndSet");
 }
 
 

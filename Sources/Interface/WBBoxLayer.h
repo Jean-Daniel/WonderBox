@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 enum {
   kWBStringLayerAlignmentLeft   = 1,
   kWBStringLayerAlignmentCenter,

@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 @protocol WBTableViewDelegate;
 
 WB_OBJC_EXPORT

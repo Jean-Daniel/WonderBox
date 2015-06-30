@@ -8,11 +8,11 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 #import "WBLSFunctions.h"
 
-@interface WBLSFunctionsTest : SenTestCase {
+@interface WBLSFunctionsTest : XCTestCase {
 
 }
 
@@ -23,11 +23,11 @@
 
 - (void)testIsApplication {
   NSString *iTunes = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"iTunes"];
-  STAssertNotNil(iTunes, @"iTunes not found. Cannot test isApplication");
+  XCTAssertNotNil(iTunes, @"iTunes not found. Cannot test isApplication");
   Boolean isApp = FALSE;
   OSStatus err = WBLSIsApplicationAtPath(SPXNSToCFString(iTunes), &isApp);
-  STAssertTrue(noErr == err, @"WBLSIsApplicationAtPath: %s", GetMacOSStatusCommentString(err));
-  STAssertTrue(isApp, @"iTunes should be an Application");
+  XCTAssertTrue(noErr == err, @"WBLSIsApplicationAtPath: %s", GetMacOSStatusCommentString(err));
+  XCTAssertTrue(isApp, @"iTunes should be an Application");
 }
 
 @end

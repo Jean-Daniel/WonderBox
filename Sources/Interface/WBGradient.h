@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBInterpolationFunction.h>
 
+#import <Cocoa/Cocoa.h>
+
 // Following macros and struct are not design to be setup at runtime, but at compile time.
 // To create a gradient at runtime, it's easier to directly use the WBGradientBuilder class.
 /* Set of macros and types for gradient creation */

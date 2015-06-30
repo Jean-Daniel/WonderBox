@@ -34,7 +34,7 @@
 
 - (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag {
   OptionBits opts = flag ? kFSPathMakeRefDefaultOptions : kFSPathMakeRefDoNotFollowLeafSymlink;
-  return noErr == FSPathMakeRefWithOptions((const UInt8 *)[self fileSystemRepresentation], opts, ref, NULL);
+  return noErr == FSPathMakeRefWithOptions((const UInt8 *)[self safeFileSystemRepresentation], opts, ref, NULL);
 }
 
 - (const char *)safeFileSystemRepresentation {

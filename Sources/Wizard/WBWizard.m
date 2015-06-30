@@ -45,7 +45,7 @@
   [wb_object release];
   [wb_wTitle release];
   [wb_pageTitle release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

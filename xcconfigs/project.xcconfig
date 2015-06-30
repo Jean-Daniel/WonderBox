@@ -1,4 +1,5 @@
 
-#include "../../hadron/xcconfigs/compiler/clang.xcconfig"
+#include "../hadron/xcconfigs/os/mountain-lion.xcconfig"
+#include "../hadron/xcconfigs/compiler/clang.xcconfig"
 
-HADRON_PATH = ../hadron
+HA_PROJECT_WARNING_CPLUSPLUSFLAGS = -Wno-old-style-cast

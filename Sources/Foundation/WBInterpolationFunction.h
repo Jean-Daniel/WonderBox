@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 typedef CGFloat (*WBInterpolationEvaluateCallBack)(CGFloat input, void *info);
 typedef void (*WBInterpolationReleaseInfoCallBack)(void *info);
 

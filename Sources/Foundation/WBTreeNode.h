@@ -13,6 +13,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 /*!
     @class
     @abstract Tree structure.

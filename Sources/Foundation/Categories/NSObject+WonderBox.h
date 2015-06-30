@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import <Foundation/Foundation.h>
+
 @interface NSObject (WonderBox)
 
 - (void)performSelectorASAP:(SEL)aSelector withObject:(id)anObject;

@@ -14,7 +14,7 @@
 
 - (void)dealloc {
   spx_release(wb_searchString);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

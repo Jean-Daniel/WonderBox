@@ -10,5 +10,7 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 WB_EXPORT
 NSEnumerator *WBMapTableEnumerator(NSMapTable *table, BOOL keys);

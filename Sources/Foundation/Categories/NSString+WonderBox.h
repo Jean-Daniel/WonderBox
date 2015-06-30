@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import <Foundation/Foundation.h>
+
 @interface NSString (WBStringComparaison)
 - (BOOL)hasPrefixCaseInsensitive:(NSString *)aString;
 - (BOOL)hasSuffixCaseInsensitive:(NSString *)aString;

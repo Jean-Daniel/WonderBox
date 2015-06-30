@@ -70,7 +70,7 @@ void __WBDaemonUnregisterAtExit(WBDaemonTask *aDaemon) {
 - (void)dealloc {
   [self _cleanup:NO];
   spx_release(_properties);
-  spx_dealloc();
+  [super dealloc];
 }
 
 // MARK: -

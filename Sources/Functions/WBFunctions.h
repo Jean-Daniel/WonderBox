@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+
 WB_EXPORT
 OSType WBGetOSTypeFromString(CFStringRef str);
 WB_EXPORT
@@ -22,11 +24,11 @@ CFStringRef WBCreateStringForOSType(OSType type);
 #pragma mark OS Utilities
 
 WB_EXPORT
-SInt32 WBSystemMajorVersion(void);
+SInt32 WBSystemMajorVersion(void) WB_DEPRECATED("NSOperatingSystemVersion");
 WB_EXPORT
-SInt32 WBSystemMinorVersion(void);
+SInt32 WBSystemMinorVersion(void) WB_DEPRECATED("NSOperatingSystemVersion");
 WB_EXPORT
-SInt32 WBSystemBugFixVersion(void);
+SInt32 WBSystemBugFixVersion(void) WB_DEPRECATED("NSOperatingSystemVersion");
 
 WB_EXPORT
 CFComparisonResult WBUTCDateTimeCompare(UTCDateTime *t1, UTCDateTime *t2);
@@ -44,6 +46,9 @@ CFHashCode WBHashBytes(const uint8_t *bytes, size_t length);
 
 #pragma mark Objective C Functions
 #if defined(__OBJC__)
+
+#import <Foundation/Foundation.h>
+
 WB_INLINE
 NSString *WBStringForOSType(OSType type) {
   return SPXCFStringBridgingRelease(WBCreateStringForOSType(type));
@@ -57,6 +62,7 @@ NSString *WBApplicationGetName(void) {
   return [[NSBundle mainBundle] objectForInfoDictionaryKey:(id)kCFBundleNameKey] ? :
           [[NSProcessInfo processInfo] processName];
 }
+
 #endif
 
 #endif /* __WB_FUNCTIONS_H */

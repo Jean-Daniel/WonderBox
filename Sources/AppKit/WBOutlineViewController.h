@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 @class WBBaseUITreeNode;
 WB_OBJC_EXPORT
 @interface WBOutlineViewController : NSObject {

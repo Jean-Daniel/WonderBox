@@ -15,6 +15,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 typedef NS_ENUM(NSUInteger, WBPlugInDomain) {
   kWBPlugInDomainUser = 1,
   kWBPlugInDomainLocal,

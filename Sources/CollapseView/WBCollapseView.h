@@ -10,6 +10,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 @class WBCollapseViewItem;
 @protocol WBCollapseViewDelegate;
 WB_OBJC_EXPORT

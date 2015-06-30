@@ -153,7 +153,7 @@ void _WBAppleRemoteInputValueCallback(void *context, IOReturn result, void *send
     wb_device = NULL;
   }
   [wb_listeners release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

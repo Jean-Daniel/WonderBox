@@ -11,6 +11,8 @@
 #import <WonderBox/WBBase.h>
 #import <OpenGL/OpenGL.h>
 
+#import <Cocoa/Cocoa.h>
+
 enum {
   kWBGLAttachementTypeBuffer  = 1,
   kWBGLAttachementTypeTexture = 2,

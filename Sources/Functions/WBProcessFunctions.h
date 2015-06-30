@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <CoreServices/CoreServices.h>
+
 #pragma mark Process
 WB_EXPORT
 OSType WBProcessGetSignature(ProcessSerialNumber *psn) WB_DEPRECATED("ProcessSerialNumber is obsolete");

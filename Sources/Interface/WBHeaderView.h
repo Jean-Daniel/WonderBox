@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 typedef enum {
   kWBHeaderLeft = 1 << 0,
   kWBHeaderRight = 1 << 1

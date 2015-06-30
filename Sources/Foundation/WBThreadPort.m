@@ -245,7 +245,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 
 - (void)dealloc {
   [self invalidate];
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (void)invalidate {
@@ -514,15 +514,18 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 @synthesize condition = wb_condition;
 
 + (void)wb_ThreadPortMain:(_WBThreadArgument *)arg {
+  id target;
+  SEL action;
+  id argument;
   @autoreleasepool {
     [arg.condition lock];
     arg.port = [WBThreadPort currentPort];
     [arg.condition signal];
     [arg.condition unlock];
 
-    id target = arg.target;
-    SEL action = arg.action;
-    id argument = arg.argument;    
+    target = arg.target;
+    action = arg.action;
+    argument = arg.argument;
   }
 
   [target performSelector:action withObject:argument];
@@ -532,7 +535,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   spx_release(wb_condition);
   spx_release(wb_argument);
   spx_release(wb_target);
-  spx_dealloc();
+  [super dealloc];
 }
 
 @end
@@ -586,7 +589,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
   wb_target = nil;
   spx_release(wb_port);
   wb_port = nil;
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -
@@ -692,7 +695,7 @@ void _WBThreadReceivePortDestructor(void *ptr) {
 - (void)dealloc {
   spx_release(wb_argument);
   spx_release(wb_target);
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (id)target { return wb_target; }

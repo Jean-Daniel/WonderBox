@@ -10,6 +10,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 WB_OBJC_EXPORT
 @interface WBAlias : NSObject <NSCoding, NSCopying> {
   @private

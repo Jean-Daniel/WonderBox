@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 enum {
   kWBThreadPortWait = 1,
   kWBThreadPortDontWait = 0,

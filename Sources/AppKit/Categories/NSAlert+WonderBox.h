@@ -8,6 +8,8 @@
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
+#import <Cocoa/Cocoa.h>
+
 #pragma mark -
 @interface NSAlert (UserDefaultCheckBox)
 /* Application modal sheet */

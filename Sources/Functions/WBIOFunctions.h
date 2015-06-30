@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+
 __BEGIN_DECLS
 
 /* High level Functions */

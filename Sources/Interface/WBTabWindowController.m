@@ -35,7 +35,7 @@
   spx_release(wb_classes);
   spx_release(wb_current);
   spx_release(wb_items);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -
@@ -257,7 +257,7 @@
 
 - (void)dealloc {
   spx_release(wb_identifier);
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (void)loadView {

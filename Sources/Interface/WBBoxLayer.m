@@ -34,7 +34,7 @@
 - (void)dealloc {
   spx_release(wb_background);
   spx_release(wb_border);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

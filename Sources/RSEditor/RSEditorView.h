@@ -8,6 +8,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 WB_OBJC_EXPORT
 @interface RSEditorView : NSObject {
 @private

@@ -13,29 +13,17 @@
 
 #include <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 WB_PRIVATE
 Handle WBIconFamilyGet32BitDataForBitmap(NSBitmapImageRep *bitmap);
 WB_PRIVATE
-Handle WBIconFamilyGet8BitDataForBitmap(NSBitmapImageRep *bitmap);
-WB_PRIVATE
-Handle WBIconFamilyGet4BitDataForBitmap(NSBitmapImageRep *bitmap);
-WB_PRIVATE
 Handle WBIconFamilyGet8BitMaskForBitmap(NSBitmapImageRep *bitmap);
-WB_PRIVATE
-Handle WBIconFamilyGet1BitDataAndMaskForBitmap(NSBitmapImageRep *bitmap);
 
 #pragma mark -
 WB_PRIVATE
 NSUInteger WBIconFamilyBitmapDataFor32BitData(NSData *aData, NSSize size, unsigned char *planes[]);
 WB_PRIVATE
-NSUInteger WBIconFamilyBitmapDataFor8BitData(NSData *data, NSSize size, unsigned char *planes[]);
-WB_PRIVATE
-NSUInteger WBIconFamilyBitmapDataFor4BitData(NSData *data, NSSize size, unsigned char *planes[]);
-WB_PRIVATE
-NSUInteger WBIconFamilyBitmapDataFor1BitData(NSData *data, NSSize size, unsigned char *planes[]);
-WB_PRIVATE
 NSUInteger WBIconFamilyBitmapDataFor8BitMask(NSData *data, NSSize size, unsigned char *planes[]);
-WB_PRIVATE
-NSUInteger WBIconFamilyBitmapDataFor1BitMask(NSData *data, NSSize size, unsigned char *planes[]);
 
 #endif /* __WB_ICNS_CODEC_H */

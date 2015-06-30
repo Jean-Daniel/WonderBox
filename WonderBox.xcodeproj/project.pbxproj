@@ -100,7 +100,7 @@
 		1B0DBFC21673F695006174C8 /* WBTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEBC1673F694006174C8 /* WBTreeNode.m */; };
 		1B0DBFC31673F695006174C8 /* WBXMLWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBEBD1673F694006174C8 /* WBXMLWriter.h */; };
 		1B0DBFC41673F695006174C8 /* WBXMLWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEBE1673F694006174C8 /* WBXMLWriter.m */; };
-		1B0DBFC51673F695006174C8 /* WBAEFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEC01673F694006174C8 /* WBAEFunctions.c */; };
+		1B0DBFC51673F695006174C8 /* WBAEFunctions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEC01673F694006174C8 /* WBAEFunctions.mm */; };
 		1B0DBFC61673F695006174C8 /* WBAEFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBEC11673F694006174C8 /* WBAEFunctions.h */; };
 		1B0DBFC71673F695006174C8 /* WBBase64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEC21673F694006174C8 /* WBBase64.c */; };
 		1B0DBFC81673F695006174C8 /* WBBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBEC31673F694006174C8 /* WBBase64.h */; };
@@ -123,7 +123,7 @@
 		1B0DBFDB1673F695006174C8 /* WBLoginItems.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBED61673F694006174C8 /* WBLoginItems.c */; };
 		1B0DBFDC1673F695006174C8 /* WBLoginItems.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBED71673F694006174C8 /* WBLoginItems.h */; };
 		1B0DBFDD1673F695006174C8 /* WBLSFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBED81673F694006174C8 /* WBLSFunctions.h */; };
-		1B0DBFDE1673F695006174C8 /* WBLSFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBED91673F694006174C8 /* WBLSFunctions.m */; };
+		1B0DBFDE1673F695006174C8 /* WBLSFunctions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBED91673F694006174C8 /* WBLSFunctions.mm */; };
 		1B0DBFDF1673F695006174C8 /* WBObjCRuntime.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEDA1673F694006174C8 /* WBObjCRuntime.c */; };
 		1B0DBFE01673F695006174C8 /* WBObjCRuntime.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBEDB1673F694006174C8 /* WBObjCRuntime.h */; };
 		1B0DBFE11673F695006174C8 /* WBProcessFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBEDC1673F694006174C8 /* WBProcessFunctions.c */; };
@@ -220,16 +220,12 @@
 		1B0DC03C1673F695006174C8 /* RSEditorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF411673F695006174C8 /* RSEditorView.h */; };
 		1B0DC03D1673F695006174C8 /* RSEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF421673F695006174C8 /* RSEditorView.m */; };
 		1B0DC03E1673F695006174C8 /* TOutline.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B0DBF431673F695006174C8 /* TOutline.png */; };
-		1B0DC03F1673F695006174C8 /* WBCDSAFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF451673F695006174C8 /* WBCDSAFunctions.c */; };
-		1B0DC0401673F695006174C8 /* WBCDSAFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF461673F695006174C8 /* WBCDSAFunctions.h */; };
-		1B0DC0411673F695006174C8 /* WBCryptoFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF471673F695006174C8 /* WBCryptoFunctions.c */; };
-		1B0DC0421673F695006174C8 /* WBCryptoFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF481673F695006174C8 /* WBCryptoFunctions.h */; };
 		1B0DC0431673F695006174C8 /* WBDigestFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF491673F695006174C8 /* WBDigestFunctions.c */; };
-		1B0DC0441673F695006174C8 /* WBDigestFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF4A1673F695006174C8 /* WBDigestFunctions.h */; };
+		1B0DC0441673F695006174C8 /* WBDigestFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF4A1673F695006174C8 /* WBDigestFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B0DC0451673F695006174C8 /* WBKeychainFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF4B1673F695006174C8 /* WBKeychainFunctions.c */; };
 		1B0DC0461673F695006174C8 /* WBKeychainFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF4C1673F695006174C8 /* WBKeychainFunctions.h */; };
-		1B0DC0471673F695006174C8 /* WBSecurityFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.c */; };
-		1B0DC0481673F695006174C8 /* WBSecurityFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF4E1673F695006174C8 /* WBSecurityFunctions.h */; };
+		1B0DC0471673F695006174C8 /* WBSecurityFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.cpp */; };
+		1B0DC0481673F695006174C8 /* WBSecurityFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF4E1673F695006174C8 /* WBSecurityFunctions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1B0DC0491673F695006174C8 /* WBTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF501673F695006174C8 /* WBTemplate.h */; };
 		1B0DC04A1673F695006174C8 /* WBTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B0DBF511673F695006174C8 /* WBTemplate.m */; };
 		1B0DC04B1673F695006174C8 /* WBTemplateParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B0DBF521673F695006174C8 /* WBTemplateParser.h */; };
@@ -252,7 +248,11 @@
 		1B29574F1675F04C001B89BD /* WBODFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B29574D1675F04C001B89BD /* WBODFunctions.h */; };
 		1B2957511675F08F001B89BD /* OpenDirectory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B2957501675F08F001B89BD /* OpenDirectory.framework */; };
 		1B2957521675F0A8001B89BD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B967C500D38E09C000F481B /* Security.framework */; };
+		1B5B3FFF1B428A02001895A7 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1B5B3FFE1B428A02001895A7 /* main.mm */; };
+		1B5B40031B428A5C001895A7 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B967C500D38E09C000F481B /* Security.framework */; };
+		1B7992891B42B7A000A28B28 /* WBSecurityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B24FECF1B419E760001449C /* WBSecurityTest.m */; };
 		1B8B08841255D1420028DAD4 /* WBBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B8B08831255D1420028DAD4 /* WBBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1BA6C8931B429CA10099327A /* WBTests.keychain in Resources */ = {isa = PBXBuildFile; fileRef = 1BA6C8921B429CA10099327A /* WBTests.keychain */; };
 		1BF2870C1675056600ABD59E /* WBMacroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B4F54E10F53E9080091CADB /* WBMacroTests.m */; };
 		1BF2870D1675056600ABD59E /* WBScopeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */; };
 		1BF2870E1675056600ABD59E /* WBFunctionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */; };
@@ -265,7 +265,6 @@
 		1BF287181675074300ABD59E /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342D40E0A9394002E195E /* CoreAudioKit.framework */; };
 		1BF287191675074B00ABD59E /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B6342D90E0A93A0002E195E /* AudioUnit.framework */; };
 		1BF2871A1675077300ABD59E /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		1BF2871C167507A400ABD59E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BF2871B167507A400ABD59E /* SenTestingKit.framework */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -291,6 +290,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1B5B3FFA1B428A02001895A7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -299,7 +310,7 @@
 		1B0DBE531673ED84006174C8 /* application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = application.xcconfig; sourceTree = "<group>"; };
 		1B0DBE541673ED84006174C8 /* archive.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = archive.xcconfig; sourceTree = "<group>"; };
 		1B0DBE551673ED84006174C8 /* bundle.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = bundle.xcconfig; sourceTree = "<group>"; };
-		1B0DBE561673ED84006174C8 /* dylib.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = dylib.xcconfig; sourceTree = "<group>"; };
+		1B0DBE561673ED84006174C8 /* framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = framework.xcconfig; path = ../../../hadron/xcconfigs/target/framework.xcconfig; sourceTree = "<group>"; };
 		1B0DBE571673ED84006174C8 /* executable.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = executable.xcconfig; sourceTree = "<group>"; };
 		1B0DBE5A1673F694006174C8 /* NSAlert+WonderBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAlert+WonderBox.h"; sourceTree = "<group>"; };
 		1B0DBE5B1673F694006174C8 /* NSAlert+WonderBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAlert+WonderBox.m"; sourceTree = "<group>"; };
@@ -394,7 +405,7 @@
 		1B0DBEBC1673F694006174C8 /* WBTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTreeNode.m; sourceTree = "<group>"; };
 		1B0DBEBD1673F694006174C8 /* WBXMLWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBXMLWriter.h; sourceTree = "<group>"; };
 		1B0DBEBE1673F694006174C8 /* WBXMLWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBXMLWriter.m; sourceTree = "<group>"; };
-		1B0DBEC01673F694006174C8 /* WBAEFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBAEFunctions.c; sourceTree = "<group>"; };
+		1B0DBEC01673F694006174C8 /* WBAEFunctions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WBAEFunctions.mm; sourceTree = "<group>"; };
 		1B0DBEC11673F694006174C8 /* WBAEFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBAEFunctions.h; sourceTree = "<group>"; };
 		1B0DBEC21673F694006174C8 /* WBBase64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBBase64.c; sourceTree = "<group>"; };
 		1B0DBEC31673F694006174C8 /* WBBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase64.h; sourceTree = "<group>"; };
@@ -417,7 +428,7 @@
 		1B0DBED61673F694006174C8 /* WBLoginItems.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBLoginItems.c; sourceTree = "<group>"; };
 		1B0DBED71673F694006174C8 /* WBLoginItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLoginItems.h; sourceTree = "<group>"; };
 		1B0DBED81673F694006174C8 /* WBLSFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBLSFunctions.h; sourceTree = "<group>"; };
-		1B0DBED91673F694006174C8 /* WBLSFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctions.m; sourceTree = "<group>"; };
+		1B0DBED91673F694006174C8 /* WBLSFunctions.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WBLSFunctions.mm; sourceTree = "<group>"; };
 		1B0DBEDA1673F694006174C8 /* WBObjCRuntime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBObjCRuntime.c; sourceTree = "<group>"; };
 		1B0DBEDB1673F694006174C8 /* WBObjCRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBObjCRuntime.h; sourceTree = "<group>"; };
 		1B0DBEDC1673F694006174C8 /* WBProcessFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBProcessFunctions.c; sourceTree = "<group>"; };
@@ -515,15 +526,11 @@
 		1B0DBF411673F695006174C8 /* RSEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSEditorView.h; sourceTree = "<group>"; };
 		1B0DBF421673F695006174C8 /* RSEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSEditorView.m; sourceTree = "<group>"; };
 		1B0DBF431673F695006174C8 /* TOutline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TOutline.png; sourceTree = "<group>"; };
-		1B0DBF451673F695006174C8 /* WBCDSAFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBCDSAFunctions.c; sourceTree = "<group>"; };
-		1B0DBF461673F695006174C8 /* WBCDSAFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCDSAFunctions.h; sourceTree = "<group>"; };
-		1B0DBF471673F695006174C8 /* WBCryptoFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBCryptoFunctions.c; sourceTree = "<group>"; };
-		1B0DBF481673F695006174C8 /* WBCryptoFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBCryptoFunctions.h; sourceTree = "<group>"; };
 		1B0DBF491673F695006174C8 /* WBDigestFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBDigestFunctions.c; sourceTree = "<group>"; };
 		1B0DBF4A1673F695006174C8 /* WBDigestFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBDigestFunctions.h; sourceTree = "<group>"; };
 		1B0DBF4B1673F695006174C8 /* WBKeychainFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBKeychainFunctions.c; sourceTree = "<group>"; };
 		1B0DBF4C1673F695006174C8 /* WBKeychainFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBKeychainFunctions.h; sourceTree = "<group>"; };
-		1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBSecurityFunctions.c; sourceTree = "<group>"; };
+		1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WBSecurityFunctions.cpp; sourceTree = "<group>"; };
 		1B0DBF4E1673F695006174C8 /* WBSecurityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBSecurityFunctions.h; sourceTree = "<group>"; };
 		1B0DBF501673F695006174C8 /* WBTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBTemplate.h; sourceTree = "<group>"; };
 		1B0DBF511673F695006174C8 /* WBTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBTemplate.m; sourceTree = "<group>"; };
@@ -542,12 +549,15 @@
 		1B0DBF621673F695006174C8 /* WBWizardPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBWizardPage.h; sourceTree = "<group>"; };
 		1B0DBF631673F695006174C8 /* WBWizardPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBWizardPage.m; sourceTree = "<group>"; };
 		1B158E8B1255229E00584D8E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		1B24FECF1B419E760001449C /* WBSecurityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBSecurityTest.m; sourceTree = "<group>"; };
 		1B29574C1675F04C001B89BD /* WBODFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WBODFunctions.c; sourceTree = "<group>"; };
 		1B29574D1675F04C001B89BD /* WBODFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBODFunctions.h; sourceTree = "<group>"; };
 		1B2957501675F08F001B89BD /* OpenDirectory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenDirectory.framework; path = System/Library/Frameworks/OpenDirectory.framework; sourceTree = SDKROOT; };
 		1B36CA2B0D390B85002AB5FD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBScopeTest.m; sourceTree = "<group>"; };
 		1B4F54E10F53E9080091CADB /* WBMacroTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBMacroTests.m; sourceTree = "<group>"; };
+		1B5B3FFC1B428A02001895A7 /* TestKeychainGen */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestKeychainGen; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B5B3FFE1B428A02001895A7 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		1B6342C20E0A9362002E195E /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		1B6342C40E0A9362002E195E /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		1B6342CB0E0A9380002E195E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -558,26 +568,34 @@
 		1B877D150D37E4B5007A59B5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = /System/Library/Frameworks/WebKit.framework; sourceTree = "<absolute>"; };
 		1B8B08831255D1420028DAD4 /* WBBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WBBase.h; sourceTree = "<group>"; };
 		1B967C500D38E09C000F481B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		1BA6C8921B429CA10099327A /* WBTests.keychain */ = {isa = PBXFileReference; lastKnownFileType = file; path = WBTests.keychain; sourceTree = "<group>"; };
 		1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBIndexIteratorTests.m; sourceTree = "<group>"; };
+		1BDD6CB71B417D3B00C01A9C /* project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = project.xcconfig; sourceTree = "<group>"; };
 		1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBFunctionsTest.m; sourceTree = "<group>"; };
 		1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WBLSFunctionsTest.m; sourceTree = "<group>"; };
 		1BF23A8E0D376E01007EF8EB /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		1BF23B5E0D377544007EF8EB /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
-		1BF286F7167504CF00ABD59E /* WBTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WBTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1BF2871B167507A400ABD59E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		1BF286F7167504CF00ABD59E /* WBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BF76C870D367E0000A8758E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* WonderBox.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WonderBox.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1B5B3FF91B428A02001895A7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B5B40031B428A5C001895A7 /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1BF286F3167504CF00ABD59E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				1BF2871A1675077300ABD59E /* Cocoa.framework in Frameworks */,
 				1BF28714167506C300ABD59E /* WonderBox.framework in Frameworks */,
-				1BF2871C167507A400ABD59E /* SenTestingKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,7 +624,8 @@
 			isa = PBXGroup;
 			children = (
 				8DC2EF5B0486A6940098B216 /* WonderBox.framework */,
-				1BF286F7167504CF00ABD59E /* WBTests.octest */,
+				1BF286F7167504CF00ABD59E /* WBTests.xctest */,
+				1B5B3FFC1B428A02001895A7 /* TestKeychainGen */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -617,6 +636,7 @@
 				08FB77AEFE84172EC02AAC07 /* Sources */,
 				1BF76C800D367DF100A8758E /* Tests */,
 				089C1665FE841158C02AAC07 /* Resources */,
+				1B5B3FFD1B428A02001895A7 /* TestKeychainGen */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 				1B0DBE4E1673ED84006174C8 /* xcconfigs */,
@@ -628,7 +648,6 @@
 			isa = PBXGroup;
 			children = (
 				1BF23B5E0D377544007EF8EB /* libxml2.dylib */,
-				1BF2871B167507A400ABD59E /* SenTestingKit.framework */,
 				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
 			);
 			name = Frameworks;
@@ -690,6 +709,7 @@
 			isa = PBXGroup;
 			children = (
 				1B0DBE521673ED84006174C8 /* target */,
+				1BDD6CB71B417D3B00C01A9C /* project.xcconfig */,
 				1B0DBE4F1673ED84006174C8 /* debug.xcconfig */,
 				1B0DBE511673ED84006174C8 /* release.xcconfig */,
 			);
@@ -702,7 +722,7 @@
 				1B0DBE531673ED84006174C8 /* application.xcconfig */,
 				1B0DBE541673ED84006174C8 /* archive.xcconfig */,
 				1B0DBE551673ED84006174C8 /* bundle.xcconfig */,
-				1B0DBE561673ED84006174C8 /* dylib.xcconfig */,
+				1B0DBE561673ED84006174C8 /* framework.xcconfig */,
 				1B0DBE571673ED84006174C8 /* executable.xcconfig */,
 			);
 			path = target;
@@ -848,7 +868,7 @@
 		1B0DBEBF1673F694006174C8 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
-				1B0DBEC01673F694006174C8 /* WBAEFunctions.c */,
+				1B0DBEC01673F694006174C8 /* WBAEFunctions.mm */,
 				1B0DBEC11673F694006174C8 /* WBAEFunctions.h */,
 				1B0DBEC21673F694006174C8 /* WBBase64.c */,
 				1B0DBEC31673F694006174C8 /* WBBase64.h */,
@@ -871,7 +891,7 @@
 				1B0DBED61673F694006174C8 /* WBLoginItems.c */,
 				1B0DBED71673F694006174C8 /* WBLoginItems.h */,
 				1B0DBED81673F694006174C8 /* WBLSFunctions.h */,
-				1B0DBED91673F694006174C8 /* WBLSFunctions.m */,
+				1B0DBED91673F694006174C8 /* WBLSFunctions.mm */,
 				1B29574C1675F04C001B89BD /* WBODFunctions.c */,
 				1B29574D1675F04C001B89BD /* WBODFunctions.h */,
 				1B0DBEDA1673F694006174C8 /* WBObjCRuntime.c */,
@@ -1034,15 +1054,11 @@
 		1B0DBF441673F695006174C8 /* Security */ = {
 			isa = PBXGroup;
 			children = (
-				1B0DBF451673F695006174C8 /* WBCDSAFunctions.c */,
-				1B0DBF461673F695006174C8 /* WBCDSAFunctions.h */,
-				1B0DBF471673F695006174C8 /* WBCryptoFunctions.c */,
-				1B0DBF481673F695006174C8 /* WBCryptoFunctions.h */,
 				1B0DBF491673F695006174C8 /* WBDigestFunctions.c */,
 				1B0DBF4A1673F695006174C8 /* WBDigestFunctions.h */,
 				1B0DBF4B1673F695006174C8 /* WBKeychainFunctions.c */,
 				1B0DBF4C1673F695006174C8 /* WBKeychainFunctions.h */,
-				1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.c */,
+				1B0DBF4D1673F695006174C8 /* WBSecurityFunctions.cpp */,
 				1B0DBF4E1673F695006174C8 /* WBSecurityFunctions.h */,
 			);
 			path = Security;
@@ -1084,16 +1100,26 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		1B5B3FFD1B428A02001895A7 /* TestKeychainGen */ = {
+			isa = PBXGroup;
+			children = (
+				1B5B3FFE1B428A02001895A7 /* main.mm */,
+			);
+			path = TestKeychainGen;
+			sourceTree = "<group>";
+		};
 		1BF76C800D367DF100A8758E /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				1BF76C870D367E0000A8758E /* Info.plist */,
+				1BA6C8921B429CA10099327A /* WBTests.keychain */,
 				1B4F54E10F53E9080091CADB /* WBMacroTests.m */,
 				1B3F052C0EFAA340009F43A5 /* WBScopeTest.m */,
 				1BE35AD80D36E1120007ED9A /* WBFunctionsTest.m */,
 				1BE35ADA0D36E1120007ED9A /* WBLSFunctionsTest.m */,
 				1B63B9710EE2C57F000ED041 /* WBBase64Test.m */,
 				1BB7CCE5129C35B7003C3E95 /* WBIndexIteratorTests.m */,
+				1B24FECF1B419E760001449C /* WBSecurityTest.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1210,8 +1236,6 @@
 				1B0DC0381673F695006174C8 /* WBOpenGLTeapotList.h in Headers */,
 				1B0DC0391673F695006174C8 /* WBOpenGLView.h in Headers */,
 				1B0DC03C1673F695006174C8 /* RSEditorView.h in Headers */,
-				1B0DC0401673F695006174C8 /* WBCDSAFunctions.h in Headers */,
-				1B0DC0421673F695006174C8 /* WBCryptoFunctions.h in Headers */,
 				1B0DC0441673F695006174C8 /* WBDigestFunctions.h in Headers */,
 				1B0DC0461673F695006174C8 /* WBKeychainFunctions.h in Headers */,
 				1B0DC0481673F695006174C8 /* WBSecurityFunctions.h in Headers */,
@@ -1227,6 +1251,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		1B5B3FFB1B428A02001895A7 /* TestKeychainGen */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1B5B40001B428A02001895A7 /* Build configuration list for PBXNativeTarget "TestKeychainGen" */;
+			buildPhases = (
+				1B5B3FF81B428A02001895A7 /* Sources */,
+				1B5B3FF91B428A02001895A7 /* Frameworks */,
+				1B5B3FFA1B428A02001895A7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestKeychainGen;
+			productName = TestKeychainGen;
+			productReference = 1B5B3FFC1B428A02001895A7 /* TestKeychainGen */;
+			productType = "com.apple.product-type.tool";
+		};
 		1BF286F6167504CF00ABD59E /* WBTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1BF2870B167504CF00ABD59E /* Build configuration list for PBXNativeTarget "WBTests" */;
@@ -1234,7 +1275,6 @@
 				1BF286F2167504CF00ABD59E /* Sources */,
 				1BF286F3167504CF00ABD59E /* Frameworks */,
 				1BF286F4167504CF00ABD59E /* Resources */,
-				1BF286F5167504CF00ABD59E /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1243,8 +1283,8 @@
 			);
 			name = WBTests;
 			productName = WBTests;
-			productReference = 1BF286F7167504CF00ABD59E /* WBTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 1BF286F7167504CF00ABD59E /* WBTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		8DC2EF4F0486A6940098B216 /* WonderBox */ = {
 			isa = PBXNativeTarget;
@@ -1271,6 +1311,15 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastTestingUpgradeCheck = 0630;
+				LastUpgradeCheck = 0630;
+				TargetAttributes = {
+					1B5B3FFB1B428A02001895A7 = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+				};
+			};
 			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "WonderBox" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
@@ -1286,6 +1335,7 @@
 			targets = (
 				8DC2EF4F0486A6940098B216 /* WonderBox */,
 				1BF286F6167504CF00ABD59E /* WBTests */,
+				1B5B3FFB1B428A02001895A7 /* TestKeychainGen */,
 			);
 		};
 /* End PBXProject section */
@@ -1295,6 +1345,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BA6C8931B429CA10099327A /* WBTests.keychain in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1323,27 +1374,20 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		1BF286F5167504CF00ABD59E /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
+/* Begin PBXSourcesBuildPhase section */
+		1B5B3FF81B428A02001895A7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
+				1B5B3FFF1B428A02001895A7 /* main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
 		1BF286F2167504CF00ABD59E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B7992891B42B7A000A28B28 /* WBSecurityTest.m in Sources */,
 				1BF2870C1675056600ABD59E /* WBMacroTests.m in Sources */,
 				1BF2870D1675056600ABD59E /* WBScopeTest.m in Sources */,
 				1BF2870E1675056600ABD59E /* WBFunctionsTest.m in Sources */,
@@ -1403,7 +1447,7 @@
 				1B0DBFC01673F695006174C8 /* WBThreadPort.m in Sources */,
 				1B0DBFC21673F695006174C8 /* WBTreeNode.m in Sources */,
 				1B0DBFC41673F695006174C8 /* WBXMLWriter.m in Sources */,
-				1B0DBFC51673F695006174C8 /* WBAEFunctions.c in Sources */,
+				1B0DBFC51673F695006174C8 /* WBAEFunctions.mm in Sources */,
 				1B0DBFC71673F695006174C8 /* WBBase64.c in Sources */,
 				1B0DBFCA1673F695006174C8 /* WBCGFunctions.mm in Sources */,
 				1B0DBFCD1673F695006174C8 /* WBFinderSuite.c in Sources */,
@@ -1414,7 +1458,7 @@
 				1B0DBFD71673F695006174C8 /* WBIOFunctions.c in Sources */,
 				1B0DBFD91673F695006174C8 /* WBIOKitFunctions.c in Sources */,
 				1B0DBFDB1673F695006174C8 /* WBLoginItems.c in Sources */,
-				1B0DBFDE1673F695006174C8 /* WBLSFunctions.m in Sources */,
+				1B0DBFDE1673F695006174C8 /* WBLSFunctions.mm in Sources */,
 				1B0DBFDF1673F695006174C8 /* WBObjCRuntime.c in Sources */,
 				1B0DBFE11673F695006174C8 /* WBProcessFunctions.c in Sources */,
 				1B0DBFE31673F695006174C8 /* WBTextFunctions.c in Sources */,
@@ -1455,11 +1499,9 @@
 				1B0DC0371673F695006174C8 /* WBOpenGLTeapotList.c in Sources */,
 				1B0DC03A1673F695006174C8 /* WBOpenGLView.m in Sources */,
 				1B0DC03D1673F695006174C8 /* RSEditorView.m in Sources */,
-				1B0DC03F1673F695006174C8 /* WBCDSAFunctions.c in Sources */,
-				1B0DC0411673F695006174C8 /* WBCryptoFunctions.c in Sources */,
 				1B0DC0431673F695006174C8 /* WBDigestFunctions.c in Sources */,
 				1B0DC0451673F695006174C8 /* WBKeychainFunctions.c in Sources */,
-				1B0DC0471673F695006174C8 /* WBSecurityFunctions.c in Sources */,
+				1B0DC0471673F695006174C8 /* WBSecurityFunctions.cpp in Sources */,
 				1B0DC04A1673F695006174C8 /* WBTemplate.m in Sources */,
 				1B0DC04C1673F695006174C8 /* WBTemplateParser.m in Sources */,
 				1B0DC04E1673F695006174C8 /* WBXMLTemplate.m in Sources */,
@@ -1518,30 +1560,104 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1B5B40011B428A02001895A7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1B5B40021B428A02001895A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		1BF28709167504CF00ABD59E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
 		1BF2870A167504CF00ABD59E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B0DBE561673ED84006174C8 /* dylib.xcconfig */;
+			baseConfigurationReference = 1B0DBE561673ED84006174C8 /* framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 273;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 273;
@@ -1556,8 +1672,10 @@
 		};
 		1DEB91AF08733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B0DBE561673ED84006174C8 /* dylib.xcconfig */;
+			baseConfigurationReference = 1B0DBE561673ED84006174C8 /* framework.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 273;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 273;
@@ -1574,6 +1692,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1B0DBE4F1673ED84006174C8 /* debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
 		};
@@ -1581,12 +1709,30 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1B0DBE511673ED84006174C8 /* release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1B5B40001B428A02001895A7 /* Build configuration list for PBXNativeTarget "TestKeychainGen" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B5B40011B428A02001895A7 /* Debug */,
+				1B5B40021B428A02001895A7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		1BF2870B167504CF00ABD59E /* Build configuration list for PBXNativeTarget "WBTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -9,6 +9,8 @@
  */
 
 #import <WonderBox/WBBase.h>
+
+#import <Cocoa/Cocoa.h>
 #import <AudioUnit/AudioUnit.h>
 
 WB_EXPORT

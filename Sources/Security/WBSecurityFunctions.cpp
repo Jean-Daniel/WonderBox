@@ -9,121 +9,131 @@
  */
 
 #include <WonderBox/WBSecurityFunctions.h>
-#include <WonderBox/WBCDSAFunctions.h>
 
 #include <unistd.h>
 
-OSStatus WBKeyGetStrengthInBits(SecKeyRef key, uint32 *strenght) {
-  OSStatus err = noErr;
-#if 0
-  const CSSM_KEY *ckey;
-  CSSM_CSP_HANDLE cspHandle;
-  CSSM_KEY_SIZE keysize = {0, 0};
+bool WBSecTransformSetDigest(SecTransformRef trans, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  if (digestAlg) {
+    if (!SecTransformSetAttribute(trans, kSecDigestTypeAttribute, digestAlg, error))
+      return false;
 
-  err = SecKeyGetCSSMKey(key, &ckey);
-  require_noerr(err, bail);
-
-  err = SecKeyGetCSPHandle(key, &cspHandle);
-  require_noerr(err, bail);
-
-  /* unimplemented */
-  err = CSSM_QueryKeySizeInBits(cspHandle,
-                                CSSM_INVALID_HANDLE,
-                                ckey,
-                                &keysize);
-  require_noerr(err, bail);
-  *strenght = keysize.EffectiveKeySizeInBits ? : keysize.LogicalKeySizeInBits;
-#else
-  const CSSM_KEY *ckey;
-
-  err = SecKeyGetCSSMKey(key, &ckey);
-  require_noerr(err, bail);
-
-  *strenght = ckey->KeyHeader.LogicalKeySizeInBits;
-#endif
-
-  /* unimplemented */
-//  const CSSM_X509_ALGORITHM_IDENTIFIER *algid;
-//  OSStatus err = SecKeyGetAlgorithmID(key, &algid);
-//  if (noErr == err) {
-//    unsigned int length = 0;
-//    err = SecKeyGetStrengthInBits(key, NULL /* algid */, &length);
-//    if (noErr == err)
-//      *strenght = length;
-//  }
-bail:
-  return err;
-}
-
-static WB_DEPRECATED("CDSA is deprecated")
-OSStatus _WBKeyCreateDefaultContext(SecKeyRef key, bool crypts, CSSM_CC_HANDLE *ccHandle) {
-  const CSSM_KEY *ckey;
-  CSSM_CSP_HANDLE cspHandle;
-
-  OSStatus err = SecKeyGetCSSMKey(key, &ckey);
-  require_noerr(err, bail);
-
-  err = SecKeyGetCSPHandle(key, &cspHandle);
-  require_noerr(err, bail);
-
-  /* If sign or verify (~ crypts with private key, or decrypt with public key) */
-  if ((crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PRIVATE_KEY) ||
-      (!crypts && ckey->KeyHeader.KeyClass == CSSM_KEYCLASS_PUBLIC_KEY))
-    err = CSSM_CSP_CreateSignatureContext(cspHandle, CSSM_ALGID_SHA1WithRSA, NULL, ckey, ccHandle);
-  else
-    err = WBCDSACreateCryptContext(cspHandle, ckey, NULL, ccHandle);
-
-  require_noerr(err, bail);
-
-bail:
-  return err;
-}
-
-OSStatus WBKeyQueryOutputSize(SecKeyRef key, bool crypts, uint32 inputSize, uint32 *outputSize) {
-  CSSM_CC_HANDLE ccHandle;
-  CSSM_QUERY_SIZE_DATA size = { inputSize, 0 };
-
-  OSStatus err = _WBKeyCreateDefaultContext(key, crypts, &ccHandle);
-  require_noerr(err, bail);
-
-  err = CSSM_QuerySize(ccHandle, crypts, 1, &size);
-  CSSM_DeleteContext(ccHandle);
-  require_noerr(err, bail);
-
-  *outputSize = size.SizeOutputBlock;
-
-bail:
-  return err;
-}
-
-OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
-  if (!label) return paramErr;
-  *label = NULL;
-
-  OSStatus err = noErr;
-  UInt32 tags[1] = { kSecLabelItemAttr };
-  UInt32 formats[1] = { CSSM_DB_ATTRIBUTE_FORMAT_BLOB };
-  SecKeychainAttributeInfo info = { 1, tags, formats };
-
-  SecKeychainAttributeList *list = NULL;
-  err = SecKeychainItemCopyAttributesAndData((SecKeychainItemRef)cert, &info, NULL, &list, NULL, NULL);
-  if (noErr == err) {
-    SecKeychainAttribute *attr = list->attr;
-#if !__LP64__
-    // 64 bit: attr->length is an UInt32 which always fit in CFIndex
-    if (attr->length > CFIndexMax)
-      err = memFullErr;
-    else
-#endif
-    {
-      *label = CFStringCreateWithBytes(kCFAllocatorDefault, attr->data, (CFIndex)attr->length, kCFStringEncodingUTF8, FALSE);
-      if (!*label)
-        err = coreFoundationUnknownErr;
+    if (digestBitLength > 0) {
+      spx::unique_cfptr<CFNumberRef> length(CFNumberCreate(kCFAllocatorDefault, kCFNumberCFIndexType, &digestBitLength));
+      if (!SecTransformSetAttribute(trans, kSecDigestLengthAttribute, length.get(), error))
+        return false;
     }
-
-    SecKeychainItemFreeAttributesAndData(list, NULL); // ignore err
   }
-  return err;
+
+  return true;
+}
+
+SecTransformRef WBSecSignTransformCreate(SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> trans(SecSignTransformCreate(pkey, error));
+  if (trans && !WBSecTransformSetDigest(trans.get(), digestAlg, digestBitLength, error))
+    return nullptr;
+  return trans.release();
+}
+
+SecTransformRef WBSecVerifyTransformCreate(SecKeyRef pkey, CFDataRef signature, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> trans(SecVerifyTransformCreate(pkey, signature, error));
+  if (trans && !WBSecTransformSetDigest(trans.get(), digestAlg, digestBitLength, error))
+    return nullptr;
+  return trans.release();
+}
+
+SecTransformRef WBSecTransformCreateWithURL(CFURLRef url, CFErrorRef *error) {
+  spx::unique_cfptr<CFReadStreamRef> stream(CFReadStreamCreateWithFile(kCFAllocatorDefault, url));
+  if (stream)
+    return SecTransformCreateReadTransformWithReadStream(stream.get());
+  if (error)
+    *error = CFErrorCreate(kCFAllocatorDefault, kCFErrorDomainOSStatus, coreFoundationUnknownErr, nullptr);
+  return nullptr;
+}
+
+CFDataRef WBSecuritySignData(CFDataRef data, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> sign(WBSecSignTransformCreate(pkey, digestAlg, digestBitLength, error));
+  if (sign && SecTransformSetAttribute(sign.get(), kSecTransformInputAttributeName, data, error))
+    return static_cast<CFDataRef>(SecTransformExecute(sign.get(), error));
+  return nullptr;
+}
+
+CFBooleanRef WBSecurityVerifySignature(CFDataRef data, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> trans(WBSecVerifyTransformCreate(pubKey, signature, digestAlg, digestBitLength, error));
+  if (trans && SecTransformSetAttribute(trans.get(), kSecTransformInputAttributeName, data, error))
+    return static_cast<CFBooleanRef>(SecTransformExecute(trans.get(), error));
+  return nullptr;
+}
+
+CFBooleanRef WBSecurityVerifyDigestSignature(CFDataRef data, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> trans(WBSecVerifyTransformCreate(pubKey, signature, digestAlg, digestBitLength, error));
+  if (trans &&
+      SecTransformSetAttribute(trans.get(), kSecInputIsAttributeName, kSecInputIsDigest, error) &&
+      SecTransformSetAttribute(trans.get(), kSecTransformInputAttributeName, data, error))
+    return static_cast<CFBooleanRef>(SecTransformExecute(trans.get(), error));
+  return nullptr;
+}
+
+CFDataRef WBSecuritySignFile(CFURLRef fileURL, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> file(WBSecTransformCreateWithURL(fileURL, error));
+  if (file) {
+    spx::unique_cfptr<SecTransformRef> sign(WBSecSignTransformCreate(pkey, digestAlg, digestBitLength, error));
+    if (sign) {
+      spx::unique_cfptr<SecGroupTransformRef> group(SecTransformCreateGroupTransform());
+      if (SecTransformConnectTransforms(file.get(), kSecTransformOutputAttributeName, sign.get(), kSecTransformInputAttributeName, group.get(), error)) {
+        return static_cast<CFDataRef>(SecTransformExecute(group.get(), error));
+      }
+    }
+  }
+  return nullptr;
+}
+
+CFBooleanRef WBSecurityVerifyFileSignature(CFURLRef fileURL, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> file(WBSecTransformCreateWithURL(fileURL, error));
+  if (file) {
+    spx::unique_cfptr<SecTransformRef> verif(WBSecVerifyTransformCreate(pubKey, signature, digestAlg, digestBitLength, error));
+    if (verif) {
+      spx::unique_cfptr<SecGroupTransformRef> group(SecTransformCreateGroupTransform());
+      if (SecTransformConnectTransforms(file.get(), kSecTransformOutputAttributeName, verif.get(), kSecTransformInputAttributeName, group.get(), error)) {
+        return static_cast<CFBooleanRef>(SecTransformExecute(group.get(), error));
+      }
+    }
+  }
+  return nullptr;
+}
+
+// MARK: -
+CFDictionaryRef WBSecItemCopyAttributes(CFTypeRef item, CFTypeRef itemClass) {
+  CFTypeRef keys[] = {
+    kSecClass,
+    kSecReturnAttributes,
+    kSecMatchLimit,
+    kSecMatchItemList
+  };
+  spx::unique_cfptr<CFArrayRef> list(CFArrayCreate(kCFAllocatorDefault, &item, 1, &kCFTypeArrayCallBacks));
+  CFTypeRef values[] = {
+    itemClass,
+    kCFBooleanTrue,
+    kSecMatchLimitOne,
+    list.get(),
+  };
+  spx::unique_cfptr<CFDictionaryRef> query(CFDictionaryCreate(kCFAllocatorDefault, keys, values, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks));
+
+  CFDictionaryRef attributes;
+  OSStatus err = SecItemCopyMatching(query.get(), (CFTypeRef *)&attributes);
+  if (noErr == err)
+    return attributes;
+  return nullptr;
+}
+
+CFStringRef WBCertificateCopyLabel(SecCertificateRef cert, CFErrorRef *error) {
+  spx::unique_cfptr<CFArrayRef> attrs(CFArrayCreate(kCFAllocatorDefault, (const void **)&kSecPropertyKeyLabel, 1, &kCFTypeArrayCallBacks));
+  spx::unique_cfptr<CFDictionaryRef> values(SecCertificateCopyValues(cert, attrs.get(), error));
+  if (values) {
+    CFStringRef label = (CFStringRef)CFDictionaryGetValue(values.get(), kSecPropertyKeyLabel);
+    CFRetain(label);
+    return label;
+  }
+  return nullptr;
 }
 
 //static
@@ -132,102 +142,63 @@ OSStatus WBCertificateCopyLabel(SecCertificateRef cert, CFStringRef *label) {
 //  return kCFCompareEqualTo == SecIdentityCompare(i1, i2, 0);
 //}
 #pragma mark -
-CFArrayRef WBSecurityCopyIdentities(CFTypeRef keychainOrArray, CSSM_KEYUSE usage) {
-  CFMutableArrayRef idts = NULL;
-  SecIdentitySearchRef search = NULL;
-  OSStatus err = SecIdentitySearchCreate(keychainOrArray, usage, &search);
-  if (noErr == err) {
-    idts = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-    CFArrayCallBacks acb = kCFTypeArrayCallBacks;
-//    acb.equal = _WBIdentitiesEqual;
-    CFMutableArrayRef certs = CFArrayCreateMutable(kCFAllocatorDefault, 0, &acb);
-
-    SecIdentityRef ident = NULL;
-    while (noErr == (err = SecIdentitySearchCopyNext(search, &ident))) {
-      if (!CFArrayContainsValue(certs, CFRangeMake(0, CFArrayGetCount(certs)), ident)) {
-        CFArrayAppendValue(idts, ident);
-        CFArrayAppendValue(certs, ident);
-      }
-      CFRelease(ident);
-    }
-    /* if an error occured */
-    if (err != errSecItemNotFound) {
-      CFRelease(idts);
-      idts = NULL;
-    }
-    CFRelease(search);
-    CFRelease(certs);
-  }
-  return idts;
-}
-
-CFArrayRef WBSecurityCopyPolicies(CSSM_CERT_TYPE certType, const CSSM_OID *policyOID, const CSSM_DATA *value) {
-  SecPolicySearchRef search = NULL;
-  CFMutableArrayRef policies = NULL;
-  OSStatus err = SecPolicySearchCreate(certType, policyOID, value, &search);
-  if (noErr == err) {
-    policies = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-
-    SecPolicyRef policy = NULL;
-    while (noErr == (err = SecPolicySearchCopyNext(search, &policy))) {
-      CFArrayAppendValue(policies, policy);
-      CFRelease(policy);
-    }
-    /* if an error occured */
-    if (err != errSecPolicyNotFound) {
-      CFRelease(policies);
-      policies = NULL;
-    }
-    CFRelease(search);
-  }
-  return policies;
-}
-
 OSStatus WBIdentityFindByEmail(CFTypeRef keychainOrArray, CFStringRef email, SecIdentityRef *identity) {
-  if (!identity) return paramErr;
+  if (!identity)
+    return paramErr;
 
-  //SecKeychainItemRef pref;
-  OSStatus err = SecIdentityCopyPreference(email, 0, NULL, identity);
-  //OSStatus err = SecIdentityFindPreferenceItem(keychainOrArray, email, &pref);
-  //if (noErr == err) {
-    //err = SecIdentityCopyFromPreferenceItem(pref, identity);
-    //CFRelease(pref);
-  //} else
-  if (errSecItemNotFound == err || !*identity) {
-    SecIdentitySearchRef search = NULL;
-    err = SecIdentitySearchCreate(keychainOrArray, 0, &search);
+  OSStatus err = noErr;
+  *identity = SecIdentityCopyPreferred(email, nullptr, nullptr);
+  if (!*identity) {
+    CFTypeRef keys[] = {
+      kSecClass,
+      kSecReturnRef,
+      kSecMatchLimit,
+      kSecMatchEmailAddressIfPresent,
+      kSecMatchCaseInsensitive,
+      kSecMatchWidthInsensitive,
+      kSecMatchDiacriticInsensitive,
+    };
+    CFTypeRef values[] = {
+      kSecClassIdentity,
+      kCFBooleanTrue,
+      kSecMatchLimitAll,
+      email,
+      kCFBooleanTrue,
+      kCFBooleanTrue,
+      kCFBooleanTrue,
+    };
+    CFArrayRef identities;
+    spx::unique_cfptr<CFDictionaryRef> query(CFDictionaryCreate(kCFAllocatorDefault, keys, values, 7, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks));
+    err = SecItemCopyMatching(query.get(), (CFTypeRef *)&identities);
     if (noErr == err) {
-      SecIdentityRef ident = NULL;
-      while (noErr == (err = SecIdentitySearchCopyNext(search, &ident))) {
-        bool found = false;
+      for (CFIndex idx = 0, count = CFArrayGetCount(identities); !*identity && idx < count; ++idx) {
+        SecIdentityRef ident = (SecIdentityRef)CFArrayGetValueAtIndex(identities, idx);
         SecCertificateRef cert;
         err = SecIdentityCopyCertificate(ident, &cert);
         if (noErr == err) {
           CFArrayRef addresses = NULL;
           if (noErr == SecCertificateCopyEmailAddresses(cert, &addresses) && addresses) {
             if (CFArrayContainsValue(addresses, CFRangeMake(0, CFArrayGetCount(addresses)), email)) {
-              found = true;
+              *identity = ident;
+              CFRetain(*identity);
             }
             CFRelease(addresses);
           } else {
             spx_log_warning("SecCertificateCopyEmailAddresses() return %ld", (long)err);
           }
-
           CFRelease(cert);
-        }
-        if (found) {
-          *identity = ident;
-          break;
-        } else {
-          CFRelease(ident);
         }
       }
     }
+    if (noErr == err && !*identity)
+      err = errSecItemNotFound;
   }
   return err;
 }
 
 #pragma mark Signature
+#if 0
+
 OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType credentials, CSSM_ALGORITHMS algid, CSSM_CC_HANDLE *ccHandle) {
   OSStatus err = noErr;
   CSSM_CSP_HANDLE cspHandle = 0;
@@ -424,6 +395,8 @@ CSSM_RETURN WBSecurityVerifyFileSignatureWithIdentity(const char *path, const CS
   return err;
 }
 
+#endif
+
 #pragma mark -
 /* Format strings */
 WB_INLINE
@@ -547,7 +520,8 @@ OSStatus WBSecurityPrintItemAttributeInfo(SecKeychainItemRef item) {
   __WBAttributeInfoPrint(info);
 
 bail:
-    if (info) SecKeychainFreeAttributeInfo(info);
+    if (info)
+      SecKeychainFreeAttributeInfo(info);
   if (keychain) CFRelease(keychain);
 
   return err;

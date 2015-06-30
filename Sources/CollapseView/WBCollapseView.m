@@ -55,7 +55,7 @@
 - (void)dealloc {
   spx_release(wb_views);
   spx_release(wb_items);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

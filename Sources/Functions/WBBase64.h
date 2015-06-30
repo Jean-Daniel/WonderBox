@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <CoreFoundation/CoreFoundation.h>
+
 // WBBase64
 //
 /// Helper for handling Base64 and WebSafeBase64 encodings

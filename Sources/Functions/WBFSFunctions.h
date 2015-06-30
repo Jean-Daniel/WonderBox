@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#include <CoreServices/CoreServices.h>
+
 #include <fcntl.h>
 
 __BEGIN_DECLS
@@ -123,6 +125,8 @@ WB_EXPORT
 OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creator) WB_DEPRECATED("WBFSSetTypeAndCreatorAtURL");
 
 #if defined(__OBJC__)
+
+#import <Foundation/Foundation.h>
 
 @interface NSString (WBFileSystem)
 + (NSString *)stringFromFSRef:(const FSRef *)ref WB_DEPRECATED("Use URL API");

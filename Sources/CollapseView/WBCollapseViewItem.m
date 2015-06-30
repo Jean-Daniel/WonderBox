@@ -61,7 +61,7 @@
   spx_release(wb_title);
   spx_release(wb_view);
   spx_release(wb_uid);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

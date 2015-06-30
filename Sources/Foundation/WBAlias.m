@@ -143,7 +143,7 @@
     wb_alias = nil;
   }
   spx_release(wb_path);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -
@@ -226,7 +226,7 @@
   if (!wb_path)
     SPXThrowException(NSInternalInconsistencyException, @"Both alias and path are null");
   // try to create alias
-  OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path fileSystemRepresentation], target, NULL);
+  OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path safeFileSystemRepresentation], target, NULL);
   if (noErr == err) {
     // return noErr even if alias creation fail to indicate that the FSRef is valid
     if (noErr == FSNewAlias(nil, target, &wb_alias) && outChanged)

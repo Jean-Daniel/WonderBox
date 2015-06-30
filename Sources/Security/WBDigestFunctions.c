@@ -11,7 +11,8 @@
 #include <WonderBox/WBDigestFunctions.h>
 
 #include <CommonCrypto/CommonDigest.h>
-#include <unistd.h>
+
+#include <libc.h>
 
 typedef struct _WBDigestInfo {
   uint8_t algo;
@@ -135,7 +136,7 @@ WBDigestAlgorithm WBDigestGetAlgorithmFromRef(WBDigestRef c) {
 // MARK: Utilities
 int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsigned char *md) {
   WBDigestContext ctxt;
-  int err = WBDigestInit(&ctxt, algo);
+  int err = WBDigestInit(algo, &ctxt);
   if (err > 0) {
     err = WBDigestUpdate(&ctxt, data, length);
     if (err > 0) {
@@ -151,12 +152,13 @@ int WBDigestData(const void *data, size_t length, WBDigestAlgorithm algo, unsign
 
 int WBDigestFile(const char *path, WBDigestAlgorithm algo, unsigned char *md) {
   int fd = open(path, O_RDONLY);
-  if (fd <= 0) return -1;
+  if (fd <= 0)
+    return -1;
   /* disable file system caching */
   fcntl(fd, F_NOCACHE, 0);
 
   WBDigestContext ctxt;
-  int err = WBDigestInit(&ctxt, algo);
+  int err = WBDigestInit(algo, &ctxt);
   if (err > 0) {
     /* must be 4k align because caching is disabled */
     char *buffer = malloc(32 * 1024);

@@ -38,7 +38,7 @@
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self setOpenGLContext:nil];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

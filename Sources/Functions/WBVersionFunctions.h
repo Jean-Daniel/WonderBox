@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#import <CoreFoundation/CoreFoundation.h>
+
 #pragma mark Versions
 enum {
   kWBVersionStageDevelopement = 0,

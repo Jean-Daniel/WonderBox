@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 @protocol WBDaemonTaskDelegate;
 WB_OBJC_EXPORT
 @interface WBDaemonTask : NSObject {

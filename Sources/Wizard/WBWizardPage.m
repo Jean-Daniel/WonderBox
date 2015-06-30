@@ -28,7 +28,7 @@
 }
 
 - (void)dealloc {
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (NSImage *)image {

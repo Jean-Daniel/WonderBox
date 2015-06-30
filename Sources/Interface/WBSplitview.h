@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 enum {
   kWBBorderLeft = 1 << 0,
   kWBBorderTop = 1 << 1,

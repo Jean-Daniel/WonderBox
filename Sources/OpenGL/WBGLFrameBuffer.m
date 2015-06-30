@@ -51,7 +51,7 @@ const char*_WBGLFrameBufferGetErrorString(GLenum error) __attribute__((unused));
 - (void)dealloc {
   if (wb_fbo)
     spx_log_error("Release undeleted FBO. Leaks OpenGL objects !");
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

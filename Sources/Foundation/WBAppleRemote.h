@@ -12,6 +12,8 @@
 
 #include <IOKit/hid/IOHIDBase.h>
 
+#import <Foundation/Foundation.h>
+
 enum {
   kWBAppleRemoteButtonMenu = 0,
   kWBAppleRemoteButtonSelect,

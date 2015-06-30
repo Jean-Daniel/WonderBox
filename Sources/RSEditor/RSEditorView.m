@@ -44,7 +44,7 @@
 
 - (void)dealloc {
   spx_release(ibView); // root object
-  spx_dealloc();
+  [super dealloc];
 }
 
 - (NSView *)view {

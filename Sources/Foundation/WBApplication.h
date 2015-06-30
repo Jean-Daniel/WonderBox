@@ -15,6 +15,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 #pragma mark -
 
 /*!

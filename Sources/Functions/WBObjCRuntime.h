@@ -13,6 +13,8 @@
 
 #include <WonderBox/WBBase.h>
 
+#import <CoreFoundation/CoreFoundation.h>
+
 WB_EXPORT
 Class WBRuntimeSetObjectClass(id anObject, Class newClass);
 WB_EXPORT

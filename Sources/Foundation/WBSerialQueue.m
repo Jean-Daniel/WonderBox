@@ -66,7 +66,7 @@
 - (void)dealloc {
   if (wb_queue)
     dispatch_release(wb_queue);
-  spx_dealloc();
+  [super dealloc];
 }
 
 static
@@ -103,7 +103,7 @@ void wb_dispatch_execute(void *ctxt) {
 - (void)dealloc {
   spx_release(wb_argument);
   spx_release(wb_target);
-  spx_dealloc();
+  [super dealloc];
 }
 
 

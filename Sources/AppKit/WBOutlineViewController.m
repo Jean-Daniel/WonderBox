@@ -32,7 +32,7 @@
 - (void)dealloc {
   [self setRoot:nil];
   [wb_outline release];
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

@@ -131,6 +131,8 @@ CGRect WBCGRectRoundIntegral(CGRect aRect, CGFloat factor) {
 
 #if (__OBJC__)
 
+#import <Cocoa/Cocoa.h>
+
 WB_INLINE
 CGFloat WBWindowUserSpaceScaleFactor(NSWindow *window) {
   return window ? [window backingScaleFactor] : 1;

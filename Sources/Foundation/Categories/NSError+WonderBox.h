@@ -9,6 +9,7 @@
  */
 
 #import <WonderBox/WBBase.h>
+#import <Foundation/Foundation.h>
 
 @interface NSError (WBExtensions)
 

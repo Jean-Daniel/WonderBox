@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Foundation/Foundation.h>
+
 enum {
   kWBClassNotFoundError = 'Clnf',
   kWBInstanceCreationError = 'IstC',

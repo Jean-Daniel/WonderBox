@@ -52,7 +52,7 @@
 
 - (void)dealloc {
   spx_release(wb_image);
-  spx_dealloc();
+  [super dealloc];
 }
 
 #pragma mark -

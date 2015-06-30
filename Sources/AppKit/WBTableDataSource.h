@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBBase.h>
 
+#import <Cocoa/Cocoa.h>
+
 typedef NSComparisonResult (*WBCompareFunction)(id, id, void *);
 typedef BOOL (*WBFilterFunction)(NSString *, id, void *);
 
