@@ -64,6 +64,15 @@ CFBooleanRef WBSecurityVerifySignature(CFDataRef data, CFDataRef signature, SecK
   return nullptr;
 }
 
+CFDataRef WBSecuritySignDigest(CFDataRef digest, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
+  spx::unique_cfptr<SecTransformRef> sign(WBSecSignTransformCreate(pkey, digestAlg, digestBitLength, error));
+  if (sign &&
+      SecTransformSetAttribute(sign.get(), kSecInputIsAttributeName, kSecInputIsDigest, error) &&
+      SecTransformSetAttribute(sign.get(), kSecTransformInputAttributeName, digest, error))
+    return static_cast<CFDataRef>(SecTransformExecute(sign.get(), error));
+  return nullptr;
+}
+
 CFBooleanRef WBSecurityVerifyDigestSignature(CFDataRef data, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error) {
   spx::unique_cfptr<SecTransformRef> trans(WBSecVerifyTransformCreate(pubKey, signature, digestAlg, digestBitLength, error));
   if (trans &&

@@ -28,21 +28,26 @@ SecTransformRef WBSecSignTransformCreate(SecKeyRef pkey, CFTypeRef digestAlg, CF
 WB_EXPORT
 SecTransformRef WBSecVerifyTransformCreate(SecKeyRef pkey, CFDataRef signature, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
 
-// MARK: Convenient functions
+// MARK: Sign/Verify Raw Data
 WB_EXPORT
 CFDataRef WBSecuritySignData(CFDataRef data, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
 
 WB_EXPORT
 CFBooleanRef WBSecurityVerifySignature(CFDataRef data, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
 
-WB_EXPORT
-CFBooleanRef WBSecurityVerifyDigestSignature(CFDataRef data, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
-
+// MARK: Sign/Verify File
 WB_EXPORT
 CFDataRef WBSecuritySignFile(CFURLRef fileURL, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
 
 WB_EXPORT
 CFBooleanRef WBSecurityVerifyFileSignature(CFURLRef fileURL, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
+
+// MARK: Sign/Verify Digest
+WB_EXPORT
+CFDataRef WBSecuritySignDigest(CFDataRef digest, SecKeyRef pkey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
+
+WB_EXPORT
+CFBooleanRef WBSecurityVerifyDigestSignature(CFDataRef digest, CFDataRef signature, SecKeyRef pubKey, CFTypeRef digestAlg, CFIndex digestBitLength, CFErrorRef *error);
 
 // MARK: -
 WB_EXPORT

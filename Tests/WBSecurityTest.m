@@ -47,7 +47,7 @@ void _XCTAssertNoErr(id self, OSStatus err, NSString *msg) {
                           (id)kSecClass: (id)kSecClassKey,
                           (id)kSecReturnRef: @YES,
                           (id)kSecMatchLimit: (id)kSecMatchLimitOne,
-                          (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+                          (id)kSecAttrLabel: @"key RSA",
                           (id)kSecAttrKeyClass: (id)kSecAttrKeyClassPrivate,
                           };
   err = SecItemCopyMatching(SPXNSToCFDictionary(query), (CFTypeRef *)&_privKey);
@@ -58,7 +58,7 @@ void _XCTAssertNoErr(id self, OSStatus err, NSString *msg) {
             (id)kSecClass: (id)kSecClassKey,
             (id)kSecReturnRef: @YES,
             (id)kSecMatchLimit: (id)kSecMatchLimitOne,
-            (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+            (id)kSecAttrLabel: @"key RSA",
             (id)kSecAttrKeyClass: (id)kSecAttrKeyClassPublic,
             };
   err = SecItemCopyMatching(SPXNSToCFDictionary(query), (CFTypeRef *)&_pubKey);
@@ -93,6 +93,21 @@ void _XCTAssertNoErr(id self, OSStatus err, NSString *msg) {
 
   data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, digest, WB_SHA512_DIGEST_LENGTH, kCFAllocatorNull);
   result = WBSecurityVerifyDigestSignature(data, signature, _pubKey, kSecDigestSHA2, 512, &error);
+  XCTAssertNotNil(SPXCFToNSType(result));
+  if (result)
+    XCTAssertTrue(CFBooleanGetValue(result));
+}
+
+- (void)testSignVerifyDigest {
+  uint8_t bytes[20];
+  SecRandomCopyBytes(kSecRandomDefault, 20, bytes);
+  CFDataRef data = CFDataCreateWithBytesNoCopy(kCFAllocatorDefault, bytes, 20, kCFAllocatorNull);
+
+  CFErrorRef error;
+  CFDataRef signature = WBSecuritySignDigest(data, _privKey, kSecDigestSHA1, 0, &error);
+  XCTAssertNotNil(SPXCFToNSData(signature));
+
+  CFBooleanRef result = WBSecurityVerifyDigestSignature(data, signature, _pubKey, kSecDigestSHA1, 0, &error);
   XCTAssertNotNil(SPXCFToNSType(result));
   if (result)
     XCTAssertTrue(CFBooleanGetValue(result));
