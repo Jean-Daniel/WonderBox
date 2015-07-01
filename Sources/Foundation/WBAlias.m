@@ -89,16 +89,16 @@
 - (NSURL *)URL {
   if (!_URL && _data) {
     BOOL isStale = NO;
-    _URL = [NSURL URLByResolvingBookmarkData:_data options:NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting relativeToURL:nil bookmarkDataIsStale:&isStale error:NULL];
+    _URL = [[NSURL alloc] initByResolvingBookmarkData:_data options:NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting relativeToURL:nil bookmarkDataIsStale:&isStale error:NULL];
     if (_URL && isStale)
-      _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+      _data = [[_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL] retain];
   }
   return _URL;
 }
 
 - (NSData *)data {
   if (!_data && _URL) {
-    _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+    _data = [[_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL] retain];
   }
   return _data;
 }
