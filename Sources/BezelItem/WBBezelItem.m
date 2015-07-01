@@ -136,7 +136,6 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
   dim.origin.x = (NSWidth(screen) - NSWidth(dim)) / 2.;
   /* Set 140 points from bottom => 140 * scale pixels */
   dim.origin.y = 140;
-  dim.origin.y *= WBScreenUserSpaceScaleFactor([NSScreen mainScreen]);
 
   [[self window] setFrame:dim display:NO];
 }

@@ -20,6 +20,7 @@ enum {
 };
 
 WB_OBJC_EXPORT
+WB_DEPRECATED("Use GCD")
 @interface WBThreadPort : NSObject {
   @private
   NSThread *wb_thread;
