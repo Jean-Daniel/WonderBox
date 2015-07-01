@@ -134,7 +134,7 @@
 }
 
 - (NSString *)path {
-  return _URL.path;
+  return self.URL.path;
 }
 
 @end
