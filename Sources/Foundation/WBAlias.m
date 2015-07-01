@@ -11,235 +11,130 @@
 #import <WonderBox/WBAlias.h>
 #import <WonderBox/WBFSFunctions.h>
 
-@interface WBAlias ()
-- (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle;
-@end
-
 @implementation WBAlias
+
+@synthesize URL = _URL;
+@synthesize data = _data;
 
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
   WBAlias *copy = [[self class] allocWithZone:nil];
-  copy->wb_path = [wb_path copyWithZone:zone];
-
-  if (wb_alias) {
-    /* Copy Handler */
-    copy->wb_alias = wb_alias;
-    if (noErr != HandToHand((Handle *)&copy->wb_alias)) {
-      spx_release(copy);
-      copy = nil;
-    }
-  }
-
+  copy->_URL = [_URL retain];
+  copy->_data = [_data retain];
   return copy;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-  if (wb_path)
-    [coder encodeObject:wb_path forKey:@"WBAliasPath"];
-  if (wb_alias)
-    [coder encodeObject:[self data] forKey:@"WBAliasHandle"];
+  if (_URL)
+    [coder encodeObject:_URL.absoluteURL.path forKey:@"WBAliasPath"];
+  if (_data)
+    [coder encodeObject:_data forKey:@"WBBookmarkData"];
   return;
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_path = spx_retain([coder decodeObjectForKey:@"WBAliasPath"]);
-    NSData *data = [coder decodeObjectForKey:@"WBAliasHandle"];
-    if (data && [data length] < LONG_MAX) {
-      OSErr err = PtrToHand([data bytes], (Handle *)&wb_alias, (long)[data length]);
-      if (noErr != err)
-        spx_log_warning("Failed to read alias data: %s", GetMacOSStatusErrorString(err));
+    NSString *path = [coder decodeObjectForKey:@"WBAliasPath"];
+    if (path)
+      _URL = [[NSURL fileURLWithPath:path] retain];
+    _data = [[coder decodeObjectForKey:@"WBBookmarkData"] retain];
+    if (!_data) {
+      NSData *alias = [coder decodeObjectForKey:@"WBAliasHandle"];
+      if (alias)
+        _data = [SPXCFDataBridgingRelease(CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, SPXNSToCFData(alias))) retain];
     }
   }
   return self;
 }
 
 #pragma mark -
-+ (id)aliasFromData:(NSData *)data {
-  return spx_autorelease([[self alloc] initFromData:data]);
-}
-+ (id)aliasFromAliasHandle:(AliasHandle)handle {
-  return spx_autorelease([[self alloc] initFromAliasHandle:handle]);
++ (instancetype)aliasWithURL:(NSURL *)anURL {
+  return [[[self alloc] initWithURL:anURL] autorelease];
 }
 
-+ (id)aliasWithURL:(NSURL *)anURL {
-  return spx_autorelease([[self alloc] initWithURL:anURL]);
-}
-+ (id)aliasWithPath:(NSString *)aPath {
-  return spx_autorelease([[self alloc] initWithPath:aPath]);
++ (instancetype)aliasFromBookmarkData:(NSData *)data {
+  return [[[self alloc] initFromBookmarkData:data] autorelease];
 }
 
 #pragma mark Initializers
-- (id)initFromAliasHandleNoCopy:(AliasHandle)anHandle {
-  NSParameterAssert(anHandle);
-  if (self = [self init]) {
-    wb_alias = anHandle;
-    [self update];
-  }
-  return self;
-}
-
-- (id)initFromData:(NSData *)data {
-  NSParameterAssert(data && [data length] > 0);
-
-  AliasHandle alias;
-  if ([data length] < LONG_MAX && noErr == PtrToHand([data bytes], (Handle *)&alias, (long)[data length]))
-    return [self initFromAliasHandleNoCopy:alias];
-
-  spx_release(self);
-  return nil;
-}
-
-- (id)initFromAliasHandle:(AliasHandle)handle {
-  NSParameterAssert(handle);
-
-  AliasHandle alias;
-  if (noErr == HandToHand((Handle *)&alias))
-    return [self initFromAliasHandleNoCopy:alias];
-
-  spx_release(self);
-  return nil;
-}
-
-- (id)initWithURL:(NSURL *)anURL {
+- (instancetype)initWithURL:(NSURL *)anURL {
   if (!anURL) {
-    spx_release(self);
+    [self release];
     return nil;
   }
   if (self = [self init]) {
-    FSRef ref;
-    // First, try using FSRef
-    if (CFURLGetFSRef(SPXNSToCFURL(anURL), &ref)) {
-      AliasHandle alias;
-      if (noErr == FSNewAlias(NULL, &ref, &alias))
-        return [self initFromAliasHandleNoCopy:alias];
-    } else if ([anURL isFileURL]) {
-      // If does not works, use file path
-      [self setPath:[anURL path]];
-    } else {
-      // unsupported URL
-      spx_release(self);
-      self = nil;
-    }
+    _URL = [anURL retain];
   }
   return self;
 }
 
-- (id)initWithPath:(NSString *)aPath {
-  if (!aPath) {
-    spx_release(self);
+- (instancetype)initFromBookmarkData:(NSData *)data {
+  if (!data) {
+    [self release];
     return nil;
   }
-  if (self = [self init]) {
-    [self setPath:aPath];
+  if (self = [super init]) {
+    _data = [data copy];
   }
   return self;
 }
 
 - (void)dealloc {
-  if (wb_alias) {
-    DisposeHandle((Handle)wb_alias);
-    wb_alias = nil;
-  }
-  spx_release(wb_path);
+  [_data release];
+  [_URL release];
   [super dealloc];
 }
 
 #pragma mark -
-- (NSData *)data {
-  if (wb_alias) {
-    Size s = GetAliasSize(wb_alias);
-    if (s > 0)
-      return [NSData dataWithBytes:*wb_alias length:(NSUInteger)s];
-  }
-
-  return nil;
-}
-
 - (NSURL *)URL {
-  return wb_path ? [NSURL fileURLWithPath:wb_path] : nil;
+  if (!_URL && _data) {
+    BOOL isStale = NO;
+    _URL = [NSURL URLByResolvingBookmarkData:_data options:NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting relativeToURL:nil bookmarkDataIsStale:&isStale error:NULL];
+    if (_URL && isStale)
+      _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+  }
+  return _URL;
 }
-- (void)setURL:(NSURL *)anURL {
-  if (![anURL isFileURL])
-    SPXThrowException(NSInvalidArgumentException, @"Unsupported URL scheme: %@", [anURL scheme]);
-  [self setPath:[anURL path]];
+
+- (NSData *)data {
+  if (!_data && _URL) {
+    _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+  }
+  return _data;
+}
+
+@end
+
+@implementation WBAlias (WBAliasHandle)
+
++ (instancetype)aliasFromData:(NSData *)data {
+  return [[[self alloc] initFromData:data] autorelease];
+}
+
++ (instancetype)aliasWithPath:(NSString *)aPath {
+  return [[[self alloc] initWithURL:[NSURL fileURLWithPath:aPath]] autorelease];
+}
+
+- (instancetype)initFromData:(NSData *)data {
+  NSParameterAssert(data && [data length] > 0);
+
+  CFDataRef bookmark = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, SPXNSToCFData(data));
+  if (bookmark) {
+    self = [self initFromBookmarkData:SPXCFToNSData(bookmark)];
+    CFRelease(bookmark);
+  } else {
+    [self release];
+    return nil;
+  }
+  return self;
+}
+
+- (instancetype)initWithPath:(NSString *)aPath {
+  return [self initWithURL:[NSURL fileURLWithPath:aPath]];
 }
 
 - (NSString *)path {
-  return wb_path;
-}
-- (void)setPath:(NSString *)path {
-  if (!path)
-    SPXThrowException(NSInvalidArgumentException, @"invalid path argument. MUST NOT be nil");
-
-  if (wb_path != path) {
-    spx_release(wb_path);
-    wb_path = [path copy];
-
-    if (wb_alias) {
-      DisposeHandle((Handle)wb_alias);
-      wb_alias = nil;
-    }
-
-    [self update];
-  }
-}
-
-- (AliasHandle)aliasHandle {
-  return wb_alias;
-}
-
-//- (OSStatus)setTarget:(FSRef *)target wasChanged:(BOOL *)outChanged {
-//}
-
-- (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged {
-  NSParameterAssert(target);
-  if (outChanged) *outChanged = NO;
-
-  if (wb_alias) {
-    Boolean wasChanged;
-    OSStatus err = FSResolveAliasWithMountFlags(nil, wb_alias,
-                                                target, &wasChanged,
-                                                kResolveAliasFileNoUI);
-    if (noErr == err) {
-      // update path if needed
-      if (wasChanged && wb_path) {
-        spx_release(wb_path);
-        wb_path = nil;
-      }
-      if (!wb_path) {
-        wb_path = spx_retain([NSString stringFromFSRef:target]);
-        NSAssert(wb_path, @"-[NSString stringFromFSRef:] returned nil");
-        if (outChanged) *outChanged = YES;
-      }
-      return noErr;
-    } else if (wb_path) {
-      // no longer reference a valid file
-      spx_release(wb_path);
-      wb_path = nil;
-    }
-    return err;
-  }
-
-  // wb_alias is not valid. Try to use path.
-  if (!wb_path)
-    SPXThrowException(NSInternalInconsistencyException, @"Both alias and path are null");
-  // try to create alias
-  OSStatus err = FSPathMakeRef((const UInt8 *)[wb_path safeFileSystemRepresentation], target, NULL);
-  if (noErr == err) {
-    // return noErr even if alias creation fail to indicate that the FSRef is valid
-    if (noErr == FSNewAlias(nil, target, &wb_alias) && outChanged)
-      *outChanged = YES;
-  }
-  return err;
-}
-
-- (BOOL)update {
-  FSRef target;
-  BOOL updated = NO;
-  [self getTarget:&target wasChanged:&updated];
-  return updated;
+  return _URL.path;
 }
 
 @end

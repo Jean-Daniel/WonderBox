@@ -115,7 +115,7 @@
 //  NSCellHitTrackableArea, the particular row will be tracked instead of dragged.
 //
 // -------------------------------------------------------------------------------
-- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
   if (!wb_image) return [super hitTestForEvent:event inRect:cellFrame ofView:controlView];
 
   NSPoint point = [controlView convertPoint:[event locationInWindow] fromView:nil];

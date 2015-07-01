@@ -13,48 +13,32 @@
 #import <Foundation/Foundation.h>
 
 WB_OBJC_EXPORT
-@interface WBAlias : NSObject <NSCoding, NSCopying> {
-  @private
-  NSString *wb_path;
-  AliasHandle wb_alias;
-}
+@interface WBAlias : NSObject <NSCoding, NSCopying>
 
-+ (id)aliasWithURL:(NSURL *)anURL;
-+ (id)aliasWithPath:(NSString *)aPath;
++ (instancetype)aliasWithURL:(NSURL *)anURL;
++ (instancetype)aliasFromBookmarkData:(NSData *)data;
 
-- (id)initWithURL:(NSURL *)anURL;
-- (id)initWithPath:(NSString *)aPath;
-
-+ (id)aliasFromData:(NSData *)data;
-+ (id)aliasFromAliasHandle:(AliasHandle)handle;
-
-- (id)initFromData:(NSData *)data;
-- (id)initFromAliasHandle:(AliasHandle)handle;
+- (instancetype)initWithURL:(NSURL *)anURL;
+- (instancetype)initFromBookmarkData:(NSData *)data;
 
 /*!
-    @method     path
     @abstract   Return the Alias path and resolve it if needed.
 */
-- (NSString *)path;
+@property(nonatomic, readonly) NSURL *URL;
+
+@property(nonatomic, readonly) NSData *data;
+
+@end
+
+@interface WBAlias (WBAliasHandle)
+
++ (instancetype)aliasWithPath:(NSString *)aPath WB_DEPRECATED("aliasWithURL:");
++ (instancetype)aliasFromData:(NSData *)data WB_DEPRECATED("aliasFromBookmarkData:");
+
+- (instancetype)initWithPath:(NSString *)aPath WB_DEPRECATED("initWithURL:");
+- (instancetype)initFromData:(NSData *)data WB_DEPRECATED("initFromBookmarkData:");
+
 // does not accept null path
-- (void)setPath:(NSString *)path;
-
-- (NSURL *)URL;
-// does not accept null path
-- (void)setURL:(NSURL *)anURL;
-
-// returns true if the alias has been updated.
-- (BOOL)update;
-- (NSData *)data;
-
-/*!
-    @method     aliasHandle
-    @abstract   Returns the Carbon AliasHandle associated with the receiver.
-    @result     The native Alias Handle
-*/
-- (AliasHandle)aliasHandle;
-- (OSStatus)getTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
-// TODO:
-//- (OSStatus)setTarget:(FSRef *)target wasChanged:(BOOL *)outChanged;
+@property(nonatomic, readonly) NSString *path WB_DEPRECATED("URL");
 
 @end

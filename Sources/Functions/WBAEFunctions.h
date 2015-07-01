@@ -101,6 +101,7 @@ WB_EXPORT OSStatus WBAECreateTargetWithMachPort(mach_port_t port, AEDesc *target
 WB_EXPORT OSStatus WBAECreateDescFromURL(CFURLRef anURL, AEDesc *desc);
 WB_EXPORT OSStatus WBAECreateDescFromString(CFStringRef string, AEDesc *desc);
 WB_EXPORT OSStatus WBAECreateDescFromBookmarkData(CFDataRef bookmark, AEDesc *desc);
+WB_EXPORT OSStatus WBAECreateDescFromData(CFDataRef data, DescType type, AEDesc *desc);
 
 #pragma mark Create Object Specifier
 WB_EXPORT OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDesc *keyData, AEDesc *container, AEDesc *specifier);

@@ -209,6 +209,16 @@ OSStatus WBAECreateDescFromString(CFStringRef string, AEDesc *desc) {
   return AECreateDesc(typeUnicodeText, str, buflen, desc);
 }
 
+OSStatus WBAECreateDescFromData(CFDataRef data, DescType type, AEDesc *desc) {
+  if (data)
+    return AECreateDesc(type, CFDataGetBytePtr(data), CFDataGetLength(data), desc);
+  return AECreateDesc(typeNull, nullptr, 0, desc);
+}
+
+OSStatus WBAECreateDescFromBookmarkData(CFDataRef bookmark, AEDesc *desc) {
+  return WBAECreateDescFromData(bookmark, typeBookmarkData, desc);
+}
+
 OSStatus WBAECreateObjectSpecifier(DescType desiredType, DescType keyForm, AEDesc *keyData, AEDesc *container, AEDesc *specifier) {
   if (!keyData || !specifier) return paramErr;
 
