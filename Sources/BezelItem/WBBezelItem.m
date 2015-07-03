@@ -11,11 +11,8 @@
 #import <WonderBox/WBBezelItem.h>
 
 #import <WonderBox/WBCGFunctions.h>
-#import <WonderBox/WBBezelItemContent.h>
 
-@interface WBBezelItem ()
-- (void)didChangeScreen:(NSNotification *)aNotification;
-@end
+#import "WBBezelItemContent.h"
 
 enum {
   kWBBezelItemRadius = 25,
@@ -23,40 +20,47 @@ enum {
 static const NSSize kWBBezelItemDefaultSize = {161, 156};
 
 @interface _WBBezelItemView : NSView {
-  id wb_item;
-  BOOL wb_adjust;
-  NSUInteger wb_radius;
+  WBBezelItemContent *wb_item;
 }
 
-- (NSUInteger)radius;
-- (void)setRadius:(NSUInteger)newRadius;
+@property(nonatomic, retain) id content;
 
-- (BOOL)adjustSize;
-- (void)setAdjustSize:(BOOL)flag;
+@property(nonatomic) NSUInteger radius;
+
+@property(nonatomic) BOOL adjustSize;
+
+- (void)resize;
+
+@end
+
+@interface WBBezelItem ()
+- (void)didChangeScreen:(NSNotification *)aNotification;
+
+@property _WBBezelItemView *contentView;
 
 @end
 
 #pragma mark -
 @implementation WBBezelItem
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
   if (self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation]) {
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeScreen:) name:NSWindowDidChangeScreenNotification object:self];
-    id content = [[_WBBezelItemView alloc] init];
-    [self setContentView:content];
+    _WBBezelItemView *content = [[_WBBezelItemView alloc] init];
+    self.contentView = content;
     [content release];
   }
   return self;
 }
 
-- (id)initWithContent:(id)content {
+- (instancetype)initWithContent:(id)content {
   if (self = [super init]) {
     [self setContent:content];
   }
   return self;
 }
 
-- (id)init {
+- (instancetype)init {
   return [self initWithContent:nil];
 }
 
@@ -67,29 +71,36 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
 
 #pragma mark -
 - (void)resize {
-  [[self contentView] resize];
+  [self.contentView resize];
+}
+
+- (_WBBezelItemView *)contentView {
+  return [super contentView];
+}
+- (void)setContentView:(_WBBezelItemView *)contentView {
+  [super setContentView:contentView];
 }
 
 - (id)content {
-  return [[self contentView] content];
+  return self.contentView.content;
 }
 - (void)setContent:(id)content {
-  [[self contentView] setContent:content];
+  self.contentView.content = content;
 }
 
 - (NSUInteger)radius {
-  return [[self contentView] radius];
+  return self.contentView.radius;
 }
 - (void)setRadius:(NSUInteger)newRadius {
-  [[self contentView] setRadius:newRadius];
+  self.contentView.radius = newRadius;
   [self resize];
 }
 
 - (BOOL)adjustSize {
-  return [[self contentView] adjustSize];
+  return self.contentView.adjustSize;
 }
 - (void)setAdjustSize:(BOOL)flag {
-  [[self contentView] setAdjustSize:flag];
+  self.contentView.adjustSize = flag;
   [self resize];
 }
 
@@ -102,7 +113,7 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
 #pragma mark -
 @implementation _WBBezelItemView
 
-- (id)initWithFrame:(NSRect)frameRect {
+- (instancetype)initWithFrame:(NSRect)frameRect {
   if (self = [super initWithFrame:frameRect]) {
     [self setRadius:kWBBezelItemRadius];
   }
@@ -112,22 +123,22 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
 - (void)resize {
   NSRect dim = NSZeroRect;
 
-  if (wb_adjust) {
+  if (_adjustSize) {
     dim.size = wb_item ? [wb_item size] : NSZeroSize;
-    dim.origin.x = wb_radius;
-    dim.origin.y = wb_radius;
+    dim.origin.x = _radius;
+    dim.origin.y = _radius;
   } else {
     dim.size = kWBBezelItemDefaultSize;
     NSSize size = wb_item ? [wb_item size] : NSZeroSize;
-    dim.origin.x = MAX((NSWidth(dim) - size.width) / 2., 0) + wb_radius;
-    dim.origin.y = MAX((NSHeight(dim) - size.height) / 2., 0) + wb_radius;
+    dim.origin.x = MAX((NSWidth(dim) - size.width) / 2., 0) + _radius;
+    dim.origin.y = MAX((NSHeight(dim) - size.height) / 2., 0) + _radius;
   }
 
   [wb_item setFrame:dim];
 
   /* add radius margin */
-  dim.size.width += 2 * wb_radius;
-  dim.size.height += 2 * wb_radius;
+  dim.size.width += 2 * _radius;
+  dim.size.height += 2 * _radius;
 
   /* convert point dim into pixels */
   dim = [[self window] frameRectForContentRect:dim];
@@ -140,23 +151,14 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
   [[self window] setFrame:dim display:NO];
 }
 
-- (NSUInteger)radius {
-  return wb_radius;
-}
-
-- (void)setRadius:(NSUInteger)newRadius {
-  if (wb_radius != newRadius) {
-    wb_radius = newRadius;
-  }
-}
-
 - (id)content {
   return [wb_item content];
 }
+
 - (void)setContent:(id)content {
   if ([wb_item content] != content) {
     [wb_item removeFromSuperview];
-    wb_item = [[WBBezelItemContent alloc] initWithContent:content];
+    wb_item = [[WBBezelItemContent itemWithContent:content] retain];
     if (wb_item) {
       [self addSubview:wb_item];
       [wb_item release];
@@ -167,24 +169,20 @@ static const NSSize kWBBezelItemDefaultSize = {161, 156};
   }
 }
 
-- (BOOL)adjustSize {
-  return wb_adjust;
-}
 - (void)setAdjustSize:(BOOL)flag {
-  if (wb_adjust != flag) {
-    wb_adjust = flag;
+  if (_adjustSize != flag) {
+    _adjustSize = flag;
     [self resize];
   }
 }
 
 - (void)drawRect:(NSRect)rect {
-  NSRect frame = [self frame];
-  CGRect cgFrame = NSRectToCGRect(frame);
+  CGRect cgFrame = self.frame;
 
   CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
   CGContextSaveGState(context);
   CGContextClearRect(context, cgFrame);
-  WBCGContextAddRoundRect(context, cgFrame, wb_radius);
+  WBCGContextAddRoundRect(context, cgFrame, _radius);
 
   CGContextSetGrayFillColor(context, 0, .15);
   CGContextFillPath(context);

@@ -12,13 +12,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-WB_OBJC_EXPORT
-@interface WBBezelItemContent : NSView {
-}
-- (id)initWithContent:(id)content;
+@interface WBBezelItemContent : NSView
 
-- (id)content;
++ (instancetype)itemWithContent:(id)content;
 
-- (NSSize)size;
+@property(nonatomic, readonly) id content;
+
+@property(nonatomic, readonly) NSSize size;
 
 @end

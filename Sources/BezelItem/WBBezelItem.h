@@ -11,19 +11,14 @@
 #import <WonderBox/WBNotificationWindow.h>
 
 WB_OBJC_EXPORT
-@interface WBBezelItem : WBNotificationWindow {
+@interface WBBezelItem : WBNotificationWindow
 
-}
+- (instancetype)initWithContent:(id)content;
 
-- (id)initWithContent:(id)content;
+@property(nonatomic, retain) id content;
 
-- (id)content;
-- (void)setContent:(id)content;
+@property(nonatomic) NSUInteger radius;
 
-- (NSUInteger)radius;
-- (void)setRadius:(NSUInteger)aRadius;
-
-- (BOOL)adjustSize;
-- (void)setAdjustSize:(BOOL)flag;
+@property(nonatomic) BOOL adjustSize;
 
 @end

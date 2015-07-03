@@ -12,11 +12,15 @@
 
 #define kWBNotificationWindowDefaultDelay 1
 
-@interface WBNotificationWindow ()
-- (void)fadeOut:(NSTimer *)timer;
+@interface WBNotificationWindow () <NSAnimationDelegate>
+
 @end
 
-@implementation WBNotificationWindow
+@implementation WBNotificationWindow {
+@private
+  dispatch_source_t _timer;
+  NSViewAnimation *_animation;
+}
 
 - (id)init {
   return [self initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
@@ -24,110 +28,104 @@
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
   if (self = [super initWithContentRect:contentRect styleMask:styleMask | NSNonactivatingPanelMask backing:bufferingType defer:deferCreation]) {
-		if ([self respondsToSelector:@selector(setCollectionBehavior:)]) {
-			[self setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-		}
-    [self setLevel:CGWindowLevelForKey(kCGOverlayWindowLevelKey)];
-    [self setBackgroundColor:[NSColor clearColor]];
-    [self setExcludedFromWindowsMenu:YES];
-    [self setIgnoresMouseEvents:YES];
-    [self setReleasedWhenClosed:NO];
-    [self setHidesOnDeactivate:NO];
-    [self setFloatingPanel:YES];
-    [self setHasShadow:NO];
-    [self setOneShot:NO];
-    [self setCanHide:NO];
-    [self setOpaque:NO];
-    wb_delay = kWBNotificationWindowDefaultDelay;
+    self.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
+    self.level = CGWindowLevelForKey(kCGOverlayWindowLevelKey);
+    self.backgroundColor = [NSColor clearColor];
+    self.excludedFromWindowsMenu = YES;
+    self.ignoresMouseEvents = YES;
+    self.releasedWhenClosed = NO;
+    self.hidesOnDeactivate = NO;
+    self.floatingPanel = YES;
+    self.hasShadow = NO;
+    self.oneShot = NO;
+    self.canHide = NO;
+    self.opaque = NO;
+    _delay = kWBNotificationWindowDefaultDelay;
   }
   return self;
 }
 
-- (void)stopTimer {
+- (void)startAnimation {
+  if (_timer || _animation)
+    [self stopAnimation];
+
+  // Start Timer
+  _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+  dispatch_source_set_timer(_timer, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_delay * NSEC_PER_SEC)), 0 * NSEC_PER_SEC, 1 * NSEC_PER_SEC);
+  dispatch_source_set_event_handler(_timer, ^{
+    // Start the fadeout animation
+    [self fadeOut];
+  });
+  dispatch_resume(_timer);
+}
+
+- (void)stopAnimation {
   /* Invalidate Timer */
-  if (wb_timer) {
-    /* wb_timer retain 'self', so it can dealloc it on invalidate */
-    [[self retain] autorelease];
-    [wb_timer invalidate];
-    [wb_timer release];
-    wb_timer = nil;
+  [self cancelTimer];
+  if (_animation) {
+    [_animation stopAnimation];
+    [_animation release];
+    _animation = nil;
+  }
+  // Reset alpha value
+  self.alphaValue = 1;
+}
+
+- (void)cancelTimer {
+  if (_timer) {
+    dispatch_cancel(_timer);
+    dispatch_release(_timer);
+    _timer = nil;
   }
 }
 
-- (void)dealloc {
-  [self stopTimer];
-  [super dealloc];
+- (void)fadeOut {
+  [self cancelTimer];
+  // Setup the animation
+  _animation = [[NSViewAnimation alloc] initWithViewAnimations:@[@{
+                                                                   NSViewAnimationTargetKey: self,
+                                                                   NSViewAnimationEffectKey: NSViewAnimationFadeOutEffect
+                                                                   }]];
+  _animation.duration = 1;
+  _animation.delegate = self;
+  _animation.animationCurve = NSAnimationEaseIn;
+  [_animation startAnimation];
+}
+
+- (void)animationDidEnd:(NSAnimation *)animation {
+  [_animation release];
+  _animation = nil;
+  [self close];
 }
 
 #pragma mark -
-
-- (void)startTimer {
-  if (!wb_timer) {
-    wb_timer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:wb_delay]
-                                        interval:0.05
-                                          target:self
-                                        selector:@selector(fadeOut:)
-                                        userInfo:nil
-                                         repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:wb_timer forMode:NSDefaultRunLoopMode];
-  }
-}
-
 - (void)orderFront:(id)sender {
-  [self setAlphaValue:1];
+  [self stopAnimation];
   [super orderFront:sender];
 }
+
 - (void)orderFrontRegardless {
   [self setAlphaValue:1];
   [super orderFrontRegardless];
 }
-- (void)makeKeyAndOrderFront:(id)sender {
-  [self setAlphaValue:1];
-  /* Invalidate Timer */
-  [self stopTimer];
-  [super makeKeyAndOrderFront:sender];
-}
+
 - (void)orderOut:(id)sender {
-  [self stopTimer];
+  [self stopAnimation];
   [super orderOut:sender];
 }
+
 - (void)close {
-  [self stopTimer];
+  [self stopAnimation];
   [super close];
 }
 
 - (IBAction)display:(id)sender {
-  if (![self isVisible]) {
-    wb_nwFlags.inhibit = 0;
-    [self orderFrontRegardless];
-    [self startTimer];
-  } else {
-    if (wb_timer) {
-      /* Inhibit else we can have a timer call just after this event */
-      wb_nwFlags.inhibit = 1;
-      [wb_timer setFireDate:[NSDate dateWithTimeIntervalSinceNow:wb_delay]];
-    } else {
-      [self startTimer];
-    }
-    [self orderFrontRegardless];
-  }
+  [self orderFrontRegardless];
+  [self startAnimation];
 }
 
-- (void)fadeOut:(NSTimer *)timer {
-  if ([self alphaValue] <= 0 || ![self isVisible]) {
-    [self close];
-  } else if (!wb_nwFlags.inhibit) {
-    [self setAlphaValue:[self alphaValue] - 0.05f];
-  } else {
-    wb_nwFlags.inhibit = 0;
-  }
-}
-
-- (NSTimeInterval)delay {
-  return wb_delay;
-}
 - (void)setDelay:(NSTimeInterval)newDelay {
-  wb_delay = newDelay >= 0 ? newDelay : kWBNotificationWindowDefaultDelay;
+  _delay = _delay >= 0 ? _delay : kWBNotificationWindowDefaultDelay;
 }
 
 @end

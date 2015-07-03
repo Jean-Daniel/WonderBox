@@ -13,20 +13,10 @@
 #import <Cocoa/Cocoa.h>
 
 WB_OBJC_EXPORT
-@interface WBNotificationWindow : NSPanel {
-  @private
-  NSTimer *wb_timer;
-  NSTimeInterval wb_delay;
-
-  struct _wb_nwFlags {
-    unsigned int inhibit:1;
-    unsigned int reserved:31;
-  } wb_nwFlags;
-}
+@interface WBNotificationWindow : NSPanel
 
 - (IBAction)display:(id)sender;
 
-- (NSTimeInterval)delay;
-- (void)setDelay:(NSTimeInterval)newDelay;
+@property(nonatomic) NSTimeInterval delay;
 
 @end
