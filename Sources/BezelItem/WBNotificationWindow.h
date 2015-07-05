@@ -18,5 +18,5 @@ WB_OBJC_EXPORT
 - (IBAction)display:(id)sender;
 
 @property(nonatomic) NSTimeInterval delay;
-
+@property(nonatomic) NSTimeInterval duration;
 @end

@@ -41,6 +41,7 @@
     self.canHide = NO;
     self.opaque = NO;
     _delay = kWBNotificationWindowDefaultDelay;
+    _duration = 1;
   }
   return self;
 }
@@ -86,7 +87,7 @@
                                                                    NSViewAnimationTargetKey: self,
                                                                    NSViewAnimationEffectKey: NSViewAnimationFadeOutEffect
                                                                    }]];
-  _animation.duration = 1;
+  _animation.duration = _duration;
   _animation.delegate = self;
   _animation.animationCurve = NSAnimationEaseIn;
   [_animation startAnimation];

@@ -11,14 +11,16 @@
 #import <WonderBox/WBNotificationWindow.h>
 
 WB_OBJC_EXPORT
-@interface WBBezelItem : WBNotificationWindow
+@interface WBBezelItem : NSObject
 
-- (instancetype)initWithContent:(id)content;
+- (instancetype)initWithView:(NSView *)aView;
+- (instancetype)initWithImage:(NSImage *)anImage;
 
-@property(nonatomic, retain) id content;
+@property(nonatomic, retain) NSView *view;
+@property(nonatomic, retain) NSImage *anImage;
 
-@property(nonatomic) NSUInteger radius;
+@property(nonatomic) NSTimeInterval delay;
 
-@property(nonatomic) BOOL adjustSize;
+- (IBAction)display:(id)sender;
 
 @end

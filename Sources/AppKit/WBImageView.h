@@ -14,7 +14,7 @@
 
 WB_OBJC_EXPORT
 @interface WBImageView : NSImageView {
-  @private
+@private
   NSImageInterpolation wb_quality;
 }
 
