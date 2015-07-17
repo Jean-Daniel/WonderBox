@@ -27,6 +27,7 @@
 }
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+  // Impliticly borderless as NSBorderlessWindowMask = 0
   if (self = [super initWithContentRect:contentRect styleMask:styleMask | NSNonactivatingPanelMask backing:bufferingType defer:deferCreation]) {
     self.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
     self.level = CGWindowLevelForKey(kCGOverlayWindowLevelKey);
@@ -126,7 +127,7 @@
 }
 
 - (void)setDelay:(NSTimeInterval)newDelay {
-  _delay = _delay >= 0 ? _delay : kWBNotificationWindowDefaultDelay;
+  _delay = newDelay >= 0 ? newDelay : kWBNotificationWindowDefaultDelay;
 }
 
 @end

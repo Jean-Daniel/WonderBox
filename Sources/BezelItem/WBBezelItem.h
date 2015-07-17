@@ -3,24 +3,40 @@
  *  WonderBox
  *
  *  Created by Jean-Daniel Dupas.
- *  Copyright (c) 2004 - 2009 Jean-Daniel Dupas. All rights reserved.
+ *  Copyright (c) 2004 - 2015 Jean-Daniel Dupas. All rights reserved.
  *
  *  This file is distributed under the MIT License. See LICENSE.TXT for details.
  */
 
-#import <WonderBox/WBNotificationWindow.h>
+#import <WonderBox/WBBase.h>
+
+#import <Cocoa/Cocoa.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 WB_OBJC_EXPORT
 @interface WBBezelItem : NSObject
 
-- (instancetype)initWithView:(NSView *)aView;
-- (instancetype)initWithImage:(NSImage *)anImage;
+/*!
+ create an instance without level bar.
+ */
+- (instancetype)initWithImage:(nullable NSImage *)anImage NS_DESIGNATED_INITIALIZER;
 
-@property(nonatomic, retain) NSView *view;
-@property(nonatomic, retain) NSImage *anImage;
+/*!
+ create an instance with level bar visible.
+ */
+- (instancetype)initWithImage:(nullable NSImage *)anImage level:(CGFloat)aLevel;
 
-@property(nonatomic) NSTimeInterval delay;
+@property(nonatomic, retain, nullable) NSImage *image;
 
-- (IBAction)display:(id)sender;
+@property(nonatomic) NSTimeInterval duration;
+
+@property(nonatomic, getter=isLevelBarVisible) BOOL levelBarVisible;
+
+@property(nonatomic) CGFloat levelValue;
+
+- (IBAction)display:(nullable id)sender;
 
 @end
+
+NS_ASSUME_NONNULL_END
