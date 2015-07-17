@@ -16,12 +16,12 @@
 #include <IOKit/IOTypes.h>
 #include <ApplicationServices/ApplicationServices.h>
 
-WB_EXPORT const int kWBHIDEjectKey;
-WB_EXPORT const int kWBHIDPowerKey;
+WB_EXPORT const uint8_t kWBHIDEjectKey;
+WB_EXPORT const uint8_t kWBHIDPowerKey;
 
-WB_EXPORT const int kWBHIDSleepEvent;
-WB_EXPORT const int kWBHIDRestartEvent;
-WB_EXPORT const int kWBHIDShutdownEvent;
+WB_EXPORT const uint8_t kWBHIDSleepEvent;
+WB_EXPORT const uint8_t kWBHIDRestartEvent;
+WB_EXPORT const uint8_t kWBHIDShutdownEvent;
 
 enum {
   kWBKeySoundUp = 0,
@@ -57,9 +57,9 @@ WB_EXPORT
 io_connect_t WBHIDGetEventDriver(void);
 
 WB_EXPORT
-kern_return_t WBHIDPostAuxKey(const UInt8 auxKeyCode);
+kern_return_t WBHIDPostAuxKey(const uint8_t auxKeyCode);
 WB_EXPORT
-kern_return_t WBHIDPostSystemDefinedEvent(const UInt8 inSysKeyCode);
+kern_return_t WBHIDPostSystemDefinedEvent(const uint8_t inSysKeyCode);
 
 WB_EXPORT
 CGError WBIODisplayGetFloatParameter(CFStringRef key, float *value);

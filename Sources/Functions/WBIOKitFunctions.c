@@ -15,12 +15,12 @@
 #include <IOKit/hidsystem/IOHIDLib.h>
 #include <IOKit/graphics/IOGraphicsLib.h>
 
-const int kWBHIDEjectKey = NX_SUBTYPE_EJECT_KEY;
-const int kWBHIDPowerKey = NX_SUBTYPE_POWER_KEY;
+const uint8_t kWBHIDEjectKey = NX_SUBTYPE_EJECT_KEY;
+const uint8_t kWBHIDPowerKey = NX_SUBTYPE_POWER_KEY;
 
-const int kWBHIDSleepEvent = NX_SUBTYPE_SLEEP_EVENT;
-const int kWBHIDRestartEvent = NX_SUBTYPE_RESTART_EVENT;
-const int kWBHIDShutdownEvent = NX_SUBTYPE_SHUTDOWN_EVENT;
+const uint8_t kWBHIDSleepEvent = NX_SUBTYPE_SLEEP_EVENT;
+const uint8_t kWBHIDRestartEvent = NX_SUBTYPE_RESTART_EVENT;
+const uint8_t kWBHIDShutdownEvent = NX_SUBTYPE_SHUTDOWN_EVENT;
 
 static pthread_mutex_t sInitMutex;
 
