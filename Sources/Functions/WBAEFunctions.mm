@@ -430,6 +430,17 @@ OSStatus WBAEBuildAppleEventWithTargetProcess(ProcessSerialNumber *psn, AEEventC
   return err;
 }
 
+OSStatus WBAEBuildAppleEventWithTargetBundleID(CFStringRef bundleID, AEEventClass theClass, AEEventID theID, AppleEvent *outEvent,
+                                               AEBuildError *outError, const char *paramsFmt, ...) {
+  va_list args;
+  va_start(args, paramsFmt);
+  ProcessSerialNumber psn = WBProcessGetProcessWithBundleIdentifier(bundleID);
+  OSStatus err = vAEBuildAppleEvent(theClass, theID, typeProcessSerialNumber, &psn, sizeof(ProcessSerialNumber),
+                                    kAutoGenerateReturnID, kAnyTransactionID, outEvent, outError, paramsFmt, args);
+  va_end(args);
+  return err;
+}
+
 #pragma mark -
 #pragma mark Add Param & Attr
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) {
