@@ -91,12 +91,16 @@ bool WBFSCompareURLs(CFURLRef url1, CFURLRef url2) {
   if (!url2)
     return false;
 
-  CFTypeRef fsref1, fsref2;
-  if (CFURLCopyResourcePropertyForKey(url1, kCFURLFileResourceIdentifierKey, &fsref1, NULL) &&
-      CFURLCopyResourcePropertyForKey(url2, kCFURLFileResourceIdentifierKey, &fsref2, NULL))
-    return CFEqual(fsref1, fsref2);
-  // Something went wrong
-  return false;
+  CFTypeRef ptr;
+  if (!CFURLCopyResourcePropertyForKey(url1, kCFURLFileResourceIdentifierKey, &ptr, nullptr))
+    return false;
+  spx::unique_cfptr<CFTypeRef> fsref1(ptr);
+
+  if (!CFURLCopyResourcePropertyForKey(url2, kCFURLFileResourceIdentifierKey, &ptr, nullptr))
+    return false;
+  spx::unique_cfptr<CFTypeRef> fsref2(ptr);
+
+  return CFEqual(fsref1.get(), fsref2.get());
 }
 
 static
@@ -110,10 +114,10 @@ OSStatus _WBFSRefGetPath(const FSRef *ref, OSStatus (*callback)(const char *path
   /* If path is too long */
   while (pathTooLongErr == err) {
     if (buffer == path) {
-      path = malloc(length * sizeof(UInt8));
+      path = static_cast<UInt8 *>(malloc(length * sizeof(UInt8)));
     } else {
       length *= 2;
-      path = reallocf(path, length * sizeof(UInt8));
+      path = static_cast<UInt8 *>(reallocf(path, length * sizeof(UInt8)));
     }
     if (path)
       err = FSRefMakePath(ref, path, length);
@@ -218,7 +222,7 @@ OSStatus WBFSRefCreateFromFileSystemPath(CFStringRef string, OptionBits options,
   /* Adjust buffer size */
   CFIndex maximum = CFStringGetMaximumSizeOfFileSystemRepresentation(string);
   if (maximum > 2048)
-    path = malloc((size_t)maximum * sizeof(char));
+    path = static_cast<char *>(malloc((size_t)maximum * sizeof(char)));
 
   if (!CFStringGetFileSystemRepresentation(string, path, maximum))
     err = coreFoundationUnknownErr;
@@ -276,13 +280,13 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 
   OSStatus err = FSOpenIterator(folder, kFSIterateFlat, &iter);
   if (noErr == err) {
     ItemCount count = BULK_SIZE;
-    FSRef *refs = malloc(BULK_SIZE * sizeof(*refs));
-    FSCatalogInfo *infos = malloc(BULK_SIZE * sizeof(*infos));
+    std::unique_ptr<FSRef[]> refs(new FSRef[BULK_SIZE]);
+    std::unique_ptr<FSCatalogInfo[]> infos(new FSCatalogInfo[BULK_SIZE]);
     FSCatalogInfoBitmap bitmap = kFSCatInfoNodeFlags;
     if (lsize || psize)
       bitmap |= kFSCatInfoDataSizes | kFSCatInfoRsrcSizes;
     while (noErr == err) {
-      err = FSGetCatalogInfoBulk(iter, BULK_SIZE, &count, NULL, bitmap, infos, refs, NULL, NULL);
+      err = FSGetCatalogInfoBulk(iter, BULK_SIZE, &count, NULL, bitmap, infos.get(), refs.get(), NULL, NULL);
       if (noErr == err || errFSNoMoreItems == err) {
         while (count-- > 0) {
           if (lsize) (*lsize) += infos[count].dataLogicalSize + infos[count].rsrcLogicalSize;
@@ -297,8 +301,6 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 
       }
     }
     FSCloseIterator(iter);
-    free(infos);
-    free(refs);
   }
   /* cleanup expected error */
   if (errFSNoMoreItems == err)
@@ -488,10 +490,10 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
   OSStatus err = FSOpenIterator(folder, kFSIterateFlat | kFSIterateDelete, &iter);
   if (noErr == err) {
     ItemCount count = BULK_SIZE;
-    FSRef *refs = malloc(BULK_SIZE * sizeof(*refs));
-    FSCatalogInfo *infos = malloc(BULK_SIZE * sizeof(*infos));
+    std::unique_ptr<FSRef[]> refs(new FSRef[BULK_SIZE]);
+    std::unique_ptr<FSCatalogInfo[]> infos(new FSCatalogInfo[BULK_SIZE]);
     while (noErr == err) {
-      err = FSGetCatalogInfoBulk(iter, BULK_SIZE, &count, NULL, kFSCatInfoNodeFlags, infos, refs, NULL, NULL);
+      err = FSGetCatalogInfoBulk(iter, BULK_SIZE, &count, NULL, kFSCatInfoNodeFlags, infos.get(), refs.get(), NULL, NULL);
       if (noErr == err || errFSNoMoreItems == err) {
         while (count-- > 0) {
           /* unlock item if needed */
@@ -515,8 +517,6 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
       }
     }
     verify_noerr(FSCloseIterator(iter));
-    free(infos);
-    free(refs);
   }
   /* reset expected error */
   if (errFSNoMoreItems == err)
@@ -674,6 +674,10 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
   Boolean pIsDir = false;
   AliasHandle alias = NULL;
 
+  FSRef rsrc;
+  HFSUniStr255 rsrcStr;
+  ResFileRefNum rsrcRef = 0;
+
   err = WBFSRefCreateFromFileSystemPath(target, kFSPathMakeRefDefaultOptions, &src, &isDir);
   require_noerr(err, bail);
 
@@ -686,8 +690,6 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
   if (!pIsDir)
     return errFSNotAFolder;
 
-  FSRef rsrc;
-  HFSUniStr255 rsrcStr;
   /* Get rsrc fork name */
   err = FSGetResourceForkName(&rsrcStr);
   require_noerr(err, bail);
@@ -712,9 +714,8 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
   }
 
   /* rsrc point on the new resource file, we have to fill it */
-  ResFileRefNum rsrcRef = 0;
   err = FSOpenResourceFile(&rsrc, rsrcStr.length, rsrcStr.unicode, fsWrPerm, &rsrcRef);
-  require_noerr(err, delete);
+  require_noerr(err, cleanup);
 
   AddResource((Handle)alias, 'alis', 0, "\p");
   err = ResError();
@@ -725,7 +726,7 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
 close:
     CloseResFile(rsrcRef);
 
-delete:
+cleanup:
     if (noErr != err)
       FSDeleteFork(&rsrc, rsrcStr.length, rsrcStr.unicode);
 
@@ -764,7 +765,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
   char stack[PATH_MAX];
   char *buffer = stack;
   if (!CFURLGetFileSystemRepresentation(folder, true, (UInt8 *)buffer, PATH_MAX - 27)) {
-    buffer = NULL;
+    buffer = nullptr;
     // avoid stupid 1024 file path length limitation
     CFStringRef str = CFURLCopyFileSystemPath(folder, kCFURLPOSIXPathStyle);
     if (str) {
@@ -772,7 +773,7 @@ OSStatus WBFSCreateTemporaryURL(FSVolumeRefNum volume, CFURLRef *result, CFOptio
       // We are using buffer in CFURLCreateFromFileSystemRepresentation later,
       // So make sure it is not too large for this function.
       if (length >= 0 && (size_t)length < CFIndexMax - 27)
-        buffer = malloc((size_t)length + 27);
+        buffer = static_cast<char *>(malloc((size_t)length + 27));
 
       if (!CFStringGetFileSystemRepresentation(str, buffer, length)) {
         free(buffer);
