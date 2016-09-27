@@ -159,7 +159,7 @@ Boolean WBProcessIsNative(pid_t pid) {
 CFStringRef WBProcessCopyNameForPID(pid_t pid) {
   /* if current process */
   if (pid == getpid()) {
-    check(getprogname());
+    spx_assert(getprogname(), "progname required");
     return CFStringCreateWithCString(kCFAllocatorDefault, getprogname(), kCFStringEncodingUTF8);
   }
   /* try to use carbon process manager */

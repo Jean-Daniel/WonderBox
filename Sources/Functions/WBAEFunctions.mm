@@ -61,6 +61,7 @@ struct WBAEDesc : public AEDesc {
 #pragma mark -
 #pragma mark Print AEDesc
 CFStringRef WBAEDescCopyDescription(const AEDesc *desc) {
+  // FIXME: should use aeDescToCFTypeCopy()
   OSStatus err;
   Handle handle;
   CFStringRef str = NULL;
@@ -149,7 +150,8 @@ const AEDesc *WBAECurrentProcessTarget() {
 }
 
 OSStatus WBAECreateTargetWithProcessIdentifier(pid_t pid, AEDesc *target) {
-  if (!pid || !target) return paramErr;
+  if (!pid || !target)
+    return paramErr;
   return AECreateDesc(typeKernelProcessID, &pid, sizeof(pid), target);
 }
 
@@ -658,6 +660,9 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
 }
 
 #pragma mark Simple Events
+extern "C" void GDBPrintAEDesc(const AEDesc *);
+extern "C" CFStringRef aeDescToCFTypeCopy(const AEDesc *);
+
 template<class Ty, OSStatus(*CreateEvent)(Ty, AEEventClass, AEEventID, AppleEvent *)>
 static inline OSStatus _WBAESendSimpleEvent(Ty target, AEEventClass eventClass, AEEventID eventType) {
   WBAEDesc theEvent;
@@ -1292,7 +1297,7 @@ OSStatus _BindReplyMachPortToThread(mach_port_t *replyPortPtr) {
     // pthreads call the destructor to clean up that item of per-thread storage whenever
     // a thread terminates.
     OSStatus err = (OSStatus) pthread_key_create(&sPerThreadStorageKey, PerThreadStorageDestructor);
-    check(err == noErr);
+    assert(err == noErr);
     sPerThreadStorageKeyInitErrNum = err;
   });
 
@@ -1308,7 +1313,7 @@ OSStatus _BindReplyMachPortToThread(mach_port_t *replyPortPtr) {
     if ( pthread_main_np() ) {
       // This is the main thread, so do nothing; leave *replyPortPtr set
       // to MACH_PORT_NULL.
-      check(*replyPortPtr == MACH_PORT_NULL);
+      assert(*replyPortPtr == MACH_PORT_NULL);
     } else {
       PerThreadStorage *storage = (PerThreadStorage *) pthread_getspecific(sPerThreadStorageKey);
       if (!storage) {

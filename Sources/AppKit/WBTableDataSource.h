@@ -12,29 +12,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef NSComparisonResult (*WBCompareFunction)(id, id, void *);
-typedef BOOL (*WBFilterFunction)(NSString *, id, void *);
+typedef BOOL (^WBFilterBlock)(NSString *, id);
 
 WB_OBJC_EXPORT
-@interface WBTableDataSource : NSArrayController {
-  @private
-  NSString *wb_searchString;
-  WBFilterFunction wb_filter;
-  void *wb_filterCtxt;
-  WBCompareFunction wb_compare;
-}
+@interface WBTableDataSource : NSArrayController
 
 #pragma mark -
-- (WBCompareFunction)compareFunction;
-- (void)setCompareFunction:(WBCompareFunction)function;
+@property(nonatomic, copy) NSComparator comparator;
 
 #pragma mark -
 - (IBAction)search:(id)sender;
 
-- (NSString *)searchString;
-- (void)setSearchString:(NSString *)aString;
+@property(nonatomic, copy) NSString *searchString;
 
-- (WBFilterFunction)filterFunction;
-- (void)setFilterFunction:(WBFilterFunction)function context:(void *)ctxt;
+@property(nonatomic, copy) WBFilterBlock filterBlock;
 
 @end

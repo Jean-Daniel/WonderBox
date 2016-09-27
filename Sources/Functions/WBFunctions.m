@@ -111,7 +111,7 @@ CFIndex __WBHexCharToByte(UniChar ch) {
 }
 
 CFDataRef WBCFDataCreateFromHexString(CFStringRef str) {
-  check(str);
+  assert(str);
   CFIndex length = CFStringGetLength(str);
   /* String length MUST be even */
   if (length % 2)

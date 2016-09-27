@@ -13,17 +13,14 @@
 @implementation WBTableDataSource
 
 - (void)dealloc {
-  spx_release(wb_searchString);
+  spx_release(_searchString);
   [super dealloc];
 }
 
 #pragma mark -
 #pragma mark Sort Methods
-- (WBCompareFunction)compareFunction {
-  return wb_compare;
-}
-- (void)setCompareFunction:(WBCompareFunction)function {
-  wb_compare = function;
+- (void)setComparator:(NSComparator)comparator {
+  _comparator = comparator;
   [self rearrangeObjects];
 }
 
@@ -36,24 +33,16 @@
   [self setSearchString:[str length] ? str : nil];
 }
 
-- (NSString *)searchString {
-  return wb_searchString;
-}
-
 - (void)setSearchString:(NSString *)aString {
-  if (![aString isEqualToString:wb_searchString]) {
-    spx_release(wb_searchString);
-    wb_searchString = [aString length] > 0 ? spx_retain(aString) : nil;
+  if (![aString isEqualToString:_searchString]) {
+    spx_release(_searchString);
+    _searchString = [aString length] > 0 ? [aString copy] : nil;
     [self rearrangeObjects];
   }
 }
 
-- (WBFilterFunction)filterFunction {
-  return wb_filter;
-}
-- (void)setFilterFunction:(WBFilterFunction)function context:(void *)ctxt {
-  wb_filter = function;
-  wb_filterCtxt = ctxt;
+- (void)setFilterBlock:(WBFilterBlock)filterBlock {
+  _filterBlock = filterBlock;
   [self rearrangeObjects];
 }
 
@@ -61,13 +50,13 @@
 #pragma mark Custom Arrange Algorithm
 - (NSArray *)arrangeObjects:(NSArray *)objects {
   NSArray *result = nil;
-  if (wb_filter) {
+  if (_filterBlock) {
     id item = nil;
     NSUInteger count = [objects count];
     NSMutableArray *filteredObjects = [NSMutableArray arrayWithCapacity:[objects count]];
     while (count-- > 0) {
       item = [objects objectAtIndex:count];
-      if (wb_filter(wb_searchString, item, wb_filterCtxt)) {
+      if (_filterBlock(_searchString, item)) {
         [filteredObjects addObject:item];
       }
     }
@@ -76,12 +65,8 @@
     result = objects;
   }
 
-  if (wb_compare) {
-    @try { /* If Mutable Array sort it */
-      [(NSMutableArray *)result sortUsingFunction:wb_compare context:(__bridge void *)self];
-    } @catch (id) { /* else return a sorted copy */
-      result = [result sortedArrayUsingFunction:wb_compare context:(__bridge void *)self];
-    }
+  if (_comparator) {
+    result = [result sortedArrayUsingComparator:_comparator];
   } else {
     result = [super arrangeObjects:result];
   }

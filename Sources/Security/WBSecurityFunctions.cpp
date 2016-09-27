@@ -495,8 +495,8 @@ void __WBAttributeInfoPrint(SecKeychainAttributeInfo *info) {
 }
 
 OSStatus WBSecurityPrintAttributeInfo(SecItemClass itemClass) {
-  SecKeychainRef keychain = NULL;
-  SecKeychainAttributeInfo *info = NULL;
+  SecKeychainRef keychain = nullptr;
+  SecKeychainAttributeInfo *info = nullptr;
 
   OSStatus err = SecKeychainCopyDefault(&keychain);
   require_noerr(err, bail);
@@ -513,11 +513,11 @@ bail:
 }
 
 OSStatus WBSecurityPrintItemAttributeInfo(SecKeychainItemRef item) {
-  SecItemClass cls = 0;
-  SecKeychainRef keychain = NULL;
-  SecKeychainAttributeInfo *info = NULL;
+  SecItemClass cls = SecItemClass(0);
+  SecKeychainRef keychain = nullptr;
+  SecKeychainAttributeInfo *info = nullptr;
 
-  OSStatus err = SecKeychainItemCopyAttributesAndData(item, NULL, &cls, NULL, NULL, NULL);
+  OSStatus err = SecKeychainItemCopyAttributesAndData(item, nullptr, &cls, nullptr, nullptr, nullptr);
   require_noerr(err, bail);
 
   err = SecKeychainItemCopyKeychain(item, &keychain);
