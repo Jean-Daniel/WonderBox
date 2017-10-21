@@ -367,7 +367,7 @@ OSStatus WBAECreateEventWithTargetBundleID(CFStringRef targetId, AEEventClass ev
   OSStatus err;
   WBAEDesc target;
   // workaround bug with apple event system (http://www.openradar.me/12424662 )
-  if (kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber10_7_4) {
+  if (kCFCoreFoundationVersionNumber > kCFCoreFoundationVersionNumber10_7_4 && kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber10_8_4) {
     err = _WBAECreateTargetByResolvingBundleID(targetId, &target);
   } else {
     err = WBAECreateTargetWithBundleID(targetId, &target);
@@ -446,7 +446,7 @@ OSStatus WBAEBuildAppleEventWithTargetBundleID(CFStringRef bundleID, AEEventClas
 #pragma mark -
 #pragma mark Add Param & Attr
 OSStatus WBAESetStandardAttributes(AppleEvent *theEvent) {
-  check(theEvent != NULL);
+  assert(theEvent != NULL);
   OSStatus err = noErr;
   //err = AEPutAttributePtr(theEvent, keySubjectAttr, typeNull, NULL, 0);
   if (noErr == err) {
@@ -1353,9 +1353,9 @@ OSStatus WBAESendMessageThreadSafeSynchronous(AppleEvent *event,
                                               AESendMode sendMode, long timeOutInTicks) {
   OSStatus err;
   mach_port_t replyPort;
-  check(event != NULL);
-  check(reply != NULL);
-  check(sendMode & kAEWaitReply);
+  assert(event != NULL);
+  assert(reply != NULL);
+  assert(sendMode & kAEWaitReply);
 
   replyPort = MACH_PORT_NULL;
 

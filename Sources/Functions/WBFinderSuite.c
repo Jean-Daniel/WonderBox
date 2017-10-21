@@ -190,16 +190,16 @@ OSStatus WBAEFinderSyncItem(const AEDesc *item) {
                                                    'fndr', /* kAEFinderSuite, */
                                                    'fupd', /* kAESync, */
                                                    &aevt);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   err = WBAEAddAEDesc(&aevt, keyDirectObject, item);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   //  err = WBAESetStandardAttributes(&aevt);
-  //  require_noerr(err, dispose);
+  //  spx_require_noerr(err, dispose);
 
   err = WBAESendEventNoReply(&aevt);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
 dispose:
   WBAEDisposeDesc(&aevt);
@@ -207,13 +207,13 @@ dispose:
 }
 
 OSStatus WBAEFinderSyncFSRef(const FSRef *aRef) {
-  check(aRef);
+  assert(aRef);
   AEDesc item = WBAEEmptyDesc();
   OSStatus err = WBAECreateDescFromFSRef(aRef, &item);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   err = WBAEFinderSyncItem(&item);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
 dispose:
   WBAEDisposeDesc(&item);
@@ -221,7 +221,7 @@ dispose:
 }
 
 OSStatus WBAEFinderSyncItemAtURL(CFURLRef url) {
-  check(url);
+  assert(url);
   FSRef ref;
   OSStatus err = paramErr;
   if (CFURLGetFSRef(url, &ref)) {
@@ -237,20 +237,20 @@ OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate) {
 
   if (activate) {
     err = WBAESendSimpleEventToBundle(kWBAEFinderBundleIdentifier, kAEMiscStandards, kAEActivate);
-    require_noerr(err, dispose);
+    spx_require_noerr(err, dispose);
   }
 
   err = WBAECreateEventWithTargetBundleID(kWBAEFinderBundleIdentifier, kAEMiscStandards, kAEMakeObjectsVisible, &aevt);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   err = WBAEAddAEDesc(&aevt, keyDirectObject, item);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   //  err = WBAESetStandardAttributes(&aevt);
-  //  require_noerr(err, dispose);
+  //  spx_require_noerr(err, dispose);
 
   err = WBAESendEventNoReply(&aevt);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
 dispose:
   WBAEDisposeDesc(&aevt);
@@ -258,13 +258,13 @@ dispose:
 }
 
 OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate) {
-  check(aRef);
+  assert(aRef);
   AEDesc item = WBAEEmptyDesc();
   OSStatus err = WBAECreateDescFromFSRef(aRef, &item);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
   err = WBAEFinderRevealItem(&item, activate);
-  require_noerr(err, dispose);
+  spx_require_noerr(err, dispose);
 
 dispose:
   WBAEDisposeDesc(&item);
@@ -272,7 +272,7 @@ dispose:
 }
 
 OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate) {
-  check(url);
+  assert(url);
   FSRef ref;
   OSStatus err = paramErr;
   if (CFURLGetFSRef(url, &ref)) {

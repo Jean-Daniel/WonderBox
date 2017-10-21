@@ -63,9 +63,9 @@ static inline bool _IsDarkTheme() {
 }
 
 + (bool)available {
-  // Only tested on 10.12
+  // Only tested on 10.12 - 10.13
   NSOperatingSystemVersion vers = [NSProcessInfo processInfo].operatingSystemVersion;
-  return vers.minorVersion <= 12;
+  return vers.minorVersion <= 13;
 }
 
 - (instancetype)initWithImageView:(NSImageView *)aView {

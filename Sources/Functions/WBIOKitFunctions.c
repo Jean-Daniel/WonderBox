@@ -38,13 +38,13 @@ io_connect_t WBHIDGetEventDriver(void) {
     mach_port_t service, iter;
 
     kr = IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching(kIOHIDSystemClass), &iter);
-    check(KERN_SUCCESS == kr);
+    assert(KERN_SUCCESS == kr);
 
     service = IOIteratorNext(iter);
-    check(service);
+    assert(service);
 
     kr = IOServiceOpen(service, mach_task_self(), kIOHIDParamConnectType, &sEventDrvrRef);
-    check(KERN_SUCCESS == kr);
+    assert(KERN_SUCCESS == kr);
 
     IOObjectRelease(service);
     IOObjectRelease(iter);
@@ -66,7 +66,7 @@ kern_return_t WBHIDPostAuxKey(const UInt8 auxKeyCode ) {
 
   IOOptionBits options = kIOHIDSetGlobalEventFlags;
   kr = IOHIDPostEvent(WBHIDGetEventDriver(), NX_SYSDEFINED, loc, &event, kNXEventDataVersion, 0, options);
-  check( KERN_SUCCESS == kr );
+  assert( KERN_SUCCESS == kr );
 
   event.compound.misc.C[2] = NX_KEYUP;
   kr = IOHIDPostEvent(WBHIDGetEventDriver(), NX_SYSDEFINED, loc, &event, kNXEventDataVersion, 0, options);
@@ -82,7 +82,7 @@ kern_return_t WBHIDPostSystemDefinedEvent(const UInt8 inSysKeyCode) {
   event.compound.subType = inSysKeyCode;
 
   kr = IOHIDPostEvent(WBHIDGetEventDriver(), NX_SYSDEFINED, loc, &event, kNXEventDataVersion, 0, kIOHIDSetGlobalEventFlags);
-  check(KERN_SUCCESS == kr);
+  assert(KERN_SUCCESS == kr);
 
   return kr;
 }
@@ -98,7 +98,7 @@ CGError WBIODisplaySetFloatParameter(CFStringRef key, float value) {
   CGDirectDisplayID	displayIDs[8];
 
   err = CGGetOnlineDisplayList(8, displayIDs, &max);
-  require(kCGErrorSuccess == err, bail);
+  spx_require(kCGErrorSuccess == err, bail);
 
   if(max > 8)
     max = 8;

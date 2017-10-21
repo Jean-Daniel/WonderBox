@@ -26,7 +26,7 @@
   return [self initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
 }
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
   // Impliticly borderless as NSBorderlessWindowMask = 0
   if (self = [super initWithContentRect:contentRect styleMask:styleMask | NSNonactivatingPanelMask backing:bufferingType defer:deferCreation]) {
     self.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;

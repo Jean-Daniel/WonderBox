@@ -216,15 +216,15 @@ OSStatus WBSecurityCreateSignatureContext(SecKeyRef privKey, SecCredentialType c
 
   /* retreive cssm objects */
   err = SecKeyGetCSSMKey(privKey, &privkey);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
   err = SecKeyGetCSPHandle(privKey, &cspHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
   err = SecKeyGetCredentials(privKey, CSSM_ACL_AUTHORIZATION_SIGN, credentials, &credits);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   /* create cssm context */
   err = CSSM_CSP_CreateSignatureContext(cspHandle, algid, credits, privkey, ccHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
 bail:
     return err;
@@ -237,13 +237,13 @@ OSStatus WBSecurityCreateVerifyContext(SecKeyRef pubKey, CSSM_ALGORITHMS algid, 
 
   /* retreive pubkey and csp */
   err = SecKeyGetCSSMKey(pubKey, &pubkey);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
   err = SecKeyGetCSPHandle(pubKey, &cspHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   /* create cssm context */
   err = CSSM_CSP_CreateSignatureContext(cspHandle, algid, NULL, pubkey, ccHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
 bail:
     return err;
@@ -254,9 +254,9 @@ OSStatus WBSecuritySignData(SecKeyRef privKey, SecCredentialType credentials, co
   CSSM_CC_HANDLE ccHandle = 0;
 
   err = WBSecurityCreateSignatureContext(privKey, credentials, algid, &ccHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
   err = CSSM_SignData(ccHandle, data, 1, CSSM_ALGID_NONE, signature);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
 bail:
     /* cleanup */
@@ -271,7 +271,7 @@ OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *data, CSSM
 
   /* retreive pubkey and csp */
   err = WBSecurityCreateVerifyContext(pubKey, algid, &ccHandle);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   /* verify data */
   err = CSSM_VerifyData(ccHandle, data, 1, CSSM_ALGID_NONE, signature);
@@ -281,7 +281,7 @@ OSStatus WBSecurityVerifySignature(SecKeyRef pubKey, const CSSM_DATA *data, CSSM
   } else if (noErr == err) {
     *valid = TRUE;
   }
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
 bail:
     /* cleanup */
@@ -499,9 +499,9 @@ OSStatus WBSecurityPrintAttributeInfo(SecItemClass itemClass) {
   SecKeychainAttributeInfo *info = nullptr;
 
   OSStatus err = SecKeychainCopyDefault(&keychain);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
   err = SecKeychainAttributeInfoForItemID(keychain, itemClass, &info);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   __WBAttributeInfoPrint(info);
 
@@ -518,13 +518,13 @@ OSStatus WBSecurityPrintItemAttributeInfo(SecKeychainItemRef item) {
   SecKeychainAttributeInfo *info = nullptr;
 
   OSStatus err = SecKeychainItemCopyAttributesAndData(item, nullptr, &cls, nullptr, nullptr, nullptr);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   err = SecKeychainItemCopyKeychain(item, &keychain);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   err = SecKeychainAttributeInfoForItemID(keychain, cls, &info);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   __WBAttributeInfoPrint(info);
 

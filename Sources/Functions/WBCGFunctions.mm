@@ -190,7 +190,7 @@ void WBCGPathAddRoundRectWithRadius(CGMutablePathRef path, const CGAffineTransfo
 // MARK: Stars
 template<class Path> WB_INLINE
 void AddStart(Path path, const CGAffineTransform *transform, CGPoint center, CFIndex sides, CGFloat r, CGFloat ir) {
-  check(sides >= 5);
+  assert(sides >= 5);
   if (sides < 5) return;
 
   /* angles */

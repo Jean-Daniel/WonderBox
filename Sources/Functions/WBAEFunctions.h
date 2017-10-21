@@ -88,8 +88,8 @@ CFStringRef WBAEDescCopyDescription(const AEDesc *desc);
 #pragma mark -
 #pragma mark Find Target for AppleEvents
 /**************************** Find Target for AppleEvents ****************************/
-WB_EXPORT const AEDesc *WBAESystemTarget();
-WB_EXPORT const AEDesc *WBAECurrentProcessTarget();
+WB_EXPORT const AEDesc *WBAESystemTarget(void);
+WB_EXPORT const AEDesc *WBAECurrentProcessTarget(void);
 
 WB_EXPORT OSStatus WBAECreateTargetWithBundleID(CFStringRef bundleId, AEDesc *target);
 WB_EXPORT OSStatus WBAECreateTargetWithProcessIdentifier(pid_t pid, AEDesc *target);

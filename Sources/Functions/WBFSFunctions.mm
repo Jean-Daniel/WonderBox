@@ -150,20 +150,17 @@ OSStatus WBFSRefIsFolder(const FSRef *objRef, Boolean *isFolder) {
 OSStatus WBFSRefIsVisible(const FSRef *objRef, Boolean *isVisible) {
   if (!isVisible) return paramErr;
 
-  OSStatus err;
   FSCatalogInfo catalogInfo;
-  err = FSGetCatalogInfo(objRef, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
-  require_noerr_string(err, bail, "Error while getting catalog info.");
-
-  if ((catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0) {
-    FolderInfo *folInfo = (FolderInfo *)catalogInfo.finderInfo;
-    *isVisible = (folInfo->finderFlags & kIsInvisible) == 0;
-  } else {
-    FileInfo *finInfo = (FileInfo *)catalogInfo.finderInfo;
-    *isVisible = (finInfo->finderFlags & kIsInvisible) == 0;
+  OSStatus err = FSGetCatalogInfo(objRef, kFSCatInfoFinderInfo | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL);
+  if (noErr == err) {
+    if ((catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0) {
+      FolderInfo *folInfo = (FolderInfo *)catalogInfo.finderInfo;
+      *isVisible = (folInfo->finderFlags & kIsInvisible) == 0;
+    } else {
+      FileInfo *finInfo = (FileInfo *)catalogInfo.finderInfo;
+      *isVisible = (finInfo->finderFlags & kIsInvisible) == 0;
+    }
   }
-
-bail:
   return err;
 }
 
@@ -263,14 +260,12 @@ OSStatus WBFSGetVolumeSize(FSVolumeRefNum volume, UInt64 *size, UInt32 *files, U
 
   FSVolumeInfo info;
   OSStatus err = FSGetVolumeInfo(volume, 0, NULL, kFSVolInfoSizes | kFSVolInfoDirCount | kFSVolInfoFileCount, &info, NULL, NULL);
-  require_noerr(err, bail);
-
-  if (size) *size = info.totalBytes - info.freeBytes;
-  if (files) *files = info.fileCount;
-  if (folders) *folders = info.folderCount;
-
-bail:
-    return err;
+  if (noErr == err) {
+    if (size) *size = info.totalBytes - info.freeBytes;
+    if (files) *files = info.fileCount;
+    if (folders) *folders = info.folderCount;
+  }
+  return err;
 }
 
 #define BULK_SIZE 128
@@ -300,7 +295,7 @@ OSStatus _WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 
         }
       }
     }
-    FSCloseIterator(iter);
+    spx_verify_noerr(FSCloseIterator(iter));
   }
   /* cleanup expected error */
   if (errFSNoMoreItems == err)
@@ -313,7 +308,7 @@ OSStatus WBFSGetFolderSize(FSRef *folder, UInt64 *lsize, UInt64 *psize, UInt32 *
 
   FSCatalogInfo info;
   OSStatus err = FSGetCatalogInfo(folder, kFSCatInfoNodeFlags | kFSCatInfoNodeID | kFSCatInfoVolume, &info, NULL, NULL, NULL);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   if (!(info.nodeFlags & kFSNodeIsDirectoryMask))
     return errFSNotAFolder;
@@ -339,17 +334,15 @@ bail:
 
 OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
                            FSVolumeInfoBitmap whichInfo, FSVolumeInfo *info, HFSUniStr255 *volumeName, FSRef *rootDirectory) {
-  if (!object) return paramErr;
+  if (!object)
+    return paramErr;
 
   FSCatalogInfo fsinfo;
   OSStatus err = FSGetCatalogInfo(object, kFSCatInfoVolume, &fsinfo, NULL, NULL, NULL);
-  require_noerr(err, bail);
+  if (noErr == err)
+    err = FSGetVolumeInfo(fsinfo.volume, 0, actualVolume, whichInfo, info, volumeName, rootDirectory);
 
-  err = FSGetVolumeInfo(fsinfo.volume, 0, actualVolume, whichInfo, info, volumeName, rootDirectory);
-  require_noerr(err, bail);
-
-bail:
-    return err;
+  return err;
 }
 
 #pragma mark -
@@ -516,7 +509,7 @@ OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FS
         }
       }
     }
-    verify_noerr(FSCloseIterator(iter));
+    spx_verify_noerr(FSCloseIterator(iter));
   }
   /* reset expected error */
   if (errFSNoMoreItems == err)
@@ -679,26 +672,26 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
   ResFileRefNum rsrcRef = 0;
 
   err = WBFSRefCreateFromFileSystemPath(target, kFSPathMakeRefDefaultOptions, &src, &isDir);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   err = FSNewAlias(NULL, &src, &alias);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   err = WBFSRefCreateFromFileSystemPath(folder, kFSPathMakeRefDefaultOptions, &parent, &pIsDir);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   if (!pIsDir)
     return errFSNotAFolder;
 
   /* Get rsrc fork name */
   err = FSGetResourceForkName(&rsrcStr);
-  require_noerr(err, bail);
+  spx_require_noerr(err, bail);
 
   {
     /* Get destination file name */
     HFSUniStr255 aliasStr;
     err = FSGetHFSUniStrFromString(aliasName, &aliasStr);
-    require_noerr(err, bail);
+    spx_require_noerr(err, bail);
 
     /* set type, creator, and flags */
     FSCatalogInfo info = {};
@@ -710,16 +703,16 @@ OSStatus WBFSCreateAliasFile(CFStringRef folder, CFStringRef aliasName, CFString
     err = FSCreateResourceFile(&parent, aliasStr.length, aliasStr.unicode,
                                kFSCatInfoFinderInfo, &info,
                                rsrcStr.length, rsrcStr.unicode, &rsrc, NULL);
-    require_noerr(err, bail);
+    spx_require_noerr(err, bail);
   }
 
   /* rsrc point on the new resource file, we have to fill it */
   err = FSOpenResourceFile(&rsrc, rsrcStr.length, rsrcStr.unicode, fsWrPerm, &rsrcRef);
-  require_noerr(err, cleanup);
+  spx_require_noerr(err, cleanup);
 
   AddResource((Handle)alias, 'alis', 0, "\p");
   err = ResError();
-  require_noerr(err, close);
+  spx_require_noerr(err, close);
   /* Resource Manager will free alias when needed */
   alias = NULL;
 

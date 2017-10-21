@@ -61,7 +61,7 @@ id WBDeserializeObjectWithFunction(NSDictionary *plist, OSStatus *error, WBDeser
   OSStatus err = noErr;
   if (error) *error = noErr;
   if (plist) {
-    Class class = NSClassFromString([plist objectForKey:kWBSerializationIsaKey]);
+    Class class = NSClassFromString(plist[kWBSerializationIsaKey]);
     if (!class) {
       err = kWBClassNotFoundError;
     } else {
