@@ -15,7 +15,7 @@
 #include <ApplicationServices/ApplicationServices.h>
 
 #pragma mark Process Utilities
-WB_INLINE
+WB_INLINE WB_DEPRECATED("ProcessSerialNumber")
 OSStatus _WBProcessGetInformation(ProcessSerialNumber *psn, ProcessInfoRec *info) {
   info->processInfoLength = (UInt32)sizeof(*info);
   info->processName = NULL;
@@ -163,12 +163,12 @@ CFStringRef WBProcessCopyNameForPID(pid_t pid) {
     return CFStringCreateWithCString(kCFAllocatorDefault, getprogname(), kCFStringEncodingUTF8);
   }
   /* try to use carbon process manager */
-  ProcessSerialNumber psn;
-  if (noErr == GetProcessForPID(pid, &psn)) {
-    CFStringRef name = NULL;
-    if (noErr == CopyProcessName(&psn, &name))
-      return name;
-  }
+//  ProcessSerialNumber psn;
+//  if (noErr == GetProcessForPID(pid, &psn)) {
+//    CFStringRef name = NULL;
+//    if (noErr == CopyProcessName(&psn, &name))
+//      return name;
+//  }
 
   CFStringRef name = NULL;
   /* fall back: use sysctl */

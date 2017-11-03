@@ -33,7 +33,7 @@
 }
 
 - (BOOL)setSelectedObject:(id)object {
-  return [self setSelectedObjects:[NSArray arrayWithObject:object]];
+  return [self setSelectedObjects:@[object]];
 }
 
 - (void)deleteSelection {
@@ -41,7 +41,9 @@
 }
 
 - (void)removeAllObjects {
-  [self removeObjects:[self content]];
+  id content = [self content];
+  if (content)
+    [self removeObjects:content];
 }
 
 @end

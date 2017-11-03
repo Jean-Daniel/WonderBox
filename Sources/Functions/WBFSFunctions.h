@@ -131,7 +131,7 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 @interface NSString (WBFileSystem)
 + (NSString *)stringFromFSRef:(const FSRef *)ref WB_DEPRECATED("Use URL API");
 
-+ (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length;
++ (NSString *)stringWithFileSystemRepresentation:(const char *)path length:(NSUInteger)length  WB_DEPRECATED("Use URL API");
 
 // same as fileSystemRepresentation but returns nil instead of throwing an exception
 - (const char *)safeFileSystemRepresentation;
@@ -143,8 +143,8 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 @end
 
 @interface NSFileManager (WBResolveAlias)
-- (BOOL)isAliasFileAtPath:(NSString *)path;
-- (NSString *)resolveAliasFileAtPath:(NSString *)alias isFolder:(BOOL *)isFolder;
+- (BOOL)isAliasFileAtPath:(NSString *)path WB_DEPRECATED("Use URL API");
+- (NSString *)resolveAliasFileAtPath:(NSString *)alias isFolder:(BOOL *)isFolder WB_DEPRECATED("Bookmark API");
 @end
 
 #pragma mark -

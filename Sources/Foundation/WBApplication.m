@@ -21,7 +21,6 @@ enum {
 @implementation WBApplication {
 @private
   NSString *wb_name;
-  OSType wb_signature;
   NSString *wb_identifier;
 }
 
@@ -29,13 +28,11 @@ enum {
 - (id)copyWithZone:(NSZone *)zone {
   WBApplication *copy = [[[self class] allocWithZone:zone] init];
   copy->wb_name = [wb_name copyWithZone:zone];
-  copy->wb_signature = wb_signature;
   copy->wb_identifier = [wb_identifier copyWithZone:zone];
   return copy;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-  [coder encodeInteger:wb_signature forKey:@"WBSignature"];
   if (wb_name) [coder encodeObject:wb_name forKey:@"WBName"];
   if (wb_identifier) [coder encodeObject:wb_identifier forKey:@"WBIdentifier"];
   return;
@@ -43,7 +40,6 @@ enum {
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_signature = (OSType)[coder decodeIntegerForKey:@"WBSignature"];
     wb_name = [[coder decodeObjectForKey:@"WBName"] retain];
     wb_identifier = [[coder decodeObjectForKey:@"WBIdentifier"] retain];
   }
@@ -51,52 +47,33 @@ enum {
 }
 
 #pragma mark -
-+ (NSArray *)runningApplication:(BOOL)onlyVisible {
-  NSMutableArray *apps = [[NSMutableArray alloc] init];
-  ProcessSerialNumber psn = {kNoProcess, kNoProcess};
-  while (procNotFound != GetNextProcess(&psn))  {
-    /* If should include background only, or if is not background only */
-    if (!onlyVisible || !WBProcessIsBackgroundOnly(&psn)) {
-      WBApplication *app = [[WBApplication alloc] initWithProcessSerialNumber:&psn];
-      if (app) {
-        [apps addObject:app];
-        [app release];
-      }
-    }
-  }
-  return [apps autorelease];
-}
-
 #pragma mark Convenient initializer
-+ (id)applicationWithPath:(NSString *)path {
-  return [[[self alloc] initWithPath:path] autorelease];
++ (instancetype)applicationWithURL:(NSURL *)anURL {
+  return [[[self alloc] initWithURL:anURL] autorelease];
 }
 
-+ (id)applicationWithProcessSerialNumber:(ProcessSerialNumber *)psn {
-  return [[[self alloc] initWithProcessSerialNumber:psn] autorelease];
++ (instancetype)applicationWithProcessIdentifier:(pid_t)pid {
+  return [[[self alloc] initWithProcessIdentifier:pid] autorelease];
 }
 
-+ (id)applicationWithName:(NSString *)name {
++ (instancetype)applicationWithName:(NSString *)name {
   return [[[self alloc] initWithName:name] autorelease];
 }
 
-+ (id)applicationWithName:(NSString *)name signature:(OSType)aSignature {
-  return [[[self alloc] initWithName:name signature:aSignature] autorelease];
-}
-+ (id)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier {
++ (instancetype)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier {
   return [[[self alloc] initWithName:name bundleIdentifier:anIdentifier] autorelease];
 }
 
 
 #pragma mark -
-- (id)initWithPath:(NSString *)path {
-  if (!path) {
+- (instancetype)initWithURL:(NSURL *)anURL {
+  if (!anURL) {
     [self release];
     return nil;
   }
 
   if (self = [super init]) {
-    if (![self setPath:path]) {
+    if (![self setURL:anURL]) {
       [self release];
       self = nil;
     }
@@ -105,18 +82,11 @@ enum {
   return self;
 }
 
-- (id)initWithProcessSerialNumber:(ProcessSerialNumber *)psn {
-  CFDictionaryRef info = ProcessInformationCopyDictionary(psn, kProcessDictionaryIncludeAllInformationMask);
-  if (info) {
-    /* Get name */
-    CFStringRef name = CFDictionaryGetValue(info, kCFBundleNameKey);
-    CFStringRef bundle = CFDictionaryGetValue(info, kCFBundleIdentifierKey);
-
-    CFStringRef creator = CFDictionaryGetValue(info, CFSTR("FileCreator"));
-    OSType signature = creator ? WBGetOSTypeFromString(creator) : kWBUndefinedSignature;
-    self = [self initWithName:(NSString *)name signature:signature bundleIdentifier:(NSString *)bundle];
-
-    CFRelease(info);
+- (instancetype)initWithProcessIdentifier:(pid_t)pid {
+  NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
+  NSString *bundleId = app.bundleIdentifier;
+  if (bundleId) {
+    self = [self initWithName:app.localizedName bundleIdentifier:bundleId];
   } else {
     [self release];
     self = nil;
@@ -131,15 +101,9 @@ enum {
   return self;
 }
 
-- (id)initWithName:(NSString *)name signature:(OSType)aSignature {
-  return [self initWithName:name signature:aSignature bundleIdentifier:nil];
-}
-- (id)initWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier {
-  return [self initWithName:name signature:kLSUnknownCreator bundleIdentifier:anIdentifier];
-}
-- (id)initWithName:(NSString *)name signature:(OSType)aSignature bundleIdentifier:(NSString *)anIdentifier {
+- (instancetype)initWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier {
   if (self = [super init]) {
-    [self setSignature:aSignature bundleIdentifier:anIdentifier];
+    wb_identifier = [anIdentifier copy];
   }
   return self;
 }
@@ -151,40 +115,36 @@ enum {
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"<%@ %p> {name='%@' signature='%@' identifier='%@'}",
+  return [NSString stringWithFormat:@"<%@ %p> {name='%@', identifier='%@'}",
     [self class], self,
-    wb_name, WBStringForOSType(wb_signature), wb_identifier];
+    wb_name, wb_identifier];
 }
 
 static NSString * const kInvalidIdentifier = @"org.shadowlab.__invalid__";
 
-WB_INLINE
-bool __IsValidSignature(OSType signature) {
-  return signature && signature != kWBUndefinedSignature;
-}
 WB_INLINE
 bool __IsValidIdentifier(id identifier) {
   return identifier && identifier != kInvalidIdentifier;
 }
 
 - (NSUInteger)hash {
-  OSType type = [self signature];
-  NSString *bundle = [self bundleIdentifier];
-  return [bundle hash] ^ type;
+  return wb_identifier.hash;
 }
 
 - (BOOL)isEqual:(id)object {
-  if (self == object) return YES;
+  if (self == object)
+    return YES;
 
-  if (![object isKindOfClass:[WBApplication class]]) return NO;
+  if (![object isKindOfClass:[WBApplication class]])
+    return NO;
 
-  if ([self signature]) {
-    if (![object signature] || [object signature] != wb_signature) return NO;
-  } else if ([object signature]) return NO;
-
-  if ([self bundleIdentifier]) {
-    if (![object bundleIdentifier] || ![wb_identifier isEqualToString:[object bundleIdentifier]]) return NO;
-  } else if ([object bundleIdentifier]) return NO;
+  NSString *otherId = [object bundleIdentifier];
+  if (wb_identifier) {
+    if (!otherId || ![wb_identifier isEqualToString:otherId])
+      return NO;
+  } else if (otherId) {
+    return NO;
+  }
 
   return YES;
 }
@@ -192,10 +152,12 @@ bool __IsValidIdentifier(id identifier) {
 #pragma mark -
 - (NSString *)name {
   if (!wb_name) {
-    NSString *path = [self path];
+    NSURL *path = self.URL;
     if (path) {
-      /* Extract name from last path component */
-      wb_name = [[[[NSFileManager defaultManager] displayNameAtPath:path] stringByDeletingPathExtension] copy];
+      NSString *name;
+      if ([path getResourceValue:&name forKey:NSURLLocalizedNameKey error:NULL]) {
+        wb_name = [name copy];
+      }
     }
   }
   return wb_name;
@@ -205,76 +167,54 @@ bool __IsValidIdentifier(id identifier) {
   SPXSetterCopy(wb_name, newName);
 }
 
-- (OSType)signature {
-  if (!wb_signature) {
-    NSString *path = [self path];
-    if (path) {
-      wb_signature = WBLSGetSignatureForPath(SPXNSToCFString(path));
-    }
-    if (!wb_signature) wb_signature = kWBUndefinedSignature;
-  }
-  return (__IsValidSignature(wb_signature)) ? wb_signature : kLSUnknownCreator;
-}
-- (void)setSignature:(OSType)signature {
-  [self setSignature:signature bundleIdentifier:nil];
-}
-
 - (NSString *)bundleIdentifier {
   if (!wb_identifier) {
-    NSString *path = [self path];
+    NSURL *path = [self URL];
     if (path) {
-      wb_identifier = (id)WBLSCopyBundleIdentifierForPath((CFStringRef)path);
+      wb_identifier = SPXCFStringBridgingRelease(WBLSCopyBundleIdentifierForURL(SPXNSToCFURL(path)));
     }
-    if (!wb_identifier) wb_identifier = kInvalidIdentifier;
+    if (!wb_identifier)
+      wb_identifier = kInvalidIdentifier;
   }
   return (__IsValidIdentifier(wb_identifier)) ? wb_identifier : nil;
 }
 - (void)setBundleIdentifier:(NSString *)identifier {
-  [self setSignature:kLSUnknownCreator bundleIdentifier:identifier];
-}
-
-- (void)setSignature:(OSType)aSignature bundleIdentifier:(NSString *)identifier {
-  // Should we invalidate the name ?
-  wb_signature = aSignature;
   SPXSetterCopy(wb_identifier, identifier);
+  // FIXME: invalidate name ?
 }
 
 #pragma mark -
 - (BOOL)isValid {
-  return __IsValidSignature(wb_signature) || __IsValidIdentifier(wb_identifier);
+  return __IsValidIdentifier(wb_identifier);
 }
 - (NSImage *)icon {
-  NSString *path = [self path];
+  NSString *path = self.URL.path;
   return path ? [[NSWorkspace sharedWorkspace] iconForFile:path] : nil;
 }
 
-- (NSString *)path {
-  NSString *path = nil;
+- (NSURL *)URL {
   if (__IsValidIdentifier(wb_identifier))
-    path = WBLSFindApplicationForBundleIdentifier(wb_identifier);
+    return SPXCFURLBridgingRelease(WBLSCopyApplicationURLForBundleIdentifier(SPXNSToCFString(wb_identifier)));
 
-  if (!path && __IsValidSignature(wb_signature))
-    path = WBLSFindApplicationForSignature(wb_signature);
-
-  return path;
+  return nil;
 }
-- (BOOL)setPath:(NSString *)aPath {
+
+- (BOOL)setURL:(NSURL *)anURL {
   /* Reset name */
   [self setName:nil];
 
-  if (!aPath) {
-    [self setSignature:kLSUnknownCreator bundleIdentifier:nil];
+  if (!anURL) {
+    self.bundleIdentifier = nil;
     return YES;
   }
 
   Boolean isApp = false;
-  if (noErr != WBLSIsApplicationAtPath(SPXNSToCFString(aPath), &isApp) || !isApp) {
+  if (noErr != WBLSIsApplicationAtURL(SPXNSToCFURL(anURL), &isApp) || !isApp) {
     return NO;
   }
 
-  CFStringRef bundle = WBLSCopyBundleIdentifierForPath(SPXNSToCFString(aPath));
-  OSType signature = WBLSGetSignatureForPath(SPXNSToCFString(aPath)) ? : kWBUndefinedSignature;
-  [self setSignature:signature bundleIdentifier:SPXCFToNSString(bundle)];
+  CFStringRef bundle = WBLSCopyBundleIdentifierForURL(SPXNSToCFURL(anURL));
+  self.bundleIdentifier = SPXCFToNSString(bundle);
   SPXCFRelease(bundle);
 
   return [self isValid];
@@ -287,43 +227,31 @@ bool __IsValidIdentifier(id identifier) {
   if (__IsValidIdentifier(wb_identifier))
     ok = noErr == WBLSGetApplicationForBundleIdentifier(SPXNSToCFString(wb_identifier), ref);
 
-  if (!ok && __IsValidSignature(wb_signature))
-    ok = noErr == WBLSGetApplicationForSignature(wb_signature, ref);
-
   return ok;
 }
 
-- (ProcessSerialNumber)process {
-  ProcessSerialNumber psn = {kNoProcess, kNoProcess};
-
+- (pid_t)processIdentifier {
   if (__IsValidIdentifier(wb_identifier))
-    psn = WBProcessGetProcessWithBundleIdentifier(SPXNSToCFString(wb_identifier));
+    return [NSRunningApplication runningApplicationsWithBundleIdentifier:wb_identifier].firstObject.processIdentifier;
 
-  if (psn.lowLongOfPSN == kNoProcess && __IsValidSignature(wb_signature))
-    psn = WBProcessGetProcessWithSignature(wb_signature);
-
-  return psn;
+  return -1;
 }
 
 - (BOOL)launch {
-  return [[NSWorkspace sharedWorkspace] launchApplication:[self path]];
+  NSURL *url = self.URL;
+  return url ? [[NSWorkspace sharedWorkspace] launchApplicationAtURL:url options:NSWorkspaceLaunchDefault configuration:@{} error:NULL] != nil : NO;
 }
 
 - (BOOL)isFront {
-  ProcessSerialNumber front;
-  if (noErr == GetFrontProcess(&front)) {
-    ProcessSerialNumber psn = [self process];
-    if ((kNoProcess != psn.lowLongOfPSN) || (kNoProcess != psn.highLongOfPSN)) {
-      Boolean isSame = false;
-      return (noErr == SameProcess(&psn, &front, &isSame)) && isSame;
-    }
-  }
-  return NO;
+  pid_t pid = self.processIdentifier;
+  if (pid <= 0)
+    return NO;
+  pid_t front = NSWorkspace.sharedWorkspace.frontmostApplication.processIdentifier;
+  return front == pid;
 }
 
 - (BOOL)isRunning {
-  ProcessSerialNumber psn = [self process];
-  return (kNoProcess != psn.lowLongOfPSN) || (kNoProcess != psn.highLongOfPSN);
+  return self.processIdentifier > 0;
 }
 
 @end

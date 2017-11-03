@@ -27,10 +27,10 @@ bool WBProcessIsBackgroundOnly(ProcessSerialNumber *psn) WB_DEPRECATED("ProcessS
 WB_EXPORT
 OSType WBProcessGetFrontProcessSignature(void) WB_DEPRECATED("Signature is obsolete");
 WB_EXPORT
-CFStringRef WBProcessCopyFrontProcessBundleIdentifier(void);
+CFStringRef WBProcessCopyFrontProcessBundleIdentifier(void) WB_DEPRECATED("NSRunningApplication");
 
 WB_EXPORT
-pid_t WBProcessGetProcessIdentifierForBundleIdentifier(CFStringRef bundleId);
+pid_t WBProcessGetProcessIdentifierForBundleIdentifier(CFStringRef bundleId) WB_DEPRECATED("NSRunningApplication");
 
 WB_EXPORT
 ProcessSerialNumber WBProcessGetProcessWithSignature(OSType type) WB_DEPRECATED("ProcessSerialNumber is obsolete");

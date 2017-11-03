@@ -30,26 +30,13 @@ OSStatus WBAEFinderGetSelection(AEDescList *items);
 
 /*!
  @function
- @abstract   Change a AEDescList representing Finder selection (obtains from <i>WBAEGetFinderSelection</i>) into an
- array of FSRef.
- @param      items AEDescList representing Finder items.
- @param    selection A pointer to an Array of FSRef. On return contains <i>itemsCount</i> converted items.
- @param    maxCount Size of <i>selection</i> array.
- @param    itemsCount Count of items successfully converted.
- @result     A result code.
+ @abstract   Get the current Finder selected items.
+ @result     A list of CFURLRef or NULL on error.
  */
 WB_EXPORT
-OSStatus WBAEFinderSelectionToFSRefs(AEDescList *items, FSRef *selection, CFIndex maxCount, CFIndex *itemsCount);
+CFArrayRef WBAEFinderCopySelection(void);
 
 #pragma mark Current Folder
-/*!
- @function
- @abstract   Return a FSRef pointing on the Finder current folder, i.e. that will be choose if we create a new Folder for example.
- @param      folder On return, a FSRef pointing on the Finder current folder.
- @result     A result code.
- */
-WB_EXPORT
-OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) WB_DEPRECATED("URL");
 
 /*!
  @function
@@ -58,33 +45,39 @@ OSStatus WBAEFinderGetCurrentFolder(FSRef *folder) WB_DEPRECATED("URL");
 WB_EXPORT
 CFURLRef WBAEFinderCopyCurrentFolderURL(void);
 
-/*!
- @function
- @abstract  Returns a CFStringRef representation of the POSIX path of the current Finder folder or NULL.
- */
-WB_EXPORT
-CFStringRef WBAEFinderCopyCurrentFolderPath(void) WB_DEPRECATED("URL");
-
 #pragma mark Sync
 WB_EXPORT
 OSStatus WBAEFinderSyncItem(const AEDesc *item);
-WB_EXPORT
-OSStatus WBAEFinderSyncFSRef(const FSRef *aRef) WB_DEPRECATED("URL");
 WB_EXPORT
 OSStatus WBAEFinderSyncItemAtURL(CFURLRef url);
 
 #pragma mark Reveal Item
 WB_EXPORT
-OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate);
+OSStatus WBAEFinderRevealItem(const AEDesc *item, Boolean activate) WB_DEPRECATED("NSWorkspace");
 WB_EXPORT
-OSStatus WBAEFinderRevealFSRef(const FSRef *aRef, Boolean activate) WB_DEPRECATED("URL");
-WB_EXPORT
-OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate);
+OSStatus WBAEFinderRevealItemAtURL(CFURLRef url, Boolean activate) WB_DEPRECATED("NSWorkspace");
 
 #pragma mark Coerce
 WB_EXPORT
-OSStatus WBAEFinderGetObjectAsFSRef(const AEDesc* pAEDesc, FSRef *file) WB_DEPRECATED("URL");
-WB_EXPORT
-OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) WB_DEPRECATED("Bookmark");
+CFURLRef WBAEFinderCreateFileURLFromObject(const AEDesc* pAEDesc);
+
+// MARK: -
+// MARK: Legacy File Types support
+//
+//WB_EXPORT
+//OSStatus WBAEFinderGetObjectAsAlias(const AEDesc* pAEDesc, AliasHandle *alias) WB_DEPRECATED("Bookmark");
+//
+//WB_EXPORT OSStatus WBAEAddAlias(AppleEvent *theEvent, AEKeyword keyword, AliasHandle alias);
+//
+//WB_EXPORT OSStatus WBAEAddFSRefAsAlias(AppleEvent *theEvent, AEKeyword keyword, const FSRef *aRef);
+//
+//// Expect Alias descriptor as input
+//WB_EXPORT OSStatus WBAEGetFSRefFromDescriptor(const AEDesc* pAEDesc, FSRef *pRef);
+//WB_EXPORT OSStatus WBAEGetFSRefFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, FSRef *pRef);
+//WB_EXPORT OSStatus WBAEGetNthFSRefFromDescList(const AEDescList *aList, CFIndex idx, FSRef *pRef);
+//
+//WB_EXPORT OSStatus WBAECopyAliasFromDescriptor(const AEDesc* pAEDesc, AliasHandle *pAlias);
+//WB_EXPORT OSStatus WBAECopyAliasFromAppleEvent(const AppleEvent* anEvent, AEKeyword aKey, AliasHandle *pAlias);
+//WB_EXPORT OSStatus WBAECopyNthAliasFromDescList(const AEDescList *aList, CFIndex idx, AliasHandle *pAlias);
 
 #endif /* __WB_FINDER_SUITE_H */

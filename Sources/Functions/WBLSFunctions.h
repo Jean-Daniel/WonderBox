@@ -42,14 +42,15 @@ OSStatus WBLSIsApplicationAtURL(CFURLRef anURL, Boolean *isApp);
 WB_EXPORT
 OSStatus WBLSIsApplicationAtPath(CFStringRef aPath, Boolean *isApp);
 
-WB_EXPORT
-OSStatus WBLSLaunchApplication(FSRef *app, LSLaunchFlags flags, ProcessSerialNumber *psn);
-WB_EXPORT
+WB_EXPORT WB_DEPRECATED("ProcessSerialNumber")
 OSStatus WBLSLaunchApplicationAtPath(CFStringRef aPath, CFURLPathStyle pathStyle, LSLaunchFlags flags, ProcessSerialNumber *psn);
-WB_EXPORT
-OSStatus WBLSLaunchApplicationWithSignature(OSType sign, LSLaunchFlags flags, ProcessSerialNumber *psn);
-WB_EXPORT
+WB_EXPORT WB_DEPRECATED("ProcessSerialNumber")
 OSStatus WBLSLaunchApplicationWithBundleIdentifier(CFStringRef bundle, LSLaunchFlags flags, ProcessSerialNumber *psn);
+
+WB_EXPORT WB_DEPRECATED("FSRef/ProcessSerialNumber")
+OSStatus WBLSLaunchApplication(FSRef *app, LSLaunchFlags flags, ProcessSerialNumber *psn);
+WB_EXPORT WB_DEPRECATED("Signature/ProcessSerialNumber")
+OSStatus WBLSLaunchApplicationWithSignature(OSType sign, LSLaunchFlags flags, ProcessSerialNumber *psn);
 
 #if defined(__OBJC__)
 

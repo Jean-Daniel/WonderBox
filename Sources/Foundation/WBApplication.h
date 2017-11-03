@@ -25,46 +25,34 @@
 WB_OBJC_EXPORT
 @interface WBApplication : NSObject <NSCoding, NSCopying>
 
-+ (NSArray *)runningApplication:(BOOL)onlyVisible;
-
-+ (instancetype)applicationWithPath:(NSString *)path;
-+ (instancetype)applicationWithProcessSerialNumber:(ProcessSerialNumber *)psn;
++ (instancetype)applicationWithURL:(NSURL *)url;
++ (instancetype)applicationWithProcessIdentifier:(pid_t)pid;
 
 + (instancetype)applicationWithName:(NSString *)name;
-+ (instancetype)applicationWithName:(NSString *)name signature:(OSType)aSignature;
 + (instancetype)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
 
 /*!
   @method
  @abstract   (brief description)
- @param      path An application path.
+ @param      anURL An application path.
  @result     Returns a new WBApplication, or nil of path is invalid or if file at path is not an application.
  */
-- (instancetype)initWithPath:(NSString *)path;
-- (instancetype)initWithProcessSerialNumber:(ProcessSerialNumber *)psn;
+- (instancetype)initWithURL:(NSURL *)anURL;
+- (instancetype)initWithProcessIdentifier:(pid_t)pid;
 
 - (instancetype)initWithName:(NSString *)name;
-- (instancetype)initWithName:(NSString *)name signature:(OSType)aSignature;
 - (instancetype)initWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier;
-- (instancetype)initWithName:(NSString *)name signature:(OSType)aSignature bundleIdentifier:(NSString *)anIdentifier;
 
 @property(nonatomic, copy) NSString *name;
-
-- (OSType)signature;
-- (void)setSignature:(OSType)aSignature; // invalidate bundle identifier
-
-- (NSString *)bundleIdentifier;
-- (void)setBundleIdentifier:(NSString *)identifier; // invalidate signature
-
-- (void)setSignature:(OSType)aSignature bundleIdentifier:(NSString *)identifier;
+@property(nonatomic, copy) NSString *bundleIdentifier;
 
 /* Protected */
-- (BOOL)setPath:(NSString *)aPath;
+- (BOOL)setURL:(NSURL *)anURL;
 
 #pragma mark -
+- (NSURL *)URL;
 - (BOOL)isValid;
 - (NSImage *)icon;
-- (NSString *)path;
 - (BOOL)getFSRef:(FSRef *)ref;
 
 #pragma mark -
@@ -72,6 +60,6 @@ WB_OBJC_EXPORT
 - (BOOL)isFront;
 - (BOOL)isRunning;
 
-- (ProcessSerialNumber)process;
+- (pid_t)processIdentifier;
 
 @end
