@@ -53,7 +53,6 @@ WB_OBJC_EXPORT
 - (NSURL *)URL;
 - (BOOL)isValid;
 - (NSImage *)icon;
-- (BOOL)getFSRef:(FSRef *)ref;
 
 #pragma mark -
 - (BOOL)launch;

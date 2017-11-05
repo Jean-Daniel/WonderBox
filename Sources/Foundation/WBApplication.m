@@ -194,7 +194,7 @@ bool __IsValidIdentifier(id identifier) {
 
 - (NSURL *)URL {
   if (__IsValidIdentifier(wb_identifier))
-    return SPXCFURLBridgingRelease(WBLSCopyApplicationURLForBundleIdentifier(SPXNSToCFString(wb_identifier)));
+    return [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:wb_identifier];
 
   return nil;
 }
@@ -218,16 +218,6 @@ bool __IsValidIdentifier(id identifier) {
   SPXCFRelease(bundle);
 
   return [self isValid];
-}
-
-- (BOOL)getFSRef:(FSRef *)ref {
-  NSParameterAssert(ref);
-
-  BOOL ok = NO;
-  if (__IsValidIdentifier(wb_identifier))
-    ok = noErr == WBLSGetApplicationForBundleIdentifier(SPXNSToCFString(wb_identifier), ref);
-
-  return ok;
 }
 
 - (pid_t)processIdentifier {
