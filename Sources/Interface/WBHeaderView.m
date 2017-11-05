@@ -42,7 +42,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
   if ([WBHeaderView class] == self) {
     kWBHeaderTopLineColor = [[NSColor colorWithCalibratedWhite:.549 alpha:1] retain];
     kWBHeaderViewBackground = [[NSImage imageNamed:@"WBHeader" inBundle:SPXCurrentBundle()] retain];
-    kWBHeaderViewGrayBackground = [[NSImage imageNamed:@"WBHeader-down" inBundle:SPXCurrentBundle()] retain];
+    kWBHeaderViewGrayBackground = [[NSImage imageNamed:@"WBHeaderDown" inBundle:SPXCurrentBundle()] retain];
   }
 }
 
@@ -154,7 +154,7 @@ static NSImage *kWBHeaderViewGrayBackground = nil;
   NSPoint origin = NSMakePoint(0, 0);
   origin.x = (NSWidth(destRect) - [anImage size].width) / 2;
   origin.y = (NSHeight(destRect) - [anImage size].height) / 2;
-  [anImage compositeToPoint:origin operation:NSCompositeSourceOver];
+  [anImage drawAtPoint:origin fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
   [[NSColor wbBorderColor] setStroke];
   /* Draw border line */
   [NSBezierPath setDefaultLineWidth:1];

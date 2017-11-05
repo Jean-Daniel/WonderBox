@@ -104,7 +104,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 }
 
 - (NSString *)supportFolderName {
-  return [[NSProcessInfo processInfo] processName];
+  return [NSProcessInfo processInfo].processName;
 }
 
 - (NSURL *)buildInURL {
@@ -134,7 +134,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (_WBPlugInDomain *)domainForPlugIn:(id)aPlugin {
   for (NSUInteger idx = 0, count = [wb_domains count]; idx < count; idx++) {
-    _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
+    _WBPlugInDomain *domain = wb_domains[idx];
     if ([domain containsPlugIn:aPlugin])
       return domain;
   }
@@ -142,7 +142,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 }
 - (_WBPlugInDomain *)domainWithName:(WBPlugInDomain)aName {
   for (NSUInteger idx = 0, count = [wb_domains count]; idx < count; idx++) {
-    _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
+    _WBPlugInDomain *domain = wb_domains[idx];
     if ([domain name] == aName)
       return domain;
   }
@@ -168,11 +168,11 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (id)plugInForBundle:(NSBundle *)aBundle {
   NSString *key = [aBundle bundleIdentifier];
-  return key ? [wb_plugins objectForKey:key] : nil;
+  return key ? wb_plugins[key] : nil;
 }
 
 - (id)plugInForIdentifier:(NSString *)anIdentifier {
-  return anIdentifier ? [wb_plugins objectForKey:anIdentifier] : nil;
+  return anIdentifier ? wb_plugins[anIdentifier] : nil;
 }
 
 #pragma mark -
@@ -186,27 +186,27 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   NSMutableDictionary *conflicts = [NSMutableDictionary dictionary];
 
   for (NSUInteger idx = 0; idx < [wb_domains count]; idx++) {
-    _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
+    _WBPlugInDomain *domain = wb_domains[idx];
     domain.URL = [self URLForDomain:[domain name]];
     NSArray *plugins = [self findPlugInsAtURL:domain.URL];
     if (plugins) {
       for (NSUInteger idx2 = 0; idx2 < [plugins count]; idx2++) {
-        NSBundle *bundle = [plugins objectAtIndex:idx2];
+        NSBundle *bundle = plugins[idx2];
         NSString *uid = [bundle bundleIdentifier];
         WBPlugInBundle *entry = [WBPlugInBundle plugInWithBundle:bundle domain:[domain name]];
-        if ([bundles objectForKey:uid] != nil) {
+        if (bundles[uid] != nil) {
           // conflict
-          NSMutableArray *cfl = [conflicts objectForKey:uid];
+          NSMutableArray *cfl = conflicts[uid];
           if (!cfl) {
             cfl = [NSMutableArray array];
             [conflicts setObject:cfl forKey:uid];
             // add previous entry
-            [cfl addObject:[bundles objectForKey:uid]];
+            [cfl addObject:bundles[uid]];
           }
           // add conflict entry
           [cfl addObject:entry];
         } else {
-          [bundles setObject:entry forKey:uid];
+          bundles[uid] = entry;
         }
       }
     }
@@ -215,9 +215,9 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   NSString *uid;
   NSEnumerator *uids = [conflicts keyEnumerator];
   while (uid = [uids nextObject]) {
-    WBPlugInBundle *entry = [self resolveConflict:[conflicts objectForKey:uid]];
+    WBPlugInBundle *entry = [self resolveConflict:conflicts[uid]];
     if (entry)
-      [bundles setObject:entry forKey:uid];
+      bundles[uid] = entry;
   }
 
   WBPlugInBundle *dict;
@@ -255,13 +255,12 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   return nil;
 }
 
-- (id)createPlugInForBundle:(NSBundle *)bundle {
-  id plug = nil;
-  Class principalClass = [bundle principalClass];
+- (NSDictionary *)createPlugInForBundle:(NSBundle *)bundle {
+  NSDictionary *plug = nil;
+  Class principalClass = bundle.principalClass;
   if (principalClass) {
-    plug = [NSDictionary dictionaryWithObjectsAndKeys:
-            principalClass, @"Class",
-            [bundle bundlePath], @"Path", nil];
+    plug = @{ @"Class": principalClass,
+              @"Path": bundle.bundlePath };
   }
   return plug;
 }
@@ -270,7 +269,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   NSString *path = [aBundle bundlePath];
 
   for (NSUInteger idx = 0; idx < [wb_domains count]; idx++) {
-    _WBPlugInDomain *domain = [wb_domains objectAtIndex:idx];
+    _WBPlugInDomain *domain = wb_domains[idx];
     if (domain.URL && [path hasPrefix:[domain.URL path]]) {
       return [self loadPlugIn:aBundle domain:[domain name]];
     }
@@ -289,7 +288,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 - (id)loadPlugIn:(NSBundle *)aBundle domain:(WBPlugInDomain)aName {
   id plugin = nil;
   @try {
-    if (![wb_plugins objectForKey:[aBundle bundleIdentifier]]) {
+    if (!wb_plugins[aBundle.bundleIdentifier]) {
       /* New bundle found */
       plugin = [self createPlugInForBundle:aBundle];
       if (plugin)
@@ -305,10 +304,10 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 /* Load PlugIns */
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier domain:(WBPlugInDomain)aDomain {
-  NSAssert(![wb_plugins objectForKey:identifier], @"plugin already loaded");
+  NSAssert(!wb_plugins[identifier], @"plugin already loaded");
 
   SPXDebug(@"Register plugin: %@", plugin);
-  [wb_plugins setObject:plugin forKey:identifier];
+  wb_plugins[identifier] = plugin;
   NSAssert([self domainWithName:aDomain], @"domain does not exists");
   [[self domainWithName:aDomain] addPlugIn:plugin];
   [[NSNotificationCenter defaultCenter] postNotificationName:WBPlugInLoaderDidLoadPlugInNotification object:plugin];
@@ -317,14 +316,14 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 #pragma mark Built-in PlugIns
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier {
-  if ([wb_plugins objectForKey:identifier])
+  if (wb_plugins[identifier])
     SPXThrowException(NSInvalidArgumentException, @"PlugIn %@ already loaded", identifier);
 
   [self registerPlugIn:plugin withIdentifier:identifier domain:kWBPlugInDomainBuiltIn];
 }
 
 - (void)unregisterPlugIn:(NSString *)identifier {
-  id plugin = [wb_plugins objectForKey:identifier];
+  id plugin = wb_plugins[identifier];
   if (!plugin)
     SPXThrowException(NSInvalidArgumentException, @"plugin %@ not found", identifier);
 
