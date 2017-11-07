@@ -78,7 +78,7 @@ WB_EXPORT OSStatus WBFSDeleteEmptyFolderAtURL(CFURLRef anURL);
 WB_EXPORT OSStatus WBFSDeleteFolder(const FSRef *folder, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) WB_DEPRECATED("Use NSWorkspace async API");
 WB_EXPORT OSStatus WBFSDeleteFolderAtPath(CFStringRef fspath, bool (*willDeleteObject)(const FSRef *, void *ctxt), void *ctxt) WB_DEPRECATED("Use NSWorkspace async API");
 /* delete an object using the posix convention (ignore busy files), and unlock it if needed */
-WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder);
+WB_EXPORT OSStatus WBFSForceDeleteObject(const FSRef *folder) WB_DEPRECATED("FSRef is deprecated");
 
 /*!
  @function WBFSCreateAliasFile
@@ -110,9 +110,9 @@ OSStatus WBFSGetVolumeInfo(FSRef *object, FSVolumeRefNum *actualVolume,
 WB_EXPORT
 OSStatus WBFSGetTypeAndCreator(const FSRef *ref, OSType *type, OSType *creator) WB_DEPRECATED("Use URL API");
 WB_EXPORT
-OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator);
+OSStatus WBFSGetTypeAndCreatorAtURL(CFURLRef url, OSType *type, OSType *creator) WB_DEPRECATED("Type and creator !");
 WB_EXPORT
-OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_DEPRECATED("WBFSGetTypeAndCreatorAtURL");
+OSStatus WBFSGetTypeAndCreatorAtPath(CFStringRef path, OSType *type, OSType *creator) WB_DEPRECATED("Type and creator !");
 
 #define kWBFSOSTypeIgnore (OSType)-1
 
@@ -140,11 +140,6 @@ OSStatus WBFSSetTypeAndCreatorAtPath(CFStringRef path, OSType type, OSType creat
 - (BOOL)getFSRef:(FSRef *)ref WB_DEPRECATED("Use URL API");
 - (BOOL)getFSRef:(FSRef *)ref traverseLink:(BOOL)flag WB_DEPRECATED("Use URL API");
 
-@end
-
-@interface NSFileManager (WBResolveAlias)
-- (BOOL)isAliasFileAtPath:(NSString *)path WB_DEPRECATED("Use URL API");
-- (NSString *)resolveAliasFileAtPath:(NSString *)alias isFolder:(BOOL *)isFolder WB_DEPRECATED("Bookmark API");
 @end
 
 #pragma mark -

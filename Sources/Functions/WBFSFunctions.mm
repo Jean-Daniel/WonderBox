@@ -49,39 +49,6 @@
 
 @end
 
-#pragma mark NSFileManager Extension
-@implementation NSFileManager (WBResolveAlias)
-
-- (BOOL)isAliasFileAtPath:(NSString *)path {
-  FSRef file;
-  Boolean result;
-  if ([path getFSRef:&file traverseLink:NO]) {
-    Boolean isFolder;
-    if (noErr == FSIsAliasFile(&file, &result, &isFolder)) {
-      return result ? YES : NO;
-    }
-  }
-  return NO;
-}
-
-- (NSString *)resolveAliasFileAtPath:(NSString *)alias isFolder:(BOOL *)isFolder {
-  NSString *path = nil;
-  FSRef file;
-  if ([alias getFSRef:&file traverseLink:NO]) {
-    OSStatus err;
-    Boolean aliased, folder;
-    err = FSResolveAliasFile(&file, YES, &folder, &aliased);
-    if (noErr == err && aliased) {
-      if (isFolder)
-        *isFolder = folder ? YES : NO;
-      path = [NSString stringFromFSRef:&file];
-    }
-  }
-  return path;
-}
-
-@end
-
 #pragma mark -
 #pragma mark File System
 
