@@ -40,8 +40,8 @@ enum {
 
 - (id)initWithCoder:(NSCoder *)coder {
   if (self = [super init]) {
-    wb_name = [[coder decodeObjectForKey:@"WBName"] retain];
-    wb_identifier = [[coder decodeObjectForKey:@"WBIdentifier"] retain];
+    wb_name = [coder decodeObjectForKey:@"WBName"];
+    wb_identifier = [coder decodeObjectForKey:@"WBIdentifier"];
   }
   return self;
 }
@@ -49,34 +49,30 @@ enum {
 #pragma mark -
 #pragma mark Convenient initializer
 + (instancetype)applicationWithURL:(NSURL *)anURL {
-  return [[[self alloc] initWithURL:anURL] autorelease];
+  return [[self alloc] initWithURL:anURL];
 }
 
 + (instancetype)applicationWithProcessIdentifier:(pid_t)pid {
-  return [[[self alloc] initWithProcessIdentifier:pid] autorelease];
+  return [[self alloc] initWithProcessIdentifier:pid];
 }
 
 + (instancetype)applicationWithName:(NSString *)name {
-  return [[[self alloc] initWithName:name] autorelease];
+  return [[self alloc] initWithName:name];
 }
 
 + (instancetype)applicationWithName:(NSString *)name bundleIdentifier:(NSString *)anIdentifier {
-  return [[[self alloc] initWithName:name bundleIdentifier:anIdentifier] autorelease];
+  return [[self alloc] initWithName:name bundleIdentifier:anIdentifier];
 }
 
 
 #pragma mark -
 - (instancetype)initWithURL:(NSURL *)anURL {
-  if (!anURL) {
-    [self release];
+  if (!anURL)
     return nil;
-  }
 
   if (self = [super init]) {
-    if (![self setURL:anURL]) {
-      [self release];
-      self = nil;
-    }
+    if (![self setURL:anURL])
+      return nil;
   }
 
   return self;
@@ -85,12 +81,7 @@ enum {
 - (instancetype)initWithProcessIdentifier:(pid_t)pid {
   NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
   NSString *bundleId = app.bundleIdentifier;
-  if (bundleId) {
-    self = [self initWithName:app.localizedName bundleIdentifier:bundleId];
-  } else {
-    [self release];
-    self = nil;
-  }
+  self = bundleId ? [self initWithName:app.localizedName bundleIdentifier:bundleId] : nil;
   return self;
 }
 
@@ -106,12 +97,6 @@ enum {
     wb_identifier = [anIdentifier copy];
   }
   return self;
-}
-
-- (void)dealloc {
-  [wb_name release];
-  [wb_identifier release];
-  [super dealloc];
 }
 
 - (NSString *)description {

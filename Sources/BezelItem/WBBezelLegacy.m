@@ -35,17 +35,12 @@
 - (instancetype)initWithImageView:(NSImageView *)aView {
   if (self = [super initWithImageView:aView]) {
     NSSize s = self.frame.size;
-    self.contentView = [[[_WBSimpleBezelView alloc] initWithFrame:CGRectMake(0, 0, s.width, s.height)] autorelease];
+    self.contentView = [[_WBSimpleBezelView alloc] initWithFrame:CGRectMake(0, 0, s.width, s.height)];
     [self.contentView addSubview:aView];
 
     _levelBar = [[WBBezelLegacyLevelBar alloc] initWithFrame:CGRectMake(20, 20, 161, 8)];
   }
   return self;
-}
-
-- (void)dealloc {
-  [_levelBar release];
-  [super dealloc];
 }
 
 - (CGFloat)levelValue {

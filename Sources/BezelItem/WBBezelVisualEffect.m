@@ -12,6 +12,7 @@
 
 #pragma mark -
 @interface NSVisualEffectView (WBPrivate)
+// This is the secret method to get the exact matching appearance of the system Bezel UI.
 - (void)_setInternalMaterialType:(long long)arg1;
 @end
 
@@ -75,7 +76,6 @@ static inline bool _IsDarkTheme() {
     v.maskImage = _bezelWindowMask();
     self.contentView = v;
     [v addSubview:aView];
-    [v release];
 
     // Notification send when modifying "dark menubar" setting in System Preferences.
     __unsafe_unretained WBVisualEffectBezelWindow *window = self;
@@ -86,7 +86,7 @@ static inline bool _IsDarkTheme() {
 
     [self setDarkTheme:_IsDarkTheme()];
 
-    _corners = [_bezelWindowMask() retain];
+    _corners = _bezelWindowMask();
     // NSWindow requires stretching mode
     _corners.resizingMode = NSImageResizingModeStretch;
   }
@@ -95,8 +95,6 @@ static inline bool _IsDarkTheme() {
 
 - (void)dealloc {
   [[NSDistributedNotificationCenter defaultCenter] removeObserver:_themeObserver];
-  [_levelView release];
-  [super dealloc];
 }
 
 // MARK: -
@@ -145,8 +143,6 @@ static inline bool _IsDarkTheme() {
   if (shows)
     [_levelView removeFromSuperview];
 
-  [_levelView release];
-
   Class cls = isDark ? [_WBBezelDarkLevelBar class] : [_WBBezelLightLevelBar class];
   _levelView = [[cls alloc] initWithFrame:CGRectMake(20, 20, 161, 8)];
   _levelView.levelValue = level;
@@ -180,11 +176,6 @@ static inline bool _IsDarkTheme() {
     _blocks = [[_WBBezelLevelBlocks alloc] initWithView:self blockClass:[_WBBezelLightLevelBlock class]];
   }
   return self;
-}
-
-- (void)dealloc {
-  [_blocks release];
-  [super dealloc];
 }
 
 - (void)setLevelValue:(CGFloat)levelValue {
@@ -247,23 +238,17 @@ static inline bool _IsDarkTheme() {
 
 - (instancetype)initWithView:(NSView *)v blockClass:(Class)cls {
   if (self = [super init]) {
-    _view = [v retain];
+    _view = v;
     _blockClass = cls;
     _blocks = [[NSMutableArray alloc] init];
   }
   return self;
 }
 
-- (void)dealloc {
-  [_blocks release];
-  [_view release];
-  [super dealloc];
-}
-
 - (NSView *)blockWithFrame:(CGRect)frame {
   NSView *block;
   if (_bidx >= _blocks.count) {
-    block = [[[_blockClass alloc] initWithFrame:frame] autorelease];
+    block = [[_blockClass alloc] initWithFrame:frame];
     _blocks[_bidx] = block;
   } else {
     block = _blocks[_bidx];

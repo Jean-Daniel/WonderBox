@@ -33,7 +33,6 @@
   }
   /* Add Check Box to Alert Window */
   [[[self window] contentView] addSubview:box];
-  [box release];
   return box;
 }
 

@@ -19,8 +19,8 @@
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
   WBAlias *copy = [[self class] allocWithZone:nil];
-  copy->_URL = [_URL retain];
-  copy->_data = [_data retain];
+  copy->_URL = _URL;
+  copy->_data = _data;
   return copy;
 }
 
@@ -36,12 +36,12 @@
   if (self = [super init]) {
     NSString *path = [coder decodeObjectForKey:@"WBAliasPath"];
     if (path)
-      _URL = [[NSURL fileURLWithPath:path] retain];
-    _data = [[coder decodeObjectForKey:@"WBBookmarkData"] retain];
+      _URL = [NSURL fileURLWithPath:path];
+    _data = [coder decodeObjectForKey:@"WBBookmarkData"];
     if (!_data) {
       NSData *alias = [coder decodeObjectForKey:@"WBAliasHandle"];
       if (alias)
-        _data = [SPXCFDataBridgingRelease(CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, SPXNSToCFData(alias))) retain];
+        _data = SPXCFDataBridgingRelease(CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, SPXNSToCFData(alias)));
     }
   }
   return self;
@@ -49,40 +49,32 @@
 
 #pragma mark -
 + (instancetype)aliasWithURL:(NSURL *)anURL {
-  return [[[self alloc] initWithURL:anURL] autorelease];
+  return [[self alloc] initWithURL:anURL];
 }
 
 + (instancetype)aliasFromBookmarkData:(NSData *)data {
-  return [[[self alloc] initFromBookmarkData:data] autorelease];
+  return [[self alloc] initFromBookmarkData:data];
 }
 
 #pragma mark Initializers
 - (instancetype)initWithURL:(NSURL *)anURL {
-  if (!anURL) {
-    [self release];
+  if (!anURL)
     return nil;
-  }
+
   if (self = [self init]) {
-    _URL = [anURL retain];
+    _URL = anURL;
   }
   return self;
 }
 
 - (instancetype)initFromBookmarkData:(NSData *)data {
-  if (!data) {
-    [self release];
+  if (!data)
     return nil;
-  }
+
   if (self = [super init]) {
     _data = [data copy];
   }
   return self;
-}
-
-- (void)dealloc {
-  [_data release];
-  [_URL release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -91,14 +83,14 @@
     BOOL isStale = NO;
     _URL = [[NSURL alloc] initByResolvingBookmarkData:_data options:NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting relativeToURL:nil bookmarkDataIsStale:&isStale error:NULL];
     if (_URL && isStale)
-      _data = [[_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL] retain];
+      _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
   }
   return _URL;
 }
 
 - (NSData *)data {
   if (!_data && _URL) {
-    _data = [[_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL] retain];
+    _data = [_URL bookmarkDataWithOptions:0 includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
   }
   return _data;
 }
@@ -108,11 +100,11 @@
 @implementation WBAlias (WBAliasHandle)
 
 + (instancetype)aliasFromData:(NSData *)data {
-  return [[[self alloc] initFromData:data] autorelease];
+  return [[self alloc] initFromData:data];
 }
 
 + (instancetype)aliasWithPath:(NSString *)aPath {
-  return [[[self alloc] initWithURL:[NSURL fileURLWithPath:aPath]] autorelease];
+  return [[self alloc] initWithURL:[NSURL fileURLWithPath:aPath]];
 }
 
 - (instancetype)initFromData:(NSData *)data {
@@ -123,7 +115,6 @@
     self = [self initFromBookmarkData:SPXCFToNSData(bookmark)];
     CFRelease(bookmark);
   } else {
-    [self release];
     return nil;
   }
   return self;

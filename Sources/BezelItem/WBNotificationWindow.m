@@ -66,7 +66,6 @@
   [self cancelTimer];
   if (_animation) {
     [_animation stopAnimation];
-    [_animation release];
     _animation = nil;
   }
   // Reset alpha value
@@ -76,7 +75,6 @@
 - (void)cancelTimer {
   if (_timer) {
     dispatch_cancel(_timer);
-    dispatch_release(_timer);
     _timer = nil;
   }
 }
@@ -95,7 +93,6 @@
 }
 
 - (void)animationDidEnd:(NSAnimation *)animation {
-  [_animation release];
   _animation = nil;
   [self close];
 }

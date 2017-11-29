@@ -26,7 +26,7 @@
   static NSColor *wb_color = nil; \
   if (wb_color) return wb_color; \
   @synchronized(self) { \
-    if (!wb_color) { wb_color = [color retain]; } \
+    if (!wb_color) { wb_color = color; } \
   } \
   return wb_color; \
 }

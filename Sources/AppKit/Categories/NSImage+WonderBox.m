@@ -27,7 +27,7 @@ static NSMutableSet *sMissingImages = nil;
   if (!image) {
     /* Then search bundle resource */
     NSString *path = bundle ? [bundle pathForImageResource:name] : nil;
-    image = path ? spx_autorelease([[NSImage alloc] initWithContentsOfFile:path]) : nil;
+    image = path ? [[NSImage alloc] initWithContentsOfFile:path] : nil;
     if (image) {
       [image setName:name];
     } else {

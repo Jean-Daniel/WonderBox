@@ -36,17 +36,16 @@
 @implementation NSString (WBXMLEscaping)
 
 - (NSString *)stringByEscapingEntities:(NSDictionary *)entities {
-  NSString *str = (id)CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault, (CFStringRef)self, (CFDictionaryRef)entities);
-  return [str autorelease];
+  CFStringRef str = CFXMLCreateStringByEscapingEntities(kCFAllocatorDefault, (CFStringRef)self, (CFDictionaryRef)entities);
+  return SPXCFStringBridgingRelease(str);
 }
 
 - (NSString *)stringByUnescapingEntities:(NSDictionary *)entities {
-  NSString *str = (id)CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)self, (CFDictionaryRef)entities);
-  if ([str length] == 0) {
-    [str release];
-    str = [self copy];
-  }
-  return [str autorelease];
+  NSString *str = SPXCFStringBridgingRelease(CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)self, (CFDictionaryRef)entities));
+  if (!str || str.length == 0)
+    return [self copy];
+
+  return str;
 }
 
 @end

@@ -31,11 +31,6 @@ BOOL WBTemplateLogMessage = NO;
   return self;
 }
 
-- (void)dealloc {
-  [wb_file release];
-  [super dealloc];
-}
-
 #pragma mark -
 - (id)delegate {
   return wb_delegate;
@@ -90,7 +85,7 @@ BOOL WBTemplateLogMessage = NO;
           _WBTemplateLogMessage(@"Start Block: %@", wb_blocks, var);
           wb_blocks++;
           if (tpimp.startBlock)
-            [wb_delegate templateParser:self didStartBlock:(id)var];
+            [wb_delegate templateParser:self didStartBlock:SPXCFToNSString(var)];
           CFRelease(var);
         }
       } else {
@@ -112,7 +107,7 @@ BOOL WBTemplateLogMessage = NO;
     } else {
       _WBTemplateLogMessage(@"Variable: %@", wb_blocks, theVariable);
       if (tpimp.foundVar)
-        [wb_delegate templateParser:self foundVariable:(id)theVariable];
+        [wb_delegate templateParser:self foundVariable:SPXCFToNSString(theVariable)];
     }
   }
 }
@@ -124,9 +119,7 @@ BOOL WBTemplateLogMessage = NO;
   wb_blocks = 0;
   wb_position = 0;
 
-  CFStringRef str = NULL;
-
-  str = (CFStringRef)[[NSString alloc] initWithContentsOfFile:wb_file encoding:wb_encoding error:nil];
+  CFStringRef str = SPXCFStringBridgingRetain(([[NSString alloc] initWithContentsOfFile:wb_file encoding:wb_encoding error:nil]));
 
   if (!str)
     return NO;
@@ -158,7 +151,7 @@ BOOL WBTemplateLogMessage = NO;
             if (space.location > cnt) {
               CFStringRef var = CFStringCreateWithSubstring(kCFAllocatorDefault, str, CFRangeMake(cnt, space.location - cnt));
               if (var) {
-                [self foundVariable:var inString:(id)str atRange:NSMakeRange(cnt -1, space.location - cnt + 2)];
+                [self foundVariable:var inString:SPXCFToNSString(str) atRange:NSMakeRange(cnt -1, space.location - cnt + 2)];
                 CFRelease(var);
               }
             }
@@ -180,9 +173,9 @@ BOOL WBTemplateLogMessage = NO;
     }
   }
   /* Send characters between last var and end of file */
-  [self foundVariable:nil inString:(id)str atRange:NSMakeRange([(NSString *)str length], 0)];
+  [self foundVariable:nil inString:SPXCFToNSString(str) atRange:NSMakeRange(CFStringGetLength(str), 0)];
   CFRelease(varEndChars);
-  [(id)str release];
+  CFRelease(str);
 
   if (wb_blocks) {
     _WBTemplateLogWarning(@"WARNING: %u blocks unclosed.", wb_blocks);
@@ -210,7 +203,6 @@ BOOL WBTemplateLogMessage = NO;
     if (output) {
       fprintf(err ? stderr : stdout, "%s", [output UTF8String]);
       fprintf(err ? stderr : stdout, "\n");
-      [output release];
     }
   }
 }

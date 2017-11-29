@@ -21,12 +21,7 @@
     @discussion Tree node class to implements Tree structure.
 */
 WB_OBJC_EXPORT
-@interface WBTreeNode : NSObject <NSCopying, NSCoding> {
-  @private
-  WBTreeNode *wb_child;
-  WBTreeNode *wb_parent;
-  WBTreeNode *wb_sibling;
-}
+@interface WBTreeNode : NSObject <NSCopying, NSCoding>
 #pragma mark Initializer
 + (id)node;
 - (id)init;

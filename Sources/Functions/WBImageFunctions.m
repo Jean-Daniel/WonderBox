@@ -67,5 +67,5 @@ NSBitmapImageRep *WBImageResizeImage(NSImage *anImage, NSSize size) {
   /* Restore context */
   [NSGraphicsContext restoreGraphicsState];
 
-  return [bitmap autorelease];
+  return bitmap;
 }

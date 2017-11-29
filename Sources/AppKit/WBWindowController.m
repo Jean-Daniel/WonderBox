@@ -59,7 +59,6 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:NSWindowWillCloseNotification
                                                 object:nil];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -95,9 +94,9 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   if (SPXFlagTestAndSet(wb_wcFlags.autorelease, release) != wb_wcFlags.autorelease) {
     // the object retains itself, so we have to tell the GC it should not collect it.
     if (wb_wcFlags.autorelease)
-      CFRetain(self);
+      CFRetain((__bridge CFTypeRef)(self));
     else
-      CFRelease(self);
+      CFRelease((__bridge CFTypeRef)(self));
   }
 }
 
@@ -141,7 +140,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
   /* notify after setting modal status */
   [self windowWillClose];
   if ([self isReleasedWhenClosed]) {
-    (void)CFAutorelease(self);
+    (void)CFAutorelease((__bridge CFTypeRef)(self));
   }
 }
 

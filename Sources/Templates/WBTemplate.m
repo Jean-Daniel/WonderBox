@@ -11,6 +11,8 @@
 #import <WonderBox/WBTemplate.h>
 #import <WonderBox/WBTemplateParser.h>
 
+#define _WBTemplateNullPlaceholder (__bridge id)kCFNull
+
 @interface WBTemplate ()
 
 - (id)initBlockWithName:(NSString *)name;
@@ -69,14 +71,6 @@
   wb_encoding = encoding;
 }
 
-- (void)dealloc {
-  [wb_name release];
-  [wb_vars release];
-  [wb_blocks release];
-  [wb_contents release];
-  [super dealloc];
-}
-
 - (NSString *)description {
   return [NSString stringWithFormat:@"<%@ %p> {name:%@ contents:%@ blocks:%@}",
     NSStringFromClass([self class]), self,
@@ -89,7 +83,6 @@
 }
 - (void)setName:(NSString *)aName {
   if (wb_name != aName) {
-    [wb_name release];
     wb_name = [aName copy];
   }
 }
@@ -111,7 +104,7 @@
 
 - (NSString *)variableForKey:(NSString *)aKey {
   id var = [wb_vars objectForKey:aKey];
-  return ([var isMemberOfClass:[NSNull class]]) ? nil : var;
+  return (var == _WBTemplateNullPlaceholder) ? nil : var;
 }
 
 - (void)setVariable:(NSString *)aValue forKey:(NSString *)aKey {
@@ -119,9 +112,9 @@
     [self load];
   }
 #ifdef DEBUG
-  if ([wb_vars objectForKey:aKey] == nil) NSLog(@"Warning: Variable %@ undefined in block %@", aKey, [self name]);
+  if (wb_vars[aKey] == nil) NSLog(@"Warning: Variable %@ undefined in block %@", aKey, [self name]);
 #endif
-  CFDictionaryReplaceValue((CFMutableDictionaryRef)wb_vars, aKey, (aValue ? : (id)[NSNull null]));
+  CFDictionaryReplaceValue(SPXNSToCFMutableDictionary(wb_vars), SPXNSToCFString(aKey), SPXNSToCFType(aValue ? : _WBTemplateNullPlaceholder));
 }
 
 #pragma mark Blocks
@@ -158,17 +151,12 @@
     if ([block count] > 0) {
       id blockCp = [block copy];
       [blocks setObject:blockCp forKey:[child name]];
-      [blockCp release];
       [child resetBlock];
     }
   }
 
   [wb_vars setObject:blocks forKey:@"_Blocks_"];
-  [blocks release];
-
-  NSDictionary *vars = [wb_vars copy];
-  [wb_blocks addObject:vars];
-  [vars release];
+  [wb_blocks addObject:[wb_vars copy]];
 
   [self resetVariables];
 }
@@ -192,24 +180,18 @@
   NSEnumerator *keys = [[wb_vars allKeys] objectEnumerator];
   while (key = [keys nextObject]) {
 		/* should use CF function to avoid "change while enumerate" exception" */
-		CFDictionaryReplaceValue((CFMutableDictionaryRef)wb_vars, key, [NSNull null]);
+		CFDictionaryReplaceValue(SPXNSToCFMutableDictionary(wb_vars), SPXNSToCFString(key), kCFNull);
   }
 }
 
 #pragma mark Clear
 - (void)clear {
-  if (wb_vars != nil) {
-    [wb_vars release];
+  if (wb_vars != nil)
     wb_vars = nil;
-  }
-  if (wb_blocks != nil) {
-    [wb_blocks release];
+  if (wb_blocks != nil)
     wb_blocks = nil;
-  }
-  if (wb_contents != nil) {
-    [wb_contents release];
+  if (wb_contents != nil)
     wb_contents = nil;
-  }
 }
 
 #pragma mark -
@@ -239,7 +221,6 @@
       [self clear];
       SPXLogException(exception);
     }
-    [parser release];
   }
   return result;
 }
@@ -293,8 +274,7 @@
 //	}
   }
   [struc setObject:content forKey:@"content"];
-  [content release];
-  return [struc autorelease];
+  return struc;
 }
 
 #pragma mark Output
@@ -305,7 +285,7 @@
     if (idx % 2) {  /* Var or Block */
       id string = [block objectForKey:var];
       if (string) { /* string is a variable */
-        if (![string isMemberOfClass:[NSNull class]])
+        if (string != _WBTemplateNullPlaceholder)
           [buffer appendString:string];
       } else { /* string is a block */
         WBTemplate *child = [self blockWithName:var];
@@ -364,7 +344,7 @@
 
 - (void)templateParser:(WBTemplateParser *)parser foundVariable:(NSString *)variable {
   [wb_contents addObject:variable];
-  [wb_vars setObject:[NSNull null] forKey:variable];
+  [wb_vars setObject:_WBTemplateNullPlaceholder forKey:variable];
 }
 
 - (void)templateParser:(WBTemplateParser *)parser didStartBlock:(NSString *)blockName {
@@ -373,7 +353,6 @@
   wb_tplFlags.inBlock = 1;
   [self appendChild:child];
   [parser setDelegate:child];
-  [child release];
   [wb_contents addObject:blockName];
 }
 

@@ -61,10 +61,10 @@ WBClassCluster(WBInterpolationFunction)
 @implementation WBInterpolationFunction
 
 + (WBInterpolationFunction *)circularInterpolation {
-  return spx_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackCircular]);
+  return [[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackCircular];
 }
 + (WBInterpolationFunction *)sinusoidalInterpolation {
-  return spx_autorelease([[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackSin]);
+  return [[_WBInterpolationFunctionCB alloc] initWithCallBack:&WBInterpolationCallBackSin];
 }
 
 - (id)initWithCallBack:(const WBInterpolationCallBack *)callback {
@@ -99,7 +99,6 @@ WBClassCluster(WBInterpolationFunction)
 - (void)dealloc {
   if (wb_ctxt.releaseInfo)
     wb_ctxt.releaseInfo(wb_ctxt.info);
-  [super dealloc];
 }
 
 - (CGFloat)valueForInput:(CGFloat)input {

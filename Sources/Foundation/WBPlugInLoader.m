@@ -78,7 +78,6 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     va_start(args, domain);
     while ((domain = va_arg(args, NSUInteger))) {
       if (nil != [self domainWithName:domain]) {
-        [self release];
         SPXThrowException(NSInvalidArgumentException, @"domain %lu is defined twice", (long)domain);
       }
       [wb_domains addObject:[_WBPlugInDomain domainWithName:domain]];
@@ -86,12 +85,6 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     va_end(args);
   }
   return self;
-}
-
-- (void)dealloc {
-  [wb_domains release];
-  [wb_plugins release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -327,12 +320,10 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
   if (!plugin)
     SPXThrowException(NSInvalidArgumentException, @"plugin %@ not found", identifier);
 
-  [plugin retain];
   [wb_plugins removeObjectForKey:identifier];
   NSAssert([self domainForPlugIn:plugin], @"domain not found for plugin %@", plugin);
   [[self domainForPlugIn:plugin] removePlugIn:plugin];
   [[NSNotificationCenter defaultCenter] postNotificationName:WBPlugInLoaderDidRemovePlugInNotification object:plugin];
-  [plugin release];
 }
 
 @end
@@ -341,7 +332,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 @implementation _WBPlugInDomain
 
 + (id)domainWithName:(WBPlugInDomain)aDomain {
-  return [[[self alloc] initWithDomainName:aDomain] autorelease];
+  return [[self alloc] initWithDomainName:aDomain];
 }
 
 - (id)initWithDomainName:(WBPlugInDomain)aDomain {
@@ -350,12 +341,6 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
     wb_plugins = [[NSMutableArray alloc] init];
   }
   return self;
-}
-
-- (void)dealloc {
-  [wb_url release];
-  [wb_plugins release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -406,20 +391,15 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 @implementation WBPlugInBundle
 
 + (id)plugInWithBundle:(NSBundle *)aBundle domain:(WBPlugInDomain)aDomain {
-  return [[[self alloc] initWithBundle:aBundle domain:aDomain] autorelease];
+  return [[self alloc] initWithBundle:aBundle domain:aDomain];
 }
 
 - (id)initWithBundle:(NSBundle *)aBundle domain:(WBPlugInDomain)aDomain {
   if (self = [super init]) {
     wb_domain = aDomain;
-    wb_bundle = [aBundle retain];
+    wb_bundle = aBundle;
   }
   return self;
-}
-
-- (void)dealloc {
-  [wb_bundle release];
-  [super dealloc];
 }
 
 - (NSBundle *)bundle {

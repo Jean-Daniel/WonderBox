@@ -42,17 +42,12 @@
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
     if ([aCoder allowsKeyedCoding]) {
-      wb_image = spx_retain([aCoder decodeObjectForKey:@"wb.cell.image"]);
+      wb_image = [aCoder decodeObjectForKey:@"wb.cell.image"];
     } else {
-      wb_image = spx_retain([aCoder decodeObject]);
+      wb_image = [aCoder decodeObject];
     }
   }
   return self;
-}
-
-- (void)dealloc {
-  spx_release(wb_image);
-  [super dealloc];
 }
 
 #pragma mark -

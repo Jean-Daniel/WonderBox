@@ -12,11 +12,6 @@
 
 @implementation WBTableDataSource
 
-- (void)dealloc {
-  spx_release(_searchString);
-  [super dealloc];
-}
-
 #pragma mark -
 #pragma mark Sort Methods
 - (void)setComparator:(NSComparator)comparator {
@@ -35,7 +30,6 @@
 
 - (void)setSearchString:(NSString *)aString {
   if (![aString isEqualToString:_searchString]) {
-    spx_release(_searchString);
     _searchString = [aString length] > 0 ? [aString copy] : nil;
     [self rearrangeObjects];
   }

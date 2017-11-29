@@ -15,7 +15,6 @@
 - (void)dealloc {
   if (wb_noPadding)
     NSFreeHashTable(wb_noPadding);
-  [super dealloc];
 }
 
 - (id<WBTableViewDelegate>)delegate {

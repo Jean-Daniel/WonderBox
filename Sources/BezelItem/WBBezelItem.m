@@ -27,7 +27,7 @@
   view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
   if (anImage)
     view.image = anImage;
-  return [view autorelease];
+  return view;
 }
 
 - (instancetype)init {
@@ -36,7 +36,7 @@
 
 - (instancetype)initWithImage:(NSImage *)anImage {
   if (self = [super init]) {
-    _window = [[WBBezelWindow windowWithImageView:[[self class] imageView:anImage]] retain];
+    _window = [WBBezelWindow windowWithImageView:[[self class] imageView:anImage]];
     _window.levelBarVisible = NO;
     _window.duration = .5;
 
@@ -62,11 +62,6 @@
     _window.levelValue = aLevel;
   }
   return self;
-}
-
-- (void)dealloc {
-  [_window release];
-  [super dealloc];
 }
 
 - (IBAction)display:(id)sender {

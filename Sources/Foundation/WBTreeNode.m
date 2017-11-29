@@ -11,9 +11,9 @@
 #import <WonderBox/WBTreeNode.h>
 
 @interface _WBTreeChildEnumerator : NSEnumerator {
-  @protected
+@protected
   WBTreeNode *wb_root;
-  WBTreeNode *wb_node;
+  __unsafe_unretained WBTreeNode *wb_node;
 }
 
 - (id)initWithRootNode:(WBTreeNode *)node;
@@ -25,16 +25,21 @@
 @end
 
 #pragma mark -
-@implementation WBTreeNode
+@implementation WBTreeNode {
+  WBTreeNode *wb_child;
+  WBTreeNode *wb_sibling;
+  __unsafe_unretained WBTreeNode *wb_parent;
+}
+
 #pragma mark Protocol Implementation
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super init]) {
     wb_parent = [aCoder decodeObjectForKey:@"Parent"];
-    wb_sibling = [[aCoder decodeObjectForKey:@"Sibling"] retain];
+    wb_sibling = [aCoder decodeObjectForKey:@"Sibling"];
     id children = [aCoder decodeObjectForKey:@"Children"];
     /* Just have to restore first child. Other objects are sibling of first child */
     if ([children count])
-      wb_child =  [[children objectAtIndex:0] retain];
+      wb_child =  [children objectAtIndex:0];
   }
   return self;
 }
@@ -48,7 +53,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)aZone {
-  WBTreeNode *copy = NSAllocateObject([self class], 0, aZone);
+  WBTreeNode *copy = [[[self class] allocWithZone:aZone] init];
   if (wb_child) {
     copy->wb_child = [wb_child copyWithZone:aZone];
     copy->wb_child->wb_parent = copy;
@@ -68,7 +73,7 @@
 
 #pragma mark -
 + (id)node {
-  return [[[self alloc] init] autorelease];
+  return [[self alloc] init];
 }
 
 - (id)init {
@@ -76,12 +81,6 @@
 
   }
   return self;
-}
-
-- (void)dealloc {
-  [wb_child release];
-  [wb_sibling release];
-  [super dealloc];
 }
 
 - (NSString *)description {
@@ -207,10 +206,10 @@
 }
 
 - (NSEnumerator *)childEnumerator {
-  return [[[_WBTreeChildEnumerator alloc] initWithRootNode:self] autorelease];
+  return [[_WBTreeChildEnumerator alloc] initWithRootNode:self];
 }
 - (NSEnumerator *)deepChildEnumerator {
-  return [[[_WBTreeDeepEnumerator alloc] initWithRootNode:self] autorelease];
+  return [[_WBTreeDeepEnumerator alloc] initWithRootNode:self];
 }
 
 #pragma mark -
@@ -237,7 +236,6 @@
   if (wb_parent)
     [self setParent:nil];
   wb_sibling = nil;
-  [self release];
 }
 
 - (void)performOperation:(WBTreeOperation)op atIndex:(NSUInteger)anIndex withChild:(WBTreeNode *)child {
@@ -272,7 +270,7 @@
         } else {
           if (!child) {
             /* child is retain just below, so we have to release it here */
-            child = [wb_child->wb_sibling autorelease];
+            child = wb_child->wb_sibling;
           } else if (last) {
             /* No need to retain. wb_remove release only self */
             last->wb_sibling = wb_child->wb_sibling;
@@ -282,7 +280,7 @@
         break;
     }
     /* Retain at end to avoid leak when raise an exception */
-    wb_child = [child retain];
+    wb_child = child;
   } else {
     WBTreeNode *previous = (op == kWBTreeOperationAppend) ? [self lastChild] : [self childAtIndex:anIndex -1];
     WBTreeNode *current = previous ? previous->wb_sibling : nil;
@@ -312,7 +310,7 @@
     }
     /* Retain at end to avoid leak when raise an exception */
     if (previous)
-      previous->wb_sibling = [child retain];
+      previous->wb_sibling = child;
   }
 }
 
@@ -363,7 +361,6 @@
   if (sibling->wb_parent) {
     SPXThrowException(NSInvalidArgumentException, @"Cannot append newChild with parent.");
   }
-  [sibling retain];
   [sibling setParent:self->wb_parent];
   sibling->wb_sibling = self->wb_sibling;
   self->wb_sibling = sibling;
@@ -435,23 +432,16 @@
 
 - (id)initWithRootNode:(WBTreeNode *)node {
   if (self = [super init]) {
-    wb_root = [node retain];
+    wb_root = node;
     wb_node = [wb_root firstChild];
   }
   return self;
 }
 
-- (void)dealloc {
-  [wb_root release];
-  [super dealloc];
-}
-
 - (id)nextObject {
   WBTreeNode *node = wb_node;
-  if (!node) {
-    [wb_root release];
+  if (!node)
     wb_root = nil;
-  }
   wb_node = [wb_node nextSibling];
   return node;
 }
@@ -465,7 +455,6 @@
     [children addObject:node];
   }
   wb_node = nil;
-  [wb_root release];
   wb_root = nil;
   return children;
 }
@@ -479,10 +468,8 @@
   WBTreeNode *node = wb_node;
 
   /* End was reached */
-  if (!node) {
-    [wb_root release];
+  if (!node)
     wb_root = nil;
-  }
 
   /* On descend d'un niveau */
   WBTreeNode *child = [wb_node firstChild];

@@ -50,10 +50,9 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
     CFIndex count = [aColorSpace numberOfColorComponents] + 1; // add one for alpha
     if (count < 2 || count > 5) {
       SPXLogError(@"WBGradient: Unsupported color space: %@", aColorSpace);
-      spx_release(self);
       return nil;
     }
-    _cs = spx_retain(aColorSpace);
+    _cs = aColorSpace;
     _steps = [[NSMutableArray alloc] init];
   }
   return self;
@@ -117,12 +116,6 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   return self;
 }
 
-- (void)dealloc {
-  spx_release(_steps);
-  spx_release(_cs);
-  [super dealloc];
-}
-
 // MARK: -
 - (void)addColorStop:(CGFloat)location startingColor:(NSColor *)startColor endingColor:(NSColor *)endColor interpolation:(WBInterpolationFunction  *)fct {
   CGFloat start[5];
@@ -159,7 +152,6 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
   [step setRange:start end:location];
   step.interpolation = fct;
   [_steps addObject:step];
-  spx_release(step);
 }
 
 // MARK: -
@@ -185,7 +177,6 @@ NSColorSpace *GetColorSpace(WBGradientColorSpace space) {
     NSArray *steps = [_steps copy];
     info = (void *)SPXCFTypeBridgingRetain(steps); // leak: Released by _WBGradientRelease
     callbacks.evaluate = _WBGradientDrawSteps;
-    spx_release(steps);
   }
 
   return CGFunctionCreate(info, 1, input_value_range, components, output_value_ranges, &callbacks);
@@ -289,12 +280,12 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
       return nil;
     case kWBInterpolationTypeCallBack: {
       WBInterpolationCallBack cb = { NULL, def->value.cb, NULL };
-      return spx_autorelease([[WBInterpolationFunction alloc] initWithCallBack:&cb]);
+      return [[WBInterpolationFunction alloc] initWithCallBack:&cb];
     }
     case kWBInterpolationTypeBezier:
-      return spx_autorelease([[WBInterpolationFunction alloc] initWithControlPoints:def->value.bezier.points[0].x :def->value.bezier.points[0].y
-                                                                                  :def->value.bezier.points[1].x :def->value.bezier.points[1].y
-                                                                            length:def->value.bezier.length]);
+      return [[WBInterpolationFunction alloc] initWithControlPoints:def->value.bezier.points[0].x :def->value.bezier.points[0].y
+                                                                   :def->value.bezier.points[1].x :def->value.bezier.points[1].y
+                                                             length:def->value.bezier.length];
   }
 }
 
@@ -314,11 +305,6 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
       memcpy(_colorEnd, endColor, _cnt * sizeof(CGFloat));
   }
   return self;
-}
-
-- (void)dealloc {
-  spx_release(_fct);
-  [super dealloc];
 }
 
 - (NSString *)description {

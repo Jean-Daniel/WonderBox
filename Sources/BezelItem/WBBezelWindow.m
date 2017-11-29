@@ -17,7 +17,7 @@
 
 + (instancetype)windowWithImageView:(NSImageView *)aView {
   Class cls = [WBVisualEffectBezelWindow available] ? [WBVisualEffectBezelWindow class] : [WBLegacyBezelWindow class];
-  return [[[cls alloc] initWithImageView:aView] autorelease];
+  return [[cls alloc] initWithImageView:aView];
 }
 
 - (instancetype)initWithImageView:(NSImageView *)aView {
@@ -25,14 +25,9 @@
   if (self = [self initWithContentRect:CGRectMake(0, 0, 200, 200)
                              styleMask:NSBorderlessWindowMask
                                backing:NSBackingStoreBuffered defer:YES]) {
-    _imageView = [aView retain];
+    _imageView = aView;
   }
   return self;
-}
-
-- (void)dealloc {
-  [_imageView release];
-  [super dealloc];
 }
 
 @end

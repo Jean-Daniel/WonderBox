@@ -24,23 +24,18 @@ NSDictionary *WBSerializeObject(id object, OSStatus *error) {
 
 id WBSerializeObjectWithFunction(id object, OSStatus *error, WBSerializeInstanceCallBack serialize, void *ctxt) {
   NSCParameterAssert(serialize);
-  BOOL ok = NO;
   if (error) *error = noErr;
   NSMutableDictionary *plist = [[NSMutableDictionary alloc] init];
   [plist setObject:NSStringFromClass([object classForCoder]) forKey:kWBSerializationIsaKey];
   @try {
-    ok = serialize(object, plist, ctxt);
+    if (serialize(object, plist, ctxt))
+      return plist;
   } @catch (id exception) {
     SPXCLogException(exception);
   }
-  if (ok) {
-    [plist autorelease];
-  } else {
-    if (error) *error = kWBInstanceSerializationError;
-    [plist release];
-    plist = nil;
-  }
-  return plist;
+  if (error)
+    *error = kWBInstanceSerializationError;
+  return nil;
 }
 
 #pragma mark -
@@ -68,16 +63,15 @@ id WBDeserializeObjectWithFunction(NSDictionary *plist, OSStatus *error, WBDeser
       @try {
         object = deserialize(class, plist, ctxt);
       } @catch (id exception) {
-        object = nil;
         SPXCLogException(exception);
+        object = nil;
       }
       if (!object) {
         err = kWBInstanceCreationError;
-      } else {
-        [object autorelease];
       }
     }
   }
-  if (error) *error = err;
+  if (error)
+    *error = err;
   return object;
 }
