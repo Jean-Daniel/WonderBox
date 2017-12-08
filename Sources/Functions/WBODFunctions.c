@@ -173,7 +173,7 @@ CFTypeRef WBODCopyUserAttribute(CFStringRef username, ODAttributeType attribute)
 
   CFErrorRef error;
   ODQueryRef query = ODQueryCreateWithNodeType(kCFAllocatorDefault, kODNodeTypeLocalNodes, kODRecordTypeUsers,
-                                               kODAttributeTypeRecordName, kODMatchInsensitiveEqualTo, username,
+                                               kODAttributeTypeRecordName, kODMatchEqualTo, username,
                                                attribute, 0, &error);
 
   CFArrayRef records = ODQueryCopyResults(query, false, &error);
@@ -213,7 +213,7 @@ CFDictionaryRef WBODCopyUserAttributes(CFStringRef username, ODAttributeType att
 
   CFErrorRef error;
   ODQueryRef query = ODQueryCreateWithNodeType(kCFAllocatorDefault, kODNodeTypeLocalNodes, kODRecordTypeUsers,
-                                               kODAttributeTypeRecordName, kODMatchInsensitiveEqualTo, username,
+                                               kODAttributeTypeRecordName, kODMatchEqualTo, username,
                                                attributes, 0, &error);
 
   CFArrayRef records = ODQueryCopyResults(query, false, &error);

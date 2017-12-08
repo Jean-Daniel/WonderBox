@@ -10,15 +10,15 @@
 
 #import <WonderBox/WBFunctions.h>
 
-CFStringRef WBCreateStringForOSType(OSType type) {
+NSString *WBStringForOSType(OSType type) {
   type = OSSwapHostToBigInt32(type);
-  return (type) ? CFStringCreateWithBytes(kCFAllocatorDefault, (unsigned char *)&type, sizeof(type), kCFStringEncodingMacRoman, FALSE) : nil;
+  return type ? [[NSString alloc] initWithBytes:&type length:4 encoding:NSMacOSRomanStringEncoding] : nil;
 }
 
-OSType WBGetOSTypeFromString(CFStringRef str) {
+OSType WBOSTypeFromString(NSString *type) {
   OSType result = 0;
-  if (str && CFStringGetLength(str) >= 4) {
-    CFStringGetBytes(str, CFRangeMake(0, 4), kCFStringEncodingMacRoman, 0, FALSE, (UInt8 *)&result, sizeof(result), NULL);
+  if (type && type.length >= 4) {
+    [type getBytes:&result maxLength:4 usedLength:NULL encoding:NSMacOSRomanStringEncoding options:0 range:NSMakeRange(0, 4) remainingRange:NULL];
   }
   return OSSwapBigToHostInt32(result);
 }
@@ -37,19 +37,7 @@ SInt32 WBSystemBugFixVersion(void) {
   return Gestalt(gestaltSystemVersionBugFix, &macVersion) == noErr ? macVersion : 0;
 }
 
-#pragma mark -
-CFComparisonResult WBUTCDateTimeCompare(UTCDateTime *t1, UTCDateTime *t2) {
-  if (t1->highSeconds < t2->highSeconds) return kCFCompareLessThan;
-  else if (t1->highSeconds > t2->highSeconds) return kCFCompareGreaterThan;
-
-  if (t1->lowSeconds < t2->lowSeconds) return kCFCompareLessThan;
-  else if (t1->lowSeconds > t2->lowSeconds) return kCFCompareGreaterThan;
-
-  if (t1->fraction < t2->fraction) return kCFCompareLessThan;
-  else if (t1->fraction > t2->fraction) return kCFCompareGreaterThan;
-
-  return kCFCompareEqualTo;
-}
+// MARK: -
 
 /* From CoreFoundation sources
 

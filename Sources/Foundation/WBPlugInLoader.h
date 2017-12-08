@@ -20,7 +20,6 @@
 typedef NS_ENUM(NSUInteger, WBPlugInDomain) {
   kWBPlugInDomainUser = 1,
   kWBPlugInDomainLocal,
-  kWBPlugInDomainNetwork,
   kWBPlugInDomainBuiltIn,
   kWBPlugInDomainUserDefined,
 };
@@ -74,7 +73,7 @@ WB_OBJC_EXPORT
 - (NSArray *)plugInsForDomain:(WBPlugInDomain)domain;
 
 /* Accessing PlugIns */
-- (id)plugInForClass:(Class)class;
+- (id)plugInForClass:(Class)cls;
 - (id)plugInForBundle:(NSBundle *)aBundle;
 - (id)plugInForIdentifier:(NSString *)anIdentifier;
 

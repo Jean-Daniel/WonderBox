@@ -12,39 +12,21 @@
 
 @implementation NSAlert (WBUserDefaultCheckBox)
 
-- (NSButton *)addUserDefaultCheckBoxWithTitle:(NSString *)title andKey:(NSString *)key {
-  NSParameterAssert(nil != title);
-
-  NSButton *box = [[NSButton alloc] initWithFrame:NSMakeRect(20, 22, 16, 150)];
-  /* Set Small Size */
-  [[box cell] setControlSize:NSSmallControlSize];
-  [box setFont:[NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]]];
-  /* Configure Check Box */
-  [box setButtonType:NSSwitchButton];
-  [box setTitle:title];
-  [box sizeToFit];
+- (void)bindSuppressionButtonToUserDefault:(NSString *)key {
+  self.showsSuppressionButton = YES;
+  NSButton *box = self.suppressionButton;
 
   /* Bind CheckBox value to User Defaults */
-  if (key) {
-    [box bind:@"value"
-     toObject:[NSUserDefaultsController sharedUserDefaultsController]
-  withKeyPath:[@"values." stringByAppendingString:key]
-      options:nil];
-  }
-  /* Add Check Box to Alert Window */
-  [[[self window] contentView] addSubview:box];
-  return box;
-}
-
-- (void)wb_alertDidEnd:(NSAlert *)alert returnCode:(NSUInteger)returnCode contextInfo:(void *)contextInfo {
-  [NSApp stopModalWithCode:returnCode];
+  [box bind:@"value"
+   toObject:[NSUserDefaultsController sharedUserDefaultsController]
+withKeyPath:[@"values." stringByAppendingString:key]
+    options:nil];
 }
 
 - (NSInteger)runSheetModalForWindow:(NSWindow *)window {
-  [self beginSheetModalForWindow:window
-                   modalDelegate:self
-                  didEndSelector:@selector(wb_alertDidEnd:returnCode:contextInfo:)
-                     contextInfo:nil];
+  [self beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
+    [NSApp stopModalWithCode:returnCode];
+  }];
   return [NSApp runModalForWindow:[self window]];
 }
 

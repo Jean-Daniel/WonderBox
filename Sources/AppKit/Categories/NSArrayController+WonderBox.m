@@ -12,24 +12,20 @@
 
 @implementation NSArrayController (WBExtensions)
 
-- (NSUInteger)count {
-  return [[self arrangedObjects] count];
-}
+//- (NSUInteger)count {
+//  return [[self arrangedObjects] count];
+//}
 
-- (NSEnumerator *)objectEnumerator {
-  return [[self content] objectEnumerator];
-}
+//- (NSEnumerator *)objectEnumerator {
+//  return [[self content] objectEnumerator];
+//}
 
-- (id)objectAtIndex:(NSUInteger)rowIndex {
+- (id)objectAtArrangedObjectIndex:(NSUInteger)rowIndex {
   return [[self arrangedObjects] objectAtIndex:rowIndex];
 }
 
 - (id)selectedObject {
-  id selection = [self selectedObjects];
-  if ([selection count]) {
-    return [selection objectAtIndex:0];
-  }
-  return nil;
+  return self.selectedObjects.firstObject;
 }
 
 - (BOOL)setSelectedObject:(id)object {
@@ -37,7 +33,7 @@
 }
 
 - (void)deleteSelection {
-  [self removeObjects:[self selectedObjects]];
+  [self removeObjects:self.selectedObjects];
 }
 
 - (void)removeAllObjects {

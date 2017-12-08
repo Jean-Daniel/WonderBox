@@ -9,7 +9,6 @@
  */
 
 #import <WonderBox/WBAlias.h>
-#import <WonderBox/WBFSFunctions.h>
 
 @implementation WBAlias
 

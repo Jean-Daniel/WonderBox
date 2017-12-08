@@ -87,6 +87,8 @@ kern_return_t WBHIDPostSystemDefinedEvent(const UInt8 inSysKeyCode) {
   return kr;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 CGError WBIODisplayGetFloatParameter(CFStringRef key, float *value) {
   return IODisplayGetFloatParameter(CGDisplayIOServicePort(CGMainDisplayID()), kNilOptions, key, value);
 }
@@ -98,7 +100,8 @@ CGError WBIODisplaySetFloatParameter(CFStringRef key, float value) {
   CGDirectDisplayID	displayIDs[8];
 
   err = CGGetOnlineDisplayList(8, displayIDs, &max);
-  spx_require(kCGErrorSuccess == err, bail);
+  if (kCGErrorSuccess != err)
+    return err;
 
   if(max > 8)
     max = 8;
@@ -110,6 +113,8 @@ CGError WBIODisplaySetFloatParameter(CFStringRef key, float value) {
       continue;
   }
 
-bail:
   return err;
 }
+
+#pragma clang diagnostic pop
+

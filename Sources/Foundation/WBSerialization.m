@@ -10,68 +10,48 @@
 
 #import <WonderBox/WBSerialization.h>
 
+@interface NSObject (WBSerializationLegacy)
+- (id)initWithSerializedValues:(NSDictionary *)plist;
+@end
+
 NSString *const kWBSerializationIsaKey = @"isa";
 
-#pragma mark Serialize
-static
-BOOL __WBSerializeInstance(id object, NSMutableDictionary *plist, void *ctxt) {
-  return [object respondsToSelector:@selector(serialize:)] ? [object serialize:plist] : NO;
-}
+// MARK: Serialize
+NSDictionary *WBSerializeObject(id<WBSerializable> object, NSError * __autoreleasing *error) {
+  NSCParameterAssert(object);
 
-NSDictionary *WBSerializeObject(id object, OSStatus *error) {
-  return WBSerializeObjectWithFunction(object, error, __WBSerializeInstance, NULL);
-}
-
-id WBSerializeObjectWithFunction(id object, OSStatus *error, WBSerializeInstanceCallBack serialize, void *ctxt) {
-  NSCParameterAssert(serialize);
-  if (error) *error = noErr;
   NSMutableDictionary *plist = [[NSMutableDictionary alloc] init];
-  [plist setObject:NSStringFromClass([object classForCoder]) forKey:kWBSerializationIsaKey];
+  Class cls = [object respondsToSelector:@selector(classForCoder)] ? [object classForCoder] : [object class];
+  [plist setObject:NSStringFromClass(cls) forKey:kWBSerializationIsaKey];
   @try {
-    if (serialize(object, plist, ctxt))
+    if ([object serialize:plist])
       return plist;
   } @catch (id exception) {
     SPXCLogException(exception);
   }
   if (error)
-    *error = kWBInstanceSerializationError;
+    *error = [NSError errorWithDomain:@"com.xenonium.wonderbox" code:kWBInstanceSerializationError userInfo:nil];
   return nil;
 }
 
-#pragma mark -
-#pragma mark Deserialize
-static
-id __WBDeserializeInstance(Class cls, NSDictionary *plist, void *ctxt) {
-  return [cls instancesRespondToSelector:@selector(initWithSerializedValues:)] ? [[cls alloc] initWithSerializedValues:plist] : nil;
-}
-
-id WBDeserializeObject(NSDictionary *plist, OSStatus *error) {
-  return WBDeserializeObjectWithFunction(plist, error, __WBDeserializeInstance, NULL);
-}
-
-id WBDeserializeObjectWithFunction(NSDictionary *plist, OSStatus *error, WBDeserializeInstanceCallBack deserialize, void *ctxt) {
+id<WBSerializable> WBDeserializeObject(NSDictionary *plist, NSError * __autoreleasing *error) {
   NSCParameterAssert(plist);
-  NSCParameterAssert(deserialize);
-  id object = nil;
-  OSStatus err = noErr;
-  if (error) *error = noErr;
-  if (plist) {
-    Class class = NSClassFromString(plist[kWBSerializationIsaKey]);
-    if (!class) {
-      err = kWBClassNotFoundError;
-    } else {
-      @try {
-        object = deserialize(class, plist, ctxt);
-      } @catch (id exception) {
-        SPXCLogException(exception);
-        object = nil;
-      }
-      if (!object) {
-        err = kWBInstanceCreationError;
-      }
+  NSInteger err = 0;
+  Class cls = NSClassFromString(plist[kWBSerializationIsaKey]);
+  if (!cls) {
+    err = kWBClassNotFoundError;
+  } else {
+    @try {
+      id obj = [[cls alloc] initWithSerializedValues:plist];
+      if (obj)
+        return obj;
+    } @catch (id exception) {
+      SPXCLogException(exception);
     }
+    err = kWBInstanceCreationError;
   }
   if (error)
-    *error = err;
-  return object;
+    *error = [NSError errorWithDomain:@"com.xenonium.wonderbox" code:err userInfo:nil];;
+  return nil;
 }
+

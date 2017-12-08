@@ -12,33 +12,31 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 enum {
   kWBClassNotFoundError = 'Clnf',
   kWBInstanceCreationError = 'IstC',
   kWBInstanceSerializationError = 'IstS',
 };
 
-#pragma mark WBSerializable Protocol
-@interface NSObject (WBSerializable)
-- (id)initWithSerializedValues:(NSDictionary *)plist;
+// MARK: WBSerializable Protocol
+@protocol WBSerializable <NSObject>
+@optional
+- (Class)classForCoder;
+@required
+- (nullable id)initWithSerializedValues:(NSDictionary *)plist;
 - (BOOL)serialize:(NSMutableDictionary *)aDictionary;
 @end
 
 WB_EXPORT
 NSString *const kWBSerializationIsaKey;
 
-#pragma mark Functions
+// MARK: Functions
 WB_EXPORT
-NSDictionary *WBSerializeObject(id object, OSStatus *error);
+NSDictionary *WBSerializeObject(id<WBSerializable> object, NSError * __autoreleasing *error);
 WB_EXPORT
-id WBDeserializeObject(NSDictionary *plist, OSStatus *error);
+id<WBSerializable> WBDeserializeObject(NSDictionary *plist, NSError * __autoreleasing *error);
 
-#pragma mark -
-#pragma mark CallBack based API
-typedef BOOL (*WBSerializeInstanceCallBack)(id object, NSMutableDictionary *plist, void *ctxt);
-typedef id (*WBDeserializeInstanceCallBack)(Class cls, NSDictionary *plist, void *ctxt);
+NS_ASSUME_NONNULL_END
 
-WB_EXPORT
-id WBSerializeObjectWithFunction(id object, OSStatus *error, WBSerializeInstanceCallBack callback, void *ctxt);
-WB_EXPORT
-id WBDeserializeObjectWithFunction(NSDictionary *plist, OSStatus *error, WBDeserializeInstanceCallBack callback, void *ctxt);

@@ -10,9 +10,13 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSFileWrapper (WBExtensions)
 
-- (id)propertyListForFilename:(NSString *)filename; // NSPropertyListImmutable
-- (id)propertyListForFilename:(NSString *)filename mutabilityOption:(NSPropertyListMutabilityOptions)opt;
+- (nullable id)propertyListForFilename:(NSString *)filename error:(out NSError * __autoreleasing *)outError; // NSPropertyListImmutable
+- (nullable id)propertyListForFilename:(NSString *)filename mutabilityOption:(NSPropertyListMutabilityOptions)opt error:(out NSError * __autoreleasing *)outError;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -45,6 +45,10 @@ void _WBAEPrintDebug(const AEDesc *desc, CFStringRef format, ...) {
 
 #pragma mark -
 #pragma mark Print AEDesc
+
+#pragma clang diagnostic push
+// DisposeHandle() is required here
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 CFStringRef WBAEDescCopyDescription(const AEDesc *desc) {
   // FIXME: should use aeDescToCFTypeCopy()
   OSStatus err;
@@ -68,6 +72,7 @@ OSStatus WBAEPrintDesc(const AEDesc *desc) {
   }
   return err;
 }
+#pragma clang diagnostic pop
 
 #pragma mark -
 #pragma mark Find Target for AppleEvents
@@ -527,8 +532,11 @@ OSStatus WBAESendEvent(AppleEvent *pAppleEvent, AESendMode sendMode, SInt64 time
     if (noErr != err) {
       /* Print error message with explication, else print the event */
       if (WBAEDebug) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         const char *str = GetMacOSStatusErrorString(err);
         const char *comment = GetMacOSStatusCommentString(err);
+#pragma clang diagnostic pop
         WBAEPrintDebug(reply, CFSTR("AEDesc Reply: %@ (%s: %s)\n"), str, comment);
       }
       WBAEDisposeDesc(reply);

@@ -12,7 +12,6 @@
 
 #import <WonderBox/WBFunctions.h>
 #import <WonderBox/WBLSFunctions.h>
-#import <WonderBox/WBProcessFunctions.h>
 
 enum {
   kWBUndefinedSignature = kUnknownType // '????'

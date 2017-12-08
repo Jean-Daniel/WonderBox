@@ -10,7 +10,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-#pragma mark -
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSAlert (UserDefaultCheckBox)
 /* Application modal sheet */
 - (NSInteger)runSheetModalForWindow:(NSWindow *)window;
@@ -20,9 +21,9 @@
    @abstract   Add a small check box on bottom left of Alert window.
    Create a Binding between checkbox <i>value</i> and UserDefault <i>key</i>.<br />
    Usefull if you want made a "Do not Show Again" check box.
-   @param      title The title of the checkbox.
    @param      key The UserDefault Value. If nil, the binding is not created.
-   @result    Returns the check box.
    */
-- (NSButton *)addUserDefaultCheckBoxWithTitle:(NSString *)title andKey:(NSString *)key;
+- (void)bindSuppressionButtonToUserDefault:(NSString *)key;
 @end
+
+NS_ASSUME_NONNULL_END

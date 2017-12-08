@@ -10,8 +10,6 @@
 
 #import <WonderBox/WBPlugInLoader.h>
 
-#import <WonderBox/WBFSFunctions.h>
-
 NSString * const WBPlugInLoaderDidLoadPlugInNotification = @"WBPlugInLoaderDidLoadPlugIn";
 NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDidRemovePlugIn";
 
@@ -112,14 +110,13 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (NSURL *)URLForDomain:(WBPlugInDomain)domain {
   NSString *base = [[self supportFolderName] stringByAppendingPathComponent:[self plugInFolderName]];
+  NSFileManager *filemanager = [NSFileManager defaultManager];
   switch (domain) {
     default: return nil;
     case kWBPlugInDomainUser:
-      return [WBFSFindFolder(kApplicationSupportFolderType, kUserDomain, false) URLByAppendingPathComponent:base];
+      return [[filemanager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:NULL] URLByAppendingPathComponent:base];
     case kWBPlugInDomainLocal:
-      return [WBFSFindFolder(kApplicationSupportFolderType, kLocalDomain, false) URLByAppendingPathComponent:base];
-    case kWBPlugInDomainNetwork:
-      return [WBFSFindFolder(kApplicationSupportFolderType, kNetworkDomain, false) URLByAppendingPathComponent:base];
+      return [[filemanager URLForDirectory:NSApplicationSupportDirectory inDomain:NSLocalDomainMask appropriateForURL:nil create:NO error:NULL] URLByAppendingPathComponent:base];
     case kWBPlugInDomainBuiltIn:
       return [self buildInURL];
   }

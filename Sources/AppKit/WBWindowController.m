@@ -40,7 +40,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
     NSString *saveName = [[self class] frameAutoSaveName];
     if (saveName)
       [self setWindowFrameAutosaveName:saveName];
-    wb_modalStatus = NSRunStoppedResponse;
+    wb_modalStatus = NSModalResponseStop;
     __WBWindowRegisterNotification(self, window);
   }
   return self;
@@ -78,11 +78,11 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
 }
 
 - (IBAction)ok:(id)sender {
-  [self setModalResultCode:NSOKButton];
+  [self setModalResultCode:NSModalResponseOK];
   [self close:sender];
 }
 - (IBAction)cancel:(id)sender {
-  [self setModalResultCode:NSCancelButton];
+  [self setModalResultCode:NSModalResponseCancel];
   [self close:sender];
 }
 
@@ -107,7 +107,7 @@ void __WBWindowRegisterNotification(id self, NSWindow *aWindow) {
     we process the default runloop event sources (url download, network connections, etc.) */
     NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
     for (;;) {
-      if ((result = [NSApp runModalSession:session]) != NSRunContinuesResponse)
+      if ((result = [NSApp runModalSession:session]) != NSModalResponseContinue)
         break;
       /* Note: Do not use a 0 timeout, else this loop will never block and will consume a lots of CPU.
        In fact, UI events trigger the runloop, so we can use a big timeout value. */

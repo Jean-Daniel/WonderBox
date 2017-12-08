@@ -12,32 +12,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@protocol WBTableViewDelegate;
-
-WB_OBJC_EXPORT
-@interface WBTableView : NSTableView {
-@private
-  struct _wb_tvFlags {
-    unsigned int edit:1;
-    unsigned int editOnClick:1;
-    unsigned int reserved:30;
-  } wb_tvFlags;
-  NSHashTable *wb_noPadding;
-}
-
-- (id<WBTableViewDelegate>)delegate;
-- (void)setDelegate:(id<WBTableViewDelegate>)delegate;
-
-- (IBAction)delete:(id)sender;
-- (void)keyDown:(NSEvent *)theEvent;
-- (void)editColumn:(NSInteger)column row:(NSInteger)row;
-
-- (void)setPadding:(BOOL)flag forTableColumn:(NSString *)columnIdentifier;
-
-/* Should edit next cell after cell edition */
-- (void)setContinueEditing:(BOOL)flag;
-
-@end
+NS_ASSUME_NONNULL_BEGIN
 
 @protocol WBTableViewDelegate <NSTableViewDelegate>
 @optional
@@ -47,3 +22,42 @@ WB_OBJC_EXPORT
 - (BOOL)canDeleteSelectionInTableView:(NSTableView *)aTableView;
 
 @end
+
+WB_OBJC_EXPORT
+@interface WBTableView : NSTableView
+
+@property (nullable, weak) id <WBTableViewDelegate> delegate;
+
+- (IBAction)delete:(nullable id)sender;
+
+- (void)keyDown:(NSEvent *)theEvent;
+
+@end
+
+// MARK: -
+
+@protocol WBOutlineViewDelegate <NSOutlineViewDelegate>
+@optional
+
+- (void)deleteSelectionInOutlineView:(NSOutlineView *)aView;
+// Used for UI validation
+- (BOOL)canDeleteSelectionInOutlineView:(NSOutlineView *)aView;
+
+@end
+
+WB_OBJC_EXPORT
+@interface WBOutlineView : NSOutlineView
+
+@property (nullable, weak) id <WBOutlineViewDelegate> delegate;
+
+- (IBAction)delete:(nullable id)sender;
+/*!
+ @method    keyDown:
+ @abstract  informe the delegate if delete backward or forward is pressed
+ and send target doubleAction message if Enter is pressed.
+ */
+- (void)keyDown:(NSEvent *)theEvent;
+
+@end
+
+NS_ASSUME_NONNULL_END

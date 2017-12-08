@@ -213,6 +213,9 @@
 }
 
 #pragma mark -
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 - (void)makeChildrenPerformSelector:(SEL)aSelector {
   NSParameterAssert(nil != aSelector);
   WBTreeNode *node = wb_child;
@@ -230,6 +233,7 @@
     node = node->wb_sibling;
   }
 }
+#pragma clang diagnostic pop
 
 #pragma mark -
 - (void)wb_remove {

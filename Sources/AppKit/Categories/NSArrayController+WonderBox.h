@@ -12,11 +12,12 @@
 
 @interface NSArrayController (WBExtensions)
 
-- (NSUInteger)count;
+// - (NSUInteger)count;
 
-- (NSEnumerator *)objectEnumerator;
-- (id)objectAtIndex:(NSUInteger)rowIndex;
+// - (NSEnumerator *)objectEnumerator;
+- (id)objectAtArrangedObjectIndex:(NSUInteger)rowIndex;
 
+// Single selection support
 - (id)selectedObject;
 - (BOOL)setSelectedObject:(id)object;
 
