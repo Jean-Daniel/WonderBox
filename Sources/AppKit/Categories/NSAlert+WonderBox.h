@@ -14,7 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSAlert (UserDefaultCheckBox)
 /* Application modal sheet */
-- (NSInteger)runSheetModalForWindow:(NSWindow *)window;
+// - (NSModalResponse)runSheetModalForWindow:(NSWindow *)window;
+
++ (NSAlert *)alertWithMessageText:(nullable NSString *)message informativeText:(NSString *)format;
++ (NSAlert *)alertWithMessageText:(nullable NSString *)message informativeTextWithFormat:(NSString *)format, ...;
 
   /*!
   @method
