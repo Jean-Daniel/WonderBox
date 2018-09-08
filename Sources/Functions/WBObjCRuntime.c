@@ -34,8 +34,9 @@ BOOL WBRuntimeInstanceImplementsSelector(Class cls, SEL sel) {
   unsigned int count = 0;
   Method *methods = class_copyMethodList(cls, &count);
   if (methods) {
-    while(count-- > 0) {
-      Method method = methods[count];
+    long scount = count; // using signed to avoid undefined behavior
+    while (scount-- > 0) {
+      Method method = methods[scount];
       if (method_getName(method) == sel) {
         free(methods);
         return YES;

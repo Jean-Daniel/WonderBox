@@ -46,7 +46,7 @@
   NSArray *result = nil;
   if (_filterBlock) {
     id item = nil;
-    NSUInteger count = [objects count];
+    NSInteger count = [objects count];
     NSMutableArray *filteredObjects = [NSMutableArray arrayWithCapacity:[objects count]];
     while (count-- > 0) {
       item = [objects objectAtIndex:count];
