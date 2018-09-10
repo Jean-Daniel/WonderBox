@@ -13,16 +13,16 @@
 
 @interface NSError (WBExtensions)
 
-+ (NSError *)cancel;
++ (instancetype)cancel;
 
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath;
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message;
++ (instancetype)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath;
++ (instancetype)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message;
 
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL;
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message;
++ (instancetype)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL;
++ (instancetype)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message;
 
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message;
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... WB_NS_FORMAT(3, 4);
++ (instancetype)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message;
++ (instancetype)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... WB_NS_FORMAT(3, 4);
 
 - (BOOL)isCancel;
 

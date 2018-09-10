@@ -12,50 +12,44 @@
 
 @implementation NSError (WBExtensions)
 
-+ (NSError *)cancel {
-  return [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
++ (instancetype)cancel {
+  return [self errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil];
 }
 
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath {
++ (instancetype)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath {
   return [self fileErrorWithCode:code path:aPath reason:nil];
 }
-+ (id)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message {
++ (instancetype)fileErrorWithCode:(NSInteger)code path:(NSString *)aPath reason:(NSString *)message {
   NSDictionary *info = nil;
   if (aPath)
-    info = [NSDictionary dictionaryWithObjectsAndKeys:
-            aPath, NSFilePathErrorKey,
-            message, NSLocalizedFailureReasonErrorKey, nil];
+    info = @{ NSFilePathErrorKey: aPath, NSLocalizedFailureReasonErrorKey: message };
   else if (message)
-    info = [NSDictionary dictionaryWithObjectsAndKeys:
-            message, NSLocalizedFailureReasonErrorKey, nil];
+    info = @{ NSLocalizedFailureReasonErrorKey: message };
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL {
++ (instancetype)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL {
   return [self fileErrorWithCode:code url:anURL reason:nil];
 }
-+ (id)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message {
++ (instancetype)fileErrorWithCode:(NSInteger)code url:(NSURL *)anURL reason:(NSString *)message {
   NSDictionary *info = nil;
   if (anURL)
-    info = [NSDictionary dictionaryWithObjectsAndKeys:
-            anURL, NSURLErrorKey,
-            message, NSLocalizedFailureReasonErrorKey, nil];
+    info = @{ NSURLErrorKey: anURL, NSLocalizedFailureReasonErrorKey: message };
   else if (message)
-    info = [NSDictionary dictionaryWithObjectsAndKeys:
-            message, NSLocalizedFailureReasonErrorKey, nil];
+    info = @{ NSLocalizedFailureReasonErrorKey: message };
   return [self errorWithDomain:NSCocoaErrorDomain code:code userInfo:info];
 }
 
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message {
++ (instancetype)errorWithDomain:(NSString *)aDomain code:(NSInteger)code reason:(NSString *)message {
   NSDictionary *info = message ? [NSDictionary dictionaryWithObject:message forKey:NSLocalizedFailureReasonErrorKey] : nil;
-  return [NSError errorWithDomain:aDomain code:code userInfo:info];
+  return [self errorWithDomain:aDomain code:code userInfo:info];
 }
-+ (id)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... {
++ (instancetype)errorWithDomain:(NSString *)aDomain code:(NSInteger)code format:(NSString *)message, ... {
   va_list args;
   va_start(args, message);
   NSString *str = [[NSString alloc] initWithFormat:message arguments:args];
   va_end(args);
-  NSError *error = [NSError errorWithDomain:aDomain code:code reason:str];
+  NSError *error = [self errorWithDomain:aDomain code:code reason:str];
   spx_release(str);
   return error;
 }
