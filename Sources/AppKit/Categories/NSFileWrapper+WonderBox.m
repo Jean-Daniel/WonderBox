@@ -17,7 +17,7 @@
 }
 
 - (nullable id)propertyListForFilename:(NSString *)filename mutabilityOption:(NSPropertyListMutabilityOptions)opt error:(out __autoreleasing NSError **)outError {
-  NSData *data = [[[self fileWrappers] objectForKey:filename] regularFileContents];
+  NSData *data = [self.fileWrappers[filename] regularFileContents];
   if (data)
     return [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:outError];
   return nil;
