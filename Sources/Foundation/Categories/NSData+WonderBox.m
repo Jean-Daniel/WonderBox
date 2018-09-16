@@ -12,15 +12,14 @@
 
 @implementation NSData (WBHandleUtils)
 
-+ (id)dataWithHandle:(Handle)handle {
-  return [[[self alloc] initWithHandle:handle] autorelease];
++ (instancetype)dataWithHandle:(Handle)handle {
+  return [[self alloc] initWithHandle:handle];
 }
 
-- (id)initWithHandle:(Handle)handle {
+- (instancetype)initWithHandle:(Handle)handle {
   if (handle)  {
     self = [self initWithBytes:*handle length:GetHandleSize(handle)];
   } else {
-    [self release];
     self = nil;
   }
   return self;

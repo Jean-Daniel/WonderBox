@@ -45,8 +45,8 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_name = [[aCoder decodeObjectForKey:@"SUName"] retain];
-    wb_icon = [[aCoder decodeObjectForKey:@"SUIcon"] retain];
+    wb_name = [aCoder decodeObjectForKey:@"SUName"];
+    wb_icon = [aCoder decodeObjectForKey:@"SUIcon"];
   }
   return self;
 }
@@ -55,13 +55,6 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   [super encodeWithCoder:aCoder];
   [aCoder encodeObject:wb_icon forKey:@"SUIcon"];
   [aCoder encodeObject:wb_name forKey:@"SUName"];
-}
-
-#pragma mark -
-- (void)dealloc {
-  [wb_icon release];
-  [wb_name release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -126,23 +119,23 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
 }
 
 #pragma mark Initializer
-+ (id)nodeWithName:(NSString *)aName {
-  return [[[self alloc] initWithName:aName icon:nil] autorelease];
++ (instancetype)nodeWithName:(NSString *)aName {
+  return [[self alloc] initWithName:aName icon:nil];
 }
 
-+ (id)nodeWithName:(NSString *)aName icon:(NSImage *)anIcon {
-  return [[[self alloc] initWithName:aName icon:anIcon] autorelease];
++ (instancetype)nodeWithName:(NSString *)aName icon:(NSImage *)anIcon {
+  return [[self alloc] initWithName:aName icon:anIcon];
 }
 
-- (id)init {
+- (instancetype)init {
   return [self initWithName:nil icon:nil];
 }
 
-- (id)initWithName:(NSString *)aName {
+- (instancetype)initWithName:(NSString *)aName {
   return [self initWithName:aName icon:nil];
 }
 
-- (id)initWithName:(NSString *)aName icon:(NSImage *)anIcon {
+- (instancetype)initWithName:(NSString *)aName icon:(NSImage *)anIcon {
   if (self = [super init]) {
     [self setName:aName];
     [self setIcon:anIcon];
@@ -222,7 +215,6 @@ NSString * const WBUITreeNodeDidSortChildrenNotification = @"WBUITreeNodeDidSort
   if (!sSorts) {
     NSSortDescriptor *name = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
     sSorts = [[NSArray alloc] initWithObjects:name, nil];
-    [name release];
   }
   [self sortUsingDescriptors:sSorts];
 }

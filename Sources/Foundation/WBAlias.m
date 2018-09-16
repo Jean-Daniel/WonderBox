@@ -17,7 +17,7 @@
 
 #pragma mark Protocols Implementation
 - (id)copyWithZone:(NSZone *)zone {
-  WBAlias *copy = [[self class] allocWithZone:nil];
+  WBAlias *copy = [[self class] allocWithZone:zone];
   copy->_URL = _URL;
   copy->_data = _data;
   return copy;

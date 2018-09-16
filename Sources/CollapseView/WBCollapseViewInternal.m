@@ -79,7 +79,7 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_item = spx_retain([aCoder decodeObjectForKey:@"view.item"]);
+    wb_item = [aCoder decodeObjectForKey:@"view.item"];
     [self wb_attachItem];
     wb_body = [aCoder decodeObjectForKey:@"view.body"];
     wb_header = [aCoder decodeObjectForKey:@"view.header"];
@@ -94,7 +94,7 @@
     // setup self
     [self setAutoresizesSubviews:YES];
 
-    wb_item = spx_retain(anItem);
+    wb_item = anItem;
 
     [self wb_attachItem];
     [self wb_buildBodyView];
@@ -122,7 +122,6 @@
 
 - (void)dealloc {
   [self wb_detachItem];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -197,7 +196,6 @@
   if ([wb_item isExpanded]) // restore state
     [self wb_detachView:[wb_item view]];
 
-  spx_release(wb_item);
   wb_item = nil;
 }
 
@@ -313,7 +311,6 @@
   wb_body = [[_WBCollapseItemBodyView alloc] initWithFrame:NSMakeRect(0, 0, NSWidth([self frame]), 0)];
   [wb_body setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
   [self addSubview:wb_body];
-  spx_release(wb_body);
 }
 
 - (void)wb_buildHeaderView {
@@ -327,7 +324,6 @@
   wb_header.target = self;
   wb_header.action = @selector(toggleCollapse:);
   [self addSubview:wb_header];
-  spx_release(wb_header);
 }
 
 @end
@@ -356,7 +352,6 @@
     [wb_title setSelectable:NO];
     [wb_title setBordered:NO];
     [self addSubview:wb_title];
-    spx_release(wb_title);
 
     // Disclose Button
     // Empirical values
@@ -375,7 +370,6 @@
     [wb_disclose setAction:@selector(wb_performAction:)];
     // Add Button
     [self addSubview:wb_disclose];
-    spx_release(wb_disclose);
   }
   return self;
 }
@@ -463,7 +457,6 @@ WBGradientDefinition sHeaderGradient = {
   if (!sHeaderBackground) {
     WBGradientBuilder *b = [[WBGradientBuilder alloc] initWithDefinition:&sHeaderGradient];
     sHeaderBackground = [b newLayerWithVerticalGradient:background.size.height context:ctxt];
-    spx_release(b);
   }
   // draw background gradient
   CGContextDrawLayerInRect(ctxt, background, sHeaderBackground);

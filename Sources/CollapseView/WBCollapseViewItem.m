@@ -30,9 +30,9 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super init]) {
-    wb_view = spx_retain([aCoder decodeObjectForKey:@"item.view"]);
-    wb_title = spx_retain([aCoder decodeObjectForKey:@"item.title"]);
-    wb_uid = spx_retain([aCoder decodeObjectForKey:@"item.identifier"]);
+    wb_view = [aCoder decodeObjectForKey:@"item.view"];
+    wb_title = [aCoder decodeObjectForKey:@"item.title"];
+    wb_uid = [aCoder decodeObjectForKey:@"item.identifier"];
     wb_owner = [aCoder decodeObjectForKey:@"item.owner"];
 
     SPXFlagSet(wb_cviFlags.animates, [aCoder decodeBoolForKey:@"item.flags.animates"]);
@@ -55,13 +55,6 @@
     self.identifier = anIdentifier;
   }
   return self;
-}
-
-- (void)dealloc {
-  spx_release(wb_title);
-  spx_release(wb_view);
-  spx_release(wb_uid);
-  [super dealloc];
 }
 
 #pragma mark -

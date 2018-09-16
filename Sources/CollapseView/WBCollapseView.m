@@ -35,8 +35,8 @@
 
 - (id)initWithCoder:(NSCoder *)aCoder {
   if (self = [super initWithCoder:aCoder]) {
-    wb_views = spx_retain([aCoder decodeObjectForKey:@"collapse.views"]);
-    wb_items = spx_retain([aCoder decodeObjectForKey:@"collapse.items"]);
+    wb_views = [aCoder decodeObjectForKey:@"collapse.views"];
+    wb_items = [aCoder decodeObjectForKey:@"collapse.items"];
   }
   return self;
 }
@@ -50,12 +50,6 @@
     [self setAutoresizesSubviews:YES];
   }
   return self;
-}
-
-- (void)dealloc {
-  spx_release(wb_views);
-  spx_release(wb_items);
-  [super dealloc];
 }
 
 #pragma mark -
@@ -78,7 +72,7 @@
 
 // MARK: Query
 - (NSArray *)items {
-  return spx_autorelease([wb_items copy]);
+  return [wb_items copy];
 }
 
 - (NSUInteger)numberOfItems {
@@ -172,7 +166,6 @@
   [wb_views insertObject:view atIndex:anIndex];
   [wb_items insertObject:anItem atIndex:anIndex];
   [self addSubview:view];
-  spx_release(view);
 
   if (SPXDelegateHandle(wb_delegate, collapseViewDidChangeNumberOfCollapseViewItems:))
     [wb_delegate collapseViewDidChangeNumberOfCollapseViewItems:self];
@@ -281,7 +274,6 @@
                            nil];
     [animation setViewAnimations:[NSArray arrayWithObject:props]];
     [animation startAnimation];
-    spx_release(animation);
   } else {
     [self setFrame:frame];
   }
@@ -293,7 +285,7 @@ struct _WBCollapseViewCompare {
 };
 
 static
-NSComparisonResult _WBCollapseViewCompare(id v1, id v2, void *ctxt) {
+NSComparisonResult _WBCollapseViewCompare(_WBCollapseItemView *v1, _WBCollapseItemView *v2, void *ctxt) {
   struct _WBCollapseViewCompare *fct = (struct _WBCollapseViewCompare *)ctxt;
   return fct->compare([v1 item], [v2 item], fct->ctxt);
 }

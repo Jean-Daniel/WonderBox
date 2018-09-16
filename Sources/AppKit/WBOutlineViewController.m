@@ -31,8 +31,6 @@
 
 - (void)dealloc {
   [self setRoot:nil];
-  [wb_outline release];
-  [super dealloc];
 }
 
 #pragma mark -
@@ -119,9 +117,8 @@
 - (void)setOutlineView:(NSOutlineView *)anOutline {
   if (wb_outline) {
     [wb_outline setDataSource:nil];
-    [wb_outline release];
   }
-  wb_outline = [anOutline retain];
+  wb_outline = anOutline;
   if (wb_outline) {
     [wb_outline setDataSource:self];
   }
@@ -328,7 +325,7 @@ BOOL _ContainsNode(WBOutlineViewController *self, id item) {
   } else {
     /* Have to check parent before removing object */
     if (([anObject parent] == item) && (srcIdx <= anIndex)) anIndex--;
-    insert = [anObject retain];
+    insert = anObject;
     [anObject remove];
   }
   if (insert) {
@@ -338,7 +335,6 @@ BOOL _ContainsNode(WBOutlineViewController *self, id item) {
     } else {
       [item insertChild:insert atIndex:anIndex];
     }
-    [insert release];
     return YES;
   }
   SPXDebug(@"ERROR: Undefine error while dropping item. Cannot copy item");

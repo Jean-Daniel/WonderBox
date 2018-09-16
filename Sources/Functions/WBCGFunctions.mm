@@ -126,7 +126,7 @@ void WBCGPathAddRoundRect(CGMutablePathRef path, const CGAffineTransform *transf
   AddRoundRect(path, transform, rect, radius);
 }
 
-#define KAPPA (CGFloat)0.5522847498
+#define KAPPA CGFloat(0.5522847498)
 template<class Path> WB_INLINE
 void AddRoundRectWithRadius(Path path, const CGAffineTransform *transform, CGRect rect, CGSize radius) {
   CGFloat x = CGRectGetMinX(rect);
@@ -194,12 +194,12 @@ void AddStart(Path path, const CGAffineTransform *transform, CGPoint center, CFI
   if (sides < 5) return;
 
   /* angles */
-  CGFloat omega = (CGFloat)M_PI_2;
-  CGFloat delta = (CGFloat)M_PI / sides;
+  CGFloat omega = CGFloat(M_PI_2);
+  CGFloat delta = CGFloat(M_PI) / sides;
 
   /* Internal rayon */
   if (ir <= 0)
-    ir = (CGFloat)(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
+    ir = CGFloat(r * sin(M_PI_2 - ((2 * M_PI) / sides)) / sin(M_PI_2 - delta));
 
   MoveToPoint(path, transform, center.x, center.y + r);
   omega -= delta;
@@ -228,7 +228,7 @@ void WBCGContextStrokeWaves(CGContextRef context, CGRect rect, CGFloat period) {
   CGFloat width = CGRectGetMaxX(rect);
   CGFloat height = CGRectGetHeight(rect);
 
-  CGFloat step = (CGFloat)(M_PI * height / (2 * period));
+  CGFloat step = CGFloat(M_PI * height / (2 * period));
   CGFloat delta = period * step;
 
   CGFloat end, center, middle;

@@ -49,7 +49,7 @@
 */
 - (void)performOperation:(WBTreeOperation)op atIndex:(NSUInteger)anIndex withChild:(WBTreeNode *)child {
   NSIndexSet *idxes = nil;
-  NSKeyValueChange change = 0;
+  NSKeyValueChange change;
   switch (op) {
     case kWBTreeOperationInsert:
       change = NSKeyValueChangeInsertion;
@@ -67,11 +67,12 @@
       change = NSKeyValueChangeReplacement;
       idxes = [[NSIndexSet alloc] initWithIndex:anIndex];
       break;
+    default:
+      spx_unreachable("unexpected change type");
   }
   [self willChange:change valuesAtIndexes:idxes forKey:@"children"];
   [super performOperation:op atIndex:anIndex withChild:child];
   [self didChange:change valuesAtIndexes:idxes forKey:@"children"];
-  [idxes release];
 }
 
 - (void)removeAllChildren {
@@ -92,7 +93,6 @@
   [super insertSibling:newSibling];
   if (parent) {
     [parent didChange:NSKeyValueChangeInsertion valuesAtIndexes:idxes forKey:@"children"];
-    [idxes release];
   }
 }
 
@@ -106,7 +106,6 @@
   [super remove];
   if (parent) {
     [parent didChange:NSKeyValueChangeRemoval valuesAtIndexes:idxes forKey:@"children"];
-    [idxes release];
   }
 }
 

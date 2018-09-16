@@ -10,6 +10,8 @@
 
 #import <WonderBox/WBExtendedTreeNode.h>
 
+#import <Cocoa/Cocoa.h>
+
 /* Notification keys */
 WB_EXPORT
 NSString * const WBNewChildren;
@@ -68,12 +70,12 @@ NSString * const WBUITreeNodeDidSortChildrenNotification;
   } wb_utFlags;
 }
 
-+ (id)nodeWithName:(NSString *)aName;
-+ (id)nodeWithName:(NSString *)aName icon:(NSImage *)anIcon;
++ (instancetype)nodeWithName:(NSString *)aName;
++ (instancetype)nodeWithName:(NSString *)aName icon:(NSImage *)anIcon;
 
-- (id)init;
-- (id)initWithName:(NSString *)aName;
-- (id)initWithName:(NSString *)aName icon:(NSImage *)anIcon; // designated initializer
+- (instancetype)init;
+- (instancetype)initWithName:(NSString *)aName;
+- (instancetype)initWithName:(NSString *)aName icon:(NSImage *)anIcon; // designated initializer
 
 - (void)sortByName;
 

@@ -20,7 +20,7 @@
 - (NSImage *)wb_centerDividerImage {
   static NSImage *WBCenterDividerImage = nil;
   if (!WBCenterDividerImage) {
-    WBCenterDividerImage = [[NSImage imageNamed:@"WBSplitDot" inBundle:SPXBundleForClass([WBSplitView class])] retain];
+    WBCenterDividerImage = [NSImage imageNamed:@"WBSplitDot" inBundle:SPXBundleForClass([WBSplitView class])];
   }
   return WBCenterDividerImage;
 }
@@ -28,7 +28,7 @@
 - (NSImage *)wb_verticalDividerImage {
   static NSImage *WBVerticalDividerImage = nil;
   if (!WBVerticalDividerImage) {
-    WBVerticalDividerImage = [[NSImage imageNamed:@"WBVSplitBar" inBundle:SPXBundleForClass([WBSplitView class])] retain];
+    WBVerticalDividerImage = [NSImage imageNamed:@"WBVSplitBar" inBundle:SPXBundleForClass([WBSplitView class])];
   }
   return WBVerticalDividerImage;
 }
@@ -36,7 +36,7 @@
 - (NSImage *)wb_horizontalDividerImage {
   static NSImage *WBHorizontalDividerImage = nil;
   if (!WBHorizontalDividerImage) {
-    WBHorizontalDividerImage = [[NSImage imageNamed:@"WBHSplitBar" inBundle:SPXBundleForClass([WBSplitView class])] retain];
+    WBHorizontalDividerImage = [NSImage imageNamed:@"WBHSplitBar" inBundle:SPXBundleForClass([WBSplitView class])];
   }
   return WBHorizontalDividerImage;
 }
