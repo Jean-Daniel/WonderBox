@@ -34,11 +34,11 @@
   wb_vars = [[NSMutableDictionary alloc] init];
 }
 
-- (id)init {
+- (instancetype)init {
   return [self initWithContentsOfFile:nil encoding:[NSString defaultCStringEncoding]];
 }
 
-- (id)initBlockWithName:(NSString *)name {
+- (instancetype)initBlockWithName:(NSString *)name {
   if (self = [super init]) {
     [self wb_init];
     [self setName:name];
@@ -54,21 +54,13 @@
 - (id)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding {
   if (self = [super init]) {
     [self setName:aFile];
-    wb_encoding = encoding;
+    _encoding = encoding;
   }
   return self;
 }
 
 - (id)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding {
   return [self initWithContentsOfFile:anURL.path encoding:encoding];
-}
-
-- (NSStringEncoding)encoding {
-  return wb_encoding;
-}
-
-- (void)setStringEncoding:(NSStringEncoding)encoding {
-  wb_encoding = encoding;
 }
 
 - (NSString *)description {
@@ -122,14 +114,14 @@
   return [self parent] != nil;
 }
 
-- (id)blockWithName:(NSString *)aName {
+- (__kindof WBTemplate *)blockWithName:(NSString *)aName {
   if (!wb_contents) {
     [self load];
   }
   if ([aName isEqualToString:[self name]])
     return self;
-  id child = [self firstChild];
-  id block = nil;
+  WBTemplate *child = [self firstChild];
+  WBTemplate *block = nil;
   while (child) {
     if ((block = [child blockWithName:aName]))
       break;
@@ -213,7 +205,7 @@
   if (aFile) {
     [self wb_init];
 
-    WBTemplateParser *parser = [[WBTemplateParser alloc] initWithFile:aFile encoding:wb_encoding];
+    WBTemplateParser *parser = [[WBTemplateParser alloc] initWithFile:aFile encoding:_encoding];
     [parser setDelegate:self];
     @try {
       result = [parser parse];
@@ -262,10 +254,9 @@
         [content addObject:var];
       } else {
         /* string is a block */
-        id child = [self blockWithName:var];
-        if (child) {
+        WBTemplate *child = [self blockWithName:var];
+        if (child)
           [content addObject:[child structure]];
-        }
       }
     }
 //  else {
@@ -318,7 +309,7 @@
   @autoreleasepool {
     NSString *result = [self stringRepresentation];
 
-    BOOL ok = [result writeToFile:file atomically:flag encoding:wb_encoding error:nil];
+    BOOL ok = [result writeToFile:file atomically:flag encoding:_encoding error:nil];
     if (reset)
       [self reset];
     return ok;
@@ -348,7 +339,7 @@
 }
 
 - (void)templateParser:(WBTemplateParser *)parser didStartBlock:(NSString *)blockName {
-  id child = [[[self class] alloc] initBlockWithName:blockName];
+  WBTemplate *child = [[[self class] alloc] initBlockWithName:blockName];
   [child setRemoveBlockLine:[self removeBlockLine]];
   wb_tplFlags.inBlock = 1;
   [self appendChild:child];

@@ -16,7 +16,7 @@
   __unsafe_unretained WBTreeNode *wb_node;
 }
 
-- (id)initWithRootNode:(WBTreeNode *)node;
+- (instancetype)initWithRootNode:(WBTreeNode *)node;
 
 @end
 
@@ -32,7 +32,7 @@
 }
 
 #pragma mark Protocol Implementation
-- (id)initWithCoder:(NSCoder *)aCoder {
+- (instancetype)initWithCoder:(NSCoder *)aCoder {
   if (self = [super init]) {
     wb_parent = [aCoder decodeObjectForKey:@"Parent"];
     wb_sibling = [aCoder decodeObjectForKey:@"Sibling"];
@@ -52,7 +52,7 @@
   [aCoder encodeObject:[self children] forKey:@"Children"];
 }
 
-- (id)copyWithZone:(NSZone *)aZone {
+- (instancetype)copyWithZone:(NSZone *)aZone {
   WBTreeNode *copy = [[[self class] allocWithZone:aZone] init];
   if (wb_child) {
     copy->wb_child = [wb_child copyWithZone:aZone];
@@ -72,11 +72,11 @@
 }
 
 #pragma mark -
-+ (id)node {
++ (instancetype)node {
   return [[self alloc] init];
 }
 
-- (id)init {
+- (instancetype)init {
   if (self = [super init]) {
 
   }
@@ -90,7 +90,7 @@
 }
 
 #pragma mark -
-- (id)parent {
+- (__kindof WBTreeNode *)parent {
   return wb_parent;
 }
 - (void)setParent:(WBTreeNode *)parent {
@@ -107,7 +107,7 @@
   return NO;
 }
 
-- (id)nextSibling {
+- (__kindof WBTreeNode *)nextSibling {
   return wb_sibling;
 }
 
@@ -128,7 +128,7 @@
   return (wb_parent) ? [wb_parent indexOfChild:self] : NSNotFound;
 }
 
-- (id)findRoot {
+- (__kindof WBTreeNode *)findRoot {
   WBTreeNode *tree = self;
   while (tree->wb_parent)
     tree = tree->wb_parent;
@@ -149,11 +149,11 @@
   return wb_child != nil;
 }
 
-- (id)firstChild {
+- (__kindof WBTreeNode *)firstChild {
   return wb_child;
 }
 
-- (id)lastChild {
+- (__kindof WBTreeNode *)lastChild {
   WBTreeNode *last = nil;
   if (wb_child) {
     last = wb_child;
@@ -174,7 +174,7 @@
   return children;
 }
 
-- (id)childAtIndex:(NSUInteger)anIndex {
+- (__kindof WBTreeNode *)childAtIndex:(NSUInteger)anIndex {
   WBTreeNode *node = wb_child;
   NSUInteger idx = anIndex;
   while (node) {

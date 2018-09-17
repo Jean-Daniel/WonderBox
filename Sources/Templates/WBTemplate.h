@@ -27,7 +27,6 @@ WB_OBJC_EXPORT
   NSMutableArray *wb_blocks;
   NSMutableArray *wb_contents;
   NSMutableDictionary *wb_vars;
-  NSStringEncoding wb_encoding;
   struct _wb_tplFlags {
     unsigned int removeBlockLine:1;
     unsigned int inBlock:1;
@@ -35,11 +34,10 @@ WB_OBJC_EXPORT
   } wb_tplFlags;
 }
 
-- (id)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding;
-- (id)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding;
+- (instancetype)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding;
+- (instancetype)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding;
 
-- (NSStringEncoding)encoding;
-- (void)setStringEncoding:(NSStringEncoding)encoding;
+@property NSStringEncoding encoding;
 
 /*!
     @method     reset
@@ -50,14 +48,14 @@ WB_OBJC_EXPORT
 - (BOOL)isBlock;
 - (void)dumpBlock;
 - (NSString *)name;
-- (id)blockWithName:(NSString *)aName;
+- (__kindof WBTemplate *)blockWithName:(NSString *)aName;
 
 - (BOOL)containsKey:(NSString *)key;
+
 - (NSString *)variableForKey:(NSString *)aKey;
 - (void)setVariable:(NSString *)aValue forKey:(NSString *)aKey;
 
-- (BOOL)removeBlockLine;
-- (void)setRemoveBlockLine:(BOOL)flags;
+@property BOOL removeBlockLine;
 
 - (NSString *)stringRepresentation;
 - (BOOL)writeToFile:(NSString *)file atomically:(BOOL)flag andReset:(BOOL)reset;

@@ -23,8 +23,8 @@
 WB_OBJC_EXPORT
 @interface WBTreeNode : NSObject <NSCopying, NSCoding>
 #pragma mark Initializer
-+ (id)node;
-- (id)init;
++ (instancetype)node;
+- (instancetype)init;
 
 #pragma mark -
 /*!
@@ -32,7 +32,7 @@ WB_OBJC_EXPORT
  @abstract   Returns the root tree of a given tree.
  @result     The root of tree where root is defined as a tree without a parent.
  */
-- (id)findRoot;
+- (__kindof WBTreeNode *)findRoot;
 
 /*!
   @method
@@ -44,7 +44,7 @@ WB_OBJC_EXPORT
  @abstract   Returns the child of a tree at the specified index.
  @result     The child tree at <i>index</i>.
  */
-- (id)childAtIndex:(NSUInteger)index;
+- (__kindof WBTreeNode *)childAtIndex:(NSUInteger)index;
 /*!
  @method
  @abstract   Get index of child in receiver children array.
@@ -100,14 +100,14 @@ WB_OBJC_EXPORT
  @abstract   Returns the first child of a tree.
  @result     The first child of the receiver or nil if the receiver is empty.
  */
-- (id)firstChild;
+- (__kindof WBTreeNode *)firstChild;
 
 /*!
   @method
  @abstract   Returns the last child of a tree.
  @result     The last child of the receiver or nil if the receiver is empty.
  */
-- (id)lastChild;
+- (__kindof WBTreeNode *)lastChild;
 
 /*!
   @method
@@ -125,12 +125,13 @@ WB_OBJC_EXPORT
  */
 - (NSUInteger)siblingCount;
 
+
 /*!
   @method
  @abstract   Returns the parent of a given tree.
  @result     The parent of the tree.
  */
-- (id)parent;
+- (__kindof WBTreeNode *)parent;
 
 /*!
   @method
