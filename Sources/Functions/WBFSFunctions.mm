@@ -20,7 +20,7 @@
   @try {
     fsrep = [self fileSystemRepresentation];
   } @catch (NSException *exception) {
-    SPXLogException(exception);
+    spx_log_exception(exception);
   }
   return fsrep;
 }

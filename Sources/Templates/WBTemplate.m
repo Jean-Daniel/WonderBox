@@ -47,7 +47,7 @@
 }
 
 - (id)initWithContentsOfFile:(NSString *)aFile {
-  SPXDebug(@"WARNING: deprecated fonction: %@", NSStringFromSelector(_cmd));
+  spx_debug("WARNING: deprecated fonction: %@", NSStringFromSelector(_cmd));
   return [self initWithContentsOfFile:aFile encoding:[NSString defaultCStringEncoding]];
 }
 
@@ -193,7 +193,7 @@
 		SPXThrowException(NSInvalidArgumentException, @"Cannot load a block template.");
   }
   if (wb_contents) {
-    SPXDebug(@"WARNING: Template already loaded");
+    spx_debug("WARNING: Template already loaded");
     return YES;
   }
   return [self loadFile:wb_name];
@@ -211,7 +211,7 @@
       result = [parser parse];
     } @catch (id exception) {
       [self clear];
-      SPXLogException(exception);
+      spx_log_exception(exception);
     }
   }
   return result;

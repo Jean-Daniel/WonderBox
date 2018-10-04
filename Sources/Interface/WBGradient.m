@@ -49,7 +49,7 @@ WBInterpolationFunction *WBFunctionCreateFromDefinition(const WBInterpolationDef
       aColorSpace = [NSColorSpace genericRGBColorSpace];
     CFIndex count = [aColorSpace numberOfColorComponents] + 1; // add one for alpha
     if (count < 2 || count > 5) {
-      SPXLogError(@"WBGradient: Unsupported color space: %@", aColorSpace);
+      spx_log_error("WBGradient: Unsupported color space: %@", aColorSpace);
       return nil;
     }
     _cs = aColorSpace;

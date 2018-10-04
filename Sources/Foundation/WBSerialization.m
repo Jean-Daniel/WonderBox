@@ -27,7 +27,7 @@ NSDictionary *WBSerializeObject(id<WBSerializable> object, NSError * __autorelea
     if ([object serialize:plist])
       return plist;
   } @catch (id exception) {
-    SPXCLogException(exception);
+    spx_log_exception(exception);
   }
   if (error)
     *error = [NSError errorWithDomain:@"com.xenonium.wonderbox" code:kWBInstanceSerializationError userInfo:nil];
@@ -46,7 +46,7 @@ id<WBSerializable> WBDeserializeObject(NSDictionary *plist, NSError * __autorele
       if (obj)
         return obj;
     } @catch (id exception) {
-      SPXCLogException(exception);
+      spx_log_exception(exception);
     }
     err = kWBInstanceCreationError;
   }

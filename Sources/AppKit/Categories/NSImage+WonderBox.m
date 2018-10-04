@@ -31,7 +31,7 @@ static NSMutableSet *sMissingImages = nil;
     if (image) {
       [image setName:name];
     } else {
-      SPXLogWarning(@"Unable to find image named '%@' in bundle '%@'", name, [bundle bundleIdentifier]);
+      spx_log("Unable to find image named '%@' in bundle '%@'", name, [bundle bundleIdentifier]);
       if (!sMissingImages)
         sMissingImages = [[NSMutableSet alloc] init];
       [sMissingImages addObject:name];

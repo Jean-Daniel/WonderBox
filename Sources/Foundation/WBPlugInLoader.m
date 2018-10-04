@@ -241,7 +241,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 
 - (WBPlugInBundle *)resolveConflict:(NSArray *)plugins {
   // use first found
-  SPXLogWarning(@"plugins have the same identifier: %@", plugins);
+  spx_log("plugins have the same identifier: %@", plugins);
   return nil;
 }
 
@@ -284,10 +284,10 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
       if (plugin)
         [self registerPlugIn:plugin withIdentifier:[aBundle bundleIdentifier] domain:aName];
     } else {
-      SPXLogWarning(@"PlugIn already loaded: %@", [aBundle bundleIdentifier]);
+      spx_log("PlugIn already loaded: %@", [aBundle bundleIdentifier]);
     }
   } @catch (NSException *exception) {
-    SPXLogException(exception);
+    spx_log_exception(exception);
   }
   return plugin;
 }
@@ -296,7 +296,7 @@ NSString * const WBPlugInLoaderDidRemovePlugInNotification = @"WBPlugInLoaderDid
 - (void)registerPlugIn:(id)plugin withIdentifier:(NSString *)identifier domain:(WBPlugInDomain)aDomain {
   NSAssert(!wb_plugins[identifier], @"plugin already loaded");
 
-  SPXDebug(@"Register plugin: %@", plugin);
+  spx_debug("Register plugin: %@", plugin);
   wb_plugins[identifier] = plugin;
   NSAssert([self domainWithName:aDomain], @"domain does not exists");
   [[self domainWithName:aDomain] addPlugIn:plugin];
