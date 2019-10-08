@@ -139,7 +139,7 @@
     NSRect imageFrame = cellFrame;
     NSSize imageSize = [self wb_imageSize:cellFrame.size];
 
-    if ([self alignment] == NSCenterTextAlignment || [self alignment] == NSRightTextAlignment) {
+    if ([self alignment] == NSTextAlignmentCenter || [self alignment] == NSTextAlignmentRight) {
       NSSize textSize = [[self attributedStringValue] size];
 
       CGFloat twidth = textSize.width;
@@ -183,7 +183,7 @@
     CGContextSetShouldAntialias(ctxt, true);
     CGContextSetInterpolationQuality(ctxt, kCGInterpolationHigh);
 
-    [wb_image drawInRect:imageFrame fromRect:source operation:NSCompositeSourceOver fraction:1];
+    [wb_image drawInRect:imageFrame fromRect:source operation:NSCompositingOperationSourceOver fraction:1];
     CGContextRestoreGState(ctxt);
 
     /* Center Text Verticaly */

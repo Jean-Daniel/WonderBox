@@ -23,12 +23,12 @@
 }
 
 - (id)init {
-  return [self initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES];
+  return [self initWithContentRect:NSZeroRect styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:YES];
 }
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
   // Impliticly borderless as NSBorderlessWindowMask = 0
-  if (self = [super initWithContentRect:contentRect styleMask:styleMask | NSNonactivatingPanelMask backing:bufferingType defer:deferCreation]) {
+  if (self = [super initWithContentRect:contentRect styleMask:styleMask | NSWindowStyleMaskNonactivatingPanel backing:bufferingType defer:deferCreation]) {
     self.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
     self.level = CGWindowLevelForKey(kCGOverlayWindowLevelKey);
     self.backgroundColor = [NSColor clearColor];

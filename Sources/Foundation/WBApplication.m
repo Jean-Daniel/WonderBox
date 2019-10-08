@@ -192,8 +192,8 @@ bool __IsValidIdentifier(id identifier) {
     return YES;
   }
 
-  Boolean isApp = false;
-  if (noErr != WBLSIsApplicationAtURL(SPXNSToCFURL(anURL), &isApp) || !isApp) {
+  NSNumber *isApp = nil;
+  if ([anURL getResourceValue:&isApp forKey:NSURLIsApplicationKey error:NULL] || ![isApp boolValue]) {
     return NO;
   }
 

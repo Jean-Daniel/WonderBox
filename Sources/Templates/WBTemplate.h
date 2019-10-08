@@ -37,7 +37,7 @@ WB_OBJC_EXPORT
 - (instancetype)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding;
 - (instancetype)initWithContentsOfURL:(NSURL *)anURL encoding:(NSStringEncoding)encoding;
 
-@property NSStringEncoding encoding;
+@property(nonatomic) NSStringEncoding encoding;
 
 /*!
     @method     reset
@@ -55,7 +55,7 @@ WB_OBJC_EXPORT
 - (NSString *)variableForKey:(NSString *)aKey;
 - (void)setVariable:(NSString *)aValue forKey:(NSString *)aKey;
 
-@property BOOL removeBlockLine;
+@property(nonatomic) BOOL removeBlockLine;
 
 - (NSString *)stringRepresentation;
 - (BOOL)writeToFile:(NSString *)file atomically:(BOOL)flag andReset:(BOOL)reset;

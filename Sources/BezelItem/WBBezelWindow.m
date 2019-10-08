@@ -23,7 +23,7 @@
 - (instancetype)initWithImageView:(NSImageView *)aView {
   NSAssert([self class] != [WBBezelWindow class], @"Use +windowWithContentView: to create instance");
   if (self = [self initWithContentRect:CGRectMake(0, 0, 200, 200)
-                             styleMask:NSBorderlessWindowMask
+                             styleMask:NSWindowStyleMaskBorderless
                                backing:NSBackingStoreBuffered defer:YES]) {
     _imageView = aView;
   }
