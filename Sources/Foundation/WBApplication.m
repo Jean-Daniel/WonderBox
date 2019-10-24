@@ -193,7 +193,7 @@ bool __IsValidIdentifier(id identifier) {
   }
 
   NSNumber *isApp = nil;
-  if ([anURL getResourceValue:&isApp forKey:NSURLIsApplicationKey error:NULL] || ![isApp boolValue]) {
+  if (![anURL getResourceValue:&isApp forKey:NSURLIsApplicationKey error:NULL] || ![isApp boolValue]) {
     return NO;
   }
 
