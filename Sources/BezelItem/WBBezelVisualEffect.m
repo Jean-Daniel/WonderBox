@@ -13,6 +13,7 @@
 #pragma mark -
 @interface NSVisualEffectView (WBPrivate)
 // This is the secret method to get the exact matching appearance of the system Bezel UI.
+// No longer available in macOS 11.0
 - (void)_setInternalMaterialType:(long long)arg1;
 @end
 
@@ -64,9 +65,9 @@ static inline bool _IsDarkTheme() {
 }
 
 + (bool)available {
-  // Only tested on 10.12 - 10.14
+  // Only tested on 10.12 - 10.15
   NSOperatingSystemVersion vers = [NSProcessInfo processInfo].operatingSystemVersion;
-  return vers.minorVersion <= 15;
+  return (vers.majorVersion == 10 && vers.minorVersion <= 15) || (vers.majorVersion == 11 && vers.minorVersion < 1);
 }
 
 - (instancetype)initWithImageView:(NSImageView *)aView {
@@ -126,12 +127,20 @@ static inline bool _IsDarkTheme() {
   if (isDark) {
     // When Dark MenuBar mode is enabled, we have to use dark material.
     v.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantDark];
-    v.material = NSVisualEffectMaterialDark;
-    [v _setInternalMaterialType:4];
+    if ([v respondsToSelector:@selector(_setInternalMaterialType:)]) {
+      v.material = NSVisualEffectMaterialDark;
+      [v _setInternalMaterialType:4];
+    } else {
+      v.material = NSVisualEffectMaterialHUDWindow;
+    }
   } else {
     v.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantLight];
-    v.material = NSVisualEffectMaterialLight;
-    [v _setInternalMaterialType:0];
+    if ([v respondsToSelector:@selector(_setInternalMaterialType:)]) {
+      v.material = NSVisualEffectMaterialLight;
+      [v _setInternalMaterialType:0];
+    } else {
+      v.material = NSVisualEffectMaterialHUDWindow;
+    }
   }
   [self updateLevelViewTheme:isDark];
 }
