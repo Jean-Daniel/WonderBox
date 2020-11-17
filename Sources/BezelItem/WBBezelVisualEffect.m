@@ -48,7 +48,11 @@ static inline bool _IsDarkTheme() {
 @property(nonatomic) CGFloat levelValue;
 @end
 
-@interface _WBBezelDarkLevelBar : NSVisualEffectView <_WBBezelVisualEffectLevelView>
+@interface _WBBezelDarkLevelBarLegacy : NSVisualEffectView <_WBBezelVisualEffectLevelView>
+@property(nonatomic) CGFloat levelValue;
+@end
+
+@interface _WBBezelDarkLevelBar : NSView <_WBBezelVisualEffectLevelView>
 @property(nonatomic) CGFloat levelValue;
 @end
 
@@ -67,7 +71,7 @@ static inline bool _IsDarkTheme() {
 + (bool)available {
   // Only tested on 10.12 - 10.15
   NSOperatingSystemVersion vers = [NSProcessInfo processInfo].operatingSystemVersion;
-  return (vers.majorVersion == 10 && vers.minorVersion <= 15) || (vers.majorVersion == 11 && vers.minorVersion < 1);
+  return (vers.majorVersion == 10 && vers.minorVersion <= 15) || vers.majorVersion == 11;
 }
 
 - (instancetype)initWithImageView:(NSImageView *)aView {
@@ -115,7 +119,7 @@ static inline bool _IsDarkTheme() {
 
 - (void)setLevelBarVisible:(BOOL)levelBarVisible {
   if (levelBarVisible && ![_levelView superview]) {
-    [self.imageView addSubview:_levelView];
+    [self.contentView addSubview:_levelView];
   } else if (!levelBarVisible && [_levelView superview]) {
     [_levelView removeFromSuperview];
   }
@@ -130,16 +134,16 @@ static inline bool _IsDarkTheme() {
     if ([v respondsToSelector:@selector(_setInternalMaterialType:)]) {
       v.material = NSVisualEffectMaterialDark;
       [v _setInternalMaterialType:4];
-    } else {
-      v.material = NSVisualEffectMaterialHUDWindow;
+    } else if (@available(macOS 11.0, *)) {
+      v.material = 26; // Bezel Window (private material)
     }
   } else {
     v.appearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantLight];
     if ([v respondsToSelector:@selector(_setInternalMaterialType:)]) {
       v.material = NSVisualEffectMaterialLight;
       [v _setInternalMaterialType:0];
-    } else {
-      v.material = NSVisualEffectMaterialHUDWindow;
+    } else if (@available(macOS 11.0, *)) {
+      v.material = 26; // Bezel Window
     }
   }
   [self updateLevelViewTheme:isDark];
@@ -152,11 +156,19 @@ static inline bool _IsDarkTheme() {
   if (shows)
     [_levelView removeFromSuperview];
 
-  Class cls = isDark ? [_WBBezelDarkLevelBar class] : [_WBBezelLightLevelBar class];
+  Class cls;
+  if (isDark) {
+    if (@available(macOS 11.0, *))
+      cls = [_WBBezelDarkLevelBar class];
+    else
+      cls = [_WBBezelDarkLevelBarLegacy class];
+  } else {
+    cls = [_WBBezelLightLevelBar class];
+  }
   _levelView = [[cls alloc] initWithFrame:CGRectMake(20, 20, 161, 8)];
   _levelView.levelValue = level;
   if (shows)
-    [self.imageView addSubview:_levelView];
+    [self.contentView addSubview:_levelView];
 }
 
 @end
@@ -199,13 +211,13 @@ static inline bool _IsDarkTheme() {
 }
 
 - (void)drawRect:(NSRect)rect {
-  [[NSColor secondaryLabelColor] setFill];
-  NSRectFill(rect);
+  [[NSColor secondaryLabelColor] set];
+  NSRectFillUsingOperation(self.bounds, [NSGraphicsContext.currentContext compositingOperation]);
 }
 
 @end
 
-@implementation _WBBezelDarkLevelBar {
+@implementation _WBBezelDarkLevelBarLegacy {
   _WBBezelLevelBlocks *_blocks;
 }
 
@@ -232,8 +244,42 @@ static inline bool _IsDarkTheme() {
 }
 
 - (void)drawRect:(NSRect)rect {
-  [[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:.25] setFill];
-  NSRectFill(rect);
+  [[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:.25] set];
+  NSRectFillUsingOperation(self.bounds, [NSGraphicsContext.currentContext compositingOperation]);
+}
+
+@end
+
+@implementation _WBBezelDarkLevelBar {
+  _WBBezelLevelBlocks *_blocks;
+}
+
+- (instancetype)initWithFrame:(NSRect)frameRect {
+  if (self = [super initWithFrame:frameRect]) {
+    _blocks = [[_WBBezelLevelBlocks alloc] initWithView:self blockClass:[_WBBezelDarkLevelBlock class]];
+  }
+  return self;
+}
+
+- (void)setLevelValue:(CGFloat)levelValue {
+  if (fnotequal(_levelValue, levelValue)) {
+    _levelValue = MIN(1., MAX(0., levelValue));
+    [_blocks setLevelValue:_levelValue];
+  }
+}
+
+- (void)viewDidMoveToWindow {
+  [_blocks setLevelValue:_levelValue];
+  [super viewDidMoveToWindow];
+}
+
+- (BOOL)allowsVibrancy {
+  return NO;
+}
+
+- (void)drawRect:(NSRect)rect {
+  [[NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:.25] set];
+  NSRectFillUsingOperation(self.bounds, [NSGraphicsContext.currentContext compositingOperation]);
 }
 
 @end
@@ -303,8 +349,8 @@ static inline bool _IsDarkTheme() {
 }
 
 - (void)drawRect:(NSRect)rect {
-  [[NSColor whiteColor] setFill];
-  NSRectFill(rect);
+  [[NSColor whiteColor] set];
+  NSRectFillUsingOperation(self.bounds, [NSGraphicsContext.currentContext compositingOperation]);
 }
 
 @end
@@ -317,8 +363,8 @@ static inline bool _IsDarkTheme() {
 }
 
 - (void)drawRect:(NSRect)rect {
-  [[NSColor secondaryLabelColor] setFill];
-  NSRectFill(rect);
+  [[NSColor secondaryLabelColor] set];
+  NSRectFillUsingOperation(self.bounds, [NSGraphicsContext.currentContext compositingOperation]);
 }
 
 @end
