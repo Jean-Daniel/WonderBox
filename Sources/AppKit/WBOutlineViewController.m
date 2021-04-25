@@ -271,7 +271,7 @@ BOOL _ContainsNode(WBOutlineViewController *self, id item) {
         [(WBBaseUITreeNode *)item setName:object];
       }
     } @catch (id exception) {
-      SPXLogException(exception);
+      spx_log_exception(exception);
     }
   }
 }
@@ -337,7 +337,7 @@ BOOL _ContainsNode(WBOutlineViewController *self, id item) {
     }
     return YES;
   }
-  SPXDebug(@"ERROR: Undefine error while dropping item. Cannot copy item");
+  spx_log("#ERROR: Undefine error while dropping item. Cannot copy item");
   return NO;
 }
 

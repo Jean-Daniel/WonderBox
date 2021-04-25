@@ -121,20 +121,20 @@ static
 OSStatus sysctlbyname_with_pid(const char *name, pid_t pid,  void *oldp, size_t *oldlenp, void *newp, size_t newlen) {
   if (pid == 0) {
     if (sysctlbyname(name, oldp, oldlenp, newp, newlen) == -1)  {
-      spx_log_warning("%s(0): sysctlbyname failed: %s", __func__, strerror(errno));
+      spx_log("#WARNING %s(0): sysctlbyname failed: %s", __func__, strerror(errno));
       return -1;
     }
   } else {
     int mib[CTL_MAXNAME];
     size_t len = CTL_MAXNAME;
     if (sysctlnametomib(name, mib, &len) == -1) {
-      spx_log_warning("%s(): sysctlnametomib failed: %s", __func__, strerror(errno));
+      spx_log("#WARNING %s(): sysctlnametomib failed: %s", __func__, strerror(errno));
       return -1;
     }
     mib[len] = pid;
     len++;
     if (sysctl(mib, (u_int)len, oldp, oldlenp, newp, newlen) == -1)  {
-      spx_log_warning("%s(): sysct failed: %s", __func__, strerror(errno));
+      spx_log("#WARNING %s(): sysct failed: %s", __func__, strerror(errno));
       return -1;
     }
   }

@@ -277,10 +277,10 @@
   NSRect frame = [view frame];
 
   if (fnotequal(NSWidth([self frame]), NSWidth(frame)))
-    SPXLogWarning(@"Changing item view width. This is not a good idea !");
+    spx_log("#WARNING Changing item view width. This is not a good idea !");
 
   if (fnonzero(frame.origin.x)/* || fnotequal(frame.origin.y, ITEM_BOTTOM_MARGIN) */)
-    SPXLogWarning(@"Changing item origin. This is not a good idea !");
+    spx_log("#WARNING Changing item origin. This is not a good idea !");
 
   // theorical item view height is body size - bottom margin (as the body origin is (0; 0))
   CGFloat height = NSHeight([wb_body frame]) - ITEM_BOTTOM_MARGIN;
