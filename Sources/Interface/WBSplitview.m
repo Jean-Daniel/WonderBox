@@ -119,7 +119,7 @@
     if (background) {
       NSRect src = NSZeroRect;
       src.size = [background size];
-      [background drawInRect:backrect fromRect:src operation:NSCompositeSourceOver fraction:1];
+      [background drawInRect:backrect fromRect:src operation:NSCompositingOperationSourceOver fraction:1];
     } else {
       CGContextSetGrayFillColor([[NSGraphicsContext currentContext] graphicsPort], .933, 1);
       [NSBezierPath fillRect:aRect];
@@ -130,7 +130,7 @@
     NSRect from = { NSZeroPoint, [dot size] };
     NSRect dest = { center, from.size };
     [dot drawInRect:dest fromRect:from
-          operation:NSCompositeSourceOver
+          operation:NSCompositingOperationSourceOver
            fraction:1 respectFlipped:YES hints:nil];
   } else {
     [super drawDividerInRect:aRect];

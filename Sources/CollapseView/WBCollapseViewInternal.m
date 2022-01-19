@@ -160,7 +160,7 @@
   // Restore notification state
   [[wb_item view] setPostsFrameChangedNotifications:YES];
 
-  wb_header.state = expanded ? NSOnState : NSOffState;
+  wb_header.state = expanded ? NSControlStateValueOn : NSControlStateValueOff;
   if (expanded) {
 
   } else {
@@ -344,10 +344,10 @@
     titleFrame.size.height = 14; // mini label height
 
     wb_title = [[NSTextField alloc] initWithFrame:titleFrame];
-    [wb_title setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
+    [wb_title setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSControlSizeSmall]]];
     [wb_title setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     [[wb_title cell] setBackgroundStyle:NSBackgroundStyleRaised];
-    [[wb_title cell] setControlSize:NSSmallControlSize];
+    [[wb_title cell] setControlSize:NSControlSizeSmall];
     [wb_title setDrawsBackground:NO];
     [wb_title setSelectable:NO];
     [wb_title setBordered:NO];
@@ -361,8 +361,8 @@
 
     wb_disclose = [[NSButton alloc] initWithFrame:buttonFrame];
     [wb_disclose setAutoresizingMask:NSViewMaxXMargin | NSViewMinYMargin];
-    [wb_disclose setBezelStyle:NSDisclosureBezelStyle];
-    [wb_disclose setButtonType:NSOnOffButton];
+    [wb_disclose setBezelStyle:NSBezelStyleDisclosure];
+    [wb_disclose setButtonType:NSButtonTypeOnOff];
     [wb_disclose setTitle:@""];
     [wb_disclose sizeToFit];
     // Setup action
@@ -400,19 +400,19 @@
 
   BOOL keepOn = YES;
   while (keepOn) {
-    theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+    theEvent = [[self window] nextEventMatchingMask: NSEventMaskLeftMouseUp | NSEventMaskLeftMouseDragged];
     mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     BOOL isInside = [self mouse:mouseLoc inRect:bounds] ? 1 : 0;
 
     switch ([theEvent type]) {
-      case NSLeftMouseDragged:
+      case NSEventTypeLeftMouseDragged:
         if (wb_chvFlags.highlight != (uint8_t)isInside) {
           SPXFlagSet(wb_chvFlags.highlight, isInside);
           //[wb_disclose setState:isInside ? NSMixedState : [wb_item isExpanded] ? NSOnState : NSOffState];
           [self setNeedsDisplayInRect:bounds];
         }
         break;
-      case NSLeftMouseUp:
+      case NSEventTypeLeftMouseUp:
         if (isInside) {
           // toggle state
           [self wb_performAction:nil];

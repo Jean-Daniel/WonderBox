@@ -260,7 +260,7 @@
     [animation setFrameRate:30];
     // for debugging and for fun
     NSTimeInterval duration;
-    if (([[NSApp currentEvent] modifierFlags] & NSDeviceIndependentModifierFlagsMask) == NSShiftKeyMask)
+    if (([[NSApp currentEvent] modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask) == NSEventModifierFlagShift)
       duration = MIN(1.8, ABS(delta / 100));
     else
       duration = MIN(.50, ABS(delta / 350)); //  350px per seconds, but 0.60s maxi.
