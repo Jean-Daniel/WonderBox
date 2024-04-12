@@ -400,7 +400,7 @@ CFDataRef WBCGImageCopyTIFFRepresentation(CGImageRef anImage) {
 @implementation NSGraphicsContext (WBCGContextRef)
 
 + (CGContextRef)currentGraphicsPort {
-  return static_cast<CGContextRef>([[self currentContext] graphicsPort]);
+  return self.currentContext.CGContext;
 }
 
 @end

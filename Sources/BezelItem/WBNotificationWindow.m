@@ -38,7 +38,6 @@
     self.hidesOnDeactivate = NO;
     self.floatingPanel = YES;
     self.hasShadow = NO;
-    self.oneShot = NO;
     self.canHide = NO;
     self.opaque = NO;
     _delay = kWBNotificationWindowDefaultDelay;

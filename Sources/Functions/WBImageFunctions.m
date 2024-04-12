@@ -56,7 +56,7 @@ NSBitmapImageRep *WBImageResizeImage(NSImage *anImage, NSSize size) {
   NSRect dest = { .origin = NSZeroPoint, .size = size };
 
   /* Clear context */
-  CGContextClearRect([ctxt graphicsPort], NSRectToCGRect(dest));
+  CGContextClearRect(ctxt.CGContext, NSRectToCGRect(dest));
 
   /* Draw image */
   [anImage drawInRect:dest fromRect:src operation:NSCompositingOperationSourceOver fraction:1];

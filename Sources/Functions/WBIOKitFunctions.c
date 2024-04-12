@@ -37,7 +37,7 @@ io_connect_t WBHIDGetEventDriver(void) {
     kern_return_t kr;
     mach_port_t service, iter;
 
-    kr = IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching(kIOHIDSystemClass), &iter);
+    kr = IOServiceGetMatchingServices(kIOMainPortDefault, IOServiceMatching(kIOHIDSystemClass), &iter);
     assert(KERN_SUCCESS == kr);
 
     service = IOIteratorNext(iter);

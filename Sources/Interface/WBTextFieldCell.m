@@ -133,7 +133,7 @@ NSRect _adjustTextFrame(WBTextFieldCell *self, NSRect frame) {
       CGPointMake(NSMinX(content) + 2, y),
       CGPointMake(NSMinX(content) + 2 + twidth, y)
     };
-    CGContextRef ctxt = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef ctxt = NSGraphicsContext.currentContext.CGContext;
     CGContextStrokeLineSegments(ctxt, points, 2);
   }
 }
