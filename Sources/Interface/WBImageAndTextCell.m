@@ -187,14 +187,14 @@
     CGContextRestoreGState(ctxt);
 
     /* Center Text Verticaly */
-//    CGFloat yOffset = floor((NSHeight(cellFrame) - textSize.height) / 2.0);
-//    cellFrame.origin.y += yOffset;
-//    cellFrame.size.height -= yOffset;
+    //    CGFloat yOffset = floor((NSHeight(cellFrame) - textSize.height) / 2.0);
+    //    cellFrame.origin.y += yOffset;
+    //    cellFrame.size.height -= yOffset;
   } else {
     /* Center Text Verticaly */
-//    CGFloat yOffset = floor((NSHeight(cellFrame) - textSize.height) / 2.0);
-//    cellFrame.origin.y += yOffset;
-//    cellFrame.size.height -= yOffset;
+    //    CGFloat yOffset = floor((NSHeight(cellFrame) - textSize.height) / 2.0);
+    //    cellFrame.origin.y += yOffset;
+    //    cellFrame.size.height -= yOffset;
   }
   [super drawWithFrame:cellFrame inView:controlView];
 }

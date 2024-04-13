@@ -35,7 +35,7 @@
 }
 
 - (instancetype)init {
-  return [self initWithContentsOfFile:nil encoding:[NSString defaultCStringEncoding]];
+  return [self initWithContentsOfFile:nil encoding:NSUTF8StringEncoding];
 }
 
 - (instancetype)initBlockWithName:(NSString *)name {
@@ -48,7 +48,7 @@
 
 - (id)initWithContentsOfFile:(NSString *)aFile {
   spx_debug("WARNING: deprecated fonction: %@", NSStringFromSelector(_cmd));
-  return [self initWithContentsOfFile:aFile encoding:[NSString defaultCStringEncoding]];
+  return [self initWithContentsOfFile:aFile encoding:NSUTF8StringEncoding];
 }
 
 - (id)initWithContentsOfFile:(NSString *)aFile encoding:(NSStringEncoding)encoding {
